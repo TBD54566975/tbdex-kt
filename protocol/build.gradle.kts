@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+  implementation("net.pwall.json:json-kotlin-schema:0.41")
   testImplementation(kotlin("test"))
 }
 
