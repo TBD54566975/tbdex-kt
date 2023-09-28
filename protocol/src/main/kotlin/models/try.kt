@@ -1,24 +1,12 @@
 package models
 
 import java.time.Instant
+import java.util.Date
+import java.util.UUID
 
 
-interface ResourceMetadata {
-  val from: String
-  val id: String
-  val createdAt: Instant
-  val updatedAt: Instant?
-  val kind: ResourceType
-}
 
-data class OfferingMetadata(
-  override val from: String,
-  override val id: String,
-  override val createdAt: Instant,
-  override val updatedAt: Instant?
-) : ResourceMetadata {
-  override val kind: ResourceType = ResourceType.Offering
-}
+
 
 class ResourceMetadata2(
   val from: String,
