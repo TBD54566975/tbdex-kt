@@ -4,23 +4,30 @@ import net.pwall.json.schema.JSONSchema
 import java.util.Date
 import java.util.UUID
 
-enum class ResourceType {
-  Offering,
-  Reputation
+
+sealed class ResourceKind {
+  class Offering : ResourceKind()
+  class Reputation : ResourceKind()
 }
 
-sealed class Resource {
+abstract class Resource<T : ResourceKind> {
   abstract val metadata: ResourceMetadata // this could be out of sync with the type of data
   abstract val data: ResourceData
   abstract var signature: String?
 }
 
-class Offering(override val data: OfferingData, override val metadata: ResourceMetadata) : Resource() {
+class Offering(override val data: OfferingData, override val metadata: ResourceMetadata) : Resource<ResourceKind.Offering>() {
   override var signature: String? = null
+
   companion object {
     fun create(data: OfferingData): Offering {
-      val kind = ResourceType.Offering // want this to be shared in the whole class and for implementers to have to provide it
-      val metadata = ResourceMetadata(kind, "from", "${kind}_${UUID.randomUUID()}", Date()) // dont like that the id logic lives here instead of on a base class
+      val kind = Resour.Offering // want this to be shared in the whole class and for implementers to have to provide it
+      val metadata = ResourceMetadata(
+        kind,
+        "from",
+        "${kind}_${UUID.randomUUID()}",
+        Date()
+      ) // dont like that the id logic lives here instead of on a base class
       return Offering(data, metadata)
     }
   }
@@ -32,24 +39,6 @@ class Offering(override val data: OfferingData, override val metadata: ResourceM
 //  abstract var signature: String?
 //}
 
-class ResourceMetadata(val kind: ResourceType,
-                       val from: String,
-                       val id: String,
-                       val createdAt: Date, // or kotlinx-datetime
-                       val updatedAt: Date? = null) {
-
-}
-
-//class OfferingMetadata(
-//  override val from: String,
-//  override val updatedAt: Date?
-//) : ResourceMetadata(ResourceType.Offering) {
-//  init {
-//    super.id = "${kind}_${UUID.randomUUID()}"
-//  }
-//}
-
-
 
 class ReputationMetadata(
   override val from: String,
@@ -58,7 +47,7 @@ class ReputationMetadata(
 
 val metadata = OfferingMetadata("from", Date())
 
-interface ResourceData
+interface ResourceData<T>
 
 class OfferingData(
   val description: String,
@@ -68,7 +57,7 @@ class OfferingData(
   val payinMethods: List<PaymentMethod>,
   val payoutMethods: List<PaymentMethod>,
   val requiredClaims: PresentationExchange
-) : ResourceData
+) : ResourceData<Offering>
 
 
 class CurrencyDetails(
@@ -88,8 +77,54 @@ class PaymentMethod(
 //  override val signature: String
 //) : Resource()
 
-val offering = Resource<Offering>(
-  metadata = ResourceMetadata<Offering>("test"),
-  data = OfferingData("blah", 1),
-  signature = "blah"
-)
+abstract class ResourceMetadata {
+  abstract val from: String
+  abstract val kind: String
+  val id: String = "${kind}_${UUID.randomUUID()}"
+  abstract val createdAt: Date // or kotlinx-datetime
+  abstract val updatedAt: Date?
+
+}
+
+class Offering2 {
+  private val metadata: OfferingMetadata
+  private val data: OfferingData
+  private var signature: String? = null
+
+  private constructor(metadata: OfferingMetadata, data: OfferingData) {
+    this.metadata = metadata
+    this.data = data
+  }
+
+  companion object {
+    fun create(from: String, id: String, data: OfferingData): Offering2 {
+      val metadata = OfferingMetadata(from)
+      return
+    }
+  }
+
+  class OfferingMetadata(override val from: String, override val createdAt: Date, override val updatedAt: Date?) : ResourceMetadata() {
+    override val kind: String = "offering"
+
+  }
+}
+
+class Resource3<T>(val metadata: ResourceMetadata3<T>, // this could be out of sync with the type of data
+                   val data: ResourceData<T>,
+                   var signature: String?) {
+  companion object {
+    fun <T> parse(object: Any): Resource3<T> {
+
+    }
+  }
+}
+
+class ResourceMetadata3<T>(
+  val from: String,
+  val id: String,
+  val createdAt: Date, // or kotlinx-datetime
+  val updatedAt: Date? = null
+) {
+}
+
+class ResourceData3<T>

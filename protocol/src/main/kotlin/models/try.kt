@@ -5,7 +5,28 @@ import java.util.Date
 import java.util.UUID
 
 
-
+//abstract class ResourceMetadata(val kind: ResourceType) {
+//  abstract val from: String
+//  val id: String
+//  val createdAt: Date = Date() // or kotlinx-datetime
+//  abstract val updatedAt: Date?
+//
+//  init {
+//    this.id = "${kind}_${UUID.randomUUID()}"
+//  }
+//}
+//
+//class OfferingMetadata(
+//  override val from: String,
+//  override val updatedAt: Date?
+//) : ResourceMetadata(ResourceType.Offering)
+//
+//class ReputationMetadata(
+//  override val from: String,
+//  override val updatedAt: Date?
+//) : ResourceMetadata(ResourceType.Reputation)
+//
+//val metadata = OfferingMetadata("from", Date()).kind
 
 
 class ResourceMetadata2(
