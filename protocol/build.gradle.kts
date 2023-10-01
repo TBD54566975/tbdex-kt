@@ -14,6 +14,8 @@ repositories {
 
 dependencies {
   implementation("net.pwall.json:json-kotlin-schema:0.41")
+  implementation("me.lessis:typeid:0.0.2")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.+")
   testImplementation(kotlin("test"))
 }
 
