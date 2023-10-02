@@ -1,18 +1,43 @@
 package models
+import java.util.Date
 
 class Message<T: MessageData>(
   val metadata: MessageMetadata,
   val data: T,
   var signature: String? = null,
-)
+) {
+  init {
+    if (metadata.messageType != data.getMessageType()) {
+      throw IllegalArgumentException("Metadata and data types do not match.")
+    }
+  }
+}
 
-interface MessageData
-class RfqData(val offeringId: String): MessageData
-class OrderData: MessageData
+interface MessageData {
+  fun getMessageType(): MessageType
+}
+class RfqData(val offeringId: String): MessageData {
+  override fun getMessageType(): MessageType = MessageType.Rfq
+}
+class QuoteData(val expiresAt: Date): MessageData {
+  override fun getMessageType(): MessageType = MessageType.Quote
+}
+class OrderData: MessageData {
+  override fun getMessageType(): MessageType = MessageType.Order
+}
+class OrderStatusData(val orderStatus: String): MessageData {
+  override fun getMessageType(): MessageType = MessageType.OrderStatus
+}
+class CloseData(val reason: String?): MessageData {
+  override fun getMessageType(): MessageType = MessageType.Close
+}
 
 enum class MessageType {
   Rfq,
-  Order
+  Quote,
+  Order,
+  OrderStatus,
+  Close
 }
 
 class MessageMetadata(
