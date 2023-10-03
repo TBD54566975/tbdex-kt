@@ -2,14 +2,12 @@ package models.playground
 
 import models.CurrencyDetails
 import models.PaymentMethod
-import models.ResourceData
-import models.ResourceKind
 
-abstract class Resource<T : ResourceKind> {
-  abstract val metadata: ResourceMetadata<T>// this could be out of sync with the type of data
-  abstract val data: ResourceData<T>
-  abstract var signature: String?
-}
+class Resource<T : ResourceKind>(
+  val metadata: ResourceMetadata<T>,// this could be out of sync with the type of data
+  val data: ResourceData<T>,
+  var signature: String?
+)
 
 class ResourceMetadata<T: ResourceKind>(
   val from: String,
@@ -25,6 +23,13 @@ class ResourceModel<T : ResourceKind>(
   val signature: String
 )
 
+interface ResourceData<T>
+
+sealed class ResourceKind {
+  data object Offering : ResourceKind()
+  data object Reputation : ResourceKind()
+}
+
 class OfferingData(
   val description: String,
   val payoutUnitsPerPayinUnit: Int,
@@ -36,10 +41,12 @@ class OfferingData(
 ) : ResourceKinds()
 
 class PresentationExchange {
-
 }
 
 typealias ResourceKindModel<T> = ResourceKinds
 
 sealed class ResourceKinds
 
+val offeringResource : Resource<ResourceKind.Offering> {
+
+}
