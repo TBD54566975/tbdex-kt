@@ -1,5 +1,6 @@
 package models
 
+import Mapper
 import com.fasterxml.jackson.annotation.JsonFormat
 import dateTimeFormat
 import typeid.TypeID
@@ -9,6 +10,7 @@ import java.time.OffsetDateTime
 enum class MessageKind {
   rfq, order, orderstatus
 }
+
 class MessageMetadata(
   val kind: MessageKind,
   val to: String,
@@ -21,13 +23,13 @@ class MessageMetadata(
 
 sealed interface MessageData
 
-abstract class Message<T: MessageData>(
+abstract class Message<T : MessageData>(
   val metadata: MessageMetadata,
   val data: T,
   var signature: String? = null
 ) {
   init {
-    when(metadata.kind) {
+    when (metadata.kind) {
       MessageKind.rfq -> require(data is RfqData)
       MessageKind.order -> require(data is OrderData)
       MessageKind.orderstatus -> require(data is OrderStatusData)
@@ -55,7 +57,7 @@ abstract class Message<T: MessageData>(
   }
 
   // TODO - use web5 crypto and fix the types
-  fun sign(privateKey: String, kid: String){
+  fun sign(privateKey: String, kid: String) {
     this.signature = "blah"
   }
 
