@@ -1,5 +1,8 @@
 package models
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import typeid.TypeID
 import java.time.OffsetDateTime
 
@@ -40,6 +43,10 @@ class Rfq private constructor(val data: RfqData, val metadata: MessageMetadata, 
   }
 
   companion object {
+    // TODO is it best practice to share a mapper across different classes?
+    private val mapper: ObjectMapper = ObjectMapper()
+      .registerKotlinModule()
+
     fun create(to: String, from: String, amount: Int): Rfq {
       val id = TypeID(RfqKind.name)
       val metadata = MessageMetadata(
@@ -58,8 +65,9 @@ class Rfq private constructor(val data: RfqData, val metadata: MessageMetadata, 
     fun parse(data: String): Rfq {
       // TODO verify the signature
       // TODO verify against json schemas
-      // TODO - pull in a json serlialization lib and parse into Rfq class
-      TODO("Not yet implemented")
+
+      // TODO not validated, do we need to read the subtypes individually? (metadata and data)
+      return mapper.readValue<Rfq>(data)
     }
   }
 }
@@ -71,6 +79,10 @@ class Order private constructor(val data: OrderData, val metadata: MessageMetada
   }
 
   companion object {
+    // TODO is it best practice to share a mapper across different classes?
+    private val mapper: ObjectMapper = ObjectMapper()
+      .registerKotlinModule()
+
     fun create(to: String, from: String, exchangeId: TypeID): Order {
       val metadata = MessageMetadata(
         kind = OrderKind,
@@ -83,11 +95,11 @@ class Order private constructor(val data: OrderData, val metadata: MessageMetada
       return Order(OrderData(), metadata)
     }
 
-    fun parse(data: Any): Order {
+    fun parse(data: String): Order {
       // TODO verify the signature
       // TODO verify against json schemas
-      // TODO - pull in a json serlialization lib and parse into Order class
-      TODO("Not yet implemented")
+
+      return mapper.readValue<Order>(data)
     }
   }
 }
