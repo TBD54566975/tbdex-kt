@@ -1,73 +1,120 @@
 package models
 
-import java.util.Date
-import kotlin.reflect.KClass
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import typeid.TypeID
+import java.time.OffsetDateTime
 
-sealed class MessageType(val typeName: String) {
-  object Rfq : MessageType("rfq")
-  object Order : MessageType("order")
+// TODO we don't really need this rn, but is one method of creating a common type that can be used in a hypothetical base class
+sealed class MessageData
+class RfqData(val amount: Int) : MessageData()
+class OrderData : MessageData()
+
+sealed interface MessageKind{
+  val name: String
+}
+object RfqKind: MessageKind {
+  override val name: String = "rfq"
+}
+object OrderKind: MessageKind {
+  override val name: String = "order"
 }
 
-@Suppress("UNCHECKED_CAST")
-abstract class Message<T : MessageType>(
-  val metadata: MessageMetadata,
-  val data: MessageData<T>,
-  var signature: String? = null,
-) {
+// Example to show we can use all lowercase (for typeID compat) via the name property
+object OrderStatusKind: MessageKind {
+  override val name: String = "orderstatus"
+}
+
+class MessageMetadata(
+  val kind: MessageKind,
+  val to: String,
+  val from: String,
+  val id: TypeID,
+  val exchangeId: TypeID,
+  val createdAt: OffsetDateTime
+)
+
+// TODO signature and sign seem ripe to be abstracted into a base class
+class Rfq private constructor(val data: RfqData, val metadata: MessageMetadata, var signature: String? = null) {
+  // TODO - use web5 crypto and fix the types
+  fun sign(privateKey: String, kid: String) {
+    this.signature = "blah"
+  }
+
   companion object {
-    inline fun <reified T : MessageType> parse(message: Any): Message<T> {
-      // verify message
+    // TODO is it best practice to share a mapper across different classes?
+    private val mapper: ObjectMapper = ObjectMapper()
+      .registerKotlinModule()
 
-      return when (T::class) {
-        Rfq::class -> {
-          return Rfq(RfqMetadata(), RfqData("blah", 1)) as Message<T> // requires suppress unchecked cast, any way around that?
-        }
+    fun create(to: String, from: String, amount: Int): Rfq {
+      val id = TypeID(RfqKind.name)
+      val metadata = MessageMetadata(
+        kind = RfqKind,
+        to = to,
+        from = from,
+        id = id,
+        exchangeId = id,
+        createdAt = OffsetDateTime.now(),
+      )
 
-        Order::class -> {
-          return Order(message) as Message<T>
-        }
+      val data = RfqData(amount)
+      return Rfq(data, metadata)
+    }
 
-        else -> {}
-      }
+    fun parse(data: String): Rfq {
+      // TODO verify the signature
+      // TODO verify against json schemas
+
+      // TODO not validated, do we need to read the subtypes individually? (metadata and data)
+      return mapper.readValue<Rfq>(data)
     }
   }
 }
 
-interface MessageData<T>
-class RfqData(
-  val offeringId: String,
-  val payinSubunits: Int,
-//  val payinMethod: SelectedPaymentMethod,
-//  val payoutMethod: SelectedPaymentMethod,
-//  val claims: List<String>
-) : MessageData<MessageType.Rfq>
+class Order private constructor(val data: OrderData, val metadata: MessageMetadata, var signature: String? = null) {
+  // TODO - use web5 crypto and fix the types
+  fun sign(privateKey: String, kid: String) {
+    this.signature = "blah"
+  }
 
-class SelectedPaymentMethod(val kind: String)
-class OrderData : MessageData<MessageType.Order>
+  companion object {
+    // TODO is it best practice to share a mapper across different classes?
+    private val mapper: ObjectMapper = ObjectMapper()
+      .registerKotlinModule()
 
-abstract class MessageMetadata(private val messageType: MessageType) {
-  abstract val from: String
-  abstract val to: String
-  abstract val id: String
-  abstract val exchangeId: String
-  abstract val createdAt: Date
+    fun create(to: String, from: String, exchangeId: TypeID): Order {
+      val metadata = MessageMetadata(
+        kind = OrderKind,
+        to = to,
+        from = from,
+        id = TypeID(OrderKind.name),
+        exchangeId = exchangeId,
+        createdAt = OffsetDateTime.now()
+      )
+      return Order(OrderData(), metadata)
+    }
 
-  val type: String
-    get() = messageType.typeName
+    fun parse(data: String): Order {
+      // TODO verify the signature
+      // TODO verify against json schemas
+
+      return mapper.readValue<Order>(data)
+    }
+  }
 }
 
-class RfqMetadata(override val from: String, override val to: String, override val id: String, override val exchangeId: String, override val createdAt: Date) : MessageMetadata(
-  MessageType.Rfq
-)
+// TODO add the other message types - haven't done it while we figure out the structure/interface we want
 
-class OrderMetadata(override val from: String, override val to: String, override val id: String, override val exchangeId: String, override val createdAt: Date) : MessageMetadata(
-  MessageType.Order
-)
+fun main() {
+  val rfqMessage = Rfq.create("pfi", "alice", 20)
+  println("RfqMessage: $rfqMessage")
 
-class Rfq(metadata: RfqMetadata, data: RfqData) : Message<MessageType.Rfq>(metadata, data)
-class Order(metadata: OrderMetadata, data: OrderData) : Message<MessageType.Order>(metadata, data)
+  val orderMessage = Order.create("pfi", "alice", rfqMessage.metadata.exchangeId)
+  println("OrderMessage: $orderMessage")
 
-// should we make the constructor private and force people to go through a static Create() or Parse() method?
-val rfq = Rfq(RfqMetadata(from = "from", to = "to", "id", "exchangeId", Date()), RfqData("offeringId"))
-val test = Message.parse<MessageType.Rfq>(object { val test = "test"})
+  // TODO add example usage of parse
+}
+
+
 

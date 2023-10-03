@@ -47,6 +47,3 @@ typealias ResourceKindModel<T> = ResourceKinds
 
 sealed class ResourceKinds
 
-val offeringResource : Resource<ResourceKind.Offering> {
-
-}
