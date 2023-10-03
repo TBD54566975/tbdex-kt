@@ -1,4 +1,4 @@
-package models
+package website.tbd.tbdex.protocol
 
 import Mapper
 import typeid.TypeID

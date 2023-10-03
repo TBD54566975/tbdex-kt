@@ -1,13 +1,9 @@
-package protocol
+package website.tbd.tbdex.protocol
 
 import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.fasterxml.jackson.core.JsonParseException
-import models.ResourceKind
-import models.Rfq
-import models.RfqData
-import models.SelectedPaymentMethod
 import org.junit.jupiter.api.assertThrows
 import typeid.TypeID
 import kotlin.test.Test

@@ -1,12 +1,8 @@
-package protocol
+package website.tbd.tbdex.protocol
 
 import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import models.CurrencyDetails
-import models.Offering
-import models.OfferingData
-import models.PresentationExchange
 import kotlin.test.Test
 
 class OfferingTest {

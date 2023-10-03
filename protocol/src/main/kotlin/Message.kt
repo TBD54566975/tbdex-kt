@@ -1,4 +1,4 @@
-package models
+package website.tbd.tbdex.protocol
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import dateTimeFormat

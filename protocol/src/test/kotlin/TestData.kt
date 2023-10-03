@@ -1,13 +1,5 @@
-package protocol
+package website.tbd.tbdex.protocol
 
-import models.CurrencyDetails
-import models.Offering
-import models.OfferingData
-import models.PresentationExchange
-import models.ResourceKind
-import models.Rfq
-import models.RfqData
-import models.SelectedPaymentMethod
 import typeid.TypeID
 
 object TestData {

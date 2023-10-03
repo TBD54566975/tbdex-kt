@@ -1,4 +1,4 @@
-package models
+package website.tbd.tbdex.protocol
 
 import net.pwall.json.schema.JSONSchema
 import typeid.TypeID
