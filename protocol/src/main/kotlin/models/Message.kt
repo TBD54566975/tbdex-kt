@@ -54,7 +54,6 @@ class Rfq private constructor(val data: RfqData, val metadata: MessageMetadata, 
       .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 
     fun create(to: String, from: String, amount: Int): Rfq {
-      println(MessageKind.rfq)
       val id = TypeID(MessageKind.rfq.name)
       val metadata = MessageMetadata(
         kind = MessageKind.rfq,
