@@ -21,7 +21,7 @@ dependencies {
 
 allprojects {
   version = "0.0.0"
-  group = "web5"
+  group = "tbdex"
 }
 
 subprojects {
@@ -51,7 +51,7 @@ subprojects {
 
   publishing {
     publications {
-      create<MavenPublication>("web5") {
+      create<MavenPublication>("tbdex") {
         groupId = project.group.toString()
         artifactId = project.name.toString()
         version = project.version.toString()
