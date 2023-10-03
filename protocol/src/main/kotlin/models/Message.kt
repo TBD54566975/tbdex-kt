@@ -7,7 +7,6 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import typeid.TypeID
 import java.time.OffsetDateTime
-import java.time.ZoneOffset
 
 // TODO we don't really need this rn, but is one method of creating a common type that can be used in a hypothetical base class
 sealed class MessageData
@@ -63,7 +62,7 @@ class Rfq private constructor(val data: RfqData, val metadata: MessageMetadata, 
         from = from,
         id = id,
         exchangeId = id,
-        createdAt = OffsetDateTime.now(ZoneOffset.UTC)
+        createdAt = OffsetDateTime.now()
       )
 
       val data = RfqData(amount)
