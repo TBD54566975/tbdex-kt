@@ -1,5 +1,6 @@
 package models
 
+import typeid.TypeID
 import java.time.OffsetDateTime
 
 // TODO we don't really need this rn, but is one method of creating a common type that can be used in a hypothetical base class
@@ -17,18 +18,22 @@ object OrderKind: MessageKind {
   override val name: String = "order"
 }
 
+// Example to show we can use all lowercase (for typeID compat) via the name property
+object OrderStatusKind: MessageKind {
+  override val name: String = "orderstatus"
+}
+
 class MessageMetadata(
   val kind: MessageKind,
   val to: String,
   val from: String,
-  val createdAt: OffsetDateTime,
-  val updatedAt: OffsetDateTime
+  val id: TypeID,
+  val exchangeId: TypeID,
+  val createdAt: OffsetDateTime
 )
 
-class Rfq private constructor(val data: RfqData, val metadata: MessageMetadata) {
-  // TODO signature and sign seem ripe to be abstracted into a base class
-  var signature: String? = null
-
+// TODO signature and sign seem ripe to be abstracted into a base class
+class Rfq private constructor(val data: RfqData, val metadata: MessageMetadata, var signature: String? = null) {
   // TODO - use web5 crypto and fix the types
   fun sign(privateKey: String, kid: String) {
     this.signature = "blah"
@@ -36,12 +41,14 @@ class Rfq private constructor(val data: RfqData, val metadata: MessageMetadata) 
 
   companion object {
     fun create(to: String, from: String, amount: Int): Rfq {
+      val id = TypeID(RfqKind.name)
       val metadata = MessageMetadata(
         kind = RfqKind,
         to = to,
         from = from,
+        id = id,
+        exchangeId = id,
         createdAt = OffsetDateTime.now(),
-        updatedAt = OffsetDateTime.now()
       )
 
       val data = RfqData(amount)
@@ -57,22 +64,21 @@ class Rfq private constructor(val data: RfqData, val metadata: MessageMetadata) 
   }
 }
 
-class Order private constructor(val data: OrderData, val metadata: MessageMetadata) {
-  var signature: String? = null
-
+class Order private constructor(val data: OrderData, val metadata: MessageMetadata, var signature: String? = null) {
   // TODO - use web5 crypto and fix the types
   fun sign(privateKey: String, kid: String) {
     this.signature = "blah"
   }
 
   companion object {
-    fun create(to: String, from: String): Order {
+    fun create(to: String, from: String, exchangeId: TypeID): Order {
       val metadata = MessageMetadata(
         kind = OrderKind,
         to = to,
         from = from,
-        createdAt = OffsetDateTime.now(),
-        updatedAt = OffsetDateTime.now()
+        id = TypeID(OrderKind.name),
+        exchangeId = exchangeId,
+        createdAt = OffsetDateTime.now()
       )
       return Order(OrderData(), metadata)
     }
@@ -92,7 +98,7 @@ fun main() {
   val rfqMessage = Rfq.create("pfi", "alice", 20)
   println("RfqMessage: $rfqMessage")
 
-  val orderMessage = Order.create("pfi", "alice")
+  val orderMessage = Order.create("pfi", "alice", rfqMessage.metadata.exchangeId)
   println("OrderMessage: $orderMessage")
 
   // TODO add example usage of parse
