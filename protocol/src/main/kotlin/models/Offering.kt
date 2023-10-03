@@ -25,6 +25,8 @@ class PaymentMethod(
   val requiredPaymentDetails: JSONSchema
 )
 
+class PresentationExchange
+
 class Offering private constructor(
   metadata: ResourceMetadata,
   data: OfferingData,
@@ -45,11 +47,9 @@ class Offering private constructor(
     }
 
     fun parse(data: String): Offering {
-      // TODO verify the signature
-      // TODO verify against json schemas
-
       // TODO not validated, do we need to read the subtypes individually? (metadata and data)
-      return Mapper.reader(Offering::class.java).readValue(data)
+      val offering: Offering = Mapper.reader(Offering::class.java).readValue(data)
+      return offering
     }
   }
 }

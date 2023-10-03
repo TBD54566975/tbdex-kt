@@ -4,8 +4,12 @@ import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import com.fasterxml.jackson.core.JsonParseException
+import models.ResourceKind
 import models.Rfq
+import models.RfqData
+import models.SelectedPaymentMethod
 import org.junit.jupiter.api.assertThrows
+import typeid.TypeID
 import kotlin.test.Test
 
 class RfqTest {
@@ -14,16 +18,25 @@ class RfqTest {
 
   @Test
   fun `can create a new rfq`() {
-    val rfq = Rfq.create(pfi, alice, 13)
+    val rfq = Rfq.create(
+      pfi, alice,
+      RfqData(
+        offeringID = TypeID(ResourceKind.offering.name),
+        payinSubunits = 10_00,
+        payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
+        payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
+        claims = emptyList()
+      )
+    )
     assertAll {
       assertThat(rfq.metadata.id.prefix).isEqualTo("rfq")
-      assertThat(rfq.data.amount).isEqualTo(13)
+      assertThat(rfq.data.payinSubunits).isEqualTo(10_00)
     }
   }
 
   @Test
   fun `sign populates rfq signature`() {
-    val rfq = Rfq.create(pfi, alice, 13)
+    val rfq = TestData.getRfq()
     rfq.sign("fakepk", "fakekid")
 
     assertThat(rfq.signature).isEqualTo("blah")
@@ -31,7 +44,7 @@ class RfqTest {
 
   @Test
   fun `can parse an rfq from a json string`() {
-    val rfq = Rfq.create(pfi, alice, 13)
+    val rfq = TestData.getRfq()
     rfq.sign("fakepk", "fakekid")
     val jsonMessage = rfq.toString()
     val parsedMessage = Rfq.parse(jsonMessage)

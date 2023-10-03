@@ -32,6 +32,26 @@ abstract class Message<T: MessageData>(
       MessageKind.order -> require(data is OrderData)
       MessageKind.orderstatus -> require(data is OrderStatusData)
     }
+
+    if (signature != null) {
+      verify()
+    } else {
+      validate()
+    }
+  }
+
+  private fun verify() {
+    validate()
+
+    // TODO detached payload sig check (regenerate payload and then check)
+  }
+
+  private fun validate() {
+    // TODO validate against json schema
+//    val schema = schemaMap.get(metadata.kind.name)
+//    val jsonString = this.toString()
+//    schema.validateBasic(jsonString)
+//    if (output.errors != null) ...
   }
 
   // TODO - use web5 crypto and fix the types

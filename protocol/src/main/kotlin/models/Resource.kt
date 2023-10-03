@@ -1,5 +1,7 @@
 package models
 
+import com.fasterxml.jackson.annotation.JsonFormat
+import dateTimeFormat
 import net.pwall.json.schema.JSONSchema
 import typeid.TypeID
 import java.time.OffsetDateTime
@@ -14,16 +16,16 @@ class ResourceMetadata(
   val kind: ResourceKind,
   val from: String,
   val id: TypeID,
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val createdAt: OffsetDateTime,
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val updatedAt: OffsetDateTime?
 )
 
 sealed interface ResourceData
 
-class PresentationExchange
-
 abstract class Resource<T : ResourceData>(
-  val metadata: ResourceMetadata, // this could be out of sync with the type of data
+  val metadata: ResourceMetadata,
   val data: T,
   var signature: String? = null
 ) {
@@ -32,9 +34,30 @@ abstract class Resource<T : ResourceData>(
       ResourceKind.offering -> require(data is OfferingData)
       ResourceKind.reputation -> TODO()
     }
+
+    if (signature != null) {
+      verify()
+    } else {
+      validate()
+    }
   }
 
-  fun sign() {
+
+  private fun verify() {
+    validate()
+
+    // TODO sig check
+  }
+
+  private fun validate() {
+    // TODO validate against json schema
+//    val schema = schemaMap.get(metadata.kind.name)
+//    val jsonString = this.toString()
+//    schema.validateBasic(jsonString)
+//    if (output.errors != null) ...
+  }
+
+  fun sign(privateKey: String, kid: String) {
     this.signature = "blah"
   }
 
