@@ -4,7 +4,13 @@ import Mapper
 import typeid.TypeID
 import java.time.OffsetDateTime
 
-class Rfq private constructor(data: RfqData, metadata: MessageMetadata, signature: String? = null): Message<RfqData>(data, metadata, signature) {
+class RfqData(val amount: Int) : MessageData
+
+class Rfq private constructor(
+  metadata: MessageMetadata,
+  data: RfqData,
+  signature: String? = null
+): Message<RfqData>(metadata, data, signature) {
   companion object {
     fun create(to: String, from: String, amount: Int): Rfq {
       val id = TypeID(MessageKind.rfq.name)
@@ -18,7 +24,7 @@ class Rfq private constructor(data: RfqData, metadata: MessageMetadata, signatur
       )
 
       val data = RfqData(amount)
-      return Rfq(data, metadata)
+      return Rfq(metadata, data)
     }
 
     fun parse(data: String): Rfq {

@@ -5,16 +5,10 @@ import dateTimeFormat
 import typeid.TypeID
 import java.time.OffsetDateTime
 
-// TODO we don't really need this rn, but is one method of creating a common type that can be used in a hypothetical base class
-sealed interface MessageData
-class RfqData(val amount: Int) : MessageData
-class OrderData : MessageData
-class OrderStatusData: MessageData
-
+// TODO: linter gonna yell at us for this, but I want the typeid and serialization to be ez for now
 enum class MessageKind {
   rfq, order, orderstatus
 }
-
 class MessageMetadata(
   val kind: MessageKind,
   val to: String,
@@ -25,7 +19,21 @@ class MessageMetadata(
   val createdAt: OffsetDateTime
 )
 
-abstract class Message<T: MessageData>(val data: T, val metadata: MessageMetadata, var signature: String? = null) {
+sealed interface MessageData
+
+abstract class Message<T: MessageData>(
+  val metadata: MessageMetadata,
+  val data: T,
+  var signature: String? = null
+) {
+  init {
+    when(metadata.kind) {
+      MessageKind.rfq -> require(data is RfqData)
+      MessageKind.order -> require(data is OrderData)
+      MessageKind.orderstatus -> require(data is OrderStatusData)
+    }
+  }
+
   // TODO - use web5 crypto and fix the types
   fun sign(privateKey: String, kid: String){
     this.signature = "blah"
@@ -34,17 +42,7 @@ abstract class Message<T: MessageData>(val data: T, val metadata: MessageMetadat
   override fun toString(): String {
     return Mapper.writer().writeValueAsString(this)
   }
-
-  init {
-    when(metadata.kind) {
-      MessageKind.rfq -> require(data is RfqData)
-      MessageKind.order -> require(data is OrderData)
-      MessageKind.orderstatus -> require(data is OrderStatusData)
-    }
-  }
 }
-
-// TODO add the other message types - haven't done it while we figure out the structure/interface we want
 
 
 

@@ -4,14 +4,15 @@ import Mapper
 import typeid.TypeID
 import java.time.OffsetDateTime
 
-class OrderData : MessageData
-class Order private constructor(
+class OrderStatusData(val status: String) : MessageData
+
+class OrderStatus private constructor(
   metadata: MessageMetadata,
-  data: OrderData,
+  data: OrderStatusData,
   signature: String? = null
-) : Message<OrderData>(metadata, data, signature) {
+) : Message<OrderStatusData>(metadata, data, signature) {
   companion object {
-    fun create(to: String, from: String, exchangeId: TypeID): Order {
+    fun create(to: String, from: String, exchangeId: TypeID, orderStatusData: OrderStatusData): OrderStatus {
       val metadata = MessageMetadata(
         kind = MessageKind.order,
         to = to,
@@ -20,7 +21,7 @@ class Order private constructor(
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now()
       )
-      return Order(metadata, OrderData())
+      return OrderStatus(metadata, orderStatusData)
     }
 
     fun parse(data: String): Order {
