@@ -1,67 +1,101 @@
 package models
 
-// Abstract Message class with generics
+import java.time.OffsetDateTime
+
+// TODO we don't really need this rn, but is one method of creating a common type that can be used in a hypothetical base class
 sealed class MessageData
 class RfqData(val amount: Int) : MessageData()
 class OrderData : MessageData()
-//
-//sealed class MessageMetadata
-//class RfqMetadata(): MessageMetadata()
-//class OrderMetadata(): MessageMetadata()
 
-// Abstract Message class with generics
-//abstract class Message<TData : MessageData, TMetadata : Any> {
-////  abstract val payload: TData // Abstract property
-//  abstract companion object{
-//  abstract fun create(data: TData): Message<TData, TMetadata>
-//  abstract fun parse(data: Any): Message<TData, TMetadata>
-//  }
-//}
+sealed interface MessageKind{
+  val name: String
+}
+object RfqKind: MessageKind {
+  override val name: String = "rfq"
+}
+object OrderKind: MessageKind {
+  override val name: String = "order"
+}
 
-// Rfq class
-class Rfq private constructor(private val rfqData: RfqData) {
-  //  override val payload: IntPayload = IntPayload(rfqData)
-  val metadata: MessageMetadata
-  val data: RfqData
+class MessageMetadata(
+  val kind: MessageKind,
+  val to: String,
+  val from: String,
+  val createdAt: OffsetDateTime,
+  val updatedAt: OffsetDateTime
+)
+
+class Rfq private constructor(val data: RfqData, val metadata: MessageMetadata) {
+  // TODO signature and sign seem ripe to be abstracted into a base class
   var signature: String? = null
 
-  fun sign() {
+  // TODO - use web5 crypto and fix the types
+  fun sign(privateKey: String, kid: String) {
     this.signature = "blah"
   }
 
   companion object {
-    fun create(data: RfqCreateArgs): Rfq {
+    fun create(to: String, from: String, amount: Int): Rfq {
+      val metadata = MessageMetadata(
+        kind = RfqKind,
+        to = to,
+        from = from,
+        createdAt = OffsetDateTime.now(),
+        updatedAt = OffsetDateTime.now()
+      )
 
+      val data = RfqData(amount)
+      return Rfq(data, metadata)
     }
 
-    fun parse(data: Any): Rfq {
+    fun parse(data: String): Rfq {
+      // TODO verify the signature
+      // TODO verify against json schemas
+      // TODO - pull in a json serlialization lib and parse into Rfq class
       TODO("Not yet implemented")
     }
   }
 }
 
-class Order private constructor() {
-  val metadata: MessageMetadata
-  val data: OrderData
+class Order private constructor(val data: OrderData, val metadata: MessageMetadata) {
   var signature: String? = null
 
+  // TODO - use web5 crypto and fix the types
+  fun sign(privateKey: String, kid: String) {
+    this.signature = "blah"
+  }
+
   companion object {
-    fun create(): Order {
-      return Order()
+    fun create(to: String, from: String): Order {
+      val metadata = MessageMetadata(
+        kind = OrderKind,
+        to = to,
+        from = from,
+        createdAt = OffsetDateTime.now(),
+        updatedAt = OffsetDateTime.now()
+      )
+      return Order(OrderData(), metadata)
     }
 
     fun parse(data: Any): Order {
+      // TODO verify the signature
+      // TODO verify against json schemas
+      // TODO - pull in a json serlialization lib and parse into Order class
       TODO("Not yet implemented")
     }
   }
 }
 
-fun main() {
-  val rfqMessage = Rfq.create(42)
-  val orderMessage = Order.create("42.5")
+// TODO add the other message types - haven't done it while we figure out the structure/interface we want
 
-  println("RFQ Payload: ${rfqMessage.data.value}")
-  println("Quote Payload: ${orderMessage.data.value}")
+fun main() {
+  val rfqMessage = Rfq.create("pfi", "alice", 20)
+  println("RfqMessage: $rfqMessage")
+
+  val orderMessage = Order.create("pfi", "alice")
+  println("OrderMessage: $orderMessage")
+
+  // TODO add example usage of parse
 }
 
 
