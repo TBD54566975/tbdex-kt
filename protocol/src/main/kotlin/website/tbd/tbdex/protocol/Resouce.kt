@@ -1,11 +1,9 @@
 package website.tbd.tbdex.protocol
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import dateTimeFormat
-import net.pwall.json.schema.JSONSchema
 import typeid.TypeID
 import java.time.OffsetDateTime
-
+import website.tbd.tbdex.protocol.resource_kinds.OfferingData
 
 enum class ResourceKind {
   offering,
@@ -22,7 +20,7 @@ class ResourceMetadata(
   val updatedAt: OffsetDateTime?
 )
 
-sealed interface ResourceData
+interface ResourceData
 
 abstract class Resource<T : ResourceData>(
   val metadata: ResourceMetadata,

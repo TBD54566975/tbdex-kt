@@ -1,9 +1,11 @@
 package website.tbd.tbdex.protocol
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import dateTimeFormat
 import typeid.TypeID
 import java.time.OffsetDateTime
+import website.tbd.tbdex.protocol.message_kinds.OrderData
+import website.tbd.tbdex.protocol.message_kinds.OrderStatusData
+import website.tbd.tbdex.protocol.message_kinds.RfqData
 
 // TODO: linter gonna yell at us for this, but I want the typeid and serialization to be ez for now
 enum class MessageKind {
@@ -19,7 +21,7 @@ class MessageMetadata(
   val createdAt: OffsetDateTime
 )
 
-sealed interface MessageData
+interface MessageData
 
 abstract class Message<T: MessageData>(
   val metadata: MessageMetadata,

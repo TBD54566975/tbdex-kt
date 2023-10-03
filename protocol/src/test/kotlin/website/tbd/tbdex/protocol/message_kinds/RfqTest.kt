@@ -1,4 +1,4 @@
-package website.tbd.tbdex.protocol
+package website.tbd.tbdex.protocol.message_kinds
 
 import assertk.assertAll
 import assertk.assertThat
@@ -6,7 +6,9 @@ import assertk.assertions.isEqualTo
 import com.fasterxml.jackson.core.JsonParseException
 import org.junit.jupiter.api.assertThrows
 import typeid.TypeID
+import website.tbd.tbdex.protocol.ResourceKind
 import kotlin.test.Test
+import website.tbd.tbdex.protocol.TestData
 
 class RfqTest {
   val alice = "alice"

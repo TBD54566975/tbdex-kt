@@ -1,9 +1,10 @@
-package website.tbd.tbdex.protocol
+package website.tbd.tbdex.protocol.resource_kinds
 
 import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
+import website.tbd.tbdex.protocol.TestData
 
 class OfferingTest {
   @Test

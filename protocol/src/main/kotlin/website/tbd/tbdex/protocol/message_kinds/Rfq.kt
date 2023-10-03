@@ -1,8 +1,12 @@
-package website.tbd.tbdex.protocol
+package website.tbd.tbdex.protocol.message_kinds
 
-import Mapper
 import typeid.TypeID
 import java.time.OffsetDateTime
+import website.tbd.tbdex.protocol.Mapper
+import website.tbd.tbdex.protocol.Message
+import website.tbd.tbdex.protocol.MessageKind
+import website.tbd.tbdex.protocol.MessageData
+import website.tbd.tbdex.protocol.MessageMetadata
 
 class RfqData(
   val offeringID: TypeID,

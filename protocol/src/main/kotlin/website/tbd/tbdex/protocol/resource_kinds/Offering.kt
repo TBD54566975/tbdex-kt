@@ -1,7 +1,12 @@
-package website.tbd.tbdex.protocol
+package website.tbd.tbdex.protocol.resource_kinds
 
 import net.pwall.json.schema.JSONSchema
 import typeid.TypeID
+import website.tbd.tbdex.protocol.Mapper
+import website.tbd.tbdex.protocol.Resource
+import website.tbd.tbdex.protocol.ResourceData
+import website.tbd.tbdex.protocol.ResourceKind
+import website.tbd.tbdex.protocol.ResourceMetadata
 import java.time.OffsetDateTime
 
 class OfferingData(

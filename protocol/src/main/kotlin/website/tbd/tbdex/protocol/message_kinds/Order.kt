@@ -1,18 +1,22 @@
-package website.tbd.tbdex.protocol
+package website.tbd.tbdex.protocol.message_kinds
 
-import Mapper
+import website.tbd.tbdex.protocol.Mapper
 import typeid.TypeID
+import website.tbd.tbdex.protocol.Message
+import website.tbd.tbdex.protocol.MessageData
+import website.tbd.tbdex.protocol.MessageKind
+import website.tbd.tbdex.protocol.MessageMetadata
 import java.time.OffsetDateTime
 
-class OrderStatusData(val status: String) : MessageData
+class OrderData : MessageData
 
-class OrderStatus private constructor(
+class Order private constructor(
   metadata: MessageMetadata,
-  data: OrderStatusData,
+  data: OrderData,
   signature: String? = null
-) : Message<OrderStatusData>(metadata, data, signature) {
+) : Message<OrderData>(metadata, data, signature) {
   companion object {
-    fun create(to: String, from: String, exchangeId: TypeID, orderStatusData: OrderStatusData): OrderStatus {
+    fun create(to: String, from: String, exchangeId: TypeID): Order {
       val metadata = MessageMetadata(
         kind = MessageKind.order,
         to = to,
@@ -21,7 +25,7 @@ class OrderStatus private constructor(
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now()
       )
-      return OrderStatus(metadata, orderStatusData)
+      return Order(metadata, OrderData())
     }
 
     fun parse(data: String): Order {
