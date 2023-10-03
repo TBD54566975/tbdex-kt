@@ -19,3 +19,8 @@ dependencies {
 tasks.test {
   useJUnitPlatform()
 }
+
+java {
+  withJavadocJar()
+  withSourcesJar()
+}
