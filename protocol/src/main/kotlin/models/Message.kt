@@ -1,6 +1,5 @@
 package models
 
-import Mapper
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
@@ -56,14 +55,14 @@ sealed class Message {
   }
 
   fun toJsonString(): String {
-    return Mapper.writer().writeValueAsString(this)
+    return Json.stringify(this)
   }
 
   companion object {
     fun parse(payload: String): Message {
       // TODO json schema validation using Message schema
 
-      val node = Mapper.objectMapper.readTree(payload)
+      val node = Json.parse(payload)
       val kind = node.get("metadata").get("kind").asText()
 
       val kindEnum = MessageKind.valueOf(kind)
@@ -71,11 +70,11 @@ sealed class Message {
       // TODO json schema validation using specific type schema
 
       return when (kindEnum) {
-        MessageKind.rfq -> Mapper.objectMapper.readValue<Rfq>(payload)
-        MessageKind.order -> Mapper.objectMapper.readValue<Order>(payload)
-        MessageKind.orderstatus -> Mapper.objectMapper.readValue<OrderStatus>(payload)
-        MessageKind.quote -> Mapper.objectMapper.readValue<Quote>(payload)
-        MessageKind.close -> Mapper.objectMapper.readValue<Close>(payload)
+        MessageKind.rfq -> Json.parse<Rfq>(payload)
+        MessageKind.order -> Json.parse<Order>(payload)
+        MessageKind.orderstatus -> Json.parse<OrderStatus>(payload)
+        MessageKind.quote -> Json.parse<Quote>(payload)
+        MessageKind.close -> Json.parse<Close>(payload)
       }
     }
   }
