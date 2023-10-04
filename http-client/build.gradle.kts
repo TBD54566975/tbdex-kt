@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+  implementation(project(":protocol"))
   testImplementation(kotlin("test"))
 }
 

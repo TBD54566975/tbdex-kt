@@ -30,24 +30,10 @@ sealed class Message {
 
   init {
     if (signature != null) {
-      verify()
+      verify(this)
     } else {
       validate()
     }
-  }
-
-  fun verify() {
-    validate()
-
-    // TODO detached payload sig check (regenerate payload and then check)
-  }
-
-  fun validate() {
-    // TODO validate against json schema
-//    val schema = schemaMap.get(metadata.kind.name)
-//    val jsonString = this.toString()
-//    schema.validateBasic(jsonString)
-//    if (output.errors != null) ...
   }
 
   // TODO - use web5 crypto and fix the types
@@ -77,6 +63,21 @@ sealed class Message {
         MessageKind.quote -> Mapper.objectMapper.readValue<Quote>(payload)
         MessageKind.close -> Mapper.objectMapper.readValue<Close>(payload)
       }
+    }
+
+    fun verify(message: Message) {
+      validate()
+
+      // TODO detached payload sig check (regenerate payload and then check)
+    }
+
+
+    fun validate() {
+      // TODO validate against json schema
+//    val schema = schemaMap.get(metadata.kind.name)
+//    val jsonString = this.toString()
+//    schema.validateBasic(jsonString)
+//    if (output.errors != null) ...
     }
   }
 }
