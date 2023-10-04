@@ -24,24 +24,29 @@ class MessageMetadata(
 
 sealed interface MessageData
 
-open class Message<T : MessageData>(
-  val metadata: MessageMetadata,
-  val data: T,
-  var signature: String? = null
-) {
-  init {
-    when (metadata.kind) {
-      MessageKind.rfq -> require(data is RfqData)
-      MessageKind.order -> require(data is OrderData)
-      MessageKind.orderstatus -> require(data is OrderStatusData)
-    }
+sealed interface Message {
+  val metadata: MessageMetadata
+  val data: MessageData
+  var signature: String?
 
-    if (signature != null) {
-      verify()
-    } else {
-      validate()
-    }
-  }
+  //open class Message<T : MessageData>(
+//  val metadata: MessageMetadata,
+//  val data: T,
+//  var signature: String? = null
+//) {
+//  init {
+//    when (metadata.kind) {
+//      MessageKind.rfq -> require(data is RfqData)
+//      MessageKind.order -> require(data is OrderData)
+//      MessageKind.orderstatus -> require(data is OrderStatusData)
+//    }
+//
+//    if (signature != null) {
+//      verify()
+//    } else {
+//      validate()
+//    }
+//  }
 
   private fun verify() {
     validate()
@@ -62,12 +67,12 @@ open class Message<T : MessageData>(
     this.signature = "blah"
   }
 
-  override fun toString(): String {
+  fun toJsonString(): String {
     return Mapper.writer().writeValueAsString(this)
   }
 
   companion object {
-    fun parse(payload: String): Message<out MessageData> {
+    fun parse(payload: String): Message {
       // TODO json schema validation using Message schema
 
       val node = Mapper.objectMapper.readTree(payload)
@@ -78,9 +83,9 @@ open class Message<T : MessageData>(
       // TODO json schema validation using specific type schema
 
       return when (kindEnum) {
-        MessageKind.rfq -> Mapper.objectMapper.readValue<Message<RfqData>>(payload)
-        MessageKind.order -> Mapper.objectMapper.readValue<Message<OrderData>>(payload)
-        MessageKind.orderstatus -> Mapper.objectMapper.readValue<Message<OrderStatusData>>(payload)
+        MessageKind.rfq -> Mapper.objectMapper.readValue<Rfq>(payload)
+        MessageKind.order -> Mapper.objectMapper.readValue<Order>(payload)
+        MessageKind.orderstatus -> Mapper.objectMapper.readValue<OrderStatus>(payload)
       }
     }
   }

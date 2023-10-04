@@ -29,6 +29,7 @@ class RfqTest {
         claims = emptyList()
       )
     )
+
     assertAll {
       assertThat(rfq.metadata.id.prefix).isEqualTo("rfq")
       assertThat(rfq.data.payinSubunits).isEqualTo(10_00)
@@ -47,10 +48,16 @@ class RfqTest {
   fun `can parse an rfq from a json string`() {
     val rfq = TestData.getRfq()
     rfq.sign("fakepk", "fakekid")
-    val jsonMessage = rfq.toString()
-    val parsedMessage = Message.parse(jsonMessage)
+    val jsonMessage = rfq.toJsonString()
+    val parsedMessage = Message.parse(jsonMessage) as Rfq
 
-    assertThat(parsedMessage.toString()).isEqualTo(jsonMessage)
+//    val messages = listOf(Message.parse(jsonMessage), Message.parse(jsonMessage))
+//    if(messages.last().metadata.kind) {
+//      is Rfq -> rfqHandler(Rfq())
+//      is Quote -> quoteHandler()
+//    }
+
+    assertThat(parsedMessage.toJsonString()).isEqualTo(jsonMessage)
   }
 
   @Test
