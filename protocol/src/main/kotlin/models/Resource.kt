@@ -1,8 +1,9 @@
 package models
 
+import Mapper
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
-import net.pwall.json.schema.JSONSchema
 import typeid.TypeID
 import java.time.OffsetDateTime
 
@@ -24,7 +25,7 @@ class ResourceMetadata(
 
 sealed interface ResourceData
 
-abstract class Resource<T : ResourceData>(
+open class Resource<T : ResourceData>(
   val metadata: ResourceMetadata,
   val data: T,
   var signature: String? = null
@@ -63,5 +64,23 @@ abstract class Resource<T : ResourceData>(
 
   override fun toString(): String {
     return Mapper.writer().writeValueAsString(this)
+  }
+
+  companion object {
+    fun parse(payload: String): Resource<out ResourceData> {
+      // TODO json schema validation using Resource schema
+
+      val node = Mapper.objectMapper.readTree(payload)
+      val kind = node.get("metadata").get("kind").asText()
+
+      val kindEnum = ResourceKind.valueOf(kind)
+
+      // TODO json schema validation using specific type schema
+
+      return when (kindEnum) {
+        ResourceKind.offering -> Mapper.objectMapper.readValue<Resource<OfferingData>>(payload)
+        ResourceKind.reputation -> TODO()
+      }
+    }
   }
 }

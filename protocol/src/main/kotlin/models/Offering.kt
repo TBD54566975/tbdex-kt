@@ -31,7 +31,7 @@ class Offering private constructor(
   metadata: ResourceMetadata,
   data: OfferingData,
   signature: String? = null
-): Resource<OfferingData>(metadata, data, signature) {
+) : Resource<OfferingData>(metadata, data, signature) {
   companion object {
     fun create(from: String, data: OfferingData): Offering {
       val now = OffsetDateTime.now()
@@ -44,12 +44,6 @@ class Offering private constructor(
       )
 
       return Offering(metadata, data)
-    }
-
-    fun parse(data: String): Offering {
-      // TODO not validated, do we need to read the subtypes individually? (metadata and data)
-      val offering: Offering = Mapper.reader(Offering::class.java).readValue(data)
-      return offering
     }
   }
 }

@@ -7,19 +7,17 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 const val dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
 
 object Mapper {
-    // TODO make private and add method for calling readTree
-    val objectMapper: ObjectMapper = ObjectMapper()
-        .registerKotlinModule()
-        .findAndRegisterModules()
-        .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+  // TODO make private and add method for calling readTree
+  val objectMapper: ObjectMapper = ObjectMapper()
+    .registerKotlinModule()
+    .findAndRegisterModules()
+    .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 
-    fun writer(): ObjectWriter {
-        return objectMapper.writer()
-    }
+  fun writer(): ObjectWriter {
+    return objectMapper.writer()
+  }
 
-    fun <T> reader(type: Class<T>): ObjectReader {
-        return objectMapper.readerFor(type)
-    }
-
-
+  fun <T> reader(type: Class<T>): ObjectReader {
+    return objectMapper.readerFor(type)
+  }
 }

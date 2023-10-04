@@ -7,6 +7,7 @@ import models.CurrencyDetails
 import models.Offering
 import models.OfferingData
 import models.PresentationExchange
+import models.Resource
 import kotlin.test.Test
 
 class OfferingTest {
@@ -44,7 +45,7 @@ class OfferingTest {
     val offering = TestData.getOffering()
     offering.sign("fakepk", "fakekid")
     val jsonResource = offering.toString()
-    val parsed = Offering.parse(jsonResource)
+    val parsed = Resource.parse(jsonResource)
 
     assertThat(parsed.toString()).isEqualTo(jsonResource)
   }
