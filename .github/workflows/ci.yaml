@@ -27,5 +27,10 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle.kts') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/versions.properties') }}
 
 
-      - name: Run Gradle Tasks
-        run: ./gradlew build check cleanTest test publishToMavenLocal --continue
+      - name: Gradle Build
+        run: ./gradlew build check --continue
+      - name: Gradle Test
+        run: ./gradlew cleanTest test --continue
+      - name: Gradle Publish to local
+        run: ./gradlew publishToMavenLocal --continue
+        
