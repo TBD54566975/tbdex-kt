@@ -3,12 +3,11 @@ package models
 import typeid.TypeID
 import java.time.OffsetDateTime
 
-class OrderData : MessageData
 class Order private constructor(
   override val metadata: MessageMetadata,
   override val data: OrderData,
   override var signature: String? = null
-) : Message {
+) : Message() {
   companion object {
     fun create(to: String, from: String, exchangeId: TypeID): Order {
       val metadata = MessageMetadata(

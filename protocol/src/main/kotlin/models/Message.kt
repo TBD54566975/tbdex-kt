@@ -9,7 +9,7 @@ import java.time.OffsetDateTime
 
 // TODO: linter gonna yell at us for this, but I want the typeid and serialization to be ez for now
 enum class MessageKind {
-  rfq, order, orderstatus
+  rfq, quote, close, order, orderstatus
 }
 
 class MessageMetadata(
@@ -22,20 +22,27 @@ class MessageMetadata(
   val createdAt: OffsetDateTime
 )
 
-sealed interface MessageData
 
-sealed interface Message {
-  val metadata: MessageMetadata
-  val data: MessageData
-  var signature: String?
+sealed class Message {
+  abstract val metadata: MessageMetadata
+  abstract val data: MessageData
+  abstract var signature: String?
 
-  private fun verify() {
+  init {
+    if (signature != null) {
+      verify()
+    } else {
+      validate()
+    }
+  }
+
+  fun verify() {
     validate()
 
     // TODO detached payload sig check (regenerate payload and then check)
   }
 
-  private fun validate() {
+  fun validate() {
     // TODO validate against json schema
 //    val schema = schemaMap.get(metadata.kind.name)
 //    val jsonString = this.toString()
@@ -67,6 +74,8 @@ sealed interface Message {
         MessageKind.rfq -> Mapper.objectMapper.readValue<Rfq>(payload)
         MessageKind.order -> Mapper.objectMapper.readValue<Order>(payload)
         MessageKind.orderstatus -> Mapper.objectMapper.readValue<OrderStatus>(payload)
+        MessageKind.quote -> Mapper.objectMapper.readValue<Quote>(payload)
+        MessageKind.close -> Mapper.objectMapper.readValue<Close>(payload)
       }
     }
   }

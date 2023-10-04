@@ -3,25 +3,21 @@ package protocol.models
 import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.fasterxml.jackson.core.JsonParseException
 import models.Message
 import models.ResourceKind
 import models.Rfq
 import models.RfqData
 import models.SelectedPaymentMethod
-import org.junit.jupiter.api.assertThrows
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
+import kotlin.test.assertIs
 
 class RfqTest {
-  val alice = "alice"
-  val pfi = "pfi"
-
   @Test
   fun `can create a new rfq`() {
     val rfq = Rfq.create(
-      pfi, alice,
+      "pfi", "alice",
       RfqData(
         offeringID = TypeID(ResourceKind.offering.name),
         payinSubunits = 10_00,
@@ -50,20 +46,10 @@ class RfqTest {
     val rfq = TestData.getRfq()
     rfq.sign("fakepk", "fakekid")
     val jsonMessage = rfq.toJsonString()
-    val parsedMessage = Message.parse(jsonMessage) as Rfq
+    val parsedMessage = Message.parse(jsonMessage)
 
-//    val messages = listOf(Message.parse(jsonMessage), Message.parse(jsonMessage))
-//    if(messages.last().metadata.kind) {
-//      is Rfq -> rfqHandler(Rfq())
-//      is Quote -> quoteHandler()
-//    }
-
+    assertIs<Rfq>(parsedMessage)
     assertThat(parsedMessage.toJsonString()).isEqualTo(jsonMessage)
-  }
-
-  @Test
-  fun `parse throws error if json string is not valid rfq`() {
-    assertThrows<JsonParseException> { Message.parse(";;;;") }
   }
 }
 

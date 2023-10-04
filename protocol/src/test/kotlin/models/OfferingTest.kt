@@ -10,6 +10,7 @@ import models.PresentationExchange
 import models.Resource
 import protocol.TestData
 import kotlin.test.Test
+import kotlin.test.assertIs
 
 class OfferingTest {
   @Test
@@ -48,6 +49,7 @@ class OfferingTest {
     val jsonResource = offering.toJsonString()
     val parsed = Resource.parse(jsonResource)
 
+    assertIs<Offering>(parsed)
     assertThat(parsed.toJsonString()).isEqualTo(jsonResource)
   }
 }

@@ -3,25 +3,12 @@ package models
 import typeid.TypeID
 import java.time.OffsetDateTime
 
-class RfqData(
-  val offeringID: TypeID,
-  val payinSubunits: Int,
-  val payinMethod: SelectedPaymentMethod,
-  val payoutMethod: SelectedPaymentMethod,
-  val claims: List<String>
-) : MessageData
-
-class SelectedPaymentMethod(
-  val kind: String,
-  val paymentDetails: Map<String, Any>
-)
-
 class Rfq private constructor(
   override val metadata: MessageMetadata,
   override val data: RfqData,
   private: Map<String, Any>? = null,
   override var signature: String? = null
-) : Message {
+) : Message() {
 
   companion object {
     fun create(

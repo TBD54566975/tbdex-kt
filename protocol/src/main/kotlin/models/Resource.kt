@@ -23,33 +23,26 @@ class ResourceMetadata(
   val updatedAt: OffsetDateTime?
 )
 
-sealed interface ResourceData
+sealed class Resource {
+  abstract val metadata: ResourceMetadata
+  abstract val data: ResourceData
+  abstract var signature: String?
 
-sealed interface Resource {
-  val metadata: ResourceMetadata
-  val data: ResourceData
-  var signature: String?
-//  init {
-//    when (metadata.kind) {
-//      ResourceKind.offering -> require(data is OfferingData)
-//      ResourceKind.reputation -> TODO()
-//    }
-//
-//    if (signature != null) {
-//      verify()
-//    } else {
-//      validate()
-//    }
-//  }
+  init {
+    if (signature != null) {
+      verify()
+    } else {
+      validate()
+    }
+  }
 
-
-  private fun verify() {
+  fun verify() {
     validate()
 
     // TODO sig check
   }
 
-  private fun validate() {
+  fun validate() {
     // TODO validate against json schema
 //    val schema = schemaMap.get(metadata.kind.name)
 //    val jsonString = this.toString()
