@@ -1,4 +1,4 @@
-package protocol
+package protocol.models
 
 import assertk.assertAll
 import assertk.assertThat
@@ -8,6 +8,7 @@ import models.Offering
 import models.OfferingData
 import models.PresentationExchange
 import models.Resource
+import protocol.TestData
 import kotlin.test.Test
 
 class OfferingTest {
@@ -44,9 +45,9 @@ class OfferingTest {
   fun `can parse offering from a json string`() {
     val offering = TestData.getOffering()
     offering.sign("fakepk", "fakekid")
-    val jsonResource = offering.toString()
+    val jsonResource = offering.toJsonString()
     val parsed = Resource.parse(jsonResource)
 
-    assertThat(parsed.toString()).isEqualTo(jsonResource)
+    assertThat(parsed.toJsonString()).isEqualTo(jsonResource)
   }
 }

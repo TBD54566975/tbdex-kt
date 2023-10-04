@@ -25,23 +25,22 @@ class ResourceMetadata(
 
 sealed interface ResourceData
 
-open class Resource<T : ResourceData>(
-  val metadata: ResourceMetadata,
-  val data: T,
-  var signature: String? = null
-) {
-  init {
-    when (metadata.kind) {
-      ResourceKind.offering -> require(data is OfferingData)
-      ResourceKind.reputation -> TODO()
-    }
-
-    if (signature != null) {
-      verify()
-    } else {
-      validate()
-    }
-  }
+sealed interface Resource {
+  val metadata: ResourceMetadata
+  val data: ResourceData
+  var signature: String?
+//  init {
+//    when (metadata.kind) {
+//      ResourceKind.offering -> require(data is OfferingData)
+//      ResourceKind.reputation -> TODO()
+//    }
+//
+//    if (signature != null) {
+//      verify()
+//    } else {
+//      validate()
+//    }
+//  }
 
 
   private fun verify() {
@@ -62,12 +61,12 @@ open class Resource<T : ResourceData>(
     this.signature = "blah"
   }
 
-  override fun toString(): String {
+  fun toJsonString(): String {
     return Mapper.writer().writeValueAsString(this)
   }
 
   companion object {
-    fun parse(payload: String): Resource<out ResourceData> {
+    fun parse(payload: String): Resource {
       // TODO json schema validation using Resource schema
 
       val node = Mapper.objectMapper.readTree(payload)
@@ -78,7 +77,7 @@ open class Resource<T : ResourceData>(
       // TODO json schema validation using specific type schema
 
       return when (kindEnum) {
-        ResourceKind.offering -> Mapper.objectMapper.readValue<Resource<OfferingData>>(payload)
+        ResourceKind.offering -> Mapper.objectMapper.readValue<Offering>(payload)
         ResourceKind.reputation -> TODO()
       }
     }

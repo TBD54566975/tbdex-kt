@@ -1,8 +1,10 @@
 package protocol
 
 import models.CurrencyDetails
+import models.MessageKind
 import models.Offering
 import models.OfferingData
+import models.Order
 import models.PresentationExchange
 import models.ResourceKind
 import models.Rfq
@@ -37,5 +39,11 @@ object TestData {
       payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
       claims = emptyList()
     )
+  )
+
+  fun getOrder() = Order.create(
+    pfi,
+    alice,
+    TypeID(MessageKind.rfq.name)
   )
 }

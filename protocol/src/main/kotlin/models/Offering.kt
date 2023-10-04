@@ -28,10 +28,10 @@ class PaymentMethod(
 class PresentationExchange
 
 class Offering private constructor(
-  metadata: ResourceMetadata,
-  data: OfferingData,
-  signature: String? = null
-) : Resource<OfferingData>(metadata, data, signature) {
+  override val metadata: ResourceMetadata,
+  override val data: OfferingData,
+  override var signature: String? = null
+) : Resource {
   companion object {
     fun create(from: String, data: OfferingData): Offering {
       val now = OffsetDateTime.now()

@@ -29,25 +29,6 @@ sealed interface Message {
   val data: MessageData
   var signature: String?
 
-  //open class Message<T : MessageData>(
-//  val metadata: MessageMetadata,
-//  val data: T,
-//  var signature: String? = null
-//) {
-//  init {
-//    when (metadata.kind) {
-//      MessageKind.rfq -> require(data is RfqData)
-//      MessageKind.order -> require(data is OrderData)
-//      MessageKind.orderstatus -> require(data is OrderStatusData)
-//    }
-//
-//    if (signature != null) {
-//      verify()
-//    } else {
-//      validate()
-//    }
-//  }
-
   private fun verify() {
     validate()
 

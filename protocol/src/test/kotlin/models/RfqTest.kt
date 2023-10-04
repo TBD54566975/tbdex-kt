@@ -1,4 +1,4 @@
-package protocol
+package protocol.models
 
 import assertk.assertAll
 import assertk.assertThat
@@ -10,6 +10,7 @@ import models.Rfq
 import models.RfqData
 import models.SelectedPaymentMethod
 import org.junit.jupiter.api.assertThrows
+import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
 
