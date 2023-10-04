@@ -20,6 +20,9 @@ fun main() {
 
 fun Application.module() {
   routing {
+    get("/") {
+      call.respondText { "hello world" }
+    }
     post("/manual") {
       // AF4GH is a sample code for demo purposes
       call.response.header("Location", "/manual/AF4GH")

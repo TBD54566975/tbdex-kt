@@ -1,6 +1,7 @@
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("java-library")
+  id("idea")
 }
 
 version = "1.0"
