@@ -1,5 +1,6 @@
 import models.Message
 import models.MessageKind
+import java.util.Date
 
 class SendMessageOptions(
   val message: Message
@@ -20,6 +21,13 @@ class TbdexHttpClient {
         throw Exception("Signature verification failed: Exepcted DID in kid of JWS header must match metadata.from")
       }
       return signer
+    }
+
+    fun generateRequestToken(): String {
+
+      val timestampToken = Date().toString()
+      return "" // Crypto.sign({privateKeyJwk, kid, payload: timestampToken})
+
     }
   }
 }

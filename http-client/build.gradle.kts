@@ -10,6 +10,9 @@ repositories {
   maven {
     url = uri("https://repo.danubetech.com/repository/maven-public")
   }
+  maven {
+    url = uri("https://jitpack.io")
+  }
 }
 
 dependencies {
