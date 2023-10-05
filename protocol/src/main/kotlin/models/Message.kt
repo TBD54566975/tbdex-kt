@@ -78,6 +78,15 @@ sealed class Message {
         MessageKind.close -> objectMapper.readValue<Close>(payload)
       }
     }
+
+    // js version takes any for jsonMessage
+    fun validate(jsonMessage: Any) {
+      // TODO validate the whole message
+//      Validator.validate(jsonMessage, "message")
+      // TODO validate the specific data (i.e. RFQ, Quote) based on kind
+      // want to select jsonMessage.data, jsonMessage.metadata.kind
+//      Validator.validate(jsonMessage, "kind")
+    }
   }
 }
 
