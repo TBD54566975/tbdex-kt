@@ -74,7 +74,6 @@ class TbdexHttpClient {
 
     fun generateRequestToken(): String {
       val timestampToken = Date().toString()
-      return "" // Crypto.sign({privateKeyJwk, kid, payload: timestampToken})
-
+      return Crypto.sign(payload = timestampToken, privateKeyJwk =  "privateKeyJwk", kid = "kid")
     }
   }

@@ -17,6 +17,7 @@ repositories {
 
 dependencies {
   implementation(project(":protocol"))
+  implementation("me.lessis:typeid:0.0.2")
   implementation("io.ktor:ktor-client-core:2.3.4")
   implementation("io.ktor:ktor-client-cio:2.3.4")
   testImplementation(kotlin("test"))

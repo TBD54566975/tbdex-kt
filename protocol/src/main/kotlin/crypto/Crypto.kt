@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.cbor.CBORFactory
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import java.security.MessageDigest
+import java.security.PrivateKey
 import java.util.Base64
 
 
@@ -44,10 +45,16 @@ class Crypto {
       val jwsHeaderByteArray: ByteArray = Base64.getUrlDecoder().decode(base64UrlEncodedJwsHeader)
       val jwsHeaderUtf8String: String = jwsHeaderByteArray.toString(Charsets.UTF_8)
       // TODO: import JwsHeader type from web5-kt
+      // todo: the rest of this function
 //      val jwsHeader = Json.parse<JwsHeader>(jwsHeaderUtf8String)
 //      if (!jwsHeader.alg || !jwsHeader.kid) { // ensure that JWS header has required properties
 //        throw new Error('Signature verification failed: Expected JWS header to contain alg and kid')
 //      }
+
+      return ""
+    }
+
+    fun sign(detachedPayload: String? = null, payload: Any, privateKeyJwk: Any, kid: String): String {
 
       return ""
     }
