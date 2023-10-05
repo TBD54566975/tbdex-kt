@@ -17,6 +17,8 @@ repositories {
 
 dependencies {
   implementation(project(":protocol"))
+  implementation("io.ktor:ktor-client-core:2.3.4")
+  implementation("io.ktor:ktor-client-cio:2.3.4")
   testImplementation(kotlin("test"))
 }
 

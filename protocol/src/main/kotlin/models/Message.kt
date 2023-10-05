@@ -4,6 +4,7 @@ import Json
 import Json.objectMapper
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.module.kotlin.readValue
+import crypto.Crypto
 import dateTimeFormat
 import typeid.TypeID
 import java.time.OffsetDateTime
@@ -66,10 +67,20 @@ sealed class Message {
       }
     }
 
-    fun verify(message: Message) {
+    fun verify(message: Message) : String {
+      // TODO detached payload sig check (regenerate payload and then check)
       validate(message)
 
-      // TODO detached payload sig check (regenerate payload and then check)
+      val toSign : Pair<MessageMetadata, MessageData> = Pair(message.metadata, message.data)
+      val detachedPayload = Crypto.hash(toSign)
+
+      val signer = Crypto.verify(detachedPayload, message.signature)
+
+      if (message.metadata.from != signer) {
+        throw Exception("Signature verification failed: Expected DID in kid of JWS header must match metadata.from")
+      }
+
+      return signer
     }
 
     fun validate(message: Message) {
