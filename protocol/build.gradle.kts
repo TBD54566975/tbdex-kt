@@ -27,6 +27,13 @@ dependencies {
   testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
 }
 
+tasks {
+  register("copySchemas", Copy::class) {
+    from("../tbdex/json-schemas")
+    into("./src/main/resources")
+  }
+}
+
 tasks.test {
   useJUnitPlatform()
 }
