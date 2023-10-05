@@ -1,7 +1,9 @@
 package models
 
 import Json
+import Json.objectMapper
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
 import typeid.TypeID
 import java.time.OffsetDateTime
@@ -20,7 +22,6 @@ class MessageMetadata(
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val createdAt: OffsetDateTime
 )
-
 
 sealed class Message {
   abstract val metadata: MessageMetadata
@@ -70,11 +71,11 @@ sealed class Message {
       // TODO json schema validation using specific type schema
 
       return when (kindEnum) {
-        MessageKind.rfq -> Json.parse<Rfq>(payload)
-        MessageKind.order -> Json.parse<Order>(payload)
-        MessageKind.orderstatus -> Json.parse<OrderStatus>(payload)
-        MessageKind.quote -> Json.parse<Quote>(payload)
-        MessageKind.close -> Json.parse<Close>(payload)
+        MessageKind.rfq -> objectMapper.readValue<Rfq>(payload)
+        MessageKind.order -> objectMapper.readValue<Order>(payload)
+        MessageKind.orderstatus -> objectMapper.readValue<OrderStatus>(payload)
+        MessageKind.quote -> objectMapper.readValue<Quote>(payload)
+        MessageKind.close -> objectMapper.readValue<Close>(payload)
       }
     }
   }

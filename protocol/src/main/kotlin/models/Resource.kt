@@ -1,5 +1,7 @@
 package models
 
+import Json
+import Json.objectMapper
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
@@ -69,7 +71,7 @@ sealed class Resource {
       // TODO json schema validation using specific type schema
 
       return when (kindEnum) {
-        ResourceKind.offering -> Json.parse<Offering>(payload)
+        ResourceKind.offering -> objectMapper.readValue<Offering>(payload)
         ResourceKind.reputation -> TODO()
       }
     }
