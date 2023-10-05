@@ -1,8 +1,10 @@
 package models
 
+import Json
+import Json.objectMapper
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
-import net.pwall.json.schema.JSONSchema
 import typeid.TypeID
 import java.time.OffsetDateTime
 
@@ -22,19 +24,12 @@ class ResourceMetadata(
   val updatedAt: OffsetDateTime?
 )
 
-sealed interface ResourceData
+sealed class Resource {
+  abstract val metadata: ResourceMetadata
+  abstract val data: ResourceData
+  abstract var signature: String?
 
-abstract class Resource<T : ResourceData>(
-  val metadata: ResourceMetadata,
-  val data: T,
-  var signature: String? = null
-) {
   init {
-    when (metadata.kind) {
-      ResourceKind.offering -> require(data is OfferingData)
-      ResourceKind.reputation -> TODO()
-    }
-
     if (signature != null) {
       verify()
     } else {
@@ -42,14 +37,13 @@ abstract class Resource<T : ResourceData>(
     }
   }
 
-
-  private fun verify() {
+  fun verify() {
     validate()
 
     // TODO sig check
   }
 
-  private fun validate() {
+  fun validate() {
     // TODO validate against json schema
 //    val schema = schemaMap.get(metadata.kind.name)
 //    val jsonString = this.toString()
@@ -61,7 +55,25 @@ abstract class Resource<T : ResourceData>(
     this.signature = "blah"
   }
 
-  override fun toString(): String {
-    return Mapper.writer().writeValueAsString(this)
+  fun toJsonString(): String {
+    return Json.stringify(this)
+  }
+
+  companion object {
+    fun parse(payload: String): Resource {
+      // TODO json schema validation using Resource schema
+
+      val node = Json.parse(payload)
+      val kind = node.get("metadata").get("kind").asText()
+
+      val kindEnum = ResourceKind.valueOf(kind)
+
+      // TODO json schema validation using specific type schema
+
+      return when (kindEnum) {
+        ResourceKind.offering -> objectMapper.readValue<Offering>(payload)
+        ResourceKind.reputation -> TODO()
+      }
+    }
   }
 }

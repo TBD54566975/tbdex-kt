@@ -1,14 +1,24 @@
 package protocol
 
+import models.Close
+import models.CloseData
 import models.CurrencyDetails
+import models.MessageKind
 import models.Offering
 import models.OfferingData
+import models.Order
+import models.OrderStatus
+import models.OrderStatusData
 import models.PresentationExchange
+import models.Quote
+import models.QuoteData
+import models.QuoteDetails
 import models.ResourceKind
 import models.Rfq
 import models.RfqData
 import models.SelectedPaymentMethod
 import typeid.TypeID
+import java.time.OffsetDateTime
 
 object TestData {
   val alice = "alice"
@@ -19,8 +29,8 @@ object TestData {
     OfferingData(
       description = "my fake offering",
       payoutUnitsPerPayinUnit = 1,
-      payinCurrency = CurrencyDetails("", "", ""),
-      payoutCurrency = CurrencyDetails("", "", ""),
+      payinCurrency = CurrencyDetails("AUD"),
+      payoutCurrency = CurrencyDetails("USDC"),
       payinMethods = listOf(),
       payoutMethods = listOf(),
       requiredClaims = PresentationExchange()
@@ -37,5 +47,22 @@ object TestData {
       payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
       claims = emptyList()
     )
+  )
+
+  fun getQuote() = Quote.create(
+    alice, pfi, TypeID(MessageKind.rfq.name),
+    QuoteData(
+      expiresAt = OffsetDateTime.now().plusDays(1),
+      payin = QuoteDetails("AUD", 10_00, 0),
+      payout = QuoteDetails("BTC", 12, 0)
+    )
+  )
+
+  fun getClose() = Close.create(alice, pfi, TypeID(MessageKind.rfq.name), CloseData("test reason"))
+
+  fun getOrder() = Order.create(pfi, alice, TypeID(MessageKind.rfq.name))
+
+  fun getOrderStatus() = OrderStatus.create(
+    alice, pfi, TypeID(MessageKind.rfq.name), OrderStatusData("test status")
   )
 }

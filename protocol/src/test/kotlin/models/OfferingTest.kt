@@ -1,4 +1,4 @@
-package protocol
+package protocol.models
 
 import assertk.assertAll
 import assertk.assertThat
@@ -7,7 +7,10 @@ import models.CurrencyDetails
 import models.Offering
 import models.OfferingData
 import models.PresentationExchange
+import models.Resource
+import protocol.TestData
 import kotlin.test.Test
+import kotlin.test.assertIs
 
 class OfferingTest {
   @Test
@@ -17,8 +20,8 @@ class OfferingTest {
       OfferingData(
         description = "my fake offering",
         payoutUnitsPerPayinUnit = 1,
-        payinCurrency = CurrencyDetails("", "", ""),
-        payoutCurrency = CurrencyDetails("", "", ""),
+        payinCurrency = CurrencyDetails("AUD"),
+        payoutCurrency = CurrencyDetails("BTC"),
         payinMethods = listOf(),
         payoutMethods = listOf(),
         requiredClaims = PresentationExchange()
@@ -43,9 +46,10 @@ class OfferingTest {
   fun `can parse offering from a json string`() {
     val offering = TestData.getOffering()
     offering.sign("fakepk", "fakekid")
-    val jsonResource = offering.toString()
-    val parsed = Offering.parse(jsonResource)
+    val jsonResource = offering.toJsonString()
+    val parsed = Resource.parse(jsonResource)
 
-    assertThat(parsed.toString()).isEqualTo(jsonResource)
+    assertIs<Offering>(parsed)
+    assertThat(parsed.toJsonString()).isEqualTo(jsonResource)
   }
 }
