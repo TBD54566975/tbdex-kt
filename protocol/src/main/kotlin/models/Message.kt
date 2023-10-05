@@ -1,7 +1,7 @@
 package models
 
+import Json
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
 import typeid.TypeID
 import java.time.OffsetDateTime
@@ -54,7 +54,7 @@ sealed class Message {
     this.signature = "blah"
   }
 
-  fun toJsonString(): String {
+  fun toJson(): String {
     return Json.stringify(this)
   }
 

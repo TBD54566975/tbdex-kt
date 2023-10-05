@@ -22,7 +22,7 @@ class MessageTest {
   fun `can parse a list of messages`() {
     val rfq = TestData.getRfq()
     val order = TestData.getOrder()
-    val messages = listOf(rfq.toJsonString(), order.toJsonString()).map { Message.parse(it) }
+    val messages = listOf(rfq.toJson(), order.toJson()).map { Message.parse(it) }
 
     assertIs<Rfq>(messages.first())
     assertIs<Order>(messages.last())

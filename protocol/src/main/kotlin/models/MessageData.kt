@@ -17,7 +17,7 @@ class RfqData(
 
 class SelectedPaymentMethod(
   val kind: String,
-  val paymentDetails: Map<String, Any>
+  val paymentDetails: Map<String, Any>? = null
 ) : MessageData
 
 class QuoteData(
@@ -31,7 +31,7 @@ class QuoteData(
 class QuoteDetails(
   val currencyCode: String,
   val amountSubunits: Int,
-  val feeSubunits: Int?
+  val feeSubunits: Int? = null
 )
 
 class PaymentInstructions(

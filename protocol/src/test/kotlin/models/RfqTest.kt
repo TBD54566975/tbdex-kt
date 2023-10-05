@@ -45,11 +45,11 @@ class RfqTest {
   fun `can parse an rfq from a json string`() {
     val rfq = TestData.getRfq()
     rfq.sign("fakepk", "fakekid")
-    val jsonMessage = rfq.toJsonString()
+    val jsonMessage = rfq.toJson()
     val parsedMessage = Message.parse(jsonMessage)
 
     assertIs<Rfq>(parsedMessage)
-    assertThat(parsedMessage.toJsonString()).isEqualTo(jsonMessage)
+    assertThat(parsedMessage.toJson()).isEqualTo(jsonMessage)
   }
 }
 

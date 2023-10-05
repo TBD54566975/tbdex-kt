@@ -30,10 +30,10 @@ class CloseTest {
   fun `can parse an close from a json string`() {
     val close = TestData.getClose()
     close.sign("fakepk", "fakekid")
-    val jsonMessage = close.toJsonString()
+    val jsonMessage = close.toJson()
     val parsedMessage = Message.parse(jsonMessage)
 
     assertIs<Close>(parsedMessage)
-    assertThat(parsedMessage.toJsonString()).isEqualTo(jsonMessage)
+    assertThat(parsedMessage.toJson()).isEqualTo(jsonMessage)
   }
 }
