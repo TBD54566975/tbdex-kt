@@ -15,7 +15,7 @@ class TbdexHttpClient {
       val message = opt.message
       Message.verify(message)
       val toSign = Pair(message.metadata, message.data)
-      val hashed = TODO() // Crypto.hash(toSign)
+      val hashed = "" // Crypto.hash(toSign)
       val signer = TODO() // Crypto.verify(hashed, message.signature)
       if (message.metadata.from != signer) {
         throw Exception("Signature verification failed: Exepcted DID in kid of JWS header must match metadata.from")
