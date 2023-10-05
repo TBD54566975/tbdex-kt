@@ -16,12 +16,11 @@ class Quote private constructor(
       exchangeID: TypeID,
       data: QuoteData,
     ): Quote {
-      val id = TypeID(MessageKind.quote.name)
       val metadata = MessageMetadata(
         kind = MessageKind.quote,
         to = to,
         from = from,
-        id = id,
+        id = TypeID(MessageKind.quote.name),
         exchangeId = exchangeID,
         createdAt = OffsetDateTime.now()
       )

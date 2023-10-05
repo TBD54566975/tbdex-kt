@@ -36,10 +36,10 @@ class OrderStatusTest {
   fun `can parse an orderStatus from a json string`() {
     val orderStatus = TestData.getOrderStatus()
     orderStatus.sign("fakepk", "fakekid")
-    val jsonMessage = orderStatus.toJsonString()
+    val jsonMessage = orderStatus.toJson()
     val parsedMessage = Message.parse(jsonMessage)
 
     assertIs<OrderStatus>(parsedMessage)
-    assertThat(parsedMessage.toJsonString()).isEqualTo(jsonMessage)
+    assertThat(parsedMessage.toJson()).isEqualTo(jsonMessage)
   }
 }

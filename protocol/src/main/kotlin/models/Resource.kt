@@ -1,6 +1,7 @@
 package models
 
-import Mapper
+import Json
+import Json.objectMapper
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
@@ -55,14 +56,14 @@ sealed class Resource {
   }
 
   fun toJsonString(): String {
-    return Mapper.writer().writeValueAsString(this)
+    return Json.stringify(this)
   }
 
   companion object {
     fun parse(payload: String): Resource {
       // TODO json schema validation using Resource schema
 
-      val node = Mapper.objectMapper.readTree(payload)
+      val node = Json.parse(payload)
       val kind = node.get("metadata").get("kind").asText()
 
       val kindEnum = ResourceKind.valueOf(kind)
@@ -70,7 +71,7 @@ sealed class Resource {
       // TODO json schema validation using specific type schema
 
       return when (kindEnum) {
-        ResourceKind.offering -> Mapper.objectMapper.readValue<Offering>(payload)
+        ResourceKind.offering -> objectMapper.readValue<Offering>(payload)
         ResourceKind.reputation -> TODO()
       }
     }

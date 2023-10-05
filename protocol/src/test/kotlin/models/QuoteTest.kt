@@ -44,11 +44,11 @@ class QuoteTest {
   fun `can parse an quote from a json string`() {
     val quote = TestData.getQuote()
     quote.sign("fakepk", "fakekid")
-    val jsonMessage = quote.toJsonString()
+    val jsonMessage = quote.toJson()
     val parsedMessage = Message.parse(jsonMessage)
 
     assertIs<Quote>(parsedMessage)
-    assertThat(parsedMessage.toJsonString()).isEqualTo(jsonMessage)
+    assertThat(parsedMessage.toJson()).isEqualTo(jsonMessage)
   }
 }
 

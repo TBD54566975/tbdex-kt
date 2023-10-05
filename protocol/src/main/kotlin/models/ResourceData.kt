@@ -16,8 +16,8 @@ class OfferingData(
 
 class CurrencyDetails(
   val currencyCode: String,
-  val minSubunits: String?,
-  val maxSubunits: String?
+  val minSubunits: Int? = null,
+  val maxSubunits: Int? = null
 )
 
 class PaymentMethod(

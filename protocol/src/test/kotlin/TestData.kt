@@ -29,8 +29,8 @@ object TestData {
     OfferingData(
       description = "my fake offering",
       payoutUnitsPerPayinUnit = 1,
-      payinCurrency = CurrencyDetails("", "", ""),
-      payoutCurrency = CurrencyDetails("", "", ""),
+      payinCurrency = CurrencyDetails("AUD"),
+      payoutCurrency = CurrencyDetails("USDC"),
       payinMethods = listOf(),
       payoutMethods = listOf(),
       requiredClaims = PresentationExchange()

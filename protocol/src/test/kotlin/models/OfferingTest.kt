@@ -20,8 +20,8 @@ class OfferingTest {
       OfferingData(
         description = "my fake offering",
         payoutUnitsPerPayinUnit = 1,
-        payinCurrency = CurrencyDetails("", "", ""),
-        payoutCurrency = CurrencyDetails("", "", ""),
+        payinCurrency = CurrencyDetails("AUD"),
+        payoutCurrency = CurrencyDetails("BTC"),
         payinMethods = listOf(),
         payoutMethods = listOf(),
         requiredClaims = PresentationExchange()

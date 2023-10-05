@@ -10,12 +10,6 @@ class Rfq private constructor(
   override var signature: String? = null
 ) : Message() {
 
-  fun verifyOfferingRequirements(offering: Offering) {
-    if (offering.metadata.id != this.data.offeringID) {
-      throw Exception("Offering ID mismatch. ${this.data.offeringID} !== ${offering.metadata.id} (offering)")
-    }
-  }
-
   companion object {
     fun create(
       to: String,
