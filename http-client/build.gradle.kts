@@ -18,8 +18,9 @@ repositories {
 dependencies {
   implementation(project(":protocol"))
   implementation("me.lessis:typeid:0.0.2")
-  implementation("io.ktor:ktor-client-core:2.3.4")
-  implementation("io.ktor:ktor-client-cio:2.3.4")
+  implementation("com.squareup.okhttp3:okhttp:4.9.1")
+  implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
+
   testImplementation(kotlin("test"))
 }
 

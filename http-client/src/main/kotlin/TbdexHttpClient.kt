@@ -1,14 +1,12 @@
+import Json.objectMapper
 import crypto.Crypto
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.Headers
-import io.ktor.http.HttpStatusCode
-import io.ktor.http.contentType
 import models.Message
+import okhttp3.Headers
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
 import java.util.Date
 
 class SendMessageOptions(
@@ -25,17 +23,32 @@ class HttpResponse(
 class ErrorResponse(
   val status: Int,
   val headers: Headers,
-  val errors: List<Any>?
+  val errors: List<ErrorDetail>?
   ) : Result()
 
-class Errors(
-  val errors: List<Any>?
+class ErrorResponseBody(
+  val errors: List<ErrorDetail>?
+)
+class ErrorDetail(
+  val id: String?,
+  val status: String?,
+  val code: String?,
+  val title: String?,
+  val detail: String,
+  val source: Source?,
+  val meta: Map<String, Any?>?
+)
+
+class Source (
+  val pointer: String?,
+  val parameter: String?,
+  val header: String?
 )
 class TbdexHttpClient {
 
   companion object {
     // todo: add MessageKind generic typing?
-    suspend fun sendMessage(opt: SendMessageOptions) : Result {
+    fun sendMessage(opt: SendMessageOptions) : Result {
 
       val message = opt.message
       Message.verify(message)
@@ -45,25 +58,29 @@ class TbdexHttpClient {
       val kind = message.metadata.kind
 
       val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
-      val apiRoute = "${pfiServiceEndpoint}/exchanges/${exchangeId}/${kind}"
+      val url = "${pfiServiceEndpoint}/exchanges/${exchangeId}/${kind}"
 
-      // todo do i need this CIO engine
-      val client = HttpClient(CIO)
-      val response: io.ktor.client.statement.HttpResponse
-        try {
-          response = client.post(apiRoute) {
-            contentType(ContentType.Application.Json)
-            setBody(message)
-          }
-        } catch (e: Exception) {
-          throw Exception("Failed to send message to ${pfiDid}. Error: ${e.message}")
-        }
+      val client = OkHttpClient()
+      val JSON = "application/json; charset=utf-8".toMediaType()
+      val body = Json.stringify(message).toRequestBody(JSON)
 
-      return if (response.status == HttpStatusCode.Created) {
-        HttpResponse(response.status.value, response.headers)
+      val request = Request.Builder()
+        .url(url)
+        .addHeader("Content-Type", "application/json")
+        .post(body)
+        .build()
+
+      val response = runCatching {
+        client.newCall(request).execute()
+      }.getOrElse {
+        throw Exception("Failed to send message to ${pfiDid}. Error: ${e.message}")
+      }
+
+      return if (response.code == 202) {
+        HttpResponse(response.code, response.headers)
       } else {
-        val responseBody = response.body<Errors>()
-        ErrorResponse(response.status.value, response.headers, responseBody.errors)
+        val responseBody = objectMapper.readValue(response.body!!.string(), ErrorResponseBody::class.java)
+        ErrorResponse(response.code, response.headers, responseBody.errors)
       }
     }
 
