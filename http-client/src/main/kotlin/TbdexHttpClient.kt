@@ -73,7 +73,7 @@ class TbdexHttpClient {
       val response = runCatching {
         client.newCall(request).execute()
       }.getOrElse {
-        throw Exception("Failed to send message to ${pfiDid}. Error: ${e.message}")
+        throw Exception("Failed to send message to ${pfiDid}. Error: ${it.message}")
       }
 
       return if (response.code == 202) {
