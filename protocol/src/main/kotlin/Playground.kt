@@ -3,7 +3,7 @@ class Playground {
   companion object {
     @JvmStatic
     fun main(args: Array<String>) {
-      Validator.validate("{\"fdsafdsa\": \"Alice\",  \"gdfhgre\": \"Jones\"}", "person")
+      Validator.validate("{\"fname\": \"Alice\",  \"lname\": \"Jones\"}", "rfq")
     }
   }
 
