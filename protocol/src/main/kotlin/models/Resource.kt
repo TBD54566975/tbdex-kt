@@ -10,8 +10,7 @@ import java.time.OffsetDateTime
 
 
 enum class ResourceKind {
-  offering,
-  reputation
+  offering
 }
 
 class ResourceMetadata(
@@ -72,7 +71,7 @@ sealed class Resource {
 
       return when (kindEnum) {
         ResourceKind.offering -> objectMapper.readValue<Offering>(payload)
-        ResourceKind.reputation -> TODO()
+//        ResourceKind.reputation -> TODO()
       }
     }
   }

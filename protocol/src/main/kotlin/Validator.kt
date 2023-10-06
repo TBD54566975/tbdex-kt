@@ -1,42 +1,42 @@
 import models.MessageKind
 import models.ResourceKind
 import net.pwall.json.schema.JSONSchema
-import java.io.File
-
 
 // TODO: change name of `order-status.schema.json` to `orderstatus.schema.json` in tbdex repo
 // TODO: update `@tbdex/protocol`  to pull in `orderstatus.schema.json` instead of `order-status.schema.json`. publish release
 // TODO: profit
-object Walidator {
-  init {
-    val resourceFile = object {}.javaClass.getResourceAsStream("order.schema.json")?.bufferedReader()?.readText()
-  }
-}
 
-// change to object
-class Validator {
+object Validator {
   // map of schema names -> schemas
-  val resourceKindMap = mapOf<ResourceKind, JSONSchema>() // can use mapOf<>()
-
-  val messageKindMap = mapOf<MessageKind, JSONSchema>() // can use mapOf<>()
+//  private val resourceKindMap = mutableMapOf<ResourceKind, JSONSchema>() // can use mapOf<>()
+//  private val messageKindMap = mutableMapOf<MessageKind, JSONSchema>() // can use mapOf<>()
+  private val schemaMap = mutableMapOf<String, JSONSchema>()
   init {
-    for (kind in MessageKind.values()) {
-
+    // need to add Message and Resource themselves
+    for (messageKind in MessageKind.entries) {
+      val resourceFile = object {}.javaClass.getResourceAsStream("${messageKind}.schema.json")?.bufferedReader()?.readText()
+//      messageKindMap[messageKind] = JSONSchema.parse(resourceFile!!)
+      schemaMap[messageKind.name] = JSONSchema.parse(resourceFile!!)
     }
-  }
 
-  companion object {
+    for (resourceKind in ResourceKind.entries) {
+      val resourceFile = object {}.javaClass.getResourceAsStream("${resourceKind}.schema.json")?.bufferedReader()?.readText()
+//      resourceKindMap[resourceKind] = JSONSchema.parse(resourceFile!!)
+      schemaMap[resourceKind.name] = JSONSchema.parse(resourceFile!!)
+    }
+    val messageSchemaFile = object {}.javaClass.getResourceAsStream("message.schema.json")?.bufferedReader()?.readText()
+    val resourceSchemaFile = object {}.javaClass.getResourceAsStream("resource.schema.json")?.bufferedReader()?.readText()
+
+//    JSONSchema.parser.preLoad()
+    schemaMap["message"] = JSONSchema.parse(messageSchemaFile!!)
+//    schemaMap["resource"] = JSONSchema.parse(resourceSchemaFile!!)
+
+  }
 
     fun validate(jsonMessage: String, schemaName: String) {
-      val resourceFile = object {}.javaClass.getResourceAsStream("${schemaName}.schema.json")?.bufferedReader()?.readText()
-      println(resourceFile)
 
-//      val str = File("src/main/resources/${schemaName}.schema.json")
-//      val schema2 = JSONSchema.parse(str)
-//      val schema1 = JSONSchema.parseFile("src/main/resources/${schemaName}.schema.json")
-//      val url = javaClass.getResource("${schemaName}.schema.json")
-      val schema3 = JSONSchema.parse(resourceFile!!)
-      val output = schema3.validateBasic(jsonMessage)
+      val schema = schemaMap[schemaName] ?: throw Exception("Schema with name ${schemaName}.schema.json does not exist")
+      val output = schema.validateBasic(jsonMessage)
 
       println("Errors ${output.errors}")
       output.errors?.forEach{
@@ -45,5 +45,4 @@ class Validator {
       println("finished")
     }
 
-  }
 }

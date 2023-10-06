@@ -80,12 +80,14 @@ sealed class Message {
     }
 
     // js version takes any for jsonMessage
-    fun validate(jsonMessage: Any) {
-      // TODO validate the whole message
-//      Validator.validate(jsonMessage, "message")
-      // TODO validate the specific data (i.e. RFQ, Quote) based on kind
-      // want to select jsonMessage.data, jsonMessage.metadata.kind
-//      Validator.validate(jsonMessage, "kind")
+    fun validate(jsonMessage: Message) {
+      val json = Json.stringify(jsonMessage)
+
+      // validate message structure
+      Validator.validate(json, "message")
+
+      // validate specific message data (Rfq, Quote, etc)
+      Validator.validate(json, jsonMessage.metadata.kind.name)
     }
   }
 }
