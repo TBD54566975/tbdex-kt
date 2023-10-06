@@ -6,9 +6,6 @@ import com.networknt.schema.SpecVersion
 import models.MessageKind
 import models.ResourceKind
 
-// TODO: change name of `order-status.schema.json` to `orderstatus.schema.json` in tbdex repo
-// TODO: update `@tbdex/protocol`  to pull in `orderstatus.schema.json` instead of `order-status.schema.json`. publish release
-// TODO: profit
 
 object Validator {
   private val schemaMap = mutableMapOf<String, JsonSchema>()
@@ -16,7 +13,7 @@ object Validator {
   init {
     for (messageKind in MessageKind.entries) {
       val resourceFile = object {}.javaClass.getResourceAsStream("${messageKind}.schema.json")?.bufferedReader()?.readText()
-      val jsonNodeSchema = Json.objectMapper.readTree(resourceFile)
+      val jsonNodeSchema = objectMapper.readTree(resourceFile)
       val schema = factory.getSchema(jsonNodeSchema)
       schemaMap[messageKind.name] = schema
     }
