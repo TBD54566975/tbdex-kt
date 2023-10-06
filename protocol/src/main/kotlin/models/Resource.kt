@@ -3,6 +3,7 @@ package models
 import Json
 import Json.objectMapper
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
 import typeid.TypeID
@@ -73,6 +74,16 @@ sealed class Resource {
         ResourceKind.offering -> objectMapper.readValue<Offering>(payload)
 //        ResourceKind.reputation -> TODO()
       }
+    }
+
+    fun validate(resource: Resource) {
+      val jsonNodeResource = objectMapper.valueToTree<JsonNode>(resource)
+
+      // validate message structure
+      Validator.validate(jsonNodeResource, "resource")
+
+      // validate specific message data (Rfq, Quote, etc)
+      Validator.validate(jsonNodeResource, resource.metadata.kind.name)
     }
   }
 }

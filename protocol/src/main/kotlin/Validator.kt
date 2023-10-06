@@ -1,3 +1,5 @@
+import Json.objectMapper
+import com.fasterxml.jackson.databind.JsonNode
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersion
@@ -21,29 +23,27 @@ object Validator {
 
     for (resourceKind in ResourceKind.entries) {
       val resourceFile = object {}.javaClass.getResourceAsStream("${resourceKind}.schema.json")?.bufferedReader()?.readText()
-      val jsonNodeSchema = Json.objectMapper.readTree(resourceFile)
+      val jsonNodeSchema = objectMapper.readTree(resourceFile)
       val schema = factory.getSchema(jsonNodeSchema)
       schemaMap[resourceKind.name] = schema
     }
 
     val messageSchemaFile = object {}.javaClass.getResourceAsStream("message.schema.json")?.bufferedReader()?.readText()
-    val messageJsonNodeSchema = Json.objectMapper.readTree(messageSchemaFile)
+    val messageJsonNodeSchema = objectMapper.readTree(messageSchemaFile)
     val messageSchema = factory.getSchema(messageJsonNodeSchema)
     schemaMap["message"] = messageSchema
 
     val resourceSchemaFile = object {}.javaClass.getResourceAsStream("resource.schema.json")?.bufferedReader()?.readText()
-    val resourceJsonNodeSchema = Json.objectMapper.readTree(resourceSchemaFile)
+    val resourceJsonNodeSchema = objectMapper.readTree(resourceSchemaFile)
     val resourceSchema = factory.getSchema(resourceJsonNodeSchema)
     schemaMap["resource"] = resourceSchema
 
   }
 
-  fun validate(jsonMessage: String, schemaName: String) {
+  fun validate(jsonMessage: JsonNode, schemaName: String) {
 
     val schema = schemaMap[schemaName] ?: throw Exception("Schema with schemaName $schemaName not found")
-    schema.initializeValidators()
-    val jsonNodeMessage = Json.objectMapper.readTree(jsonMessage)
-    val errors = schema.validate(jsonNodeMessage)
+    val errors = schema.validate(jsonMessage)
     errors.forEach {
       println("${it.message}, ${it.type}")
     }

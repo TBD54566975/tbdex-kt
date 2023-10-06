@@ -3,6 +3,7 @@ package models
 import Json
 import Json.objectMapper
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
 import typeid.TypeID
@@ -80,14 +81,14 @@ sealed class Message {
     }
 
     // js version takes any for jsonMessage
-    fun validate(jsonMessage: Message) {
-      val json = Json.stringify(jsonMessage)
+    fun validate(message: Message) {
+      val jsonNodeMessage = objectMapper.valueToTree<JsonNode>(message)
 
       // validate message structure
-      Validator.validate(json, "message")
+      Validator.validate(jsonNodeMessage, "message")
 
       // validate specific message data (Rfq, Quote, etc)
-      Validator.validate(json, jsonMessage.metadata.kind.name)
+      Validator.validate(jsonNodeMessage, message.metadata.kind.name)
     }
   }
 }

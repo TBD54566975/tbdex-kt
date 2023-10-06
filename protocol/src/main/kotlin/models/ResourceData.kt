@@ -1,6 +1,6 @@
 package models
 
-import net.pwall.json.schema.JSONSchema
+import com.networknt.schema.JsonSchema
 
 sealed interface ResourceData
 
@@ -22,7 +22,7 @@ class CurrencyDetails(
 
 class PaymentMethod(
   val kind: String,
-  val requiredPaymentDetails: JSONSchema
+  val requiredPaymentDetails: JsonSchema
 )
 
 class PresentationExchange
