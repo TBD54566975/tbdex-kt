@@ -44,8 +44,13 @@ object Validator {
 
     val schema = schemaMap[schemaName] ?: throw Exception("Schema with schemaName $schemaName not found")
     val errors = schema.validate(jsonMessage)
-    errors.forEach {
-      println("${it.message}, ${it.type}")
+
+    if (errors.isNotEmpty()) {
+      var errorMessages = mutableListOf<String>()
+      errors.forEach {
+        errorMessages.add(it.message)
+      }
+      throw Exception(errorMessages.joinToString(separator = ", "))
     }
   }
 }
