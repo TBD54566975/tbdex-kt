@@ -5,8 +5,14 @@ import dateTimeFormat
 import typeid.TypeID
 import java.time.OffsetDateTime
 
+/**
+ * An interface that represents the contents of a [Message]
+ */
 sealed interface MessageData
 
+/**
+ * A data class implementing [MessageData] that represents the contents of an [Rfq]
+ */
 class RfqData(
   val offeringID: TypeID,
   val payinSubunits: Int,
@@ -20,6 +26,9 @@ class SelectedPaymentMethod(
   val paymentDetails: Map<String, Any>? = null
 ) : MessageData
 
+/**
+ * A data class implementing [MessageData] that represents the contents of a [Quote]
+ */
 class QuoteData(
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val expiresAt: OffsetDateTime,
@@ -44,6 +53,17 @@ class PaymentInstruction(
   val instruction: String?
 )
 
+/**
+ * A data class implementing [MessageData] that represents the contents of a [Close]
+ */
 class CloseData(val reason: String) : MessageData
+
+/**
+ * A data class implementing [MessageData] that represents the contents of an [Order]
+ */
 class OrderData : MessageData
+
+/**
+ * A data class implementing [MessageData] that represents the contents of an [OrderStatus]
+ */
 class OrderStatusData(val status: String) : MessageData

@@ -14,6 +14,9 @@ enum class ResourceKind {
   reputation
 }
 
+/**
+ * A data class representing the metadata present on every [Resource]
+ */
 class ResourceMetadata(
   val kind: ResourceKind,
   val from: String,
@@ -24,6 +27,9 @@ class ResourceMetadata(
   val updatedAt: OffsetDateTime?
 )
 
+/**
+ * An abstract class representing the structure and common functionality available on all Resources.
+ */
 sealed class Resource {
   abstract val metadata: ResourceMetadata
   abstract val data: ResourceData
@@ -51,15 +57,36 @@ sealed class Resource {
 //    if (output.errors != null) ...
   }
 
+  /**
+   * Signs the Resource using the private key and kid provided and populates the signature field.
+   *
+   * @param privateKey The private key used to sign the resource.
+   * @param kid The kid used to sign the resource
+   */
   fun sign(privateKey: String, kid: String) {
     this.signature = "blah"
   }
 
-  fun toJsonString(): String {
+  /**
+   * Uses [Json] to serialize the Resource as a json string
+   *
+   * @return The json string
+   */
+  fun toJson(): String {
     return Json.stringify(this)
   }
 
   companion object {
+    /**
+     * Takes an existing Resource in the form of a json string and parses it into a Resource object.
+     * Validates object structure and performs an integrity check using the resource signature.
+     *
+     * @param payload The resource as a json string.
+     * @return The json string parsed into a concrete Resource implementation.
+     * @throws IllegalArgumentException if the payload is not valid json.
+     * @throws IllegalArgumentException if the payload does not conform to the expected json schema.
+     * @throws IllegalArgumentException if the payload signature verification fails.
+     */
     fun parse(payload: String): Resource {
       // TODO json schema validation using Resource schema
 

@@ -13,6 +13,9 @@ enum class MessageKind {
   rfq, quote, close, order, orderstatus
 }
 
+/**
+ * A data class representing the metadata present on every [Message]
+ */
 class MessageMetadata(
   val kind: MessageKind,
   val to: String,
@@ -23,6 +26,9 @@ class MessageMetadata(
   val createdAt: OffsetDateTime
 )
 
+/**
+ * An abstract class representing the structure and common functionality available on all Messages.
+ */
 sealed class Message {
   abstract val metadata: MessageMetadata
   abstract val data: MessageData
@@ -50,16 +56,38 @@ sealed class Message {
 //    if (output.errors != null) ...
   }
 
+  /**
+   * Signs the message, excluding the Rfq.private field if present,
+   * as a detached payload JWT, using the private key and kid provided.
+   *
+   * @param privateKey The private key used to sign the message.
+   * @param kid The kid used to sign the message
+   */
   // TODO - use web5 crypto and fix the types
   fun sign(privateKey: String, kid: String) {
     this.signature = "blah"
   }
 
+  /**
+   * Uses [Json] to serialize the Message as a json string
+   *
+   * @return The json string
+   */
   fun toJson(): String {
     return Json.stringify(this)
   }
 
   companion object {
+    /**
+     * Takes an existing Message in the form of a json string and parses it into a Message object.
+     * Validates object structure and performs an integrity check using the message signature.
+     *
+     * @param payload The message as a json string.
+     * @return The json string parsed into a concrete Message implementation.
+     * @throws IllegalArgumentException if the payload is not valid json.
+     * @throws IllegalArgumentException if the payload does not conform to the expected json schema.
+     * @throws IllegalArgumentException if the payload signature verification fails.
+     */
     fun parse(payload: String): Message {
       // TODO json schema validation using Message schema
 
