@@ -8,13 +8,16 @@ import dateTimeFormat
 import typeid.TypeID
 import java.time.OffsetDateTime
 
-// TODO: linter gonna yell at us for this, but I want the typeid and serialization to be ez for now
+/**
+ * An enum representing all possible [Message] kinds.
+ */
 enum class MessageKind {
+  // TODO: linter gonna yell at us for this, but I want the typeid and serialization to be ez for now
   rfq, quote, close, order, orderstatus
 }
 
 /**
- * A data class representing the metadata present on every [Message]
+ * A data class representing the metadata present on every [Message].
  */
 class MessageMetadata(
   val kind: MessageKind,
@@ -35,20 +38,29 @@ sealed class Message {
   abstract var signature: String?
 
   init {
+    // json schema validate
+    validate()
     if (signature != null) {
+      // sig check
       verify()
-    } else {
-      validate()
     }
   }
 
-  fun verify() {
-    validate()
-
+  /**
+   * Verifies the cryptographic integrity of the message's signature.
+   *
+   * @throws Exception TODO link to crypto method throws
+   */
+  private fun verify() {
     // TODO detached payload sig check (regenerate payload and then check)
   }
 
-  fun validate() {
+  /**
+   * Validates the message against the corresponding json schema.
+   *
+   * @throws Exception if the message is invalid
+   */
+  private fun validate() {
     // TODO validate against json schema
 //    val schema = schemaMap.get(metadata.kind.name)
 //    val jsonString = this.toString()
@@ -69,7 +81,7 @@ sealed class Message {
   }
 
   /**
-   * Uses [Json] to serialize the Message as a json string
+   * Uses [Json] to serialize the Message as a json string.
    *
    * @return The json string
    */

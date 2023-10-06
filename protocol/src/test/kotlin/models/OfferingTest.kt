@@ -16,7 +16,7 @@ class OfferingTest {
   @Test
   fun `can create a new offering`() {
     val offering = Offering.create(
-      from = "from",
+      from = TestData.PFI,
       OfferingData(
         description = "my fake offering",
         payoutUnitsPerPayinUnit = 1,

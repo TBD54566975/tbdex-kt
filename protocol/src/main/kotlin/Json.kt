@@ -35,13 +35,10 @@ object Json {
     .findAndRegisterModules()
     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 
-  /**
-   * The Jackson object writer instance, shared across the lib.
-   */
   private val objectWriter: ObjectWriter = objectMapper.writer()
 
   /**
-   * Converts a kotlin object to a json string
+   * Converts a kotlin object to a json string.
    *
    * @param obj The object to stringify.
    * @return json string.
@@ -51,7 +48,7 @@ object Json {
   }
 
   /**
-   * Parses a json string into a Jackson [JsonNode]
+   * Parses a json string into a Jackson [JsonNode].
    *
    * @param jsonString The json string to parse.
    * @return [JsonNode].

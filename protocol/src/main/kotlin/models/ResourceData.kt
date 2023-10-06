@@ -3,12 +3,12 @@ package models
 import net.pwall.json.schema.JSONSchema
 
 /**
- * An interface that represents the contents of a [Resource]
+ * An interface that represents the contents of a [Resource].
  */
 sealed interface ResourceData
 
 /**
- * A data class implementing [ResourceData], which represents the contents of an [Offering]
+ * A data class implementing [ResourceData], which represents the contents of an [Offering].
  */
 class OfferingData(
   val description: String,
@@ -21,7 +21,7 @@ class OfferingData(
 ) : ResourceData
 
 /**
- * A data class containing information pertaining to payin or payout
+ * A data class containing information pertaining to payin or payout.
  */
 class CurrencyDetails(
   val currencyCode: String,
@@ -30,7 +30,7 @@ class CurrencyDetails(
 )
 
 /**
- * A data class containing information pertaining to payin or payout method
+ * A data class containing information pertaining to payin or payout method.
  */
 class PaymentMethod(
   val kind: String,
@@ -38,6 +38,6 @@ class PaymentMethod(
 )
 
 /**
- * A data class containing information pertaining to verifiable credentials required to qualify for the offering
+ * A data class containing information pertaining to verifiable credentials required to qualify for the offering.
  */
 class PresentationExchange

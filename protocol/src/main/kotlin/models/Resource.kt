@@ -8,14 +8,16 @@ import dateTimeFormat
 import typeid.TypeID
 import java.time.OffsetDateTime
 
-
+/**
+ * An enum representing all possible [Resource] kinds.
+ */
 enum class ResourceKind {
   offering,
   reputation
 }
 
 /**
- * A data class representing the metadata present on every [Resource]
+ * A data class representing the metadata present on every [Resource].
  */
 class ResourceMetadata(
   val kind: ResourceKind,
@@ -36,20 +38,29 @@ sealed class Resource {
   abstract var signature: String?
 
   init {
+    // json schema validate
+    validate()
     if (signature != null) {
+      // sig check
       verify()
-    } else {
-      validate()
     }
   }
 
-  fun verify() {
-    validate()
-
+  /**
+   * Verifies the cryptographic integrity of the resource's signature.
+   *
+   * @throws Exception TODO link to crypto method throws
+   */
+  private fun verify() {
     // TODO sig check
   }
 
-  fun validate() {
+  /**
+   * Validates the resource against the corresponding json schema.
+   *
+   * @throws Exception if the resource is invalid
+   */
+  private fun validate() {
     // TODO validate against json schema
 //    val schema = schemaMap.get(metadata.kind.name)
 //    val jsonString = this.toString()
@@ -68,7 +79,7 @@ sealed class Resource {
   }
 
   /**
-   * Uses [Json] to serialize the Resource as a json string
+   * Uses [Json] to serialize the Resource as a json string.
    *
    * @return The json string
    */

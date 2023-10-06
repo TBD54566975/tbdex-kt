@@ -17,7 +17,7 @@ class RfqTest {
   @Test
   fun `can create a new rfq`() {
     val rfq = Rfq.create(
-      "pfi", "alice",
+      TestData.PFI, TestData.ALICE,
       RfqData(
         offeringID = TypeID(ResourceKind.offering.name),
         payinSubunits = 10_00,
