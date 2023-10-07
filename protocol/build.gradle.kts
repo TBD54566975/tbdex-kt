@@ -26,7 +26,7 @@ dependencies {
 }
 
 tasks {
-  register("copySchemas", Copy::class) {
+  register("syncSchemas", Sync::class) {
     from("../tbdex/json-schemas")
     into("./src/main/resources")
   }

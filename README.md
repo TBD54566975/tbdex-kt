@@ -15,7 +15,7 @@ git submodule update --init --recursive
 
 Navigate back to root directory and run:
 ```
-./gradlew copySchemas
+./gradlew syncSchemas
 ```
 
 
