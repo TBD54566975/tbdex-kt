@@ -21,11 +21,11 @@ import typeid.TypeID
 import java.time.OffsetDateTime
 
 object TestData {
-  val alice = "alice"
-  val pfi = "pfi"
+  const val ALICE = "alice"
+  const val PFI = "pfi"
 
   fun getOffering() = Offering.create(
-    from = pfi,
+    from = PFI,
     OfferingData(
       description = "my fake offering",
       payoutUnitsPerPayinUnit = 1,
@@ -38,8 +38,8 @@ object TestData {
   )
 
   fun getRfq(offeringId: TypeID = TypeID(ResourceKind.offering.name)) = Rfq.create(
-    pfi,
-    alice,
+    PFI,
+    ALICE,
     RfqData(
       offeringID = offeringId,
       payinSubunits = 10_00,
@@ -50,7 +50,7 @@ object TestData {
   )
 
   fun getQuote() = Quote.create(
-    alice, pfi, TypeID(MessageKind.rfq.name),
+    ALICE, PFI, TypeID(MessageKind.rfq.name),
     QuoteData(
       expiresAt = OffsetDateTime.now().plusDays(1),
       payin = QuoteDetails("AUD", 10_00, 0),
@@ -58,11 +58,11 @@ object TestData {
     )
   )
 
-  fun getClose() = Close.create(alice, pfi, TypeID(MessageKind.rfq.name), CloseData("test reason"))
+  fun getClose() = Close.create(ALICE, PFI, TypeID(MessageKind.rfq.name), CloseData("test reason"))
 
-  fun getOrder() = Order.create(pfi, alice, TypeID(MessageKind.rfq.name))
+  fun getOrder() = Order.create(PFI, ALICE, TypeID(MessageKind.rfq.name))
 
   fun getOrderStatus() = OrderStatus.create(
-    alice, pfi, TypeID(MessageKind.rfq.name), OrderStatusData("test status")
+    ALICE, PFI, TypeID(MessageKind.rfq.name), OrderStatusData("test status")
   )
 }
