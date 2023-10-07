@@ -9,7 +9,7 @@
           "description": "The sender's DID"
         },
         "to": {
-          "type": "string",
+          "$ref": "https://tbdex.io/definitions.json#/definitions/did",
           "description": "The recipient's DID"
         },
         "kind": {
@@ -18,11 +18,11 @@
           "description": "The message kind (e.g. rfq, quote)"
         },
         "id": {
-          "type": "object",
+          "type": "string",
           "description": "The message ID"
         },
         "exchangeId": {
-          "type": "object",
+          "type": "string",
           "description": "ID for a 'thread' of messages between Alice <-> PFI. Set by the first message in a thread"
         },
         "createdAt": {
