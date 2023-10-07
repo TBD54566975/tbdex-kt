@@ -21,6 +21,42 @@ class Rfq private constructor(
   private: Map<String, Any>? = null,
   override var signature: String? = null
 ) : Message() {
+
+  /**
+   * Evaluates this Rfq against the provided [Offering].
+   *
+   * @param offering The offering to evaluate this Rfq against.
+   * @throws Exception if the Rfq doesn't satisfy the Offering's requirements
+   */
+  fun verifyOfferingRequirements(offering: Offering) {
+    require(data.offeringID == offering.metadata.id)
+
+    // TODO validate rfq's quoteAmountSubunits against offering's quoteCurrency min/max
+    if (offering.data.payinCurrency.minSubunits != null)
+      check(offering.data.payinCurrency.minSubunits <= this.data.payinSubunits)
+
+    // TODO validate rfq's payinMethod.kind against offering's payinMethods
+    validatePaymentMethod(data.payinMethod, offering.data.payinMethods)
+    validatePaymentMethod(data.payoutMethod, offering.data.payoutMethods)
+
+    this.verifyClaims(offering.data.requiredClaims)
+  }
+
+  private fun validatePaymentMethod(selectedMethod: SelectedPaymentMethod, offeringMethods: List<PaymentMethod>) {
+    val matchedOfferingMethod = offeringMethods.first { it.kind == selectedMethod.kind }
+    val res = matchedOfferingMethod.requiredPaymentDetails.validateBasic(selectedMethod.paymentDetails.toString())
+    if (!res.errors.isNullOrEmpty()) {
+      // format all errors and throw new exception
+      val message =
+        "rfq selected method: ${selectedMethod.kind} does not satisfy required details: ${res.errors.toString()}"
+      throw IllegalArgumentException(message)
+    }
+  }
+
+  private fun verifyClaims(requiredClaims: PresentationExchange) {
+
+  }
+
   companion object {
     /**
      * Creates a new `Rfq` message, autopopulating the id, creation time, and message kind.
