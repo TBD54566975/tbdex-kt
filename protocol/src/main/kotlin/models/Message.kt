@@ -14,6 +14,7 @@ enum class MessageKind {
   rfq, quote, close, order, orderstatus
 }
 
+// TODO: use jackson serializer to get string for id/exchangeId
 class MessageMetadata(
   val kind: MessageKind,
   val to: String,
@@ -83,12 +84,13 @@ sealed class Message {
     // js version takes any for jsonMessage
     fun validate(message: Message) {
       val jsonNodeMessage = objectMapper.valueToTree<JsonNode>(message)
+      println(jsonNodeMessage)
 
       // validate message structure
       Validator.validate(jsonNodeMessage, "message")
 
       // validate specific message data (Rfq, Quote, etc)
-      Validator.validate(jsonNodeMessage, message.metadata.kind.name)
+      Validator.validate(jsonNodeMessage.get("data"), message.metadata.kind.name)
     }
   }
 }
