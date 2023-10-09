@@ -1,10 +1,12 @@
 package models
 
+import com.nfeld.jsonpathkt.JsonPath
+import com.nfeld.jsonpathkt.extension.read
 import models.Close.Companion.create
 import models.Rfq.Companion.create
 import typeid.TypeID
-import web5.credentials.VerifiablePresentation
-import web5.credentials.model.PresentationDefinitionV2
+import web5.credentials.PresentationDefinitionV2
+import web5.credentials.VerifiableCredential
 import java.time.OffsetDateTime
 
 /**
@@ -56,15 +58,55 @@ class Rfq private constructor(
     }
   }
 
-  private fun verifyClaims(requiredClaims: List<PresentationDefinitionV2>) {
-    requiredClaims.forEach { pd ->
-      val matchingVcs = VerifiablePresentation.selectFrom(pd, this.data.claims)
-      require(matchingVcs.isNotEmpty()) {
-        "Required claim unsatisfied: ${pd.id}}"
+  fun verifyClaims(requiredClaims: List<PresentationDefinitionV2>) {
+    // check that all requirements are satisfied by one of the VC JWTs
+    // and that the VC satisfying it is crypto verified
+    requiredClaims.all { required ->
+      // need to catch and swallow NotImplementedException inside find
+      val satisfyingClaim =
+        this.data.claims.find { vc -> satisfiesPresentationDefinition(VerifiableCredential.parseJwt(vc), required) }
+
+      require(satisfyingClaim != null) {
+        "No matching claim for Offering requirement: ${required.id}"
       }
 
-      // verify each the matching VCs
+      VerifiableCredential.verify(satisfyingClaim)
+      true
     }
+  }
+
+  private fun satisfiesPresentationDefinition(
+    vc: VerifiableCredential,
+    presentationDefinition: PresentationDefinitionV2
+  ): Boolean {
+    if (!presentationDefinition.submissionRequirements.isNullOrEmpty()) {
+      throw NotImplementedError("Presentation Definition's Submission Requirements feature is not implemented")
+    }
+
+    return presentationDefinition.inputDescriptors
+      .filter { !it.constraints.fields.isNullOrEmpty() }
+      .all { inputDescriptorWithFields ->
+        val requiredFields = inputDescriptorWithFields.constraints.fields!!.filter { it.optional != true }
+
+        var satisfied = true
+        for (field in requiredFields) {
+          // we ignore field filters
+          if (field.filter != null) {
+            throw NotImplementedError("Field Filter is not implemented")
+          }
+
+          if (field.path.any { path -> vc.getFieldByJsonPath(path) == null }) {
+            satisfied = false
+            break
+          }
+        }
+        return satisfied
+      }
+  }
+
+  private fun VerifiableCredential.getFieldByJsonPath(path: String): String? {
+    val vcJsonString: String = this.toString()
+    return JsonPath.parse(vcJsonString)?.read<String>(path)
   }
 
   companion object {

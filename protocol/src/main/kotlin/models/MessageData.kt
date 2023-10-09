@@ -3,7 +3,6 @@ package models
 import com.fasterxml.jackson.annotation.JsonFormat
 import dateTimeFormat
 import typeid.TypeID
-import web5.credentials.VcJwt
 import java.time.OffsetDateTime
 
 /**
@@ -19,7 +18,7 @@ class RfqData(
   val payinSubunits: Int,
   val payinMethod: SelectedPaymentMethod,
   val payoutMethod: SelectedPaymentMethod,
-  val claims: List<VcJwt>
+  val claims: List<String>
 ) : MessageData
 
 /**

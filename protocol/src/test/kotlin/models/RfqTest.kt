@@ -8,6 +8,8 @@ import models.ResourceKind
 import models.Rfq
 import models.RfqData
 import models.SelectedPaymentMethod
+import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
@@ -16,6 +18,7 @@ import kotlin.test.assertIs
 class RfqTest {
   @Test
   fun `can create a new rfq`() {
+    val test = TestData.getPresentationDefinition()
     val rfq = Rfq.create(
       TestData.PFI, TestData.ALICE,
       RfqData(
@@ -50,6 +53,35 @@ class RfqTest {
 
     assertIs<Rfq>(parsedMessage)
     assertThat(parsedMessage.toJson()).isEqualTo(jsonMessage)
+  }
+
+  @Test
+  fun `verifyClaims succeeds when claims satisfy pd`() {
+    val btcPd = TestData.getPresentationDefinition()
+
+    val rfq = TestData.getRfq(TypeID(ResourceKind.offering.name), listOf(TestData.getVC().toString()))
+
+    assertDoesNotThrow { rfq.verifyClaims(listOf(btcPd)) }
+  }
+
+  @Test
+  fun `verifyClaims throws when claims do not satisfy pd`() {
+    val btcPd = TestData.getPresentationDefinition()
+
+    val rfq = TestData.getRfq()
+
+    assertThrows<IllegalArgumentException> { rfq.verifyClaims(listOf(btcPd)) }
+
+  }
+
+  @Test
+  fun `verifyClaims throws when claims fail verification`() {
+    val btcPd = TestData.getPresentationDefinition()
+
+    val rfq = TestData.getRfq()
+
+    // distinguish that this is a verification failure
+    assertThrows<IllegalArgumentException> { rfq.verifyClaims(listOf(btcPd)) }
   }
 }
 
