@@ -3,6 +3,8 @@ package models
 import models.Close.Companion.create
 import models.Rfq.Companion.create
 import typeid.TypeID
+import web5.credentials.VerifiablePresentation
+import web5.credentials.model.PresentationDefinitionV2
 import java.time.OffsetDateTime
 
 /**
@@ -31,11 +33,12 @@ class Rfq private constructor(
   fun verifyOfferingRequirements(offering: Offering) {
     require(data.offeringID == offering.metadata.id)
 
-    // TODO validate rfq's quoteAmountSubunits against offering's quoteCurrency min/max
     if (offering.data.payinCurrency.minSubunits != null)
       check(offering.data.payinCurrency.minSubunits <= this.data.payinSubunits)
 
-    // TODO validate rfq's payinMethod.kind against offering's payinMethods
+    if (offering.data.payinCurrency.maxSubunits != null)
+      check(this.data.payinSubunits <= offering.data.payinCurrency.maxSubunits)
+
     validatePaymentMethod(data.payinMethod, offering.data.payinMethods)
     validatePaymentMethod(data.payoutMethod, offering.data.payoutMethods)
 
@@ -53,8 +56,15 @@ class Rfq private constructor(
     }
   }
 
-  private fun verifyClaims(requiredClaims: PresentationExchange) {
+  private fun verifyClaims(requiredClaims: List<PresentationDefinitionV2>) {
+    requiredClaims.forEach { pd ->
+      val matchingVcs = VerifiablePresentation.selectFrom(pd, this.data.claims)
+      require(matchingVcs.isNotEmpty()) {
+        "Required claim unsatisfied: ${pd.id}}"
+      }
 
+      // verify each the matching VCs
+    }
   }
 
   companion object {

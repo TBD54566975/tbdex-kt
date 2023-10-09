@@ -9,7 +9,6 @@ import models.OfferingData
 import models.Order
 import models.OrderStatus
 import models.OrderStatusData
-import models.PresentationExchange
 import models.Quote
 import models.QuoteData
 import models.QuoteDetails
@@ -18,11 +17,24 @@ import models.Rfq
 import models.RfqData
 import models.SelectedPaymentMethod
 import typeid.TypeID
+import web5.credentials.model.ConstraintsV2
+import web5.credentials.model.InputDescriptorV2
+import web5.credentials.model.PresentationDefinitionV2
 import java.time.OffsetDateTime
 
 object TestData {
   const val ALICE = "alice"
   const val PFI = "pfi"
+  fun getPresentationDefinition(): PresentationDefinitionV2 {
+    return PresentationDefinitionV2(
+      "test",
+      "bob burgers",
+      "sanctions",
+      null,
+      null,
+      listOf(InputDescriptorV2("test", null, null, null, ConstraintsV2()))
+    )
+  }
 
   fun getOffering() = Offering.create(
     from = PFI,
@@ -33,7 +45,7 @@ object TestData {
       payoutCurrency = CurrencyDetails("USDC"),
       payinMethods = listOf(),
       payoutMethods = listOf(),
-      requiredClaims = PresentationExchange()
+      requiredClaims = listOf(getPresentationDefinition())
     )
   )
 

@@ -1,6 +1,7 @@
 package models
 
 import net.pwall.json.schema.JSONSchema
+import web5.credentials.model.PresentationDefinitionV2
 
 /**
  * An interface that represents the contents of a [Resource].
@@ -17,7 +18,7 @@ class OfferingData(
   val payinCurrency: CurrencyDetails,
   val payinMethods: List<PaymentMethod>,
   val payoutMethods: List<PaymentMethod>,
-  val requiredClaims: PresentationExchange
+  val requiredClaims: List<PresentationDefinitionV2>
 ) : ResourceData
 
 /**
@@ -36,8 +37,3 @@ class PaymentMethod(
   val kind: String,
   val requiredPaymentDetails: JSONSchema
 )
-
-/**
- * A data class containing information pertaining to verifiable credentials required to qualify for the offering.
- */
-class PresentationExchange
