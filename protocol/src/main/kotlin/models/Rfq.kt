@@ -3,6 +3,7 @@ package models
 import models.Close.Companion.create
 import models.Rfq.Companion.create
 import typeid.TypeID
+import web5.credentials.PresentationDefinitionV2
 import java.time.OffsetDateTime
 
 /**
@@ -21,6 +22,57 @@ class Rfq private constructor(
   private: Map<String, Any>? = null,
   override var signature: String? = null
 ) : Message() {
+
+  /**
+   * Evaluates this Rfq against the provided [Offering].
+   *
+   * @param offering The offering to evaluate this Rfq against.
+   * @throws Exception if the Rfq doesn't satisfy the Offering's requirements
+   */
+  fun verifyOfferingRequirements(offering: Offering) {
+    require(data.offeringID == offering.metadata.id)
+
+    if (offering.data.payinCurrency.minSubunits != null)
+      check(offering.data.payinCurrency.minSubunits <= this.data.payinSubunits)
+
+    if (offering.data.payinCurrency.maxSubunits != null)
+      check(this.data.payinSubunits <= offering.data.payinCurrency.maxSubunits)
+
+    validatePaymentMethod(data.payinMethod, offering.data.payinMethods)
+    validatePaymentMethod(data.payoutMethod, offering.data.payoutMethods)
+
+    this.verifyClaims(offering.data.requiredClaims)
+  }
+
+  private fun validatePaymentMethod(selectedMethod: SelectedPaymentMethod, offeringMethods: List<PaymentMethod>) {
+    val matchedOfferingMethod = offeringMethods.first { it.kind == selectedMethod.kind }
+    val res = matchedOfferingMethod.requiredPaymentDetails.validateBasic(selectedMethod.paymentDetails.toString())
+    if (!res.errors.isNullOrEmpty()) {
+      // format all errors and throw new exception
+      val message =
+        "rfq selected method: ${selectedMethod.kind} does not satisfy required details: ${res.errors.toString()}"
+      throw IllegalArgumentException(message)
+    }
+  }
+
+  private fun verifyClaims(requiredClaims: List<PresentationDefinitionV2>) {
+    throw NotImplementedError()
+//    // check that all requirements are satisfied by one of the VC JWTs
+//    // and that the VC satisfying it is crypto verified
+//    requiredClaims.all { required ->
+//      // need to catch and swallow NotImplementedException inside find
+//      val satisfyingClaim =
+//        this.data.claims.find { vc -> satisfiesPresentationDefinition(VerifiableCredential.parseJwt(vc), required) }
+//
+//      require(satisfyingClaim != null) {
+//        "No matching claim for Offering requirement: ${required.id}"
+//      }
+//
+//      VerifiableCredential.verify(satisfyingClaim)
+//      true
+//    }
+  }
+
   companion object {
     /**
      * Creates a new `Rfq` message, autopopulating the id, creation time, and message kind.

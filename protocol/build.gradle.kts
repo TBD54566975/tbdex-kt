@@ -24,6 +24,7 @@ dependencies {
   implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.15.2")
   implementation("com.github.TBD54566975.web5-sdk-kotlin:common:PR63-SNAPSHOT")
+  implementation("com.github.TBD54566975.web5-sdk-kotlin:credentials:PR63-SNAPSHOT")
   implementation("com.github.TBD54566975.web5-sdk-kotlin:crypto:PR63-SNAPSHOT")
   implementation("com.github.TBD54566975.web5-sdk-kotlin:dids:PR63-SNAPSHOT")
   testImplementation(kotlin("test"))

@@ -8,6 +8,9 @@ import models.ResourceKind
 import models.Rfq
 import models.RfqData
 import models.SelectedPaymentMethod
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
@@ -50,6 +53,35 @@ class RfqTest {
 
     assertIs<Rfq>(parsedMessage)
     assertThat(parsedMessage.toJson()).isEqualTo(jsonMessage)
+  }
+
+  @Test
+  @Disabled
+  fun `verifyOfferingRequirements succeeds when claims satisfy pd`() {
+    val offering = TestData.getOffering()
+    val rfq = TestData.getRfq(offering.metadata.id, listOf(TestData.getVC().toString()))
+
+    assertDoesNotThrow { rfq.verifyOfferingRequirements(offering) }
+  }
+
+  @Test
+  @Disabled
+  fun `verifyOfferingRequirements throws when claims do not satisfy pd`() {
+    val offering = TestData.getOffering()
+    val rfq = TestData.getRfq()
+
+    assertThrows<IllegalArgumentException> { rfq.verifyOfferingRequirements(offering) }
+
+  }
+
+  @Test
+  @Disabled
+  fun `verifyOfferingRequirements throws when claims fail verification`() {
+    val offering = TestData.getOffering()
+    val rfq = TestData.getRfq()
+
+    // distinguish that this is a verification failure
+    assertThrows<IllegalArgumentException> { rfq.verifyOfferingRequirements(offering) }
   }
 }
 
