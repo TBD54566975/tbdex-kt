@@ -42,10 +42,6 @@ sealed class Message {
   init {
     // json schema validate
     validate()
-    if (signature != null) {
-      // sig check
-      verify()
-    }
   }
 
   /**
@@ -116,15 +112,16 @@ sealed class Message {
 
       val kindEnum = MessageKind.valueOf(kind)
 
-      // TODO json schema validation using specific type schema
-
-      return when (kindEnum) {
+      val message = when (kindEnum) {
         MessageKind.rfq -> jsonMapper.readValue<Rfq>(payload)
         MessageKind.order -> jsonMapper.readValue<Order>(payload)
         MessageKind.orderstatus -> jsonMapper.readValue<OrderStatus>(payload)
         MessageKind.quote -> jsonMapper.readValue<Quote>(payload)
         MessageKind.close -> jsonMapper.readValue<Close>(payload)
       }
+
+      message.verify()
+      return message
     }
   }
 }

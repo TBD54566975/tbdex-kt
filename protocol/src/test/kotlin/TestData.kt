@@ -50,18 +50,18 @@ object TestData {
 
   fun getVC(): VerifiableCredential {
     val credentialSubject = CredentialSubject.builder()
-      .id(URI.create(did.uri))
+      .id(URI.create(ALICE_DID.uri))
       .claims(mutableMapOf<String, Any>().apply { this["btcAddress"] = "btcAddress123" })
       .build()
 
     val vc = VcDataModel.builder()
       .id(URI.create(UUID.randomUUID().toString()))
       .credentialSubject(credentialSubject)
-      .issuer(URI.create(did.uri))
+      .issuer(URI.create(ALICE_DID.uri))
       .issuanceDate(Date())
       .build()
 
-    return VerifiableCredential.create("test type", did.uri, did.uri, vc)
+    return VerifiableCredential.create("test type", ALICE_DID.uri, ALICE_DID.uri, vc)
   }
 
   private fun buildField(id: String? = null, vararg paths: String): FieldV2 {

@@ -35,7 +35,9 @@ object CryptoUtils {
     }
 
     if (detachedPayload != null) {
-      require(jwt.payload == null) { "Signature verification failed: Expected valid JWS with detached content" }
+      require(jwt.payload.toBase64URL().decodeToString() == "") {
+        "Signature verification failed: Expected valid JWS with detached content"
+      }
     }
 
     val verificationMethodId = jwt.header.keyID

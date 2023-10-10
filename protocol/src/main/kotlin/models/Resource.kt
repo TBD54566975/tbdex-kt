@@ -42,10 +42,6 @@ sealed class Resource {
   init {
     // json schema validate
     validate()
-    if (signature != null) {
-      // sig check
-      verify()
-    }
   }
 
   /**
@@ -56,7 +52,7 @@ sealed class Resource {
    *
    * @throws Exception if the verification fails or if the signature is missing.
    */
-  private fun verify() {
+  fun verify() {
     val payload = mapOf("metadata" to this.metadata, "data" to this.data)
     val base64UrlHashedPayload = CryptoUtils.hash(payload).toString()
     CryptoUtils.verify(detachedPayload = base64UrlHashedPayload, signature = this.signature)
@@ -117,10 +113,13 @@ sealed class Resource {
 
       // TODO json schema validation using specific type schema
 
-      return when (kindEnum) {
+      val resource = when (kindEnum) {
         ResourceKind.offering -> jsonMapper.readValue<Offering>(payload)
-        ResourceKind.reputation -> TODO()
+        ResourceKind.reputation -> throw NotImplementedError()
       }
+
+      resource.verify()
+      return resource
     }
   }
 }
