@@ -60,7 +60,7 @@ object Validator {
 object VValidator {
   private val schemaMap = mutableMapOf<String, Schema>()
 
-
+  private const val resolutionScopeUrl = "classpath:/"
 
 
   init {
@@ -68,7 +68,7 @@ object VValidator {
       val messageSchemaJsonObject = JSONObject(object {}.javaClass.getResourceAsStream("${messageKind}.schema.json")?.bufferedReader()?.readText())
       val schema = SchemaLoader.builder()
         .schemaClient(SchemaClient.classPathAwareClient())
-        .resolutionScope("classpath:/")
+        .resolutionScope(resolutionScopeUrl)
         .draftV7Support()
         .schemaJson(messageSchemaJsonObject)
         .build()
@@ -81,7 +81,7 @@ object VValidator {
       val resourceSchemaJsonObject = JSONObject(object {}.javaClass.getResourceAsStream("${resourceKind}.schema.json")?.bufferedReader()?.readText())
       val schema = SchemaLoader.builder()
         .schemaClient(SchemaClient.classPathAwareClient())
-        .resolutionScope("classpath:/")
+        .resolutionScope(resolutionScopeUrl)
         .draftV7Support()
         .schemaJson(resourceSchemaJsonObject)
         .build()
@@ -93,7 +93,7 @@ object VValidator {
     val messageSchemaFile = JSONObject(object {}.javaClass.getResourceAsStream("message.schema.json")?.bufferedReader()?.readText())
     val messageSchema = SchemaLoader.builder()
       .schemaClient(SchemaClient.classPathAwareClient())
-      .resolutionScope("classpath:/")
+      .resolutionScope(resolutionScopeUrl)
       .draftV7Support()
       .schemaJson(messageSchemaFile)
       .build()
@@ -104,7 +104,7 @@ object VValidator {
     val resourceSchemaFile = JSONObject(object {}.javaClass.getResourceAsStream("resource.schema.json")?.bufferedReader()?.readText())
     val resourceSchema = SchemaLoader.builder()
       .schemaClient(SchemaClient.classPathAwareClient())
-      .resolutionScope("classpath:/")
+      .resolutionScope(resolutionScopeUrl)
       .draftV7Support()
       .schemaJson(resourceSchemaFile)
       .build()
