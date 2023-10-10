@@ -97,12 +97,13 @@ object CryptoUtils {
       val didResolutionResult = DidResolvers.resolve(did.uri)
       val verificationMethod = didResolutionResult.didDocument.allVerificationMethods[0]
 
-      require(verificationMethod != null) { "no key alias found" }
+      require(verificationMethod != null) { "no verification method found" }
 
-      verificationMethod.id.toString()
+      val jwk = JWK.parse(verificationMethod.publicKeyJwk)
+      jwk.keyID
     }
 
-    val publicKey = did.keyManager.getPublicKey(keyAliaz.split('#')[0])
+    val publicKey = did.keyManager.getPublicKey(keyAliaz)
     val algorithm = publicKey.algorithm
     val jwsAlgorithm = JWSAlgorithm.parse(algorithm.toString())
 
