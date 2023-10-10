@@ -1,11 +1,13 @@
 package models
 
+import CryptoUtils
 import Json
 import Json.objectMapper
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
 import typeid.TypeID
+import web5.sdk.dids.Did
 import java.time.OffsetDateTime
 
 /**
@@ -53,6 +55,9 @@ sealed class Message {
    */
   private fun verify() {
     // TODO detached payload sig check (regenerate payload and then check)
+    val payload = mapOf("metadata" to this.metadata, "data" to this.data)
+    val base64UrlHashedPayload = CryptoUtils.hash(payload)
+    CryptoUtils.verify(base64UrlHashedPayload.toString(), this.signature)
   }
 
   /**
@@ -68,16 +73,10 @@ sealed class Message {
 //    if (output.errors != null) ...
   }
 
-  /**
-   * Signs the message, excluding the Rfq.private field if present,
-   * as a detached payload JWT, using the private key and kid provided.
-   *
-   * @param privateKey The private key used to sign the message.
-   * @param kid The kid used to sign the message
-   */
-  // TODO - use web5 crypto and fix the types
-  fun sign(privateKey: String, kid: String) {
-    this.signature = "blah"
+
+  fun sign(did: Did, keyAlias: String) {
+    val payload = mapOf("metadata" to this.metadata, "data" to this.data)
+    this.signature = CryptoUtils.sign(did, keyAlias, payload)
   }
 
   /**
