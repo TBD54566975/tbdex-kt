@@ -91,18 +91,19 @@ object TestData {
     return FieldV2(id = id, path = paths.toList())
   }
 
-  fun getOffering() = Offering.create(
-    from = PFI,
-    OfferingData(
-      description = "my fake offering",
-      payoutUnitsPerPayinUnit = 1,
-      payinCurrency = CurrencyDetails("AUD"),
-      payoutCurrency = CurrencyDetails("USDC"),
-      payinMethods = listOf(),
-      payoutMethods = listOf(),
-      requiredClaims = listOf(getPresentationDefinition())
+  fun getOffering(requiredClaims: List<PresentationDefinitionV2> = listOf(getPresentationDefinition())) =
+    Offering.create(
+      from = PFI,
+      OfferingData(
+        description = "my fake offering",
+        payoutUnitsPerPayinUnit = 1,
+        payinCurrency = CurrencyDetails("AUD"),
+        payoutCurrency = CurrencyDetails("USDC"),
+        payinMethods = listOf(),
+        payoutMethods = listOf(),
+        requiredClaims = requiredClaims
+      )
     )
-  )
 
   fun getRfq(offeringId: TypeID = TypeID(ResourceKind.offering.name), claims: List<String> = emptyList()) = Rfq.create(
     PFI,

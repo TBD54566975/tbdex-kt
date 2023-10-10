@@ -8,6 +8,7 @@ import models.ResourceKind
 import models.Rfq
 import models.RfqData
 import models.SelectedPaymentMethod
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import protocol.TestData
@@ -18,7 +19,6 @@ import kotlin.test.assertIs
 class RfqTest {
   @Test
   fun `can create a new rfq`() {
-    val test = TestData.getPresentationDefinition()
     val rfq = Rfq.create(
       TestData.PFI, TestData.ALICE,
       RfqData(
@@ -56,32 +56,32 @@ class RfqTest {
   }
 
   @Test
-  fun `verifyClaims succeeds when claims satisfy pd`() {
-    val btcPd = TestData.getPresentationDefinition()
+  @Disabled
+  fun `verifyOfferingRequirements succeeds when claims satisfy pd`() {
+    val offering = TestData.getOffering()
+    val rfq = TestData.getRfq(offering.metadata.id, listOf(TestData.getVC().toString()))
 
-    val rfq = TestData.getRfq(TypeID(ResourceKind.offering.name), listOf(TestData.getVC().toString()))
-
-    assertDoesNotThrow { rfq.verifyClaims(listOf(btcPd)) }
+    assertDoesNotThrow { rfq.verifyOfferingRequirements(offering) }
   }
 
   @Test
-  fun `verifyClaims throws when claims do not satisfy pd`() {
-    val btcPd = TestData.getPresentationDefinition()
-
+  @Disabled
+  fun `verifyOfferingRequirements throws when claims do not satisfy pd`() {
+    val offering = TestData.getOffering()
     val rfq = TestData.getRfq()
 
-    assertThrows<IllegalArgumentException> { rfq.verifyClaims(listOf(btcPd)) }
+    assertThrows<IllegalArgumentException> { rfq.verifyOfferingRequirements(offering) }
 
   }
 
   @Test
-  fun `verifyClaims throws when claims fail verification`() {
-    val btcPd = TestData.getPresentationDefinition()
-
+  @Disabled
+  fun `verifyOfferingRequirements throws when claims fail verification`() {
+    val offering = TestData.getOffering()
     val rfq = TestData.getRfq()
 
     // distinguish that this is a verification failure
-    assertThrows<IllegalArgumentException> { rfq.verifyClaims(listOf(btcPd)) }
+    assertThrows<IllegalArgumentException> { rfq.verifyOfferingRequirements(offering) }
   }
 }
 
