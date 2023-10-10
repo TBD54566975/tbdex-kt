@@ -6,7 +6,6 @@ import assertk.assertions.isEqualTo
 import models.CurrencyDetails
 import models.Offering
 import models.OfferingData
-import models.PresentationExchange
 import models.Resource
 import protocol.TestData
 import kotlin.test.Test
@@ -24,7 +23,7 @@ class OfferingTest {
         payoutCurrency = CurrencyDetails("BTC"),
         payinMethods = listOf(),
         payoutMethods = listOf(),
-        requiredClaims = PresentationExchange()
+        requiredClaims = listOf(TestData.getPresentationDefinition())
       )
     )
 
