@@ -2,7 +2,7 @@ package models
 
 import CryptoUtils
 import Json
-import Json.objectMapper
+import Json.jsonMapper
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
@@ -119,11 +119,11 @@ sealed class Message {
       // TODO json schema validation using specific type schema
 
       return when (kindEnum) {
-        MessageKind.rfq -> objectMapper.readValue<Rfq>(payload)
-        MessageKind.order -> objectMapper.readValue<Order>(payload)
-        MessageKind.orderstatus -> objectMapper.readValue<OrderStatus>(payload)
-        MessageKind.quote -> objectMapper.readValue<Quote>(payload)
-        MessageKind.close -> objectMapper.readValue<Close>(payload)
+        MessageKind.rfq -> jsonMapper.readValue<Rfq>(payload)
+        MessageKind.order -> jsonMapper.readValue<Order>(payload)
+        MessageKind.orderstatus -> jsonMapper.readValue<OrderStatus>(payload)
+        MessageKind.quote -> jsonMapper.readValue<Quote>(payload)
+        MessageKind.close -> jsonMapper.readValue<Close>(payload)
       }
     }
   }

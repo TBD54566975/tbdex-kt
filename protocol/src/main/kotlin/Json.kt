@@ -30,12 +30,12 @@ object Json {
    *
    * It must be public in order for typed parsing to work as we cannot use reified types for Java interop.
    */
-  val objectMapper: ObjectMapper = ObjectMapper()
+  val jsonMapper: ObjectMapper = ObjectMapper()
     .registerKotlinModule()
     .findAndRegisterModules()
     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 
-  private val objectWriter: ObjectWriter = objectMapper.writer()
+  private val objectWriter: ObjectWriter = jsonMapper.writer()
 
   /**
    * Converts a kotlin object to a json string.
@@ -55,6 +55,6 @@ object Json {
    * @throws JsonParseException if the string is invalid json
    */
   fun parse(jsonString: String): JsonNode {
-    return objectMapper.readTree(jsonString)
+    return jsonMapper.readTree(jsonString)
   }
 }

@@ -1,6 +1,4 @@
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.dataformat.cbor.CBORFactory
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import Cbor.cborMapper
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JWSHeader
 import com.nimbusds.jose.JWSObject
@@ -19,9 +17,6 @@ import java.security.MessageDigest
 import java.security.SignatureException
 
 object CryptoUtils {
-  private val cborMapper: ObjectMapper = ObjectMapper(CBORFactory())
-    .registerKotlinModule()
-
   fun hash(payload: Any): Base64URL {
     val cborEncodedPayloadBuffer: ByteArray = cborMapper.writeValueAsBytes(payload)
     val sha256CborEncodedPayloadBytes: ByteArray = MessageDigest.getInstance("SHA-256").digest(cborEncodedPayloadBuffer)
@@ -96,15 +91,21 @@ object CryptoUtils {
   }
 
   fun sign(did: Did, payload: Any, keyAlias: String? = null): String {
-    // TODO keyalias stuff
-//    require(keyAlias != null)
+    val keyAliaz = keyAlias ?: run {
+      val didResolutionResult = DidResolvers.resolve(did.uri)
+      val verificationMethod = didResolutionResult.didDocument.allVerificationMethods[0]
 
-    val publicKey = did.keyManager.getPublicKey(keyAlias)
+      require(verificationMethod != null) { "no key alias found" }
+
+      verificationMethod.id.toString()
+    }
+
+    val publicKey = did.keyManager.getPublicKey(keyAliaz.split('#')[0])
     val algorithm = publicKey.algorithm
     val jwsAlgorithm = JWSAlgorithm.parse(algorithm.toString())
 
     val jwtHeader = JWSHeader.Builder(jwsAlgorithm)
-      .keyID(keyAlias)
+      .keyID(keyAliaz)
       .build()
 
     // create payload
@@ -114,8 +115,7 @@ object CryptoUtils {
     val jwsObject = JWSObject(jwtHeader, jwsPayload)
     val toSign = jwsObject.signingInput
 
-    // expects bytes in new version of web5 dep
-    val signatureBytes = did.keyManager.sign(keyAlias, toSign)
+    val signatureBytes = did.keyManager.sign(keyAliaz, toSign)
 
     val base64UrlEncodedSignature = Base64URL(Convert(signatureBytes).toBase64Url(padding = false))
     val base64UrlEncodedHeader = jwtHeader.toBase64URL()
