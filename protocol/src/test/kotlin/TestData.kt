@@ -22,6 +22,7 @@ import web5.credentials.ConstraintsV2
 import web5.credentials.FieldV2
 import web5.credentials.InputDescriptorV2
 import web5.credentials.PresentationDefinitionV2
+import web5.credentials.VcDataModel
 import web5.credentials.VerifiableCredential
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidKey
@@ -29,7 +30,6 @@ import java.net.URI
 import java.time.OffsetDateTime
 import java.util.Date
 import java.util.UUID
-import com.danubetech.verifiablecredentials.VerifiableCredential as VcDataModel
 
 object TestData {
   const val ALICE = "alice"
@@ -59,32 +59,6 @@ object TestData {
       .build()
 
     return VerifiableCredential.create("test type", did.uri, did.uri, vc)
-  }
-
-  private fun buildPresentationDefinition(
-    id: String = "test-pd-id",
-    name: String = "simple PD",
-    purpose: String = "pd for testing",
-    inputDescriptors: List<InputDescriptorV2> = listOf()
-  ): PresentationDefinitionV2 {
-    return PresentationDefinitionV2(
-      id = id,
-      name = name,
-      purpose = purpose,
-      inputDescriptors = inputDescriptors
-    )
-  }
-
-  private fun buildInputDescriptor(
-    id: String = "whatever",
-    purpose: String = "id for testing",
-    fields: List<FieldV2> = listOf()
-  ): InputDescriptorV2 {
-    return InputDescriptorV2(
-      id = id,
-      purpose = purpose,
-      constraints = ConstraintsV2(fields = fields)
-    )
   }
 
   private fun buildField(id: String? = null, vararg paths: String): FieldV2 {
@@ -133,4 +107,30 @@ object TestData {
   fun getOrderStatus() = OrderStatus.create(
     ALICE, PFI, TypeID(MessageKind.rfq.name), OrderStatusData("test status")
   )
+
+  private fun buildPresentationDefinition(
+    id: String = "test-pd-id",
+    name: String = "simple PD",
+    purpose: String = "pd for testing",
+    inputDescriptors: List<InputDescriptorV2> = listOf()
+  ): PresentationDefinitionV2 {
+    return PresentationDefinitionV2(
+      id = id,
+      name = name,
+      purpose = purpose,
+      inputDescriptors = inputDescriptors
+    )
+  }
+
+  private fun buildInputDescriptor(
+    id: String = "whatever",
+    purpose: String = "id for testing",
+    fields: List<FieldV2> = listOf()
+  ): InputDescriptorV2 {
+    return InputDescriptorV2(
+      id = id,
+      purpose = purpose,
+      constraints = ConstraintsV2(fields = fields)
+    )
+  }
 }
