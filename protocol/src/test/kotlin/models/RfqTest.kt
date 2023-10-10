@@ -36,7 +36,7 @@ class RfqTest {
   @Test
   fun `sign populates rfq signature`() {
     val rfq = TestData.getRfq()
-    rfq.sign("fakepk", "fakekid")
+    rfq.sign(TestData.ALICE_DID)
 
     assertThat(rfq.signature).isEqualTo("blah")
   }
@@ -44,7 +44,7 @@ class RfqTest {
   @Test
   fun `can parse an rfq from a json string`() {
     val rfq = TestData.getRfq()
-    rfq.sign("fakepk", "fakekid")
+    rfq.sign(TestData.ALICE_DID)
     val jsonMessage = rfq.toJson()
     val parsedMessage = Message.parse(jsonMessage)
 

@@ -9,9 +9,12 @@ import com.nimbusds.jose.jwk.JWK
 import com.nimbusds.jose.util.Base64URL
 import com.nimbusds.jwt.JWTParser
 import com.nimbusds.jwt.SignedJWT
+import foundation.identity.did.DIDURL
+import foundation.identity.did.VerificationMethod
 import web5.sdk.common.Convert
 import web5.sdk.crypto.Crypto
 import web5.sdk.dids.Did
+import web5.sdk.dids.DidResolvers
 import java.security.MessageDigest
 import java.security.SignatureException
 
@@ -27,15 +30,14 @@ object CryptoUtils {
   }
 
   fun verify(detachedPayload: String?, signature: String?) {
-    if (signature == null) {
-      throw Exception("Signature verification failed: Expected signature property to exist")
+    require(signature != null) {
+      throw IllegalArgumentException("Signature verification failed: Expected signature property to exist")
     }
 
     val jwt = JWTParser.parse(signature) as SignedJWT
     require(jwt.header.algorithm != null && jwt.header.keyID != null) {
       "Signature verification failed: Expected JWS header to contain alg and kid"
     }
-
 
     if (detachedPayload != null) {
       require(jwt.payload == null) { "Signature verification failed: Expected valid JWS with detached content" }
@@ -93,8 +95,10 @@ object CryptoUtils {
     Crypto.verify(publicKeyJwk, signedDataBytes, signatureBytes, jwt.header.algorithm)
   }
 
-  fun sign(did: Did, keyAlias: String, payload: Any): String {
+  fun sign(did: Did, payload: Any, keyAlias: String? = null): String {
     // TODO keyalias stuff
+//    require(keyAlias != null)
+
     val publicKey = did.keyManager.getPublicKey(keyAlias)
     val algorithm = publicKey.algorithm
     val jwsAlgorithm = JWSAlgorithm.parse(algorithm.toString())

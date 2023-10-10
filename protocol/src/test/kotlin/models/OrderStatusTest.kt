@@ -7,6 +7,7 @@ import models.MessageKind
 import models.OrderStatus
 import models.OrderStatusData
 import protocol.TestData
+import protocol.TestData.PFI_DID
 import typeid.TypeID
 import kotlin.test.Test
 import kotlin.test.assertIs
@@ -27,7 +28,7 @@ class OrderStatusTest {
   @Test
   fun `sign populates orderStatus signature`() {
     val orderStatus = TestData.getOrderStatus()
-    orderStatus.sign("fakepk", "fakekid")
+    orderStatus.sign(PFI_DID)
 
     assertThat(orderStatus.signature).isEqualTo("blah")
   }
@@ -35,7 +36,7 @@ class OrderStatusTest {
   @Test
   fun `can parse an orderStatus from a json string`() {
     val orderStatus = TestData.getOrderStatus()
-    orderStatus.sign("fakepk", "fakekid")
+    orderStatus.sign(PFI_DID)
     val jsonMessage = orderStatus.toJson()
     val parsedMessage = Message.parse(jsonMessage)
 

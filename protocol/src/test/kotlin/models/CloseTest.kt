@@ -21,7 +21,7 @@ class CloseTest {
   @Test
   fun `sign populates close signature`() {
     val close = TestData.getClose()
-    close.sign("fakepk", "fakekid")
+    close.sign(TestData.ALICE_DID)
 
     assertThat(close.signature).isEqualTo("blah")
   }
@@ -29,7 +29,7 @@ class CloseTest {
   @Test
   fun `can parse an close from a json string`() {
     val close = TestData.getClose()
-    close.sign("fakepk", "fakekid")
+    close.sign(TestData.ALICE_DID)
     val jsonMessage = close.toJson()
     val parsedMessage = Message.parse(jsonMessage)
 

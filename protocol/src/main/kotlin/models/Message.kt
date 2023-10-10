@@ -49,15 +49,17 @@ sealed class Message {
   }
 
   /**
-   * Verifies the cryptographic integrity of the message's signature.
+   * Verifies the signature of the data.
    *
-   * @throws Exception TODO link to crypto method throws
+   * This function verifies the signature using the previously set [signature] property.
+   * It compares the signature against a hashed payload consisting of metadata and data.
+   *
+   * @throws Exception if the verification fails or if the signature is missing.
    */
   private fun verify() {
-    // TODO detached payload sig check (regenerate payload and then check)
     val payload = mapOf("metadata" to this.metadata, "data" to this.data)
-    val base64UrlHashedPayload = CryptoUtils.hash(payload)
-    CryptoUtils.verify(base64UrlHashedPayload.toString(), this.signature)
+    val base64UrlHashedPayload = CryptoUtils.hash(payload).toString()
+    CryptoUtils.verify(detachedPayload = base64UrlHashedPayload, signature = this.signature)
   }
 
   /**
@@ -74,9 +76,16 @@ sealed class Message {
   }
 
 
-  fun sign(did: Did, keyAlias: String) {
+  /**
+   * Signs the Message using the specified [did] and optionally the given [keyAlias].
+   *
+   * @param did The DID (Decentralized Identifier) used for signing.
+   * @param keyAlias The alias of the key to be used for signing (optional).
+   * @throws Exception if the signing operation fails.
+   */
+  fun sign(did: Did, keyAlias: String? = null) {
     val payload = mapOf("metadata" to this.metadata, "data" to this.data)
-    this.signature = CryptoUtils.sign(did, keyAlias, payload)
+    this.signature = CryptoUtils.sign(did = did, payload = payload, keyAlias = keyAlias)
   }
 
   /**

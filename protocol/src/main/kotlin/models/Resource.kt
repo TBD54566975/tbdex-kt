@@ -1,11 +1,13 @@
 package models
 
+import CryptoUtils
 import Json
 import Json.objectMapper
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
 import typeid.TypeID
+import web5.sdk.dids.Did
 import java.time.OffsetDateTime
 
 /**
@@ -47,12 +49,17 @@ sealed class Resource {
   }
 
   /**
-   * Verifies the cryptographic integrity of the resource's signature.
+   * Verifies the signature of the Resource.
    *
-   * @throws Exception TODO link to crypto method throws
+   * This function verifies the signature using the previously set [signature] property.
+   * It compares the signature against a hashed payload consisting of metadata and data.
+   *
+   * @throws Exception if the verification fails or if the signature is missing.
    */
   private fun verify() {
-    // TODO sig check
+    val payload = mapOf("metadata" to this.metadata, "data" to this.data)
+    val base64UrlHashedPayload = CryptoUtils.hash(payload).toString()
+    CryptoUtils.verify(detachedPayload = base64UrlHashedPayload, signature = this.signature)
   }
 
   /**
@@ -69,13 +76,15 @@ sealed class Resource {
   }
 
   /**
-   * Signs the Resource using the private key and kid provided and populates the signature field.
+   * Signs the Resource using the specified [did] and optionally the given [keyAlias].
    *
-   * @param privateKey The private key used to sign the resource.
-   * @param kid The kid used to sign the resource
+   * @param did The DID (Decentralized Identifier) used for signing.
+   * @param keyAlias The alias of the key to be used for signing (optional).
+   * @throws Exception if the signing operation fails.
    */
-  fun sign(privateKey: String, kid: String) {
-    this.signature = "blah"
+  fun sign(did: Did, keyAlias: String? = null) {
+    val payload = mapOf("metadata" to this.metadata, "data" to this.data)
+    this.signature = CryptoUtils.sign(did = did, payload = payload, keyAlias = keyAlias)
   }
 
   /**

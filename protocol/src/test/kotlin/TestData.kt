@@ -18,11 +18,18 @@ import models.Rfq
 import models.RfqData
 import models.SelectedPaymentMethod
 import typeid.TypeID
+import web5.sdk.crypto.InMemoryKeyManager
+import web5.sdk.dids.Did
+import web5.sdk.dids.DidKey
 import java.time.OffsetDateTime
 
 object TestData {
   const val ALICE = "alice"
   const val PFI = "pfi"
+  private val aliceKeyManager = InMemoryKeyManager()
+  private val pfiKeyManager = InMemoryKeyManager()
+  val ALICE_DID: Did = DidKey.create(aliceKeyManager)
+  val PFI_DID: Did = DidKey.create(pfiKeyManager)
 
   fun getOffering() = Offering.create(
     from = PFI,

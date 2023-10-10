@@ -21,7 +21,7 @@ class OrderTest {
   @Test
   fun `sign populates order signature`() {
     val order = TestData.getOrder()
-    order.sign("fakepk", "fakekid")
+    order.sign(TestData.ALICE_DID)
 
     assertThat(order.signature).isEqualTo("blah")
   }
@@ -29,7 +29,7 @@ class OrderTest {
   @Test
   fun `can parse an order from a json string`() {
     val order = TestData.getOrder()
-    order.sign("fakepk", "fakekid")
+    order.sign(TestData.ALICE_DID)
     val jsonMessage = order.toJson()
     val parsedMessage = Message.parse(jsonMessage)
 
