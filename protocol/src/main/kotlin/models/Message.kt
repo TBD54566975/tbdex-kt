@@ -68,7 +68,6 @@ sealed class Message {
 //    if (output.errors != null) ...
   }
 
-
   /**
    * Signs the message, excluding the Rfq.private field if present,
    * as a detached payload JWT, using the private key and kid provided.
