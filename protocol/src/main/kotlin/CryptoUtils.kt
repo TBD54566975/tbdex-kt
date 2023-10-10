@@ -16,14 +16,30 @@ import web5.sdk.dids.DidResolvers
 import java.security.MessageDigest
 import java.security.SignatureException
 
+/**
+ * Utility functions for cryptographic operations and DID (Decentralized Identifier) handling.
+ */
 object CryptoUtils {
+  /**
+   * Hashes the provided payload using SHA-256.
+   *
+   * @param payload The payload to be hashed.
+   * @return The Base64URL-encoded hash of the payload.
+   */
   fun hash(payload: Any): Base64URL {
     val cborEncodedPayloadBuffer: ByteArray = cborMapper.writeValueAsBytes(payload)
     val sha256CborEncodedPayloadBytes: ByteArray = MessageDigest.getInstance("SHA-256").digest(cborEncodedPayloadBuffer)
-
     return Base64URL(Convert(sha256CborEncodedPayloadBytes).toBase64Url(padding = false))
   }
 
+  /**
+   * Verifies a detached signature against the provided payload.
+   *
+   * @param detachedPayload The detached payload to verify.
+   * @param signature The signature to verify.
+   * @throws IllegalArgumentException if the signature is missing.
+   * @throws SignatureException if the verification fails.
+   */
   fun verify(detachedPayload: String?, signature: String?) {
     require(signature != null) {
       throw IllegalArgumentException("Signature verification failed: Expected signature property to exist")
@@ -52,9 +68,9 @@ object CryptoUtils {
       )
     }
 
-    // create a set of possible id matches. the DID spec allows for an id to be the entire `did#fragment`
+    // Create a set of possible id matches. The DID spec allows for an id to be the entire `did#fragment`
     // or just `#fragment`. See: https://www.w3.org/TR/did-core/#relative-did-urls.
-    // using a set for fast string comparison. DIDs can be lonnng.
+    // Using a set for fast string comparison. DIDs can be long.
     val verificationMethodIds = setOf(parsedDidUrl.didUrlString, "#${parsedDidUrl.fragment}")
     val assertionMethods = didResolutionResult.didDocument.assertionMethodVerificationMethodsDereferenced
     var assertionMethod: VerificationMethod? = null
@@ -86,39 +102,46 @@ object CryptoUtils {
 
     val signedData = "${jwt.header.toBase64URL()}.$detachedPayload"
     val signedDataBytes = Convert(signedData).toByteArray()
-
     val signatureBytes = jwt.signature.decode()
 
     Crypto.verify(publicKeyJwk, signedDataBytes, signatureBytes, jwt.header.algorithm)
   }
 
+  /**
+   * Signs the provided payload using the specified DID and key.
+   *
+   * @param did The DID to use for signing.
+   * @param payload The payload to sign.
+   * @param keyAlias The alias of the key to be used for signing (optional).
+   * @return The signed payload as a detached payload JWT (JSON Web Token).
+   */
   fun sign(did: Did, payload: Any, keyAlias: String? = null): String {
-    val keyAliaz = keyAlias ?: run {
+    val keyAliasToUse = keyAlias ?: run {
       val didResolutionResult = DidResolvers.resolve(did.uri)
       val verificationMethod = didResolutionResult.didDocument.allVerificationMethods[0]
 
-      require(verificationMethod != null) { "no verification method found" }
+      require(verificationMethod != null) { "No verification method found" }
 
       val jwk = JWK.parse(verificationMethod.publicKeyJwk)
       jwk.keyID
     }
 
-    val publicKey = did.keyManager.getPublicKey(keyAliaz)
+    val publicKey = did.keyManager.getPublicKey(keyAliasToUse)
     val algorithm = publicKey.algorithm
     val jwsAlgorithm = JWSAlgorithm.parse(algorithm.toString())
 
     val jwtHeader = JWSHeader.Builder(jwsAlgorithm)
-      .keyID(keyAliaz)
+      .keyID(keyAliasToUse)
       .build()
 
-    // create payload
+    // Create payload
     val base64UrlHashedPayload = hash(payload)
     val jwsPayload = Payload(base64UrlHashedPayload)
 
     val jwsObject = JWSObject(jwtHeader, jwsPayload)
     val toSign = jwsObject.signingInput
 
-    val signatureBytes = did.keyManager.sign(keyAliaz, toSign)
+    val signatureBytes = did.keyManager.sign(keyAliasToUse, toSign)
 
     val base64UrlEncodedSignature = Base64URL(Convert(signatureBytes).toBase64Url(padding = false))
     val base64UrlEncodedHeader = jwtHeader.toBase64URL()
