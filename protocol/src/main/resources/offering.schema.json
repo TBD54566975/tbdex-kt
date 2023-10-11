@@ -64,7 +64,7 @@
       }
     },
     "requiredClaims": {
-      "type": "object",
+      "type": "array",
       "description": "PresentationDefinition that describes the credential(s) the PFI requires in order to provide a quote."
     }
   },
