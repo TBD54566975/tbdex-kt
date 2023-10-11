@@ -28,7 +28,7 @@ class QuoteTest {
     )
 
     assertAll {
-      assertContains(quote.metadata.id.toString(), "quote")
+      assertThat(quote.metadata.id.prefix).isEqualTo("quote")
       assertThat(quote.data.payin.amountSubunits).isEqualTo(10_00)
     }
   }

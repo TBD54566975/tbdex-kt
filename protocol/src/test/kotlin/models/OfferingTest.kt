@@ -30,8 +30,8 @@ class OfferingTest {
     )
 
     assertAll {
-      assertContains(offering.metadata.id.toString(), "offering")
       assertThat(offering.data.description).isEqualTo("my fake offering")
+      assertThat(offering.metadata.id.prefix).isEqualTo("offering")
     }
   }
 

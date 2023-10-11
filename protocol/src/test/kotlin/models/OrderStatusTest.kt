@@ -20,7 +20,7 @@ class OrderStatusTest {
     )
 
     assertk.assertAll {
-      assertContains(orderStatus.metadata.id.toString(), "orderstatus")
+      assertThat(orderStatus.metadata.id.prefix).isEqualTo("orderstatus")
       assertThat(orderStatus.data.status).isEqualTo("my status")
     }
   }
