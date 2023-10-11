@@ -6,9 +6,7 @@ import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
 import kotlin.test.assertContains
-import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
-import kotlin.test.assertTrue
 
 class CloseTest {
   @Test
