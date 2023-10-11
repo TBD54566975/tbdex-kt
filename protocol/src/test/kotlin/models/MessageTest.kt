@@ -41,7 +41,13 @@ class MessageTest {
     rfq.sign("fakepk", "fakekid")
     val order = TestData.getOrder()
     order.sign("fakepk", "fakekid")
-    listOf(Json.stringify(rfq), Json.stringify(order)).map { assertIs<Unit>(Message.validate(it)) }
+    listOf(Json.stringify(rfq), Json.stringify(order)).map {
+      try {
+        Message.validate(it)
+      } catch (e: Exception) {
+        throw e
+      }
+    }
   }
 
   @Test

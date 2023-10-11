@@ -4,12 +4,14 @@ import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import models.CurrencyDetails
+import models.Message
 import models.Offering
 import models.OfferingData
 import models.PresentationExchange
 import models.Resource
 import protocol.TestData
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertIs
 
 class OfferingTest {
@@ -29,8 +31,8 @@ class OfferingTest {
     )
 
     assertAll {
+      assertContains(offering.metadata.id, "offering")
       assertThat(offering.data.description).isEqualTo("my fake offering")
-      assertThat(offering.metadata.id.prefix).isEqualTo("offering")
     }
   }
 
@@ -51,5 +53,17 @@ class OfferingTest {
 
     assertIs<Offering>(parsed)
     assertThat(parsed.toJson()).isEqualTo(jsonResource)
+  }
+
+  @Test
+  fun `can validate an offering`() {
+    val offering = TestData.getOffering()
+    offering.sign("fakepk", "fakekid")
+
+    try {
+      Message.validate(Json.stringify(offering))
+    } catch (e: Exception) {
+      throw e
+    }
   }
 }

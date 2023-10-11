@@ -42,7 +42,7 @@ object TestData {
     pfi,
     alice,
     RfqData(
-      offeringID = offeringId,
+      offeringId = offeringId.toString(),
       payinSubunits = 10_00,
       payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
       payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),

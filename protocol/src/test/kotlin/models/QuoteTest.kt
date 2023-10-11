@@ -12,6 +12,7 @@ import protocol.TestData
 import typeid.TypeID
 import java.time.OffsetDateTime
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertIs
 
 class QuoteTest {
@@ -27,7 +28,7 @@ class QuoteTest {
     )
 
     assertAll {
-      assertThat(quote.metadata.id.prefix).isEqualTo("quote")
+      assertContains(quote.metadata.id, "quote")
       assertThat(quote.data.payin.amountSubunits).isEqualTo(10_00)
     }
   }
@@ -49,6 +50,18 @@ class QuoteTest {
 
     assertIs<Quote>(parsedMessage)
     assertThat(parsedMessage.toJson()).isEqualTo(jsonMessage)
+  }
+
+  @Test
+  fun `can validate a quote`() {
+    val quote = TestData.getQuote()
+    quote.sign("fakepk", "fakekid")
+
+    try {
+      Message.validate(Json.stringify(quote))
+    } catch (e: Exception) {
+      throw e
+    }
   }
 }
 

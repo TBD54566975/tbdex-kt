@@ -9,6 +9,7 @@ import models.OrderStatusData
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertIs
 
 class OrderStatusTest {
@@ -19,7 +20,7 @@ class OrderStatusTest {
     )
 
     assertk.assertAll {
-      assertThat(orderStatus.metadata.id.prefix).isEqualTo("orderstatus")
+      assertContains(orderStatus.metadata.id, "orderstatus")
       assertThat(orderStatus.data.status).isEqualTo("my status")
     }
   }
@@ -41,5 +42,17 @@ class OrderStatusTest {
 
     assertIs<OrderStatus>(parsedMessage)
     assertThat(parsedMessage.toJson()).isEqualTo(jsonMessage)
+  }
+
+  @Test
+  fun `can validate an orderStatus`() {
+    val orderStatus = TestData.getOrderStatus()
+    orderStatus.sign("fakepk", "fakekid")
+
+    try {
+      Message.validate(Json.stringify(orderStatus))
+    } catch (e: Exception) {
+      throw e
+    }
   }
 }

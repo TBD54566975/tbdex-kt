@@ -8,6 +8,7 @@ import models.Order
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertIs
 
 class OrderTest {
@@ -15,7 +16,7 @@ class OrderTest {
   fun `can create a new order`() {
     val order = Order.create("pfi", "alice", TypeID(MessageKind.rfq.name))
 
-    assertThat(order.metadata.id.prefix).isEqualTo("order")
+    assertContains(order.metadata.id, "order")
   }
 
   @Test
@@ -35,5 +36,17 @@ class OrderTest {
 
     assertIs<Order>(parsedMessage)
     assertThat(parsedMessage.toJson()).isEqualTo(jsonMessage)
+  }
+
+  @Test
+  fun `can validate an order`() {
+    val order = TestData.getOrder()
+    order.sign("fakepk", "fakekid")
+
+    try {
+      Message.validate(Json.stringify(order))
+    } catch (e: Exception) {
+      throw e
+    }
   }
 }

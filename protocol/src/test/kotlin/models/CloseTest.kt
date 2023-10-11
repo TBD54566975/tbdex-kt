@@ -5,6 +5,7 @@ import assertk.assertions.isEqualTo
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlin.test.assertTrue
@@ -15,7 +16,7 @@ class CloseTest {
     val close = Close.create("pfi", "alice", TypeID(MessageKind.rfq.name), CloseData("my reason"))
 
     assertk.assertAll {
-      assertThat(close.metadata.id.prefix).isEqualTo("close")
+      assertContains(close.metadata.id, "close")
       assertThat(close.data.reason).isEqualTo("my reason")
     }
   }
@@ -43,8 +44,11 @@ class CloseTest {
   fun `can validate a close`() {
     val close = TestData.getClose()
     close.sign("fakepk", "fakekid")
-    // TODO: find a better way to assert no exceptions
-    assertIs<Unit>(Message.validate(Json.stringify(close)))
-  }
 
+    try {
+      Message.validate(Json.stringify(close))
+    } catch (e: Exception) {
+      throw e
+    }
+  }
 }

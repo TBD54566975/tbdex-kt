@@ -11,6 +11,7 @@ import models.SelectedPaymentMethod
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertIs
 
 class RfqTest {
@@ -19,7 +20,7 @@ class RfqTest {
     val rfq = Rfq.create(
       "pfi", "alice",
       RfqData(
-        offeringID = TypeID(ResourceKind.offering.name),
+        offeringId = TypeID(ResourceKind.offering.name).toString(),
         payinSubunits = 10_00,
         payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
         payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
@@ -28,7 +29,7 @@ class RfqTest {
     )
 
     assertAll {
-      assertThat(rfq.metadata.id.prefix).isEqualTo("rfq")
+      assertContains(rfq.metadata.id, "rfq")
       assertThat(rfq.data.payinSubunits).isEqualTo(10_00)
     }
   }
@@ -50,6 +51,18 @@ class RfqTest {
 
     assertIs<Rfq>(parsedMessage)
     assertThat(parsedMessage.toJson()).isEqualTo(jsonMessage)
+  }
+
+  @Test
+  fun `can validate a rfq`() {
+    val rfq = TestData.getRfq()
+    rfq.sign("fakepk", "fakekid")
+
+    try {
+      Message.validate(Json.stringify(rfq))
+    } catch (e: Exception) {
+      throw e
+    }
   }
 }
 
