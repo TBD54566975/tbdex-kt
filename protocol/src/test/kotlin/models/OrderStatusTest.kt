@@ -6,6 +6,7 @@ import models.Message
 import models.MessageKind
 import models.OrderStatus
 import models.OrderStatusData
+import org.junit.jupiter.api.assertDoesNotThrow
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
@@ -49,10 +50,6 @@ class OrderStatusTest {
     val orderStatus = TestData.getOrderStatus()
     orderStatus.sign("fakepk", "fakekid")
 
-    try {
-      Message.validate(Json.stringify(orderStatus))
-    } catch (e: Exception) {
-      throw e
-    }
+    assertDoesNotThrow { Message.validate(Json.stringify(orderStatus)) }
   }
 }

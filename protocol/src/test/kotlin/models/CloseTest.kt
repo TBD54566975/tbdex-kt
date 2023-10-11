@@ -2,6 +2,7 @@ package models
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import org.junit.jupiter.api.assertDoesNotThrow
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
@@ -43,10 +44,6 @@ class CloseTest {
     val close = TestData.getClose()
     close.sign("fakepk", "fakekid")
 
-    try {
-      Message.validate(Json.stringify(close))
-    } catch (e: Exception) {
-      throw e
-    }
+    assertDoesNotThrow { Message.validate(Json.stringify(close)) }
   }
 }

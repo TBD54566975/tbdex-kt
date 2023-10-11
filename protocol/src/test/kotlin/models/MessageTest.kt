@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParseException
 import models.Message
 import models.Order
 import models.Rfq
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import protocol.TestData
 import kotlin.test.Test
@@ -62,11 +63,7 @@ class MessageTest {
     order.sign("fakepk", "fakekid")
 
     listOf(rfq, quote, order).map {
-      try {
-        Message.validate(Json.stringify(it))
-      } catch (e: Exception) {
-        throw e
-      }
+      assertDoesNotThrow { Message.validate(Json.stringify(it)) }
     }
   }
 }

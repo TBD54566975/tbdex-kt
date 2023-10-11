@@ -5,6 +5,7 @@ import assertk.assertions.isEqualTo
 import models.Message
 import models.MessageKind
 import models.Order
+import org.junit.jupiter.api.assertDoesNotThrow
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
@@ -43,10 +44,6 @@ class OrderTest {
     val order = TestData.getOrder()
     order.sign("fakepk", "fakekid")
 
-    try {
-      Message.validate(Json.stringify(order))
-    } catch (e: Exception) {
-      throw e
-    }
+    assertDoesNotThrow { Message.validate(Json.stringify(order)) }
   }
 }

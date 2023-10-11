@@ -8,6 +8,7 @@ import models.MessageKind
 import models.Quote
 import models.QuoteData
 import models.QuoteDetails
+import org.junit.jupiter.api.assertDoesNotThrow
 import protocol.TestData
 import typeid.TypeID
 import java.time.OffsetDateTime
@@ -57,11 +58,7 @@ class QuoteTest {
     val quote = TestData.getQuote()
     quote.sign("fakepk", "fakekid")
 
-    try {
-      Message.validate(Json.stringify(quote))
-    } catch (e: Exception) {
-      throw e
-    }
+    assertDoesNotThrow { Message.validate(Json.stringify(quote)) }
   }
 }
 
