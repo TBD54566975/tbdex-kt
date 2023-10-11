@@ -2,13 +2,12 @@ package models
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import dateTimeFormat
-import typeid.TypeID
 import java.time.OffsetDateTime
 
 sealed interface MessageData
 
 class RfqData(
-  val offeringID: TypeID,
+  val offeringId: String,
   val payinSubunits: Int,
   val payinMethod: SelectedPaymentMethod,
   val payoutMethod: SelectedPaymentMethod,
