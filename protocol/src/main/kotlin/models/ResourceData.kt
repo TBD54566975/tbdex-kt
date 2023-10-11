@@ -1,6 +1,7 @@
 package models
 
-import com.networknt.schema.JsonSchema
+import org.everit.json.schema.Schema
+
 import web5.sdk.credentials.PresentationDefinitionV2
 
 /**
@@ -35,5 +36,5 @@ class CurrencyDetails(
  */
 class PaymentMethod(
   val kind: String,
-  val requiredPaymentDetails: JsonSchema
+  val requiredPaymentDetails: Schema? = null
 )

@@ -16,7 +16,6 @@ repositories {
 }
 
 dependencies {
-  implementation("com.networknt:json-schema-validator:1.0.87")
   implementation("me.lessis:typeid:0.0.2")
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8")
