@@ -14,8 +14,8 @@ class Order private constructor(
         kind = MessageKind.order,
         to = to,
         from = from,
-        id = TypeID(MessageKind.order.name).toString(),
-        exchangeId = exchangeId.toString(),
+        id = TypeID(MessageKind.order.name),
+        exchangeId = exchangeId,
         createdAt = OffsetDateTime.now()
       )
       return Order(metadata, OrderData())

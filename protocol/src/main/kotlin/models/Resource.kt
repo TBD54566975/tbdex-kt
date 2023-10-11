@@ -2,8 +2,12 @@ package models
 
 import Json
 import Json.objectMapper
+import StringToTypeIdDeserializer
+import TypeIDToStringSerializer
+import Validator
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
 import org.json.JSONObject
@@ -18,7 +22,9 @@ enum class ResourceKind {
 class ResourceMetadata(
   val kind: ResourceKind,
   val from: String,
-  val id: String,
+  @JsonSerialize(using = TypeIDToStringSerializer::class)
+  @JsonDeserialize(using = StringToTypeIdDeserializer::class)
+  val id: TypeID,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val createdAt: OffsetDateTime,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")

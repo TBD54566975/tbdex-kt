@@ -2,8 +2,12 @@ package models
 
 import Json
 import Json.objectMapper
+import StringToTypeIdDeserializer
+import TypeIDToStringSerializer
 import Validator
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
 import org.json.JSONObject
@@ -20,11 +24,16 @@ class MessageMetadata(
   val kind: MessageKind,
   val to: String,
   val from: String,
-  val id: String,
-  val exchangeId: String,
+  @JsonSerialize(using = TypeIDToStringSerializer::class)
+  @JsonDeserialize(using = StringToTypeIdDeserializer::class)
+  val id: TypeID,
+  @JsonDeserialize(using = StringToTypeIdDeserializer::class)
+  @JsonSerialize(using = TypeIDToStringSerializer::class)
+  val exchangeId: TypeID,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val createdAt: OffsetDateTime
 )
+
 
 sealed class Message {
   abstract val metadata: MessageMetadata

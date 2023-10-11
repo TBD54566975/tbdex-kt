@@ -14,8 +14,8 @@ class Close private constructor(
         kind = MessageKind.close,
         to = to,
         from = from,
-        id = TypeID(MessageKind.close.name).toString(),
-        exchangeId = exchangeId.toString(),
+        id = TypeID(MessageKind.close.name),
+        exchangeId = exchangeId,
         createdAt = OffsetDateTime.now()
       )
       return Close(metadata, closeData)

@@ -20,8 +20,8 @@ class Quote private constructor(
         kind = MessageKind.quote,
         to = to,
         from = from,
-        id = TypeID(MessageKind.quote.name).toString(),
-        exchangeId = exchangeID.toString(),
+        id = TypeID(MessageKind.quote.name),
+        exchangeId = exchangeID,
         createdAt = OffsetDateTime.now()
       )
 

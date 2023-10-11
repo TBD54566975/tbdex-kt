@@ -14,7 +14,7 @@ class CloseTest {
     val close = Close.create("pfi", "alice", TypeID(MessageKind.rfq.name), CloseData("my reason"))
 
     assertk.assertAll {
-      assertContains(close.metadata.id, "close")
+      assertContains(close.metadata.id.toString(), "close")
       assertThat(close.data.reason).isEqualTo("my reason")
     }
   }

@@ -16,7 +16,7 @@ class OrderTest {
   fun `can create a new order`() {
     val order = Order.create("pfi", "alice", TypeID(MessageKind.rfq.name))
 
-    assertContains(order.metadata.id, "order")
+    assertContains(order.metadata.id.toString(), "order")
   }
 
   @Test

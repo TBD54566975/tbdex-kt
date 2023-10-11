@@ -1,11 +1,29 @@
+import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ObjectWriter
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import org.json.JSONObject
+import typeid.TypeID
 
 const val dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+
+class TypeIDToStringSerializer : JsonSerializer<TypeID>() {
+  override fun serialize(value: TypeID, gen: JsonGenerator, serializers: SerializerProvider) {
+    gen.writeString(value.toString())
+  }
+}
+
+class StringToTypeIdDeserializer : JsonDeserializer<TypeID>() {
+  override fun deserialize(p: JsonParser?, ctxt: DeserializationContext?): TypeID {
+    return TypeID.fromString(p?.valueAsString).get()
+  }
+}
 
 object Json {
   // has to be public in order for Json.parse<Type>() to work

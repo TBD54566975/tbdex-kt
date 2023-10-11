@@ -29,7 +29,7 @@ class RfqTest {
     )
 
     assertAll {
-      assertContains(rfq.metadata.id, "rfq")
+      assertContains(rfq.metadata.id.toString(), "rfq")
       assertThat(rfq.data.payinSubunits).isEqualTo(10_00)
     }
   }
