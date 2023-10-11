@@ -2,7 +2,6 @@ package models
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.networknt.schema.JsonSchemaException
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
@@ -41,13 +40,11 @@ class CloseTest {
   }
 
   @Test
-  fun `can validate close message`() {
+  fun `can validate a close`() {
     val close = TestData.getClose()
     close.sign("fakepk", "fakekid")
-    val jsonMessage = close.toJson()
-    val parsedMessage = Message.parse(jsonMessage)
-    Message.validate(parsedMessage)
-    // TODO: need to address that schema validation isn't working because https://tbdex.io/definitions.json is not valid
+    // TODO: find a better way to assert no exceptions
+    assertIs<Unit>(Message.validate(Json.stringify(close)))
   }
 
 }
