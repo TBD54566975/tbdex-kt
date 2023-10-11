@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
+import org.json.JSONObject
 import typeid.TypeID
 import java.time.OffsetDateTime
 
@@ -29,33 +30,11 @@ sealed class Resource {
   abstract val data: ResourceData
   abstract var signature: String?
 
-  init {
-    if (signature != null) {
-      verify()
-    } else {
-      validate()
-    }
-  }
-
-  fun verify() {
-    validate()
-
-    // TODO sig check
-  }
-
-  fun validate() {
-    // TODO validate against json schema
-//    val schema = schemaMap.get(metadata.kind.name)
-//    val jsonString = this.toString()
-//    schema.validateBasic(jsonString)
-//    if (output.errors != null) ...
-  }
-
   fun sign(privateKey: String, kid: String) {
     this.signature = "blah"
   }
 
-  fun toJsonString(): String {
+  fun toJson(): String {
     return Json.stringify(this)
   }
 
@@ -76,14 +55,20 @@ sealed class Resource {
       }
     }
 
-    fun validate(resource: Resource) {
-      val jsonNodeResource = objectMapper.valueToTree<JsonNode>(resource)
+    fun verify() {
+      // TODO detached payload sig check (regenerate payload and then check)
+    }
 
+    fun validate(resource: String) {
+      val resourceJson = JSONObject(resource)
       // validate message structure
-      Validator.validate(jsonNodeResource, "resource")
+      Validator.validate(resourceJson, "resource")
 
-      // validate specific message data (Rfq, Quote, etc)
-      Validator.validate(jsonNodeResource, resource.metadata.kind.name)
+      val dataJson = resourceJson.getJSONObject("data")
+      val metadataJson = resourceJson.getJSONObject("metadata")
+      val kind = metadataJson.getString("kind")
+      // validate specific resource data
+      Validator.validate(dataJson, kind)
     }
   }
 }

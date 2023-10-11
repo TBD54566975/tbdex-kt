@@ -2,10 +2,11 @@ package models
 
 import Json
 import Json.objectMapper
+import Validator
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
+import org.json.JSONObject
 import typeid.TypeID
 import java.time.OffsetDateTime
 
@@ -29,28 +30,6 @@ sealed class Message {
   abstract val metadata: MessageMetadata
   abstract val data: MessageData
   abstract var signature: String?
-
-  init {
-    if (signature != null) {
-      verify()
-    } else {
-      validate()
-    }
-  }
-
-  fun verify() {
-    validate()
-
-    // TODO detached payload sig check (regenerate payload and then check)
-  }
-
-  fun validate() {
-    // TODO validate against json schema
-//    val schema = schemaMap.get(metadata.kind.name)
-//    val jsonString = this.toString()
-//    schema.validateBasic(jsonString)
-//    if (output.errors != null) ...
-  }
 
   // TODO - use web5 crypto and fix the types
   fun sign(privateKey: String, kid: String) {
@@ -80,17 +59,21 @@ sealed class Message {
         MessageKind.close -> objectMapper.readValue<Close>(payload)
       }
     }
+    fun verify() {
+      // TODO detached payload sig check (regenerate payload and then check)
+    }
 
     // js version takes any for jsonMessage
-    fun validate(message: Message) {
-      val jsonNodeMessage = objectMapper.valueToTree<JsonNode>(message)
-      println(jsonNodeMessage)
-
+    fun validate(message: String) {
+      val messageJson = JSONObject(message)
       // validate message structure
-      Validator.validate(jsonNodeMessage, "message")
+      Validator.validate(messageJson, "message")
 
+      val dataJson = messageJson.getJSONObject("data")
+      val metadataJson = messageJson.getJSONObject("metadata")
+      val kind = metadataJson.getString("kind")
       // validate specific message data (Rfq, Quote, etc)
-      Validator.validate(jsonNodeMessage.get("data"), message.metadata.kind.name)
+      Validator.validate(dataJson, kind)
     }
   }
 }

@@ -18,8 +18,8 @@ class Playground {
       val closeJsonObject = JSONObject(Json.stringify(close))
       val closeDataJsonObject = JSONObject(Json.stringify(close.data))
 
-      VValidator.validate(closeJsonObject, "message")
-      VValidator.validate(closeDataJsonObject, "close")
+      Validator.validate(closeJsonObject, "message")
+      Validator.validate(closeDataJsonObject, "close")
 
 
     }

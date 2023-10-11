@@ -21,8 +21,8 @@ import typeid.TypeID
 import java.time.OffsetDateTime
 
 object TestData {
-  val alice = "alice"
-  val pfi = "pfi"
+  val alice = TestDataDids.alice
+  val pfi = TestDataDids.pfi
 
   fun getOffering() = Offering.create(
     from = pfi,
