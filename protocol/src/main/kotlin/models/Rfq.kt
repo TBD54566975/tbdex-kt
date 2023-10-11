@@ -3,7 +3,7 @@ package models
 import models.Close.Companion.create
 import models.Rfq.Companion.create
 import typeid.TypeID
-import web5.credentials.PresentationDefinitionV2
+import web5.sdk.credentials.PresentationDefinitionV2
 import java.time.OffsetDateTime
 
 /**
@@ -30,7 +30,7 @@ class Rfq private constructor(
    * @throws Exception if the Rfq doesn't satisfy the Offering's requirements
    */
   fun verifyOfferingRequirements(offering: Offering) {
-    require(data.offeringID == offering.metadata.id)
+    require(data.offeringId == offering.metadata.id)
 
     if (offering.data.payinCurrency.minSubunits != null)
       check(offering.data.payinCurrency.minSubunits <= this.data.payinSubunits)

@@ -1,7 +1,7 @@
 package models
 
 import com.networknt.schema.JsonSchema
-import web5.credentials.PresentationDefinitionV2
+import web5.sdk.credentials.PresentationDefinitionV2
 
 /**
  * An interface that represents the contents of a [Resource].

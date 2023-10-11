@@ -18,12 +18,12 @@ import models.Rfq
 import models.RfqData
 import models.SelectedPaymentMethod
 import typeid.TypeID
-import web5.credentials.ConstraintsV2
-import web5.credentials.FieldV2
-import web5.credentials.InputDescriptorV2
-import web5.credentials.PresentationDefinitionV2
-import web5.credentials.VcDataModel
-import web5.credentials.VerifiableCredential
+import web5.sdk.credentials.ConstraintsV2
+import web5.sdk.credentials.FieldV2
+import web5.sdk.credentials.InputDescriptorV2
+import web5.sdk.credentials.PresentationDefinitionV2
+import web5.sdk.credentials.VcDataModel
+import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidKey
 import java.net.URI
@@ -57,7 +57,7 @@ object TestData {
       .issuer(URI.create(did.uri))
       .issuanceDate(Date())
       .build()
-      
+
     return VerifiableCredential.create("test type", did.uri, did.uri, vc)
   }
 
@@ -102,6 +102,10 @@ object TestData {
 
   fun getOrderStatus() = OrderStatus.create(
     ALICE, PFI, TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
+  )
+
+  fun getOrderStatusWithInvalidDid() = OrderStatus.create(
+    "alice", PFI, TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
   )
   
   private fun buildField(id: String? = null, vararg paths: String): FieldV2 {
