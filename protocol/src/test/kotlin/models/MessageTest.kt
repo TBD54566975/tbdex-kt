@@ -3,14 +3,13 @@ package protocol.models
 import com.fasterxml.jackson.core.JsonParseException
 import models.Message
 import models.Order
-import models.Resource
 import models.Rfq
 import org.junit.jupiter.api.assertThrows
 import protocol.TestData
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
-import kotlin.test.assertTrue
 
 class MessageTest {
   @Test
@@ -37,26 +36,37 @@ class MessageTest {
   }
 
   @Test
+  fun `validate throws error if message is unsigned`() {
+    val exception = assertFailsWith<Exception> {
+      Message.validate(Json.stringify(TestData.getQuote()))
+    }
+    exception.message?.let { assertContains(it, "[#/signature: expected type: String, found: Null]") }
+  }
+
+  @Test
+  fun `validate throws error if message did is invalid`() {
+    val exception = assertFailsWith<Exception> {
+      Message.validate(Json.stringify(TestData.getInvalidDid()))
+    }
+    println(exception)
+    exception.message?.let { assertContains(it, "does not match pattern ^did") }
+  }
+
+  @Test
   fun `can validate a list of messages`() {
     val rfq = TestData.getRfq()
-    rfq.sign("fakepk", "fakekid")
+    val quote = TestData.getQuote()
     val order = TestData.getOrder()
+    rfq.sign("fakepk", "fakekid")
+    quote.sign("fakepk", "fakekid")
     order.sign("fakepk", "fakekid")
-    listOf(Json.stringify(rfq), Json.stringify(order)).map {
+
+    listOf(rfq, quote, order).map {
       try {
-        Message.validate(it)
+        Message.validate(Json.stringify(it))
       } catch (e: Exception) {
         throw e
       }
     }
-  }
-
-  @Test
-  fun `validate throws error if did is not valid`() {
-    val exception = assertFailsWith<Exception> {
-      Resource.validate(Json.stringify(TestData.getInvalidOffering()))
-    }
-    println(exception)
-    assertTrue(exception.message?.contains("does not match pattern ^did") == true)
   }
 }
