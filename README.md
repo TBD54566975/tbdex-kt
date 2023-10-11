@@ -6,6 +6,9 @@ This repo contains 3 jvm packages:
 * [`/http-server`](./http-server) - A configurable implementation of the [tbdex http api draft specification](https://github.com/TBD54566975/tbdex-protocol/blob/main/rest-api/README.md)
 
 ## tbDEX Schemas
+> **Warning**  
+> Until `tbdex` is stable, do not sync schemas into `tbdex-kt`!
+
 Make sure to import/update the JSON schemas which define the tbDEX message and resource formats.
 
 Navigate to the `tbdex` directory and run:
