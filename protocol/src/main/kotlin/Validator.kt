@@ -1,4 +1,3 @@
-import com.fasterxml.jackson.databind.JsonNode
 import models.MessageKind
 import models.ResourceKind
 import org.everit.json.schema.Schema
