@@ -35,7 +35,7 @@ object TestData {
   const val ALICE = "alice"
   const val PFI = "pfi"
   private val keyManager = InMemoryKeyManager()
-  private val did = DidKey(keyManager, "blah")
+  private val did = DidKey("blah", keyManager)
 
   fun getPresentationDefinition(): PresentationDefinitionV2 {
     return buildPresentationDefinition(
