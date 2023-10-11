@@ -1,13 +1,20 @@
 package models
 
+import StringToTypeIdDeserializer
+import TypeIDToStringSerializer
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import dateTimeFormat
+import typeid.TypeID
 import java.time.OffsetDateTime
 
 sealed interface MessageData
 
 class RfqData(
-  val offeringId: String,
+  @JsonSerialize(using = TypeIDToStringSerializer::class)
+  @JsonDeserialize(using = StringToTypeIdDeserializer::class)
+  val offeringId: TypeID,
   val payinSubunits: Int,
   val payinMethod: SelectedPaymentMethod,
   val payoutMethod: SelectedPaymentMethod,

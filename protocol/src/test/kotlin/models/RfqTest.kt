@@ -8,6 +8,7 @@ import models.ResourceKind
 import models.Rfq
 import models.RfqData
 import models.SelectedPaymentMethod
+import org.junit.jupiter.api.assertDoesNotThrow
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
@@ -20,7 +21,7 @@ class RfqTest {
     val rfq = Rfq.create(
       "pfi", "alice",
       RfqData(
-        offeringId = TypeID(ResourceKind.offering.name).toString(),
+        offeringId = TypeID(ResourceKind.offering.name),
         payinSubunits = 10_00,
         payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
         payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
@@ -58,10 +59,8 @@ class RfqTest {
     val rfq = TestData.getRfq()
     rfq.sign("fakepk", "fakekid")
 
-    try {
+    assertDoesNotThrow {
       Message.validate(Json.stringify(rfq))
-    } catch (e: Exception) {
-      throw e
     }
   }
 }

@@ -46,7 +46,7 @@ class MessageTest {
   @Test
   fun `validate throws error if message did is invalid`() {
     val exception = assertFailsWith<Exception> {
-      Message.validate(Json.stringify(TestData.getInvalidDid()))
+      Message.validate(Json.stringify(TestData.getOrderStatusWithInvalidDid()))
     }
     println(exception)
     exception.message?.let { assertContains(it, "does not match pattern ^did") }

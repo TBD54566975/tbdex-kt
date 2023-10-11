@@ -41,7 +41,7 @@ object TestData {
     did,
     did,
     RfqData(
-      offeringId = offeringId.toString(),
+      offeringId = offeringId,
       payinSubunits = 10_00,
       payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
       payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
@@ -66,7 +66,7 @@ object TestData {
     did, did, TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
   )
 
-  fun getInvalidDid() = OrderStatus.create(
+  fun getOrderStatusWithInvalidDid() = OrderStatus.create(
     fakeDid, fakeDid, TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
   )
 }
