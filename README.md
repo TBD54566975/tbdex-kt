@@ -7,7 +7,7 @@ This repo contains 3 jvm packages:
 
 ## tbDEX Schemas
 > **Warning**  
-> Until `tbdex` is stable, do not sync schemas into `tbdex-kt`!
+> Until `tbdex` is stable, do not sync schemas into `tbdex-kt`
 
 Make sure to import/update the JSON schemas which define the tbDEX message and resource formats.
 
