@@ -66,12 +66,13 @@ sealed class Message {
     // js version takes any for jsonMessage
     fun validate(message: String) {
       val messageJson = JSONObject(message)
+
       // validate message structure
       Validator.validate(messageJson, "message")
 
       val dataJson = messageJson.getJSONObject("data")
-      val metadataJson = messageJson.getJSONObject("metadata")
-      val kind = metadataJson.getString("kind")
+      val kind = messageJson.getJSONObject("metadata").getString("kind")
+
       // validate specific message data (Rfq, Quote, etc)
       Validator.validate(dataJson, kind)
     }
