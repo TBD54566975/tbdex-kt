@@ -105,7 +105,7 @@ object TestData {
   )
 
   fun getOrderStatusWithInvalidDid() = OrderStatus.create(
-    "alice", PFI, TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
+    "alice", "pfi", TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
   )
   
   private fun buildField(id: String? = null, vararg paths: String): FieldV2 {

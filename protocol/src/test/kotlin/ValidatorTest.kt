@@ -50,8 +50,8 @@ class ValidatorTest {
       Validator.validate(JSONObject(Json.stringify(orderStatus.data)), "orderstatus")
     }
     exception.message?.let {
-      assertContains(it, "#/metadata/from: string [fakeDid] does not match pattern")
-      assertContains(it, "#/metadata/to: string [fakeDid] does not match pattern")
+      assertContains(it, "#/metadata/from: string [pfi] does not match pattern")
+      assertContains(it, "#/metadata/to: string [alice] does not match pattern")
     }
   }
 
