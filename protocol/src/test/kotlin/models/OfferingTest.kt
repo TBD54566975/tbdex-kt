@@ -6,7 +6,6 @@ import assertk.assertions.isEqualTo
 import models.CurrencyDetails
 import models.Offering
 import models.OfferingData
-import models.PresentationExchange
 import models.Resource
 import protocol.TestData
 import kotlin.test.Test
@@ -17,7 +16,7 @@ class OfferingTest {
   @Test
   fun `can create a new offering`() {
     val offering = Offering.create(
-      from = "from",
+      from = TestData.PFI,
       OfferingData(
         description = "my fake offering",
         payoutUnitsPerPayinUnit = 1,
@@ -25,7 +24,7 @@ class OfferingTest {
         payoutCurrency = CurrencyDetails("BTC"),
         payinMethods = listOf(),
         payoutMethods = listOf(),
-        requiredClaims = PresentationExchange()
+        requiredClaims = listOf(TestData.getPresentationDefinition())
       )
     )
 
@@ -53,7 +52,7 @@ class OfferingTest {
     assertIs<Offering>(parsed)
     assertThat(parsed.toJson()).isEqualTo(jsonResource)
   }
-
+  
   @Test
   fun `can validate an offering`() {
     val offering = TestData.getOffering()

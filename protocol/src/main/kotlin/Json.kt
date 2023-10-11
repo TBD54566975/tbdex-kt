@@ -1,4 +1,7 @@
+import Json.parse
+import Json.stringify
 import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonDeserializer
@@ -25,11 +28,27 @@ class StringToTypeIdDeserializer : JsonDeserializer<TypeID>() {
   }
 }
 
+/**
+ * A singleton for json serialization/deserialization, shared across the SDK as ObjectMapper instantiation
+ * is an expensive operation.
+ * - Serialize ([stringify])
+ * - Deserialize ([parse])
+ *
+ * ### Example Usage:
+ * ```kotlin
+ * val offering = Json.objectMapper.readValue<Offering>(payload)
+ *
+ * val jsonString = Json.stringify(myObject)
+ *
+ * val node = Json.parse(payload)
+ * ```
+ */
 object Json {
-  // has to be public in order for Json.parse<Type>() to work
-  // the only other option would be to change the function signature to
-  // something like `fun <T> parse(jsonString: String, typeRef: TypeReference<T>): T`
-  // or `fun <T> parse(jsonString: String, clazz: Class<T>): T` which is bleh
+  /**
+   * The Jackson object mapper instance, shared across the lib.
+   *
+   * It must be public in order for typed parsing to work as we cannot use reified types for Java interop.
+   */
   val objectMapper: ObjectMapper = ObjectMapper()
     .registerKotlinModule()
     .findAndRegisterModules()
@@ -37,10 +56,23 @@ object Json {
 
   private val objectWriter: ObjectWriter = objectMapper.writer()
 
+  /**
+   * Converts a kotlin object to a json string.
+   *
+   * @param obj The object to stringify.
+   * @return json string.
+   */
   fun stringify(obj: Any): String {
     return objectWriter.writeValueAsString(obj)
   }
 
+  /**
+   * Parses a json string into a Jackson [JsonNode].
+   *
+   * @param jsonString The json string to parse.
+   * @return [JsonNode].
+   * @throws JsonParseException if the string is invalid json
+   */
   fun parse(jsonString: String): JsonNode {
     return objectMapper.readTree(jsonString)
   }
