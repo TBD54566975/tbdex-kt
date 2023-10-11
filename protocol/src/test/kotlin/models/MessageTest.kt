@@ -3,6 +3,7 @@ package protocol.models
 import com.fasterxml.jackson.core.JsonParseException
 import models.Message
 import models.Order
+import models.Resource
 import models.Rfq
 import org.junit.jupiter.api.assertThrows
 import protocol.TestData
@@ -53,8 +54,9 @@ class MessageTest {
   @Test
   fun `validate throws error if did is not valid`() {
     val exception = assertFailsWith<Exception> {
-      Message.validate(Json.stringify(TestData.getRfq()))
+      Resource.validate(Json.stringify(TestData.getInvalidOffering()))
     }
+    println(exception)
     assertTrue(exception.message?.contains("does not match pattern ^did") == true)
   }
 }
