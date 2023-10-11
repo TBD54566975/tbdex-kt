@@ -14,8 +14,8 @@ class OrderStatus private constructor(
         kind = MessageKind.orderstatus,
         to = to,
         from = from,
-        id = TypeID(MessageKind.orderstatus.name),
-        exchangeId = exchangeId,
+        id = TypeID(MessageKind.orderstatus.name).toString(),
+        exchangeId = exchangeId.toString(),
         createdAt = OffsetDateTime.now()
       )
       return OrderStatus(metadata, orderStatusData)

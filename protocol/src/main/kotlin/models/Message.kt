@@ -20,8 +20,8 @@ class MessageMetadata(
   val kind: MessageKind,
   val to: String,
   val from: String,
-  val id: TypeID,
-  val exchangeId: TypeID,
+  val id: String,
+  val exchangeId: String,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val createdAt: OffsetDateTime
 )

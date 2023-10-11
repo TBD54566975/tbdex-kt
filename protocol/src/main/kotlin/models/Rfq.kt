@@ -17,7 +17,7 @@ class Rfq private constructor(
       data: RfqData,
       private: Map<String, Any>? = null
     ): Rfq {
-      val id = TypeID(MessageKind.rfq.name)
+      val id = TypeID(MessageKind.rfq.name).toString()
       val metadata = MessageMetadata(
         kind = MessageKind.rfq,
         to = to,
