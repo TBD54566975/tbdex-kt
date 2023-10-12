@@ -33,7 +33,9 @@ subprojects {
     plugin("org.jetbrains.dokka")
   }
 
-
+  kotlin {
+    jvmToolchain(11)
+  }
 
   tasks.withType<Detekt>().configureEach {
     jvmTarget = "1.8"
