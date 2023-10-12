@@ -82,8 +82,7 @@ sealed class Resource {
 
       val kindEnum = ResourceKind.valueOf(kind)
 
-      // TODO json schema validation using specific type schema
-
+      validate(payload)
       return when (kindEnum) {
         ResourceKind.offering -> objectMapper.readValue<Offering>(payload)
 //        ResourceKind.reputation -> TODO()

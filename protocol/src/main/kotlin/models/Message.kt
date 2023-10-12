@@ -87,8 +87,7 @@ sealed class Message {
 
       val kindEnum = MessageKind.valueOf(kind)
 
-      // TODO json schema validation using specific type schema
-
+      validate(payload)
       return when (kindEnum) {
         MessageKind.rfq -> objectMapper.readValue<Rfq>(payload)
         MessageKind.order -> objectMapper.readValue<Order>(payload)

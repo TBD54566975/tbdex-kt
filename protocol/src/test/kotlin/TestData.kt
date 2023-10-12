@@ -10,6 +10,7 @@ import models.OfferingData
 import models.Order
 import models.OrderStatus
 import models.OrderStatusData
+import models.PaymentMethod
 import models.Quote
 import models.QuoteData
 import models.QuoteDetails
@@ -33,7 +34,7 @@ import java.util.UUID
 
 object TestData {
   const val ALICE = "did:alice:0:0"
-  const val PFI = "did:alice:0:0"
+  const val PFI = "did:pfi:0:0"
   private val keyManager = InMemoryKeyManager()
   private val did = DidKey("blah", keyManager)
 
@@ -107,6 +108,20 @@ object TestData {
   fun getOrderStatusWithInvalidDid() = OrderStatus.create(
     "alice", "pfi", TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
   )
+
+  fun getOfferingWithInvalidDid(requiredClaims: List<PresentationDefinitionV2> = listOf(getPresentationDefinition())) =
+    Offering.create(
+      from = "pfi",
+      OfferingData(
+        description = "my fake offering",
+        payoutUnitsPerPayinUnit = 1,
+        payinCurrency = CurrencyDetails("AUD"),
+        payoutCurrency = CurrencyDetails("USDC"),
+        payinMethods = listOf(),
+        payoutMethods = listOf(),
+        requiredClaims = requiredClaims
+      )
+    )
   
   private fun buildField(id: String? = null, vararg paths: String): FieldV2 {
     return FieldV2(id = id, path = paths.toList())
