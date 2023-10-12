@@ -54,7 +54,7 @@ sealed class Resource {
    */
   fun verify() {
     val payload = mapOf("metadata" to this.metadata, "data" to this.data)
-    val base64UrlHashedPayload = CryptoUtils.hash(payload).toString()
+    val base64UrlHashedPayload = CryptoUtils.hash(payload)
     CryptoUtils.verify(detachedPayload = base64UrlHashedPayload, signature = this.signature)
   }
 
@@ -80,7 +80,7 @@ sealed class Resource {
    */
   fun sign(did: Did, keyAlias: String? = null) {
     val payload = mapOf("metadata" to this.metadata, "data" to this.data)
-    this.signature = CryptoUtils.sign(did = did, payload = payload, keyAlias = keyAlias)
+    this.signature = CryptoUtils.sign(did = did, payload = payload, assertionMethodId = keyAlias)
   }
 
   /**
@@ -88,7 +88,7 @@ sealed class Resource {
    *
    * @return The json string
    */
-  fun toJson(): String {
+  override fun toString(): String {
     return Json.stringify(this)
   }
 

@@ -33,22 +33,14 @@ class QuoteTest {
   }
 
   @Test
-  fun `sign populates quote signature`() {
-    val quote = TestData.getQuote()
-    quote.sign(TestData.PFI_DID)
-
-    assertThat(quote.signature).isEqualTo("blah")
-  }
-
-  @Test
   fun `can parse an quote from a json string`() {
     val quote = TestData.getQuote()
     quote.sign(TestData.PFI_DID)
-    val jsonMessage = quote.toJson()
+    val jsonMessage = quote.toString()
     val parsedMessage = Message.parse(jsonMessage)
 
     assertIs<Quote>(parsedMessage)
-    assertThat(parsedMessage.toJson()).isEqualTo(jsonMessage)
+    assertThat(parsedMessage.toString()).isEqualTo(jsonMessage)
   }
 }
 

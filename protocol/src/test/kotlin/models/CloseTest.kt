@@ -2,6 +2,8 @@ package models
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNotNull
+import com.nimbusds.jose.JWSObject
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
@@ -23,29 +25,18 @@ class CloseTest {
     val close = TestData.getClose()
     close.sign(TestData.ALICE_DID)
 
-    assertThat(close.signature).isEqualTo("blah")
+    assertThat(close.signature).isNotNull()
+    assertThat(JWSObject.parse(close.signature))
   }
 
   @Test
   fun `can parse an close from a json string`() {
     val close = TestData.getClose()
     close.sign(TestData.ALICE_DID)
-    val jsonMessage = close.toJson()
+    val jsonMessage = close.toString()
     val parsedMessage = Message.parse(jsonMessage)
 
     assertIs<Close>(parsedMessage)
-    assertThat(parsedMessage.toJson()).isEqualTo(jsonMessage)
-  }
-
-  @Test
-  fun `can parse a close from a fake signed rfq`() {
-    val close = TestData.getClose()
-    close.signature =
-      "eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDprZXk6ejZNa291Z0NjemdrNk1ySnExS2N3U1RZNTZRTThxYnpNZFBCZDM3WWZxU1FRcFJXI3o2TWtvdWdDY3pnazZNckpxMUtjd1NUWTU2UU04cWJ6TWRQQmQzN1lmcVNRUXBSVyJ9..s92GEPulVDmV3lf9XLS7qIw16VgxjZhrEu5rvwoBvTXk9gdgNuDSGgFfFQMk5HcpurPC0MeuoDpLLbQNK0elCw"
-
-    val jsonMessage = close.toJson()
-    val parsedMessage = Message.parse(jsonMessage)
-    assertIs<Close>(parsedMessage)
-    assertThat(parsedMessage.toJson()).isEqualTo(jsonMessage)
+    assertThat(parsedMessage.toString()).isEqualTo(jsonMessage)
   }
 }

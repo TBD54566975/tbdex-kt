@@ -5,8 +5,6 @@ import com.nimbusds.jose.JWSObject
 import com.nimbusds.jose.Payload
 import com.nimbusds.jose.jwk.JWK
 import com.nimbusds.jose.util.Base64URL
-import com.nimbusds.jwt.JWTParser
-import com.nimbusds.jwt.SignedJWT
 import foundation.identity.did.DIDURL
 import foundation.identity.did.VerificationMethod
 import web5.sdk.common.Convert
@@ -40,23 +38,17 @@ object CryptoUtils {
    * @throws IllegalArgumentException if the signature is missing.
    * @throws SignatureException if the verification fails.
    */
-  fun verify(detachedPayload: String?, signature: String?) {
+  fun verify(detachedPayload: Base64URL?, signature: String?) {
     require(signature != null) {
       throw IllegalArgumentException("Signature verification failed: Expected signature property to exist")
     }
 
-    val jwt = JWTParser.parse(signature) as SignedJWT
-    require(jwt.header.algorithm != null && jwt.header.keyID != null) {
+    val jws = JWSObject.parse(signature, Payload(detachedPayload))
+    require(jws.header.algorithm != null && jws.header.keyID != null) {
       "Signature verification failed: Expected JWS header to contain alg and kid"
     }
 
-    if (detachedPayload != null) {
-      require(jwt.payload.toBase64URL().decodeToString() == "") {
-        "Signature verification failed: Expected valid JWS with detached content"
-      }
-    }
-
-    val verificationMethodId = jwt.header.keyID
+    val verificationMethodId = jws.header.keyID
     val parsedDidUrl = DIDURL.fromString(verificationMethodId) // validates vm id which is a DID URL
 
     val didResolutionResult = DidResolvers.resolve(parsedDidUrl.did.didString)
@@ -100,11 +92,12 @@ object CryptoUtils {
     val publicKeyMap = assertionMethod.publicKeyJwk
     val publicKeyJwk = JWK.parse(publicKeyMap)
 
-    val signedData = "${jwt.header.toBase64URL()}.$detachedPayload"
-    val signedDataBytes = Convert(signedData).toByteArray()
-    val signatureBytes = jwt.signature.decode()
-
-    Crypto.verify(publicKeyJwk, signedDataBytes, signatureBytes, jwt.header.algorithm)
+    Crypto.verify(
+      publicKey = publicKeyJwk,
+      signedPayload = jws.signingInput,
+      signature = jws.signature.decode(),
+      algorithm = jws.header.algorithm
+    )
   }
 
   /**
@@ -112,39 +105,41 @@ object CryptoUtils {
    *
    * @param did The DID to use for signing.
    * @param payload The payload to sign.
-   * @param keyAlias The alias of the key to be used for signing (optional).
+   * @param assertionMethodId The alias of the key to be used for signing (optional).
    * @return The signed payload as a detached payload JWT (JSON Web Token).
    */
-  fun sign(did: Did, payload: Any, keyAlias: String? = null): String {
-    val keyAliasToUse = keyAlias ?: run {
-      val didResolutionResult = DidResolvers.resolve(did.uri)
-      val verificationMethod = didResolutionResult.didDocument.allVerificationMethods[0]
+  fun sign(did: Did, payload: Any, assertionMethodId: String? = null): String {
+    val didResolutionResult = DidResolvers.resolve(did.uri)
+    val assertionMethods = didResolutionResult.didDocument.assertionMethodVerificationMethodsDereferenced
 
-      require(verificationMethod != null) { "No verification method found" }
+    val assertionMethod: VerificationMethod = when {
+      assertionMethodId != null -> assertionMethods.find { it.id.toString() == assertionMethodId }
+      else -> assertionMethods.firstOrNull()
+    } ?: throw SignatureException("assertion method $assertionMethodId not found")
 
-      val jwk = JWK.parse(verificationMethod.publicKeyJwk)
-      jwk.keyID
-    }
+    // TODO: ensure that publicKeyJwk is not null
+    val publicKeyJwk = JWK.parse(assertionMethod.publicKeyJwk)
+    val keyAlias = did.keyManager.getDeterministicAlias(publicKeyJwk)
 
-    val publicKey = did.keyManager.getPublicKey(keyAliasToUse)
+    val publicKey = did.keyManager.getPublicKey(keyAlias)
     val algorithm = publicKey.algorithm
     val jwsAlgorithm = JWSAlgorithm.parse(algorithm.toString())
 
-    val jwtHeader = JWSHeader.Builder(jwsAlgorithm)
-      .keyID(keyAliasToUse)
+    val jwsHeader = JWSHeader.Builder(jwsAlgorithm)
+      .keyID(assertionMethod.id.toString())
       .build()
 
     // Create payload
     val base64UrlHashedPayload = hash(payload)
     val jwsPayload = Payload(base64UrlHashedPayload)
 
-    val jwsObject = JWSObject(jwtHeader, jwsPayload)
+    val jwsObject = JWSObject(jwsHeader, jwsPayload)
     val toSign = jwsObject.signingInput
 
-    val signatureBytes = did.keyManager.sign(keyAliasToUse, toSign)
+    val signatureBytes = did.keyManager.sign(keyAlias, toSign)
 
     val base64UrlEncodedSignature = Base64URL(Convert(signatureBytes).toBase64Url(padding = false))
-    val base64UrlEncodedHeader = jwtHeader.toBase64URL()
+    val base64UrlEncodedHeader = jwsHeader.toBase64URL()
 
     return "$base64UrlEncodedHeader..$base64UrlEncodedSignature"
   }

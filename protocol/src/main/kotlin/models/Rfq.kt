@@ -3,7 +3,7 @@ package models
 import models.Close.Companion.create
 import models.Rfq.Companion.create
 import typeid.TypeID
-import web5.credentials.PresentationDefinitionV2
+import web5.sdk.credentials.PresentationDefinitionV2
 import java.time.OffsetDateTime
 
 /**

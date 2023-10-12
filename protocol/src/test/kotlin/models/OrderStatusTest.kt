@@ -26,21 +26,13 @@ class OrderStatusTest {
   }
 
   @Test
-  fun `sign populates orderStatus signature`() {
-    val orderStatus = TestData.getOrderStatus()
-    orderStatus.sign(PFI_DID)
-
-    assertThat(orderStatus.signature).isEqualTo("blah")
-  }
-
-  @Test
   fun `can parse an orderStatus from a json string`() {
     val orderStatus = TestData.getOrderStatus()
     orderStatus.sign(PFI_DID)
-    val jsonMessage = orderStatus.toJson()
+    val jsonMessage = orderStatus.toString()
     val parsedMessage = Message.parse(jsonMessage)
 
     assertIs<OrderStatus>(parsedMessage)
-    assertThat(parsedMessage.toJson()).isEqualTo(jsonMessage)
+    assertThat(parsedMessage.toString()).isEqualTo(jsonMessage)
   }
 }

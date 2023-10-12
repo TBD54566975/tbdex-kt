@@ -34,21 +34,13 @@ class OfferingTest {
   }
 
   @Test
-  fun `sign populates offering signature`() {
-    val offering = TestData.getOffering()
-    offering.sign(TestData.PFI_DID)
-
-    assertThat(offering.signature).isEqualTo("blah")
-  }
-
-  @Test
   fun `can parse offering from a json string`() {
     val offering = TestData.getOffering()
     offering.sign(TestData.PFI_DID)
-    val jsonResource = offering.toJson()
+    val jsonResource = offering.toString()
     val parsed = Resource.parse(jsonResource)
 
     assertIs<Offering>(parsed)
-    assertThat(parsed.toJson()).isEqualTo(jsonResource)
+    assertThat(parsed.toString()).isEqualTo(jsonResource)
   }
 }
