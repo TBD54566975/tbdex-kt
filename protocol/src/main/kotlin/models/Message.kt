@@ -2,15 +2,23 @@ package models
 
 import Json
 import Json.objectMapper
+import StringToTypeIdDeserializer
+import TypeIDToStringSerializer
+import Validator
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.module.kotlin.convertValue
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
+import org.json.JSONObject
 import typeid.TypeID
 import java.time.OffsetDateTime
 
 /**
  * An enum representing all possible [Message] kinds.
  */
+@Suppress("EnumNaming")
 enum class MessageKind {
   // TODO: linter gonna yell at us for this, but I want the typeid and serialization to be ez for now
   rfq, quote, close, order, orderstatus
@@ -23,7 +31,11 @@ class MessageMetadata(
   val kind: MessageKind,
   val to: String,
   val from: String,
+  @JsonSerialize(using = TypeIDToStringSerializer::class)
+  @JsonDeserialize(using = StringToTypeIdDeserializer::class)
   val id: TypeID,
+  @JsonDeserialize(using = StringToTypeIdDeserializer::class)
+  @JsonSerialize(using = TypeIDToStringSerializer::class)
   val exchangeId: TypeID,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val createdAt: OffsetDateTime
@@ -36,37 +48,6 @@ sealed class Message {
   abstract val metadata: MessageMetadata
   abstract val data: MessageData
   abstract var signature: String?
-
-  init {
-    // json schema validate
-    validate()
-    if (signature != null) {
-      // sig check
-      verify()
-    }
-  }
-
-  /**
-   * Verifies the cryptographic integrity of the message's signature.
-   *
-   * @throws Exception TODO link to crypto method throws
-   */
-  private fun verify() {
-    // TODO detached payload sig check (regenerate payload and then check)
-  }
-
-  /**
-   * Validates the message against the corresponding json schema.
-   *
-   * @throws Exception if the message is invalid
-   */
-  private fun validate() {
-    // TODO validate against json schema
-//    val schema = schemaMap.get(metadata.kind.name)
-//    val jsonString = this.toString()
-//    schema.validateBasic(jsonString)
-//    if (output.errors != null) ...
-  }
 
   /**
    * Signs the message, excluding the Rfq.private field if present,
@@ -101,22 +82,35 @@ sealed class Message {
      * @throws IllegalArgumentException if the payload signature verification fails.
      */
     fun parse(payload: String): Message {
-      // TODO json schema validation using Message schema
+      val messageJson = JSONObject(payload)
 
-      val node = Json.parse(payload)
-      val kind = node.get("metadata").get("kind").asText()
+      // validate message structure
+      Validator.validate(messageJson, "message")
 
-      val kindEnum = MessageKind.valueOf(kind)
+      val dataJson = messageJson.getJSONObject("data")
+      val kind = messageJson.getJSONObject("metadata").getString("kind")
 
-      // TODO json schema validation using specific type schema
+      // validate specific message data (Rfq, Quote, etc)
+      Validator.validate(dataJson, kind)
 
-      return when (kindEnum) {
-        MessageKind.rfq -> objectMapper.readValue<Rfq>(payload)
-        MessageKind.order -> objectMapper.readValue<Order>(payload)
-        MessageKind.orderstatus -> objectMapper.readValue<OrderStatus>(payload)
-        MessageKind.quote -> objectMapper.readValue<Quote>(payload)
-        MessageKind.close -> objectMapper.readValue<Close>(payload)
+      val messageType = when (MessageKind.valueOf(kind)) {
+        MessageKind.rfq -> Rfq::class.java
+        MessageKind.order -> Order::class.java
+        MessageKind.orderstatus -> OrderStatus::class.java
+        MessageKind.quote -> Quote::class.java
+        MessageKind.close -> Close::class.java
       }
+
+      return objectMapper.convertValue(messageJson, messageType)
+    }
+    
+    /**
+     * Verifies the cryptographic integrity of the message's signature.
+     *
+     * @throws Exception TODO link to crypto method throws
+     */
+    fun verify() {
+      // TODO detached payload sig check (regenerate payload and then check)
     }
   }
 }

@@ -10,6 +10,7 @@ import models.OfferingData
 import models.Order
 import models.OrderStatus
 import models.OrderStatusData
+import models.PaymentMethod
 import models.Quote
 import models.QuoteData
 import models.QuoteDetails
@@ -18,12 +19,12 @@ import models.Rfq
 import models.RfqData
 import models.SelectedPaymentMethod
 import typeid.TypeID
-import web5.credentials.ConstraintsV2
-import web5.credentials.FieldV2
-import web5.credentials.InputDescriptorV2
-import web5.credentials.PresentationDefinitionV2
-import web5.credentials.VcDataModel
-import web5.credentials.VerifiableCredential
+import web5.sdk.credentials.ConstraintsV2
+import web5.sdk.credentials.FieldV2
+import web5.sdk.credentials.InputDescriptorV2
+import web5.sdk.credentials.PresentationDefinitionV2
+import web5.sdk.credentials.VcDataModel
+import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidKey
 import java.net.URI
@@ -32,8 +33,8 @@ import java.util.Date
 import java.util.UUID
 
 object TestData {
-  const val ALICE = "alice"
-  const val PFI = "pfi"
+  const val ALICE = "did:alice:0:0"
+  const val PFI = "did:pfi:0:0"
   private val keyManager = InMemoryKeyManager()
   private val did = DidKey("blah", keyManager)
 
@@ -61,10 +62,6 @@ object TestData {
     return VerifiableCredential.create("test type", did.uri, did.uri, vc)
   }
 
-  private fun buildField(id: String? = null, vararg paths: String): FieldV2 {
-    return FieldV2(id = id, path = paths.toList())
-  }
-
   fun getOffering(requiredClaims: List<PresentationDefinitionV2> = listOf(getPresentationDefinition())) =
     Offering.create(
       from = PFI,
@@ -83,7 +80,7 @@ object TestData {
     PFI,
     ALICE,
     RfqData(
-      offeringID = offeringId,
+      offeringId = offeringId,
       payinSubunits = 10_00,
       payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
       payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
@@ -105,8 +102,21 @@ object TestData {
   fun getOrder() = Order.create(PFI, ALICE, TypeID(MessageKind.rfq.name))
 
   fun getOrderStatus() = OrderStatus.create(
-    ALICE, PFI, TypeID(MessageKind.rfq.name), OrderStatusData("test status")
+    ALICE, PFI, TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
   )
+
+  fun getOrderStatusWithInvalidDid(): OrderStatus {
+    val os = OrderStatus.create(
+      "alice", "pfi", TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
+    )
+
+    os.sign("yolo", "lyfer")
+    return os
+  }
+  
+  private fun buildField(id: String? = null, vararg paths: String): FieldV2 {
+    return FieldV2(id = id, path = paths.toList())
+  }
 
   private fun buildPresentationDefinition(
     id: String = "test-pd-id",

@@ -2,9 +2,15 @@ package models
 
 import Json
 import Json.objectMapper
+import StringToTypeIdDeserializer
+import TypeIDToStringSerializer
+import Validator
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
+import org.json.JSONObject
 import typeid.TypeID
 import java.time.OffsetDateTime
 
@@ -12,8 +18,7 @@ import java.time.OffsetDateTime
  * An enum representing all possible [Resource] kinds.
  */
 enum class ResourceKind {
-  offering,
-  reputation
+  offering
 }
 
 /**
@@ -22,6 +27,8 @@ enum class ResourceKind {
 class ResourceMetadata(
   val kind: ResourceKind,
   val from: String,
+  @JsonSerialize(using = TypeIDToStringSerializer::class)
+  @JsonDeserialize(using = StringToTypeIdDeserializer::class)
   val id: TypeID,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val createdAt: OffsetDateTime,
@@ -36,37 +43,6 @@ sealed class Resource {
   abstract val metadata: ResourceMetadata
   abstract val data: ResourceData
   abstract var signature: String?
-
-  init {
-    // json schema validate
-    validate()
-    if (signature != null) {
-      // sig check
-      verify()
-    }
-  }
-
-  /**
-   * Verifies the cryptographic integrity of the resource's signature.
-   *
-   * @throws Exception TODO link to crypto method throws
-   */
-  private fun verify() {
-    // TODO sig check
-  }
-
-  /**
-   * Validates the resource against the corresponding json schema.
-   *
-   * @throws Exception if the resource is invalid
-   */
-  private fun validate() {
-    // TODO validate against json schema
-//    val schema = schemaMap.get(metadata.kind.name)
-//    val jsonString = this.toString()
-//    schema.validateBasic(jsonString)
-//    if (output.errors != null) ...
-  }
 
   /**
    * Signs the Resource using the private key and kid provided and populates the signature field.
@@ -106,12 +82,39 @@ sealed class Resource {
 
       val kindEnum = ResourceKind.valueOf(kind)
 
-      // TODO json schema validation using specific type schema
-
+      validate(payload)
       return when (kindEnum) {
         ResourceKind.offering -> objectMapper.readValue<Offering>(payload)
-        ResourceKind.reputation -> TODO()
+//        ResourceKind.reputation -> TODO()
       }
+    }
+
+    /**
+     * Verifies the cryptographic integrity of the resource's signature.
+     *
+     * @throws Exception TODO link to crypto method throws
+     */
+    fun verify() {
+      // TODO detached payload sig check (regenerate payload and then check)
+    }
+
+    /**
+     * Validates a JSON payload based on tbDEX resource JSON schemas.
+     *
+     * @param payload The JSON payload to validate.
+     * @throws Exception if the payload does not conform to the expected structure or data schema.
+     */
+    fun validate(payload: String) {
+      val resourceJson = JSONObject(payload)
+      
+      // validate message structure
+      Validator.validate(resourceJson, "resource")
+
+      val dataJson = resourceJson.getJSONObject("data")
+      val kind = resourceJson.getJSONObject("metadata").getString("kind")
+      
+      // validate specific resource data
+      Validator.validate(dataJson, kind)
     }
   }
 }

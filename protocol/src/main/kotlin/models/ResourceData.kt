@@ -1,7 +1,7 @@
 package models
 
-import net.pwall.json.schema.JSONSchema
-import web5.credentials.PresentationDefinitionV2
+import org.everit.json.schema.Schema
+import web5.sdk.credentials.PresentationDefinitionV2
 
 /**
  * An interface that represents the contents of a [Resource].
@@ -35,5 +35,5 @@ class CurrencyDetails(
  */
 class PaymentMethod(
   val kind: String,
-  val requiredPaymentDetails: JSONSchema
+  val requiredPaymentDetails: Schema? = null
 )
