@@ -1,8 +1,8 @@
 package protocol
 
 import Validator
-import exceptions.SchemaNotFoundException
-import exceptions.ValidationFailedException
+import ValidatorException
+import org.everit.json.schema.ValidationException
 import org.json.JSONObject
 import org.junit.jupiter.api.assertDoesNotThrow
 import kotlin.test.Test
@@ -26,20 +26,21 @@ class ValidatorTest {
   fun validateFailsWithProperOrderMessageAndInvalidSchemaName() {
     val order = TestData.getOrder()
     order.sign("fakepk", "fakekid")
-    val exception = assertFailsWith<SchemaNotFoundException> {
+    val exception = assertFailsWith<ValidatorException> {
       Validator.validate(JSONObject(Json.stringify(order)), "asdf")
     }
-    exception.message?.let { assertEquals("No schema with name asdf exists", it) }
+
+    exception.message?.let { assertContains(it, "No schema with name") }
   }
 
   @Test
   fun validateFailsWithProperOrderStatusMessageAndWrongSchemaName() {
     val orderStatus = TestData.getOrderStatus()
     orderStatus.sign("fakepk", "fakekid")
-    val exception = assertFailsWith<Exception> {
+    val exception = assertFailsWith<ValidatorException> {
       Validator.validate(JSONObject(Json.stringify(orderStatus.data)), "quote")
     }
-    exception.message?.let { assertContains(it, "JSON schema validation failed") }
+    exception.message?.let { assertContains(it, "Validation failed") }
   }
 
   @Test
@@ -50,9 +51,17 @@ class ValidatorTest {
       Validator.validate(JSONObject(Json.stringify(orderStatus)), "message")
       Validator.validate(JSONObject(Json.stringify(orderStatus.data)), "orderstatus")
     }
-    exception.message?.let {
-      assertContains(it, "#/metadata/from: string [pfi] does not match pattern")
-      assertContains(it, "#/metadata/to: string [alice] does not match pattern")
+
+    val expectedValidationErrors = setOf(
+      "#/metadata/from: string [pfi] does not match pattern",
+      "#/metadata/to: string [alice] does not match pattern"
+    )
+
+    val validationException = exception.cause as ValidationException
+    assertEquals(expectedValidationErrors.size, validationException.allMessages.size)
+
+    for (message in validationException.allMessages) {
+      expectedValidationErrors.contains(message)
     }
   }
 
@@ -94,12 +103,10 @@ class ValidatorTest {
       Validator.validate(rfq, "message")
       Validator.validate(dataJson, "rfq")
     }
-    exception.message?.let {
-      assertEquals("JSON schema validation failed, errors: [Validation Error:\n" +
-        "Message: #: required key [payinSubunits] not found\n" +
-        "Pointer to Violation: #\n" +
-        "Schema Location: classpath:/]", it)
-    }
+
+    val validationException = exception.cause as ValidationException
+    assertEquals(1, validationException.allMessages.size)
+    assertEquals("#: required key [payinSubunits] not found", validationException.allMessages[0])
 
   }
 }

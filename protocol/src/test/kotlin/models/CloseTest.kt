@@ -44,6 +44,6 @@ class CloseTest {
     val close = TestData.getClose()
     close.sign("fakepk", "fakekid")
 
-    assertDoesNotThrow { Message.validate(Json.stringify(close)) }
+    assertDoesNotThrow { Message.parse(Json.stringify(close)) }
   }
 }

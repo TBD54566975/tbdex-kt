@@ -58,7 +58,7 @@ class QuoteTest {
     val quote = TestData.getQuote()
     quote.sign("fakepk", "fakekid")
 
-    assertDoesNotThrow { Message.validate(Json.stringify(quote)) }
+    assertDoesNotThrow { Message.parse(Json.stringify(quote)) }
   }
 }
 

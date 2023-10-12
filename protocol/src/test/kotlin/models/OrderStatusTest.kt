@@ -50,6 +50,6 @@ class OrderStatusTest {
     val orderStatus = TestData.getOrderStatus()
     orderStatus.sign("fakepk", "fakekid")
 
-    assertDoesNotThrow { Message.validate(Json.stringify(orderStatus)) }
+    assertDoesNotThrow { Message.parse(Json.stringify(orderStatus)) }
   }
 }

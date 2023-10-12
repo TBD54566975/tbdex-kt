@@ -1,9 +1,12 @@
 package protocol.models
 
+import ValidatorException
 import com.fasterxml.jackson.core.JsonParseException
 import models.Message
 import models.Order
 import models.Rfq
+import org.everit.json.schema.ValidationException
+import org.json.JSONException
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import protocol.TestData
@@ -37,26 +40,27 @@ class MessageTest {
 
   @Test
   fun `parse throws error if json string is not valid`() {
-    assertThrows<JsonParseException> { Message.parse(";;;;") }
+    assertThrows<JSONException> { Message.parse(";;;;") }
   }
 
   @Test
-  fun `validate throws error if message is unsigned`() {
-    val exception = assertFailsWith<Exception> {
-      Message.validate(Json.stringify(TestData.getQuote()))
+  fun `parse throws error if message is unsigned`() {
+    val exception = assertFailsWith<ValidatorException> {
+      Message.parse(Json.stringify(TestData.getQuote()))
     }
-    exception.message?.let { assertEquals("JSON schema validation failed, errors: [Validation Error:\n" +
-      "Message: #/signature: expected type: String, found: Null\n" +
-      "Pointer to Violation: #/signature\n" +
-      "Schema Location: classpath:/#/properties/signature]", it) }
+
+    val validationException = exception.cause as ValidationException
+    assertContains(validationException.allMessages, "#/signature: expected type: String, found: Null")
   }
 
   @Test
-  fun `validate throws error if message did is invalid`() {
+  fun `parse throws error if message did is invalid`() {
     val exception = assertFailsWith<Exception> {
-      Message.validate(Json.stringify(TestData.getOrderStatusWithInvalidDid()))
+      Message.parse(Json.stringify(TestData.getOrderStatusWithInvalidDid()))
     }
-    exception.message?.let { assertContains(it, "does not match pattern ^did") }
+
+    val validationException = exception.cause as ValidationException
+    assertContains(validationException.allMessages[0], "does not match pattern ^did")
   }
 
   @Test
@@ -69,7 +73,7 @@ class MessageTest {
     order.sign("fakepk", "fakekid")
 
     listOf(rfq, quote, order).map {
-      assertDoesNotThrow { Message.validate(Json.stringify(it)) }
+      assertDoesNotThrow { Message.parse(Json.stringify(it)) }
     }
   }
 }

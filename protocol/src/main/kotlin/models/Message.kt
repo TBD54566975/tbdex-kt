@@ -8,6 +8,7 @@ import Validator
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.module.kotlin.convertValue
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
 import org.json.JSONObject
@@ -17,6 +18,7 @@ import java.time.OffsetDateTime
 /**
  * An enum representing all possible [Message] kinds.
  */
+@Suppress("EnumNaming")
 enum class MessageKind {
   // TODO: linter gonna yell at us for this, but I want the typeid and serialization to be ez for now
   rfq, quote, close, order, orderstatus
@@ -80,39 +82,6 @@ sealed class Message {
      * @throws IllegalArgumentException if the payload signature verification fails.
      */
     fun parse(payload: String): Message {
-      // TODO json schema validation using Message schema
-
-      val node = Json.parse(payload)
-      val kind = node.get("metadata").get("kind").asText()
-
-      val kindEnum = MessageKind.valueOf(kind)
-
-      validate(payload)
-      return when (kindEnum) {
-        MessageKind.rfq -> objectMapper.readValue<Rfq>(payload)
-        MessageKind.order -> objectMapper.readValue<Order>(payload)
-        MessageKind.orderstatus -> objectMapper.readValue<OrderStatus>(payload)
-        MessageKind.quote -> objectMapper.readValue<Quote>(payload)
-        MessageKind.close -> objectMapper.readValue<Close>(payload)
-      }
-    }
-    
-    /**
-     * Verifies the cryptographic integrity of the message's signature.
-     *
-     * @throws Exception TODO link to crypto method throws
-     */
-    fun verify() {
-      // TODO detached payload sig check (regenerate payload and then check)
-    }
-
-    /**
-     * Validates a JSON payload based on tbDEX message JSON schemas.
-     *
-     * @param payload The JSON payload to validate.
-     * @throws Exception if the payload does not conform to the expected structure or data schema.
-     */
-    fun validate(payload: String) {
       val messageJson = JSONObject(payload)
 
       // validate message structure
@@ -123,6 +92,25 @@ sealed class Message {
 
       // validate specific message data (Rfq, Quote, etc)
       Validator.validate(dataJson, kind)
+
+      val messageType = when (MessageKind.valueOf(kind)) {
+        MessageKind.rfq -> Rfq::class.java
+        MessageKind.order -> Order::class.java
+        MessageKind.orderstatus -> OrderStatus::class.java
+        MessageKind.quote -> Quote::class.java
+        MessageKind.close -> Close::class.java
+      }
+
+      return objectMapper.convertValue(messageJson, messageType)
+    }
+    
+    /**
+     * Verifies the cryptographic integrity of the message's signature.
+     *
+     * @throws Exception TODO link to crypto method throws
+     */
+    fun verify() {
+      // TODO detached payload sig check (regenerate payload and then check)
     }
   }
 }

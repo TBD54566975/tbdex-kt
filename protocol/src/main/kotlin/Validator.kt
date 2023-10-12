@@ -1,5 +1,3 @@
-import exceptions.SchemaNotFoundException
-import exceptions.ValidationFailedException
 import models.MessageKind
 import models.ResourceKind
 import org.everit.json.schema.Schema
@@ -7,6 +5,11 @@ import org.everit.json.schema.ValidationException
 import org.everit.json.schema.loader.SchemaClient
 import org.everit.json.schema.loader.SchemaLoader
 import org.json.JSONObject
+
+/**
+ * Thrown by [Validator.validate]. Note: inspect causing exception for specific [ValidationException]s
+ */
+class ValidatorException(message: String, cause: Exception? = null) : Exception(message, cause)
 
 /**
  * Utility for validating JSON payloads against predefined schemas.
@@ -39,11 +42,11 @@ object Validator {
    */
   fun validate(jsonMessage: JSONObject, schemaName: String) {
     try {
-      val schema = schemaMap[schemaName] ?: throw SchemaNotFoundException("No schema with name $schemaName exists")
+      val schema = schemaMap[schemaName] ?: throw ValidatorException("No schema with name $schemaName exists")
       schema.validate(jsonMessage)
     } catch (e: ValidationException) {
-      val errorList = collectValidationErrors(e)
-      throw ValidationFailedException("JSON schema validation failed, errors: $errorList")
+
+      throw ValidatorException("Validation failed", e)
     }
   }
 
@@ -66,39 +69,5 @@ object Validator {
       .build()
       .load()
       .build()
-  }
-
-  /**
-   * Recursively collects validation errors from a ValidationException and its causing exceptions.
-   *
-   * @param e The root ValidationException to collect errors from.
-   * @return A list of error messages.
-   */
-  private fun collectValidationErrors(e: ValidationException): List<ValidationError> {
-    val errors = mutableListOf<ValidationError>()
-
-    if (e.message != null && !e.message!!.contains("schema violations found")) {
-      val error = ValidationError(e.message!!, e.pointerToViolation, e.schemaLocation)
-      errors.add(error)
-    }
-
-    for (cause in e.causingExceptions) {
-      errors.addAll(collectValidationErrors(cause))
-    }
-
-    return errors
-  }
-}
-
-class ValidationError(
-  private val message: String,
-  private val pointerToViolation: String,
-  private val schemaLocation: String
-) {
-  override fun toString(): String {
-    return "Validation Error:\n" +
-      "Message: $message\n" +
-      "Pointer to Violation: $pointerToViolation\n" +
-      "Schema Location: $schemaLocation"
   }
 }

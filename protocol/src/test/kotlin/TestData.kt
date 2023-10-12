@@ -105,23 +105,14 @@ object TestData {
     ALICE, PFI, TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
   )
 
-  fun getOrderStatusWithInvalidDid() = OrderStatus.create(
-    "alice", "pfi", TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
-  )
-
-  fun getOfferingWithInvalidDid(requiredClaims: List<PresentationDefinitionV2> = listOf(getPresentationDefinition())) =
-    Offering.create(
-      from = "pfi",
-      OfferingData(
-        description = "my fake offering",
-        payoutUnitsPerPayinUnit = 1,
-        payinCurrency = CurrencyDetails("AUD"),
-        payoutCurrency = CurrencyDetails("USDC"),
-        payinMethods = listOf(),
-        payoutMethods = listOf(),
-        requiredClaims = requiredClaims
-      )
+  fun getOrderStatusWithInvalidDid(): OrderStatus {
+    val os = OrderStatus.create(
+      "alice", "pfi", TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
     )
+
+    os.sign("yolo", "lyfer")
+    return os
+  }
   
   private fun buildField(id: String? = null, vararg paths: String): FieldV2 {
     return FieldV2(id = id, path = paths.toList())

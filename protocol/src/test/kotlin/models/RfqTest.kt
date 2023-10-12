@@ -61,7 +61,7 @@ class RfqTest {
     val rfq = TestData.getRfq()
     rfq.sign("fakepk", "fakekid")
 
-    assertDoesNotThrow { Message.validate(Json.stringify(rfq)) }
+    assertDoesNotThrow { Message.parse(Json.stringify(rfq)) }
   }
   
   @Test
