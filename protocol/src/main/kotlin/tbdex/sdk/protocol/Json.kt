@@ -1,5 +1,6 @@
 package tbdex.sdk.protocol
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.core.JsonParser
@@ -83,6 +84,7 @@ object Json {
     .registerKotlinModule()
     .findAndRegisterModules()
     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+    .setSerializationInclusion(JsonInclude.Include.NON_NULL)
 
   private val objectWriter: ObjectWriter = jsonMapper.writer()
 
