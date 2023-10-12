@@ -3,9 +3,17 @@ package models
 import CryptoUtils
 import Json
 import Json.jsonMapper
+import Json.objectMapper
+import StringToTypeIdDeserializer
+import TypeIDToStringSerializer
+import Validator
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.module.kotlin.convertValue
 import com.fasterxml.jackson.module.kotlin.readValue
 import dateTimeFormat
+import org.json.JSONObject
 import typeid.TypeID
 import web5.sdk.dids.Did
 import java.time.OffsetDateTime
@@ -13,6 +21,7 @@ import java.time.OffsetDateTime
 /**
  * An enum representing all possible [Message] kinds.
  */
+@Suppress("EnumNaming")
 enum class MessageKind {
   // TODO: linter gonna yell at us for this, but I want the typeid and serialization to be ez for now
   rfq, quote, close, order, orderstatus
@@ -25,7 +34,11 @@ class MessageMetadata(
   val kind: MessageKind,
   val to: String,
   val from: String,
+  @JsonSerialize(using = TypeIDToStringSerializer::class)
+  @JsonDeserialize(using = StringToTypeIdDeserializer::class)
   val id: TypeID,
+  @JsonDeserialize(using = StringToTypeIdDeserializer::class)
+  @JsonSerialize(using = TypeIDToStringSerializer::class)
   val exchangeId: TypeID,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val createdAt: OffsetDateTime
@@ -38,39 +51,6 @@ sealed class Message {
   abstract val metadata: MessageMetadata
   abstract val data: MessageData
   abstract var signature: String?
-
-  init {
-    // json schema validate
-    validate()
-  }
-
-  /**
-   * Verifies the signature of the data.
-   *
-   * This function verifies the signature using the previously set [signature] property.
-   * It compares the signature against a hashed payload consisting of metadata and data.
-   *
-   * @throws Exception if the verification fails or if the signature is missing.
-   */
-  private fun verify() {
-    val payload = mapOf("metadata" to this.metadata, "data" to this.data)
-    val base64UrlHashedPayload = CryptoUtils.hash(payload)
-    CryptoUtils.verify(detachedPayload = base64UrlHashedPayload, signature = this.signature)
-  }
-
-  /**
-   * Validates the message against the corresponding json schema.
-   *
-   * @throws Exception if the message is invalid
-   */
-  private fun validate() {
-    // TODO validate against json schema
-//    val schema = schemaMap.get(metadata.kind.name)
-//    val jsonString = this.toString()
-//    schema.validateBasic(jsonString)
-//    if (output.errors != null) ...
-  }
-
 
   /**
    * Signs the Message using the specified [did] and optionally the given [keyAlias].
@@ -105,24 +85,40 @@ sealed class Message {
      * @throws IllegalArgumentException if the payload signature verification fails.
      */
     fun parse(payload: String): Message {
-      // TODO json schema validation using Message schema
+      val messageJson = JSONObject(payload)
 
-      val node = Json.parse(payload)
-      val kind = node.get("metadata").get("kind").asText()
+      // validate message structure
+      Validator.validate(messageJson, "message")
 
-      val kindEnum = MessageKind.valueOf(kind)
+      val dataJson = messageJson.getJSONObject("data")
+      val kind = messageJson.getJSONObject("metadata").getString("kind")
 
-      val message = when (kindEnum) {
-        MessageKind.rfq -> jsonMapper.readValue<Rfq>(payload)
-        MessageKind.order -> jsonMapper.readValue<Order>(payload)
-        MessageKind.orderstatus -> jsonMapper.readValue<OrderStatus>(payload)
-        MessageKind.quote -> jsonMapper.readValue<Quote>(payload)
-        MessageKind.close -> jsonMapper.readValue<Close>(payload)
+      // validate specific message data (Rfq, Quote, etc)
+      Validator.validate(dataJson, kind)
+
+      val messageType = when (MessageKind.valueOf(kind)) {
+        MessageKind.rfq -> Rfq::class.java
+        MessageKind.order -> Order::class.java
+        MessageKind.orderstatus -> OrderStatus::class.java
+        MessageKind.quote -> Quote::class.java
+        MessageKind.close -> Close::class.java
       }
 
-      message.verify()
-      return message
+      return objectMapper.convertValue(messageJson, messageType)
     }
+    
+  /**
+   * Verifies the signature of the data.
+   *
+   * This function verifies the signature using the previously set [signature] property.
+   * It compares the signature against a hashed payload consisting of metadata and data.
+   *
+   * @throws Exception if the verification fails or if the signature is missing.
+   */
+  private fun verify() {
+    val payload = mapOf("metadata" to this.metadata, "data" to this.data)
+    val base64UrlHashedPayload = CryptoUtils.hash(payload)
+    CryptoUtils.verify(detachedPayload = base64UrlHashedPayload, signature = this.signature)
   }
 }
 

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.assertThrows
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertIs
 
 class RfqTest {
@@ -22,7 +23,7 @@ class RfqTest {
     val rfq = Rfq.create(
       TestData.PFI, TestData.ALICE,
       RfqData(
-        offeringID = TypeID(ResourceKind.offering.name),
+        offeringId = TypeID(ResourceKind.offering.name),
         payinSubunits = 10_00,
         payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
         payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
@@ -48,6 +49,14 @@ class RfqTest {
   }
 
   @Test
+  fun `can validate a rfq`() {
+    val rfq = TestData.getRfq()
+    rfq.sign("fakepk", "fakekid")
+
+    assertDoesNotThrow { Message.parse(Json.stringify(rfq)) }
+  }
+  
+  @Test
   @Disabled
   fun `verifyOfferingRequirements succeeds when claims satisfy pd`() {
     val offering = TestData.getOffering()
@@ -63,7 +72,6 @@ class RfqTest {
     val rfq = TestData.getRfq()
 
     assertThrows<IllegalArgumentException> { rfq.verifyOfferingRequirements(offering) }
-
   }
 
   @Test

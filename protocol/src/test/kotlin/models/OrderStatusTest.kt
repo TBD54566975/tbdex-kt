@@ -6,10 +6,12 @@ import models.Message
 import models.MessageKind
 import models.OrderStatus
 import models.OrderStatusData
+import org.junit.jupiter.api.assertDoesNotThrow
 import protocol.TestData
 import protocol.TestData.PFI_DID
 import typeid.TypeID
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertIs
 
 class OrderStatusTest {
@@ -34,5 +36,13 @@ class OrderStatusTest {
 
     assertIs<OrderStatus>(parsedMessage)
     assertThat(parsedMessage.toString()).isEqualTo(jsonMessage)
+  }
+
+  @Test
+  fun `can validate an orderStatus`() {
+    val orderStatus = TestData.getOrderStatus()
+    orderStatus.sign("fakepk", "fakekid")
+
+    assertDoesNotThrow { Message.parse(Json.stringify(orderStatus)) }
   }
 }

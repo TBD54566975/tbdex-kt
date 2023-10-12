@@ -30,7 +30,7 @@ class Rfq private constructor(
    * @throws Exception if the Rfq doesn't satisfy the Offering's requirements
    */
   fun verifyOfferingRequirements(offering: Offering) {
-    require(data.offeringID == offering.metadata.id)
+    require(data.offeringId == offering.metadata.id)
 
     if (offering.data.payinCurrency.minSubunits != null)
       check(offering.data.payinCurrency.minSubunits <= this.data.payinSubunits)
@@ -46,13 +46,10 @@ class Rfq private constructor(
 
   private fun validatePaymentMethod(selectedMethod: SelectedPaymentMethod, offeringMethods: List<PaymentMethod>) {
     val matchedOfferingMethod = offeringMethods.first { it.kind == selectedMethod.kind }
-    val res = matchedOfferingMethod.requiredPaymentDetails.validateBasic(selectedMethod.paymentDetails.toString())
-    if (!res.errors.isNullOrEmpty()) {
-      // format all errors and throw new exception
-      val message =
-        "rfq selected method: ${selectedMethod.kind} does not satisfy required details: ${res.errors.toString()}"
-      throw IllegalArgumentException(message)
+    if (matchedOfferingMethod.requiredPaymentDetails !== null) {
+      matchedOfferingMethod.requiredPaymentDetails.validate(selectedMethod.paymentDetails.toString())
     }
+
   }
 
   private fun verifyClaims(requiredClaims: List<PresentationDefinitionV2>) {

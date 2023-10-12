@@ -5,9 +5,11 @@ import assertk.assertions.isEqualTo
 import models.Message
 import models.MessageKind
 import models.Order
+import org.junit.jupiter.api.assertDoesNotThrow
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertIs
 
 class OrderTest {
@@ -27,5 +29,13 @@ class OrderTest {
 
     assertIs<Order>(parsedMessage)
     assertThat(parsedMessage.toString()).isEqualTo(jsonMessage)
+  }
+
+  @Test
+  fun `can validate an order`() {
+    val order = TestData.getOrder()
+    order.sign("fakepk", "fakekid")
+
+    assertDoesNotThrow { Message.parse(Json.stringify(order)) }
   }
 }

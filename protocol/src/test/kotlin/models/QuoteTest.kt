@@ -8,10 +8,12 @@ import models.MessageKind
 import models.Quote
 import models.QuoteData
 import models.QuoteDetails
+import org.junit.jupiter.api.assertDoesNotThrow
 import protocol.TestData
 import typeid.TypeID
 import java.time.OffsetDateTime
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertIs
 
 class QuoteTest {
@@ -41,6 +43,14 @@ class QuoteTest {
 
     assertIs<Quote>(parsedMessage)
     assertThat(parsedMessage.toString()).isEqualTo(jsonMessage)
+  }
+
+  @Test
+  fun `can validate a quote`() {
+    val quote = TestData.getQuote()
+    quote.sign("fakepk", "fakekid")
+
+    assertDoesNotThrow { Message.parse(Json.stringify(quote)) }
   }
 }
 

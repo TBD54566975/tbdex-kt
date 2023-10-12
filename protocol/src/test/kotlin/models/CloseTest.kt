@@ -4,9 +4,11 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.nimbusds.jose.JWSObject
+import org.junit.jupiter.api.assertDoesNotThrow
 import protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertIs
 
 class CloseTest {
@@ -38,5 +40,13 @@ class CloseTest {
 
     assertIs<Close>(parsedMessage)
     assertThat(parsedMessage.toString()).isEqualTo(jsonMessage)
+  }
+
+  @Test
+  fun `can validate a close`() {
+    val close = TestData.getClose()
+    close.sign("fakepk", "fakekid")
+
+    assertDoesNotThrow { Message.parse(Json.stringify(close)) }
   }
 }

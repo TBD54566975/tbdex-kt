@@ -3,7 +3,6 @@
   "$id": "https://tbdex.io/order.schema.json",
   "type": "object",
   "required": [
-    "paymentVerifiablePresentationJwt"
   ],
   "additionalProperties": false,
   "properties": {

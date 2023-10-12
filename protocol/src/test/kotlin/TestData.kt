@@ -10,6 +10,7 @@ import models.OfferingData
 import models.Order
 import models.OrderStatus
 import models.OrderStatusData
+import models.PaymentMethod
 import models.Quote
 import models.QuoteData
 import models.QuoteDetails
@@ -64,10 +65,6 @@ object TestData {
     return VerifiableCredential.create("test type", ALICE_DID.uri, ALICE_DID.uri, vc)
   }
 
-  private fun buildField(id: String? = null, vararg paths: String): FieldV2 {
-    return FieldV2(id = id, path = paths.toList())
-  }
-
   fun getOffering(requiredClaims: List<PresentationDefinitionV2> = listOf(getPresentationDefinition())) =
     Offering.create(
       from = PFI,
@@ -86,7 +83,7 @@ object TestData {
     PFI,
     ALICE,
     RfqData(
-      offeringID = offeringId,
+      offeringId = offeringId,
       payinSubunits = 10_00,
       payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
       payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
@@ -108,8 +105,21 @@ object TestData {
   fun getOrder() = Order.create(PFI, ALICE, TypeID(MessageKind.rfq.name))
 
   fun getOrderStatus() = OrderStatus.create(
-    ALICE, PFI, TypeID(MessageKind.rfq.name), OrderStatusData("test status")
+    ALICE, PFI, TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
   )
+
+  fun getOrderStatusWithInvalidDid(): OrderStatus {
+    val os = OrderStatus.create(
+      "alice", "pfi", TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
+    )
+
+    os.sign("yolo", "lyfer")
+    return os
+  }
+  
+  private fun buildField(id: String? = null, vararg paths: String): FieldV2 {
+    return FieldV2(id = id, path = paths.toList())
+  }
 
   private fun buildPresentationDefinition(
     id: String = "test-pd-id",

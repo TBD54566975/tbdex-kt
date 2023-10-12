@@ -7,8 +7,10 @@ import models.CurrencyDetails
 import models.Offering
 import models.OfferingData
 import models.Resource
+import org.junit.jupiter.api.assertDoesNotThrow
 import protocol.TestData
 import kotlin.test.Test
+import kotlin.test.assertContains
 import kotlin.test.assertIs
 
 class OfferingTest {
@@ -42,5 +44,13 @@ class OfferingTest {
 
     assertIs<Offering>(parsed)
     assertThat(parsed.toString()).isEqualTo(jsonResource)
+  }
+  
+  @Test
+  fun `can validate an offering`() {
+    val offering = TestData.getOffering()
+    offering.sign("fakepk", "fakekid")
+
+    assertDoesNotThrow { Resource.validate(Json.stringify(offering)) }
   }
 }
