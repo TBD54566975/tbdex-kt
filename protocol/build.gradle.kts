@@ -16,7 +16,8 @@ repositories {
 }
 
 dependencies {
-  implementation("me.lessis:typeid:0.0.2")
+  api("me.lessis:typeid:0.0.2")
+
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-json-org:2.11.0")
@@ -26,6 +27,7 @@ dependencies {
   implementation("com.github.TBD54566975.web5-sdk-kotlin:dids:main-SNAPSHOT")
   implementation("com.github.erosb:everit-json-schema:1.14.2")
   implementation("decentralized-identity:did-common-java:1.9.0")
+
   testImplementation(kotlin("test"))
   testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
 }
