@@ -35,7 +35,6 @@ object Validator {
    * @param schemaName The name of the schema to use for validation.
    * @throws Exception if validation fails, including a list of validation errors.
    */
-
   fun validate(jsonMessage: JSONObject, schemaName: String) {
     try {
       val schema = schemaMap[schemaName] ?: throw Exception("No schema with name $schemaName exists")
