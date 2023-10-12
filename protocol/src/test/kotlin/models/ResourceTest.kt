@@ -8,6 +8,7 @@ import org.junit.jupiter.api.assertThrows
 import protocol.TestData
 import kotlin.test.Test
 import kotlin.test.assertContains
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 
@@ -35,13 +36,16 @@ class ResourceTest {
     val exception = assertFailsWith<Exception> {
       Resource.validate(Json.stringify(TestData.getOffering()))
     }
-    exception.message?.let { assertContains(it, "[#/signature: expected type: String, found: Null]") }
+    exception.message?.let { assertEquals("JSON schema validation failed, errors: [Validation Error:\n" +
+      "Message: #/signature: expected type: String, found: Null\n" +
+      "Pointer to Violation: #/signature\n" +
+      "Schema Location: classpath:/#/properties/signature]", it) }
   }
 
   @Test
   fun `validate throws error if resource did is invalid`() {
     val exception = assertFailsWith<Exception> {
-      Resource.validate(Json.stringify(TestData.getOrderStatusWithInvalidDid()))
+      Resource.validate(Json.stringify(TestData.getOfferingWithInvalidDid()))
     }
     exception.message?.let { assertContains(it, "does not match pattern ^did") }
   }

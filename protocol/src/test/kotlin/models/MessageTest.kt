@@ -9,6 +9,7 @@ import org.junit.jupiter.api.assertThrows
 import protocol.TestData
 import kotlin.test.Test
 import kotlin.test.assertContains
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 
@@ -24,7 +25,10 @@ class MessageTest {
   @Test
   fun `can parse a list of messages`() {
     val rfq = TestData.getRfq()
+    rfq.sign("fakepk", "fakedid")
     val order = TestData.getOrder()
+    order.sign("fakepk", "fakedid")
+
     val messages = listOf(rfq.toJson(), order.toJson()).map { Message.parse(it) }
 
     assertIs<Rfq>(messages.first())
@@ -41,7 +45,10 @@ class MessageTest {
     val exception = assertFailsWith<Exception> {
       Message.validate(Json.stringify(TestData.getQuote()))
     }
-    exception.message?.let { assertContains(it, "[#/signature: expected type: String, found: Null]") }
+    exception.message?.let { assertEquals("JSON schema validation failed, errors: [Validation Error:\n" +
+      "Message: #/signature: expected type: String, found: Null\n" +
+      "Pointer to Violation: #/signature\n" +
+      "Schema Location: classpath:/#/properties/signature]", it) }
   }
 
   @Test
@@ -49,7 +56,6 @@ class MessageTest {
     val exception = assertFailsWith<Exception> {
       Message.validate(Json.stringify(TestData.getOrderStatusWithInvalidDid()))
     }
-    println(exception)
     exception.message?.let { assertContains(it, "does not match pattern ^did") }
   }
 

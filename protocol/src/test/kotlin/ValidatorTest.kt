@@ -94,7 +94,6 @@ class ValidatorTest {
       Validator.validate(rfq, "message")
       Validator.validate(dataJson, "rfq")
     }
-    println(exception.message)
     exception.message?.let {
       assertEquals("JSON schema validation failed, errors: [Validation Error:\n" +
         "Message: #: required key [payinSubunits] not found\n" +
