@@ -74,11 +74,12 @@ object Validator {
    * @param e The root ValidationException to collect errors from.
    * @return A list of error messages.
    */
-  private fun collectValidationErrors(e: ValidationException): List<String> {
-    val errors = mutableListOf<String>()
+  private fun collectValidationErrors(e: ValidationException): List<ValidationError> {
+    val errors = mutableListOf<ValidationError>()
 
     if (e.message != null && !e.message!!.contains("schema violations found")) {
-      errors.add(e.message!!)
+      val error = ValidationError(e.message!!, e.pointerToViolation, e.schemaLocation)
+      errors.add(error)
     }
 
     for (cause in e.causingExceptions) {
@@ -86,5 +87,18 @@ object Validator {
     }
 
     return errors
+  }
+}
+
+class ValidationError(
+  private val message: String,
+  private val pointerToViolation: String,
+  private val schemaLocation: String
+) {
+  override fun toString(): String {
+    return "Validation Error:\n" +
+      "Message: $message\n" +
+      "Pointer to Violation: $pointerToViolation\n" +
+      "Schema Location: $schemaLocation"
   }
 }

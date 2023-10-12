@@ -1,6 +1,8 @@
 package protocol
 
 import Validator
+import exceptions.SchemaNotFoundException
+import exceptions.ValidationFailedException
 import org.json.JSONObject
 import org.junit.jupiter.api.assertDoesNotThrow
 import kotlin.test.Test
@@ -21,13 +23,13 @@ class ValidatorTest {
   }
 
   @Test
-  fun validateFailsWithProperOrderMessageAndWrongSchemaName() {
+  fun validateFailsWithProperOrderMessageAndInvalidSchemaName() {
     val order = TestData.getOrder()
     order.sign("fakepk", "fakekid")
-    val exception = assertFailsWith<Exception> {
-      Validator.validate(JSONObject(Json.stringify(order)), "resource")
+    val exception = assertFailsWith<SchemaNotFoundException> {
+      Validator.validate(JSONObject(Json.stringify(order)), "asdf")
     }
-    exception.message?.let { assertContains(it, "Validation failed") }
+    exception.message?.let { assertEquals("No schema with name asdf exists", it) }
   }
 
   @Test
@@ -37,7 +39,7 @@ class ValidatorTest {
     val exception = assertFailsWith<Exception> {
       Validator.validate(JSONObject(Json.stringify(orderStatus.data)), "quote")
     }
-    exception.message?.let { assertContains(it, "Validation failed") }
+    exception.message?.let { assertContains(it, "JSON schema validation failed") }
   }
 
   @Test
@@ -94,7 +96,10 @@ class ValidatorTest {
     }
     println(exception.message)
     exception.message?.let {
-      assertEquals(it, "Validation failed, errors: [#: required key [payinSubunits] not found]")
+      assertEquals("JSON schema validation failed, errors: [Validation Error:\n" +
+        "Message: #: required key [payinSubunits] not found\n" +
+        "Pointer to Violation: #\n" +
+        "Schema Location: classpath:/]", it)
     }
 
   }
