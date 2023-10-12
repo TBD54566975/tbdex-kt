@@ -1,3 +1,5 @@
+import exceptions.SchemaNotFoundException
+import exceptions.ValidationFailedException
 import models.MessageKind
 import models.ResourceKind
 import org.everit.json.schema.Schema
@@ -37,11 +39,11 @@ object Validator {
    */
   fun validate(jsonMessage: JSONObject, schemaName: String) {
     try {
-      val schema = schemaMap[schemaName] ?: throw Exception("No schema with name $schemaName exists")
+      val schema = schemaMap[schemaName] ?: throw SchemaNotFoundException("No schema with name $schemaName exists")
       schema.validate(jsonMessage)
     } catch (e: ValidationException) {
       val errorList = collectValidationErrors(e)
-      throw Exception("Validation failed, errors: $errorList")
+      throw ValidationFailedException("JSON schema validation failed, errors: $errorList")
     }
   }
 
