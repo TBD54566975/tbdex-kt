@@ -107,13 +107,14 @@ sealed class Message {
       // TODO detached payload sig check (regenerate payload and then check)
     }
 
-     /**
-     * Validates the message against the corresponding json schema.
+    /**
+     * Validates a JSON payload based on tbDEX message JSON schemas.
      *
-     * @throws Exception if the message is invalid
+     * @param payload The JSON payload to validate.
+     * @throws Exception if the payload does not conform to the expected structure or data schema.
      */
-    fun validate(message: String) {
-      val messageJson = JSONObject(message)
+    fun validate(payload: String) {
+      val messageJson = JSONObject(payload)
 
       // validate message structure
       Validator.validate(messageJson, "message")

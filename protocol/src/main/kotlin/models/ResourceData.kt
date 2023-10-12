@@ -1,7 +1,6 @@
 package models
 
 import org.everit.json.schema.Schema
-
 import web5.sdk.credentials.PresentationDefinitionV2
 
 /**

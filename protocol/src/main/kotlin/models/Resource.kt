@@ -100,12 +100,13 @@ sealed class Resource {
     }
 
     /**
-     * Validates the resource against the corresponding json schema.
+     * Validates a JSON payload based on tbDEX resource JSON schemas.
      *
-     * @throws Exception if the resource is invalid
+     * @param payload The JSON payload to validate.
+     * @throws Exception if the payload does not conform to the expected structure or data schema.
      */
-    fun validate(resource: String) {
-      val resourceJson = JSONObject(resource)
+    fun validate(payload: String) {
+      val resourceJson = JSONObject(payload)
       
       // validate message structure
       Validator.validate(resourceJson, "resource")

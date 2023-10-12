@@ -8,7 +8,6 @@ import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-
 class ValidatorTest {
 
   @Test
