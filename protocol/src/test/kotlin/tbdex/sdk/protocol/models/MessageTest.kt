@@ -63,7 +63,7 @@ class MessageTest {
     }
 
     val validationException = exception.cause as ValidationException
-    assertContains(validationException.allMessages, "#/signature: expected type: String, found: Null")
+    assertContains(validationException.allMessages, "#: required key [signature] not found")
   }
 
   @Test

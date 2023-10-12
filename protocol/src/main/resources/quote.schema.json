@@ -34,7 +34,7 @@
       }
     },
     "PaymentInstructions": {
-      "type": ["object", "null"],
+      "type": ["object"],
       "properties": {
         "payin": {
           "$ref": "#/definitions/PaymentInstruction"
@@ -61,5 +61,5 @@
       "$ref": "#/definitions/PaymentInstructions"
     }
   },
-  "required": ["expiresAt", "payin", "payout", "paymentInstructions"]
+  "required": ["expiresAt", "payin", "payout"]
 }
