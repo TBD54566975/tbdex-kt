@@ -1,4 +1,4 @@
-package protocol.tbdex.sdk.protocol
+package tbdex.sdk.protocol
 
 import org.everit.json.schema.ValidationException
 import org.json.JSONObject
