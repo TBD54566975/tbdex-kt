@@ -18,13 +18,13 @@ object RealTbdexClient : TbdexClient {
   private val client = OkHttpClient()
   private val jsonMediaType = "application/json; charset=utf-8".toMediaType()
   private const val JSON_HEADER = "application/json"
-
-  init {
-    DidResolvers.addResolver("ion") { did, _ ->
-      // TODO drop in logic here
-      DidResolutionResult()
-    }
-  }
+  // todo this does not compile yet, so i commented it out for now
+//  init {
+//    DidResolvers.addResolver("ion") { did, _ ->
+//      // TODO drop in logic here
+//      DidResolutionResult()
+//    }
+//  }
 
   override fun getOfferings(pfiDid: String, filter: GetOfferingsFilter?): TbdexResponse {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
