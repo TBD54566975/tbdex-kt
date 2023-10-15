@@ -1,36 +1,15 @@
 package protocol.tbdex.sdk.protocol
 
 import com.danubetech.verifiablecredentials.CredentialSubject
-import tbdex.sdk.protocol.models.Close
-import tbdex.sdk.protocol.models.CloseData
-import tbdex.sdk.protocol.models.CurrencyDetails
-import tbdex.sdk.protocol.models.MessageKind
-import tbdex.sdk.protocol.models.Offering
-import tbdex.sdk.protocol.models.OfferingData
-import tbdex.sdk.protocol.models.Order
-import tbdex.sdk.protocol.models.OrderStatus
-import tbdex.sdk.protocol.models.OrderStatusData
-import tbdex.sdk.protocol.models.Quote
-import tbdex.sdk.protocol.models.QuoteData
-import tbdex.sdk.protocol.models.QuoteDetails
-import tbdex.sdk.protocol.models.ResourceKind
-import tbdex.sdk.protocol.models.Rfq
-import tbdex.sdk.protocol.models.RfqData
-import tbdex.sdk.protocol.models.SelectedPaymentMethod
+import tbdex.sdk.protocol.models.*
 import typeid.TypeID
-import web5.sdk.credentials.ConstraintsV2
-import web5.sdk.credentials.FieldV2
-import web5.sdk.credentials.InputDescriptorV2
-import web5.sdk.credentials.PresentationDefinitionV2
-import web5.sdk.credentials.VcDataModel
-import web5.sdk.credentials.VerifiableCredential
+import web5.sdk.credentials.*
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.Did
 import web5.sdk.dids.DidKey
 import java.net.URI
 import java.time.OffsetDateTime
-import java.util.Date
-import java.util.UUID
+import java.util.*
 
 object TestData {
   const val ALICE = "alice"
@@ -69,7 +48,7 @@ object TestData {
       from = PFI_DID.uri,
       OfferingData(
         description = "my fake offering",
-        payoutUnitsPerPayinUnit = 1,
+        payoutUnitsPerPayinUnit = "1",
         payinCurrency = CurrencyDetails("AUD"),
         payoutCurrency = CurrencyDetails("USDC"),
         payinMethods = listOf(),
@@ -83,7 +62,7 @@ object TestData {
     ALICE_DID.uri,
     RfqData(
       offeringId = offeringId,
-      payinSubunits = 10_00,
+      payinSubunits = "1000",
       payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
       payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
       claims = claims
@@ -94,8 +73,8 @@ object TestData {
     ALICE_DID.uri, PFI_DID.uri, TypeID(MessageKind.rfq.name),
     QuoteData(
       expiresAt = OffsetDateTime.now().plusDays(1),
-      payin = QuoteDetails("AUD", 10_00, 0),
-      payout = QuoteDetails("BTC", 12, 0)
+      payin = QuoteDetails("AUD", "1000", "0"),
+      payout = QuoteDetails("BTC", "12", "0")
     )
   )
 
@@ -115,7 +94,7 @@ object TestData {
     os.sign(ALICE_DID)
     return os
   }
-  
+
   private fun buildField(id: String? = null, vararg paths: String): FieldV2 {
     return FieldV2(id = id, path = paths.toList())
   }

@@ -14,7 +14,12 @@ import kotlin.test.assertIs
 class CloseTest {
   @Test
   fun `can create a new close`() {
-    val close = Close.create("pfi", "alice", TypeID(MessageKind.rfq.name), CloseData("my reason"))
+    val close = Close.create(
+      to = "pfi",
+      from = "alice",
+      exchangeId = TypeID(MessageKind.rfq.name),
+      closeData = CloseData("my reason")
+    )
 
     assertk.assertAll {
       assertThat(close.metadata.id.prefix).isEqualTo("close")

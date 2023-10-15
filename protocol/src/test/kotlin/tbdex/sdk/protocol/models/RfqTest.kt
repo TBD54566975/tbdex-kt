@@ -19,7 +19,7 @@ class RfqTest {
       TestData.PFI, TestData.ALICE,
       RfqData(
         offeringId = TypeID(ResourceKind.offering.name),
-        payinSubunits = 10_00,
+        payinSubunits = "1000",
         payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
         payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
         claims = emptyList()
@@ -28,7 +28,7 @@ class RfqTest {
 
     assertAll {
       assertThat(rfq.metadata.id.prefix).isEqualTo("rfq")
-      assertThat(rfq.data.payinSubunits).isEqualTo(10_00)
+      assertThat(rfq.data.payinSubunits).isEqualTo("1000")
     }
   }
 
@@ -50,7 +50,7 @@ class RfqTest {
 
     assertDoesNotThrow { Message.parse(Json.stringify(rfq)) }
   }
-  
+
   @Test
   @Disabled
   fun `verifyOfferingRequirements succeeds when claims satisfy pd`() {
