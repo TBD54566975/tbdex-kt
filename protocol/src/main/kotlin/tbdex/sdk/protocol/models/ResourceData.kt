@@ -13,7 +13,7 @@ sealed interface ResourceData
  */
 class OfferingData(
   val description: String,
-  val payoutUnitsPerPayinUnit: Int,
+  val payoutUnitsPerPayinUnit: String,
   val payoutCurrency: CurrencyDetails,
   val payinCurrency: CurrencyDetails,
   val payinMethods: List<PaymentMethod>,
@@ -26,8 +26,8 @@ class OfferingData(
  */
 class CurrencyDetails(
   val currencyCode: String,
-  val minSubunits: Int? = null,
-  val maxSubunits: Int? = null
+  val minSubunits: String? = null,
+  val maxSubunits: String? = null
 )
 
 /**

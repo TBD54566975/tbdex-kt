@@ -14,7 +14,10 @@
           "description": "An object containing the properties defined in the respective Offering's requiredPaymentDetails json schema"
         }
       },
-      "required": ["kind", "paymentDetails"]
+      "required": [
+        "kind",
+        "paymentDetails"
+      ]
     }
   },
   "type": "object",
@@ -24,7 +27,7 @@
       "description": "Offering which Alice would like to get a quote for"
     },
     "payinSubunits": {
-      "type": "integer",
+      "type": "string",
       "description": "Amount of quote currency you want to spend in order to receive base currency"
     },
     "claims": {
@@ -41,5 +44,11 @@
       "$ref": "#/definitions/SelectedPaymentMethod"
     }
   },
-  "required": ["offeringId", "payinSubunits", "claims", "payinMethod", "payoutMethod"]
+  "required": [
+    "offeringId",
+    "payinSubunits",
+    "claims",
+    "payinMethod",
+    "payoutMethod"
+  ]
 }
