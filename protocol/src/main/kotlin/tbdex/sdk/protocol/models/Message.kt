@@ -1,14 +1,10 @@
 package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import org.json.JSONObject
 import tbdex.sdk.protocol.CryptoUtils
 import tbdex.sdk.protocol.Json
 import tbdex.sdk.protocol.Json.jsonMapper
-import tbdex.sdk.protocol.StringToTypeIdDeserializer
-import tbdex.sdk.protocol.TypeIDToStringSerializer
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.dateTimeFormat
 import typeid.TypeID
@@ -31,11 +27,7 @@ class MessageMetadata(
   val kind: MessageKind,
   val to: String,
   val from: String,
-  @JsonSerialize(using = TypeIDToStringSerializer::class)
-  @JsonDeserialize(using = StringToTypeIdDeserializer::class)
   val id: TypeID,
-  @JsonDeserialize(using = StringToTypeIdDeserializer::class)
-  @JsonSerialize(using = TypeIDToStringSerializer::class)
   val exchangeId: TypeID,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val createdAt: OffsetDateTime

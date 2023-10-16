@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.dataformat.cbor.databind.CBORMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import tbdex.sdk.protocol.serialisation.TypeIdModule
 
 /**
  * Object providing a configured ObjectMapper for CBOR (Concise Binary Object Representation) serialization.
@@ -18,5 +19,6 @@ object Cbor {
   val cborMapper: ObjectMapper = CBORMapper()
     .registerKotlinModule()
     .findAndRegisterModules()
+    .registerModule(TypeIdModule())
     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 }
