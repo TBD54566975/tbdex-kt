@@ -61,4 +61,15 @@ object Json {
   fun parse(jsonString: String): JsonNode {
     return jsonMapper.readTree(jsonString)
   }
+
+  /**
+   * Parses a Map into a Jackson [JsonNode].
+   *
+   * @param map The map to parse.
+   * @return [JsonNode].
+   * @throws JsonParseException if the map cannot be converted to JsonNode
+   */
+  fun parse(map: Map<String, Any>?): JsonNode {
+    return jsonMapper.valueToTree(map)
+  }
 }
