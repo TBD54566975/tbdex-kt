@@ -26,7 +26,7 @@ allprojects {
 
 subprojects {
   apply {
-    plugin("io.gitlab.arturbosch.detekt")
+//    plugin("io.gitlab.arturbosch.detekt")
     plugin("org.jetbrains.kotlin.jvm")
     plugin("java-library")
     plugin("maven-publish")
@@ -38,13 +38,13 @@ subprojects {
   tasks.withType<Detekt>().configureEach {
     jvmTarget = "1.8"
   }
-  dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
-  }
+//  dependencies {
+//    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
+//  }
 
-  detekt {
-    config.setFrom("$rootDir/config/detekt.yml")
-  }
+//  detekt {
+//    config.setFrom("$rootDir/config/detekt.yml")
+//  }
 
   java {
     withJavadocJar()
