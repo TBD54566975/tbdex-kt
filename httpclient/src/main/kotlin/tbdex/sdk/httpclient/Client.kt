@@ -7,6 +7,16 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 
+data class SendMessageOptions<T : MessageKind>(
+//    val message: Message<T> or MessageModel<T> // Define your own 'or' type or use a sealed class/interface
+  val message: Message
+)
+
+data class GetOfferingsOptions(
+  val pfiDid: String,
+  val filter: Map<String, Any>? = null
+)
+
 class TbdexHttpClient {
   companion object {
     private val httpClient = OkHttpClient()
@@ -56,7 +66,7 @@ class TbdexHttpClient {
 
         return if (response.isSuccessful && responseBody != null) {
           // todo 'as' type casting
-          val data: List<Offering> = Json.parse(responseBody) as List<Offering>
+          val data = Json.parse(responseBody)
           DataResponse(response.code, response.headers, data)
         } else {
           val errors: List<ErrorDetail> = Json.parse(responseBody) as List<ErrorDetail> // Assume ErrorDetail is defined
@@ -66,17 +76,7 @@ class TbdexHttpClient {
     }
 
     fun getPfiServiceEndpoint(did: String): String {
-      return "todo"
+      return "http://localhost:9000"
     }
   }
-
-  data class SendMessageOptions<T : MessageKind>(
-//    val message: Message<T> or MessageModel<T> // Define your own 'or' type or use a sealed class/interface
-    val message: Message
-  )
-
-  data class GetOfferingsOptions(
-    val pfiDid: String,
-    val filter: Map<String, Any>? = null
-  )
 }

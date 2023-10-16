@@ -18,6 +18,7 @@ repositories {
 dependencies {
   implementation(project(":protocol"))
   implementation("com.squareup.okhttp3:okhttp:4.11.0")
+  testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
   testImplementation(kotlin("test"))
 
   // todo why are the below needed since they're within 'protocol' dependency?
