@@ -1,0 +1,124 @@
+{
+  "resources": {
+    "offering": {
+      "metadata": {
+        "kind": "offering",
+        "from": "did:key:zQ3sheivnMpJRPwkxuXyDkBhSUdXJ7dsjXSio2Jw1PrNG66NT",
+        "id": "offering_7zzzzzzvyjf7r8007sy0000sa1",
+        "createdAt": "2023-10-16T02:39:44.590Z",
+        "updatedAt": "2023-10-16T02:39:44.590Z"
+      },
+      "data": {
+        "description": "A sample offering",
+        "payoutUnitsPerPayinUnit": "1",
+        "payoutCurrency": {
+          "currencyCode": "USDC",
+          "minSubunits": null,
+          "maxSubunits": null
+        },
+        "payinCurrency": {
+          "currencyCode": "AUD",
+          "minSubunits": "1",
+          "maxSubunits": "10000"
+        },
+        "payinMethods": [
+          {
+            "kind": "BTC_ADDRESS",
+            "requiredPaymentDetails": {
+              "$schema": "http://json-schema.org/draft-07/schema",
+              "additionalProperties": false,
+              "type": "object",
+              "properties": {
+                "phoneNumber": {
+                  "minLength": 12,
+                  "pattern": "^+2547[0-9]{8}$",
+                  "description": "Mobile Money account number of the Recipient",
+                  "type": "string",
+                  "title": "Phone Number",
+                  "maxLength": 12
+                },
+                "accountHolderName": {
+                  "pattern": "^[A-Za-zs'-]+$",
+                  "description": "Name of the account holder as it appears on the Mobile Money account",
+                  "type": "string",
+                  "title": "Account Holder Name",
+                  "maxLength": 32
+                }
+              },
+              "required": [
+                "accountNumber",
+                "accountHolderName"
+              ]
+            }
+          }
+        ],
+        "payoutMethods": [
+          {
+            "kind": "MOMO",
+            "requiredPaymentDetails": {
+              "$schema": "http://json-schema.org/draft-07/schema",
+              "additionalProperties": false,
+              "type": "object",
+              "properties": {
+                "phoneNumber": {
+                  "minLength": 12,
+                  "pattern": "^+2547[0-9]{8}$",
+                  "description": "Mobile Money account number of the Recipient",
+                  "type": "string",
+                  "title": "Phone Number",
+                  "maxLength": 12
+                },
+                "accountHolderName": {
+                  "pattern": "^[A-Za-zs'-]+$",
+                  "description": "Name of the account holder as it appears on the Mobile Money account",
+                  "type": "string",
+                  "title": "Account Holder Name",
+                  "maxLength": 32
+                }
+              },
+              "required": [
+                "accountNumber",
+                "accountHolderName"
+              ]
+            }
+          }
+        ],
+        "requiredClaims": [
+          {
+            "id": "test-pd-id",
+            "name": "simple PD",
+            "purpose": "pd for testing",
+            "format": null,
+            "submissionRequirements": null,
+            "inputDescriptors": [
+              {
+                "id": "whatever",
+                "name": null,
+                "purpose": "id for testing",
+                "format": null,
+                "constraints": {
+                  "fields": [
+                    {
+                      "id": null,
+                      "path": [
+                        "$.credentialSubject.btcAddress"
+                      ],
+                      "purpose": null,
+                      "filter": null,
+                      "predicate": null,
+                      "name": null,
+                      "optional": null
+                    }
+                  ],
+                  "limitDisclosure": null
+                }
+              }
+            ],
+            "frame": null
+          }
+        ]
+      },
+      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoZWl2bk1wSlJQd2t4dVh5RGtCaFNVZFhKN2RzalhTaW8ySncxUHJORzY2TlQjelEzc2hlaXZuTXBKUlB3a3h1WHlEa0JoU1VkWEo3ZHNqWFNpbzJKdzFQck5HNjZOVCIsImFsZyI6IkVTMjU2SyJ9..11AHU13bRHSCLOJCvzz54a5zevi1YOdh8mqIaClnM62Pc5umjAPbULAb6ragKLqBbWSmLN0l0YnnBvE84Gwv2A"
+    }
+  }
+}

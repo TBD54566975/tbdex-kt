@@ -10,17 +10,8 @@ import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import protocol.tbdex.sdk.protocol.TestData
 import kotlin.test.Test
-import kotlin.test.assertIs
 
 class ResourceTest {
-  @Test
-  fun `can parse a resource`() {
-    val offering = TestData.getOffering()
-    offering.sign(TestData.ALICE_DID)
-    val resource = Resource.parse(offering.toString())
-
-    assertIs<Offering>(resource)
-  }
 
   @Test
   fun `sign populates resource signature`() {
