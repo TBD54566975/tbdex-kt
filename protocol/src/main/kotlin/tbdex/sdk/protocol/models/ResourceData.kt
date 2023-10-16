@@ -1,6 +1,10 @@
 package tbdex.sdk.protocol.models
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.everit.json.schema.Schema
+import org.everit.json.schema.loader.SchemaClient
+import org.everit.json.schema.loader.SchemaLoader
+import org.json.JSONObject
 import web5.sdk.credentials.PresentationDefinitionV2
 
 /**
@@ -35,5 +39,20 @@ class CurrencyDetails(
  */
 class PaymentMethod(
   val kind: String,
-  val requiredPaymentDetails: Schema? = null
-)
+  val requiredPaymentDetails: Map<String, Any>? = null
+) {
+  @JsonIgnore
+  var requiredPaymentDetailsSchema: Schema? = loadSchema()
+
+  private fun loadSchema(): Schema? {
+    if (requiredPaymentDetails == null) return null
+    return SchemaLoader.builder()
+      .schemaClient(SchemaClient.classPathAwareClient())
+      .draftV7Support()
+      .schemaJson(JSONObject(requiredPaymentDetails))
+      .build()
+      .load()
+      .build()
+  }
+}
+

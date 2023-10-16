@@ -5,6 +5,7 @@ import tbdex.sdk.protocol.models.Rfq.Companion.create
 import typeid.TypeID
 import web5.sdk.credentials.PresentationDefinitionV2
 import java.time.OffsetDateTime
+import tbdex.sdk.protocol.Json
 
 /**
  * A class representing the Rfq message.
@@ -46,10 +47,10 @@ class Rfq private constructor(
 
   private fun validatePaymentMethod(selectedMethod: SelectedPaymentMethod, offeringMethods: List<PaymentMethod>) {
     val matchedOfferingMethod = offeringMethods.first { it.kind == selectedMethod.kind }
-    if (matchedOfferingMethod.requiredPaymentDetails !== null) {
-      matchedOfferingMethod.requiredPaymentDetails.validate(selectedMethod.paymentDetails.toString())
+    matchedOfferingMethod.requiredPaymentDetailsSchema?.let {
+      val jsonNodePaymentDetails = Json.parse(selectedMethod.paymentDetails)
+      it.validate(jsonNodePaymentDetails)
     }
-
   }
 
   private fun verifyClaims(requiredClaims: List<PresentationDefinitionV2>) {
