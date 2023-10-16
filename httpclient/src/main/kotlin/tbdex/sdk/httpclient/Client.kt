@@ -5,15 +5,14 @@ import tbdex.sdk.protocol.models.* // TODO don't use * imports
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 
 class TbdexHttpClient {
   companion object {
-    private val client = OkHttpClient()
+    private val httpClient = OkHttpClient()
 
     fun sendMessage(opts: SendMessageOptions<out MessageKind>): HttpResponse {
-//      Message.verify(jsonMessage)
+      // todo verify message
 
       val pfiDid = opts.message.metadata.to
       val exchangeId = opts.message.metadata.exchangeId
@@ -28,7 +27,7 @@ class TbdexHttpClient {
           .toRequestBody("application/json; charset=utf-8".toMediaType()))
         .build()
 
-      client.newCall(request).execute().use { response ->
+      httpClient.newCall(request).execute().use { response ->
         val headers = response.headers
         val status = response.code
 
@@ -42,17 +41,33 @@ class TbdexHttpClient {
       }
     }
 
-    // Implement other functions similar to the above
-    // ...
+    fun getOfferings(opts: GetOfferingsOptions): Any {
+      val pfiServiceEndpoint = getPfiServiceEndpoint(opts.pfiDid) // Assume this function is defined
+      val queryParams = opts.filter?.let { "?" + it.entries.joinToString("&") { "${it.key}=${it.value}" } } ?: ""
+      val apiRoute = "$pfiServiceEndpoint/offerings$queryParams"
 
-    fun getPfiServiceEndpoint(did: String): String {
-      // Implementation here
-      return "todo"
+      val request = Request.Builder()
+        .url(apiRoute)
+        .build()
+
+      httpClient.newCall(request).execute().use { response ->
+        // todo 'as' type casting
+        val responseBody = response.body?.string() as String
+
+        return if (response.isSuccessful && responseBody != null) {
+          // todo 'as' type casting
+          val data: List<Offering> = Json.parse(responseBody) as List<Offering>
+          DataResponse(response.code, response.headers, data)
+        } else {
+          val errors: List<ErrorDetail> = Json.parse(responseBody) as List<ErrorDetail> // Assume ErrorDetail is defined
+          ErrorResponse(response.code, response.headers, null, errors)
+        }
+      }
     }
 
-//    suspend fun generateRequestToken(privateKeyJwk: Web5PrivateKeyJwk, kid: String): String {
-//      // Implementation here
-//    }
+    fun getPfiServiceEndpoint(did: String): String {
+      return "todo"
+    }
   }
 
   data class SendMessageOptions<T : MessageKind>(
@@ -60,12 +75,8 @@ class TbdexHttpClient {
     val message: Message
   )
 
-  // Define other options and types
-  // ...
-
-  // Define HttpResponseOrErrorResponse as a sealed class or interface
-  // ...
-
-  // Define HttpResponse and ErrorResponse
-  // ...
+  data class GetOfferingsOptions(
+    val pfiDid: String,
+    val filter: Map<String, Any>? = null
+  )
 }
