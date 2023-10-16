@@ -20,6 +20,7 @@ dependencies {
   implementation("com.squareup.okhttp3:okhttp:4.11.0")
   testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
   testImplementation(kotlin("test"))
+  implementation("com.github.TBD54566975.web5-kt:dids:v0.0.0-beta")
 
   // todo why are the below needed since they're within 'protocol' dependency?
   implementation("me.lessis:typeid:0.0.2")

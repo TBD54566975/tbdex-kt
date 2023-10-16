@@ -1,5 +1,6 @@
 package tbdex.sdk.httpclient
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import tbdex.sdk.protocol.Json
 import tbdex.sdk.protocol.models.* // TODO don't use * imports
 import okhttp3.MediaType.Companion.toMediaType
@@ -61,12 +62,15 @@ class TbdexHttpClient {
         .build()
 
       httpClient.newCall(request).execute().use { response ->
-        // todo 'as' type casting
-        val responseBody = response.body?.string() as String
+        val responseBody = response.body?.string()
 
-        return if (response.isSuccessful && responseBody != null) {
-          // todo 'as' type casting
-          val data = Json.parse(responseBody)
+        if (responseBody.isNullOrEmpty()) {
+          throw Exception("Response cannot be null or empty")
+        }
+
+        return if (response.isSuccessful) {
+          // todo
+          val data: List<Offering> = Json.parse(responseBody) as List<Offering>
           DataResponse(response.code, response.headers, data)
         } else {
           val errors: List<ErrorDetail> = Json.parse(responseBody) as List<ErrorDetail> // Assume ErrorDetail is defined
@@ -76,6 +80,9 @@ class TbdexHttpClient {
     }
 
     fun getPfiServiceEndpoint(did: String): String {
+      // todo did:ion not current supported by web5-kt
+      // val result = DidResolvers.resolve(did)
+      // println(result)
       return "http://localhost:9000"
     }
   }

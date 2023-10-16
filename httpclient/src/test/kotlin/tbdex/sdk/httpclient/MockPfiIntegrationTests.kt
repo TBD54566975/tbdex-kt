@@ -6,9 +6,9 @@ import kotlin.test.Test
 
 class MockPfiIntegrationTests {
   @Test
-  fun `can getOfferings`() {
+  fun `can happy-path interop with local tbdex-mock-pfi`() {
     val offerings = TbdexHttpClient.getOfferings(GetOfferingsOptions(
-      pfiDid = "todo"
+      pfiDid = "did:ion:EiBkNQFX4S40LpsGvMn-F6b2JSnc4FqDManVwnq7aZlqLQ:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoiRjEzWGJlRGJnUXhpX3paMWF2OGJvMFFVaXprNXNHMkRxQVJreWJsUHlNQSJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHA6Ly9sb2NhbGhvc3Q6OTAwMCIsInR5cGUiOiJQRkkifV19fV0sInVwZGF0ZUNvbW1pdG1lbnQiOiJFaUF0bnJWUGgtSHBobThjcDNXSlBoQUsyUEpRSk85NG9Ecjd1MDV0czhrcjB3In0sInN1ZmZpeERhdGEiOnsiZGVsdGFIYXNoIjoiRWlBX2ZUVUhKdTNWeXBEMnlLWGdKRVoySGZaN3RsRG9WZWJ6RFo3YUxjcDhjQSIsInJlY292ZXJ5Q29tbWl0bWVudCI6IkVpQ1RhWkFMajVwR0kxWTFtM2R6VTZ0M3gyQnVmbnFhOTRUUnpOXzNKT2ZWLVEifX0"
     ))
 
     assertk.assertAll {
