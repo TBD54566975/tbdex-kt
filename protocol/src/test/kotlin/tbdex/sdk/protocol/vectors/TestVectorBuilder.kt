@@ -1,9 +1,7 @@
 package tbdex.sdk.protocol.vectors
 
-import java.io.File
 import protocol.tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.Json
-import tbdex.sdk.protocol.models.Offering
 
 fun main() {
   TestVectorBuilder.writeTestVectors()
@@ -24,6 +22,13 @@ object TestVectorBuilder {
     return mapOf(
       "resources" to mapOf(
         "offering" to offering()
+      ),
+      "messages" to mapOf(
+        "rfq" to rfq(),
+        "quote" to quote(),
+        "order" to order(),
+        "orderStatus" to orderStatus(),
+        "close" to close()
       )
     )
   }
@@ -32,5 +37,35 @@ object TestVectorBuilder {
     val offering = TestData.getOffering()
     offering.sign(TestData.PFI_DID)
     return offering
+  }
+
+  fun rfq(): Any {
+    val rfq = TestData.getRfq(claims = listOf("presentation submission"))
+    rfq.sign(TestData.ALICE_DID)
+    return rfq
+  }
+
+  fun quote(): Any {
+    val quote = TestData.getQuote()
+    quote.sign(TestData.PFI_DID)
+    return quote
+  }
+
+  fun order(): Any {
+    val order = TestData.getOrder()
+    order.sign(TestData.ALICE_DID)
+    return order
+  }
+
+  fun orderStatus(): Any {
+    val orderStatus = TestData.getOrderStatus()
+    orderStatus.sign(TestData.PFI_DID)
+    return orderStatus
+  }
+
+  fun close(): Any {
+    val close = TestData.getClose()
+    close.sign(TestData.PFI_DID)
+    return close
   }
 }

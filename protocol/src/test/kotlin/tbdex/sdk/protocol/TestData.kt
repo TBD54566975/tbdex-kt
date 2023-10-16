@@ -14,6 +14,8 @@ import tbdex.sdk.protocol.models.OfferingData
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.OrderStatusData
+import tbdex.sdk.protocol.models.PaymentInstruction
+import tbdex.sdk.protocol.models.PaymentInstructions
 import tbdex.sdk.protocol.models.PaymentMethod
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.QuoteData
@@ -90,12 +92,12 @@ object TestData {
     )
 
   fun getRfq(offeringId: TypeID = TypeID(ResourceKind.offering.name), claims: List<String> = emptyList()) = Rfq.create(
-    PFI_DID.uri,
-    ALICE_DID.uri,
-    RfqData(
+    to = PFI_DID.uri,
+    from = ALICE_DID.uri,
+    rfqData = RfqData(
       offeringId = offeringId,
       payinSubunits = "1000",
-      payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
+      payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to "123456")),
       payoutMethod = SelectedPaymentMethod("MOMO", mapOf(
         "phoneNumber" to "+254712345678",
         "accountHolderName" to "Alfred Holder"
@@ -109,17 +111,39 @@ object TestData {
     ALICE_DID.uri, PFI_DID.uri, TypeID(MessageKind.rfq.name),
     QuoteData(
       expiresAt = OffsetDateTime.now().plusDays(1),
-      payin = QuoteDetails("AUD", "1000", "0"),
-      payout = QuoteDetails("BTC", "12", "0")
+      payin = QuoteDetails("AUD", "1000", "1"),
+      payout = QuoteDetails("BTC", "12", "2"),
+      paymentInstructions = PaymentInstructions(
+        payin = PaymentInstruction(
+          link = "https://block.xyz",
+          instruction = "payin instruction"
+        ),
+        payout = PaymentInstruction(
+          link = "https://block.xyz",
+          instruction = "payout instruction"
+        )
+      )
     )
   )
 
-  fun getClose() = Close.create(ALICE_DID.uri, PFI_DID.uri, TypeID(MessageKind.rfq.name), CloseData("test reason"))
+  fun getClose() = Close.create(
+    to = ALICE_DID.uri,
+    from = PFI_DID.uri,
+    exchangeId = TypeID(MessageKind.rfq.name),
+    closeData = CloseData("test reason")
+  )
 
-  fun getOrder() = Order.create(PFI_DID.uri, ALICE_DID.uri, TypeID(MessageKind.rfq.name))
+  fun getOrder() = Order.create(
+    to = PFI_DID.uri,
+    from = ALICE_DID.uri,
+    exchangeId = TypeID(MessageKind.rfq.name)
+  )
 
   fun getOrderStatus() = OrderStatus.create(
-    ALICE_DID.uri, PFI_DID.uri, TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
+    to = ALICE_DID.uri,
+    from = PFI_DID.uri,
+    exchangeId = TypeID(MessageKind.rfq.name),
+    orderStatusData = OrderStatusData("PENDING")
   )
 
   fun getOrderStatusWithInvalidDid(): OrderStatus {

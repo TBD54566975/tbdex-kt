@@ -3,10 +3,10 @@
     "offering": {
       "metadata": {
         "kind": "offering",
-        "from": "did:key:zQ3sheivnMpJRPwkxuXyDkBhSUdXJ7dsjXSio2Jw1PrNG66NT",
-        "id": "offering_7zzzzzzvyjf7r8007sy0000sa1",
-        "createdAt": "2023-10-16T02:39:44.590Z",
-        "updatedAt": "2023-10-16T02:39:44.590Z"
+        "from": "did:key:zQ3shN8cQkn3XQyzTtWcoGBuCGhPhbLdXYWQim8vQE7duiHBZ",
+        "id": "offering_01hcvcdxskekp8002mxg000d6j",
+        "createdAt": "2023-10-16T04:38:09.456Z",
+        "updatedAt": "2023-10-16T04:38:09.456Z"
       },
       "data": {
         "description": "A sample offering",
@@ -118,7 +118,114 @@
           }
         ]
       },
-      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoZWl2bk1wSlJQd2t4dVh5RGtCaFNVZFhKN2RzalhTaW8ySncxUHJORzY2TlQjelEzc2hlaXZuTXBKUlB3a3h1WHlEa0JoU1VkWEo3ZHNqWFNpbzJKdzFQck5HNjZOVCIsImFsZyI6IkVTMjU2SyJ9..11AHU13bRHSCLOJCvzz54a5zevi1YOdh8mqIaClnM62Pc5umjAPbULAb6ragKLqBbWSmLN0l0YnnBvE84Gwv2A"
+      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoTjhjUWtuM1hReXpUdFdjb0dCdUNHaFBoYkxkWFlXUWltOHZRRTdkdWlIQlojelEzc2hOOGNRa24zWFF5elR0V2NvR0J1Q0doUGhiTGRYWVdRaW04dlFFN2R1aUhCWiIsImFsZyI6IkVTMjU2SyJ9..4ONifVUhH9qsKzPYQTHttWJ9Pc03qDmMXrjqPsnZUStArrd-c8AjvZJRAurdDlPc9Fz3ToU1BI6cKzw1k-VhUQ"
+    }
+  },
+  "messages": {
+    "rfq": {
+      "metadata": {
+        "kind": "rfq",
+        "to": "did:key:zQ3shN8cQkn3XQyzTtWcoGBuCGhPhbLdXYWQim8vQE7duiHBZ",
+        "from": "did:key:zQ3shbYReYaPpVpVMJ1YsnSuMCuLfEjnk38DXrTtvseQhGxno",
+        "id": "rfq_01hcvcdypzf198004ra8001nng",
+        "exchangeId": "rfq_01hcvcdypzf198004ra8001nng",
+        "createdAt": "2023-10-16T04:38:09.884Z"
+      },
+      "data": {
+        "offeringId": "offering_7zzzzzzzpzew68003q1g000qx9",
+        "payinSubunits": "1000",
+        "payinMethod": {
+          "kind": "BTC_ADDRESS",
+          "paymentDetails": {
+            "address": "123456"
+          }
+        },
+        "payoutMethod": {
+          "kind": "MOMO",
+          "paymentDetails": {
+            "phoneNumber": "+254712345678",
+            "accountHolderName": "Alfred Holder"
+          }
+        },
+        "claims": [
+          "presentation submission"
+        ]
+      },
+      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoYllSZVlhUHBWcFZNSjFZc25TdU1DdUxmRWpuazM4RFhyVHR2c2VRaEd4bm8jelEzc2hiWVJlWWFQcFZwVk1KMVlzblN1TUN1TGZFam5rMzhEWHJUdHZzZVFoR3hubyIsImFsZyI6IkVTMjU2SyJ9..DzWE4z2sFz6Z3RKu0traPLKQzw0v-pKMSMOWuizdqCISjVATSEvicuiVJAeUdQhGbM0yXhur5hgGc_nScONTiA"
+    },
+    "quote": {
+      "metadata": {
+        "kind": "quote",
+        "to": "did:key:zQ3shbYReYaPpVpVMJ1YsnSuMCuLfEjnk38DXrTtvseQhGxno",
+        "from": "did:key:zQ3shN8cQkn3XQyzTtWcoGBuCGhPhbLdXYWQim8vQE7duiHBZ",
+        "id": "quote_7zzzzzzyz9fv4r004ys4001m70",
+        "exchangeId": "rfq_7zzzzzzzqefmqr004x5w001see",
+        "createdAt": "2023-10-16T04:38:09.896Z"
+      },
+      "data": {
+        "expiresAt": "2023-10-17T04:38:09.896Z",
+        "payin": {
+          "currencyCode": "AUD",
+          "amountSubunits": "1000",
+          "feeSubunits": "1"
+        },
+        "payout": {
+          "currencyCode": "BTC",
+          "amountSubunits": "12",
+          "feeSubunits": "2"
+        },
+        "paymentInstructions": {
+          "payin": {
+            "link": "https://block.xyz",
+            "instruction": "payin instruction"
+          },
+          "payout": {
+            "link": "https://block.xyz",
+            "instruction": "payout instruction"
+          }
+        }
+      },
+      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoTjhjUWtuM1hReXpUdFdjb0dCdUNHaFBoYkxkWFlXUWltOHZRRTdkdWlIQlojelEzc2hOOGNRa24zWFF5elR0V2NvR0J1Q0doUGhiTGRYWVdRaW04dlFFN2R1aUhCWiIsImFsZyI6IkVTMjU2SyJ9..QueT7nZShR2v9uocSuurBo3oSOsxmJ-eYgPKWKYiChxBkkxKfhBwjey9OJpf23y_SdqnY-eMUxDJSjInaC6sSQ"
+    },
+    "order": {
+      "metadata": {
+        "kind": "order",
+        "to": "did:key:zQ3shN8cQkn3XQyzTtWcoGBuCGhPhbLdXYWQim8vQE7duiHBZ",
+        "from": "did:key:zQ3shbYReYaPpVpVMJ1YsnSuMCuLfEjnk38DXrTtvseQhGxno",
+        "id": "order_7zzzzzzwzfenpr005ndm001yxh",
+        "exchangeId": "rfq_01hcvcdyzffx4r007z94001nym",
+        "createdAt": "2023-10-16T04:38:09.903Z"
+      },
+      "data": {},
+      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoYllSZVlhUHBWcFZNSjFZc25TdU1DdUxmRWpuazM4RFhyVHR2c2VRaEd4bm8jelEzc2hiWVJlWWFQcFZwVk1KMVlzblN1TUN1TGZFam5rMzhEWHJUdHZzZVFoR3hubyIsImFsZyI6IkVTMjU2SyJ9..evxDdqqFflM9bMOef6SlwIGpXk4VjRxHjtuvXtL2OQSjsdbtNbu9VJa-LSXYzN8NOILux5OC47yh6lwAStJP1g"
+    },
+    "orderStatus": {
+      "metadata": {
+        "kind": "orderstatus",
+        "to": "did:key:zQ3shbYReYaPpVpVMJ1YsnSuMCuLfEjnk38DXrTtvseQhGxno",
+        "from": "did:key:zQ3shN8cQkn3XQyzTtWcoGBuCGhPhbLdXYWQim8vQE7duiHBZ",
+        "id": "orderstatus_01hcvcdwqhev180026r8001rp1",
+        "exchangeId": "rfq_7zzzzzzxzqf6hr001smc000635",
+        "createdAt": "2023-10-16T04:38:09.905Z"
+      },
+      "data": {
+        "status": "PENDING"
+      },
+      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoTjhjUWtuM1hReXpUdFdjb0dCdUNHaFBoYkxkWFlXUWltOHZRRTdkdWlIQlojelEzc2hOOGNRa24zWFF5elR0V2NvR0J1Q0doUGhiTGRYWVdRaW04dlFFN2R1aUhCWiIsImFsZyI6IkVTMjU2SyJ9..G-Q314lR9aSha7JSmGC4WN9wagZSJ1gbmNEH3lPy98XSw2IkGssPecT67huj1pOO4n35tNfUai5j_J3Yi_JIew"
+    },
+    "close": {
+      "metadata": {
+        "kind": "close",
+        "to": "did:key:zQ3shbYReYaPpVpVMJ1YsnSuMCuLfEjnk38DXrTtvseQhGxno",
+        "from": "did:key:zQ3shN8cQkn3XQyzTtWcoGBuCGhPhbLdXYWQim8vQE7duiHBZ",
+        "id": "close_7zzzzzzzzxe43800410r001n73",
+        "exchangeId": "rfq_7zzzzzzzqzff68005bsg001mgx",
+        "createdAt": "2023-10-16T04:38:09.908Z"
+      },
+      "data": {
+        "reason": "test reason"
+      },
+      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoTjhjUWtuM1hReXpUdFdjb0dCdUNHaFBoYkxkWFlXUWltOHZRRTdkdWlIQlojelEzc2hOOGNRa24zWFF5elR0V2NvR0J1Q0doUGhiTGRYWVdRaW04dlFFN2R1aUhCWiIsImFsZyI6IkVTMjU2SyJ9..4cGD-WIA_jXqNrsYyYfFg4L0zrLCiRVJ7tzEtyXnRVNpqQS3hPdg4GIiMCiaZ5zMNc2Tbt2KVm1k0jkX0VAsmA"
     }
   }
 }
