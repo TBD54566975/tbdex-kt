@@ -106,4 +106,20 @@ object Json {
   fun parse(jsonString: String): JsonNode {
     return jsonMapper.readTree(jsonString)
   }
+
+  /**
+   * Parses a json string into a type [T].
+   *
+   * @param jsonString The json string to parse.
+   * @return [T].
+   * @throws JsonParseException if the string is invalid json
+   *
+   * ### Example Usage:
+   * ```kotlin
+   * val customKotlinType = Json.parse(jsonString, CustomKotlinType::class.java)
+   * ```
+   */
+  fun <T> parse(jsonString: String, c: Class<T>): T {
+    return jsonMapper.readValue(jsonString, c)
+  }
 }
