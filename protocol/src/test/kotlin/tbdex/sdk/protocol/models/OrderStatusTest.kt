@@ -3,8 +3,8 @@ package tbdex.sdk.protocol.models
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.assertDoesNotThrow
-import protocol.tbdex.sdk.protocol.TestData
-import protocol.tbdex.sdk.protocol.TestData.PFI_DID
+import tbdex.sdk.protocol.TestData
+import tbdex.sdk.protocol.TestData.PFI_DID
 import tbdex.sdk.protocol.Json
 import typeid.TypeID
 import kotlin.test.Test

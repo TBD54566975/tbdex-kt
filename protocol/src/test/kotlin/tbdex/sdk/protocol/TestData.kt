@@ -1,4 +1,4 @@
-package protocol.tbdex.sdk.protocol
+package tbdex.sdk.protocol
 
 import com.danubetech.verifiablecredentials.CredentialSubject
 import java.net.URI

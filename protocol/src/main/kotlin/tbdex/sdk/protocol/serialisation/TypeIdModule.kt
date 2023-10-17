@@ -6,10 +6,14 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonSerializer
+import com.fasterxml.jackson.databind.Module
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.module.SimpleModule
 import typeid.TypeID
 
+/**
+ * Jackson [Module] the serialise [TypeID] fields
+ */
 class TypeIdModule: SimpleModule() {
   init {
     addSerializer(TypeID::class.java, TypeIDToStringSerializer())
@@ -17,12 +21,8 @@ class TypeIdModule: SimpleModule() {
   }
 }
 
-
 /**
  * Custom Jackson JSON serializer for converting a [TypeID] object to a JSON string.
- * This serializer is used to customize the JSON serialization of [TypeID] instances.
- *
- * @see TypeID
  */
 class TypeIDToStringSerializer : JsonSerializer<TypeID>() {
   /**
@@ -39,9 +39,6 @@ class TypeIDToStringSerializer : JsonSerializer<TypeID>() {
 
 /**
  * Custom Jackson JSON deserializer for converting a JSON string to a [TypeID] object.
- * This deserializer is used to customize the JSON deserialization of [TypeID] instances.
- *
- * @see TypeID
  */
 class StringToTypeIdDeserializer : JsonDeserializer<TypeID>() {
   /**

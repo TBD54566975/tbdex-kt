@@ -1,11 +1,8 @@
-package protocol.tbdex.sdk.protocol
+package tbdex.sdk.protocol
 
 import org.everit.json.schema.ValidationException
 import org.json.JSONObject
 import org.junit.jupiter.api.assertDoesNotThrow
-import tbdex.sdk.protocol.Json
-import tbdex.sdk.protocol.Validator
-import tbdex.sdk.protocol.ValidatorException
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals

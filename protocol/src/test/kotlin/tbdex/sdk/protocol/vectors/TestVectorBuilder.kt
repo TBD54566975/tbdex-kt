@@ -1,6 +1,6 @@
 package tbdex.sdk.protocol.vectors
 
-import protocol.tbdex.sdk.protocol.TestData
+import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.Json
 
 fun main() {
@@ -8,7 +8,7 @@ fun main() {
 }
 
 /**
- * Utility to produce the tbDEX test vectors JSON file
+ * Utility to produce the tbDEX test vectors JSON file.
  */
 object TestVectorBuilder {
   fun writeTestVectors() {

@@ -4,7 +4,7 @@ import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.assertDoesNotThrow
-import protocol.tbdex.sdk.protocol.TestData
+import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.Json
 import kotlin.test.Test
 import kotlin.test.assertIs

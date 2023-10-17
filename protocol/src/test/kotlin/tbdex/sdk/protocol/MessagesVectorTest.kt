@@ -58,7 +58,7 @@ class MessagesVectorTest {
   }
 
   /**
-   * Test parse, validate, and verify on the [vectorString]
+   * Test parse, validate, and verify on the [vectorString].
    */
   private inline fun <reified T> testParsing(vectorString: String) {
     val tbDEXMessage = Message.parse(vectorString)
