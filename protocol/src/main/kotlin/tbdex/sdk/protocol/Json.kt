@@ -116,7 +116,11 @@ object Json {
    *
    * ### Example Usage:
    * ```kotlin
+   * data class CustomKotlinType(val something: String)
+   *
    * val customKotlinType = Json.parse(jsonString, CustomKotlinType::class.java)
+   *
+   * println(customKotlinType.something) // this doesn't throw an error
    * ```
    */
   fun <T> parse(jsonString: String, c: Class<T>): T {
