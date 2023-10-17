@@ -12,8 +12,6 @@ import com.fasterxml.jackson.databind.ObjectWriter
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import tbdex.sdk.protocol.Json.parse
-import tbdex.sdk.protocol.Json.stringify
 import typeid.TypeID
 
 const val dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
@@ -94,36 +92,5 @@ object Json {
    */
   fun stringify(obj: Any): String {
     return objectWriter.writeValueAsString(obj)
-  }
-
-  /**
-   * Parses a json string into a Jackson [JsonNode].
-   *
-   * @param jsonString The json string to parse.
-   * @return [JsonNode].
-   * @throws JsonParseException if the string is invalid json
-   */
-  fun parse(jsonString: String): JsonNode {
-    return jsonMapper.readTree(jsonString)
-  }
-
-  /**
-   * Parses a json string into a type [T].
-   *
-   * @param jsonString The json string to parse.
-   * @return [T].
-   * @throws JsonParseException if the string is invalid json
-   *
-   * ### Example Usage:
-   * ```kotlin
-   * data class CustomKotlinType(val something: String)
-   *
-   * val customKotlinType = Json.parse(jsonString, CustomKotlinType::class.java)
-   *
-   * println(customKotlinType.something) // this doesn't throw an error
-   * ```
-   */
-  fun <T> parse(jsonString: String, c: Class<T>): T {
-    return jsonMapper.readValue(jsonString, c)
   }
 }
