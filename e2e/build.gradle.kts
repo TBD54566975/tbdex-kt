@@ -19,10 +19,7 @@ dependencies {
   implementation(project(":protocol"))
   implementation(project(":httpclient"))
   implementation("me.lessis:typeid:0.0.2")
-  implementation("com.github.TBD54566975.web5-sdk-kotlin:common:main-SNAPSHOT")
-  implementation("com.github.TBD54566975.web5-sdk-kotlin:credentials:main-SNAPSHOT")
-  implementation("com.github.TBD54566975.web5-sdk-kotlin:crypto:main-SNAPSHOT")
-  implementation("com.github.TBD54566975.web5-sdk-kotlin:dids:main-SNAPSHOT")
+  implementation("com.github.TBD54566975:web5-kt:0.0.0-beta")
   testImplementation(platform("org.junit:junit-bom:5.9.1"))
   testImplementation("org.junit.jupiter:junit-jupiter")
 }
