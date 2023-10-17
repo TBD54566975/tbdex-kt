@@ -25,7 +25,9 @@ dependencies {
   implementation("com.github.TBD54566975.web5-sdk-kotlin:crypto:main-SNAPSHOT")
   implementation("com.github.TBD54566975.web5-sdk-kotlin:dids:main-SNAPSHOT")
   implementation("com.github.TBD54566975.web5-sdk-kotlin:common:main-SNAPSHOT")
+  implementation("com.github.TBD54566975.web5-sdk-kotlin:credentials:main-SNAPSHOT")
   implementation("decentralized-identity:did-common-java:1.9.0") // would like to grab this via web5 dids
+  implementation(project(mapOf("path" to ":protocol")))
 
   testImplementation(kotlin("test"))
   testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")

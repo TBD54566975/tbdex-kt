@@ -1,6 +1,6 @@
 package tbdex
 
-import tbdex.sdk.httpclient.RealTbdexClient
+import tbdex.sdk.httpclient.FakeTbdexClient
 import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.httpclient.models.GetExchangeResponse
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
@@ -19,7 +19,7 @@ import web5.sdk.dids.DidKey
 private const val pollInterval = 1000L
 
 fun main() {
-  val client = RealTbdexClient
+  val client = FakeTbdexClient // swap this with RealTbdexClient
   val pfiDid = "did:pfi:0:0" // todo use a real did
   val myDid = DidKey.create(InMemoryKeyManager())
 
@@ -30,7 +30,7 @@ fun main() {
   assert(getOfferingsResponse !is ErrorResponse) { "Error getting offerings. errors: ${(getOfferingsResponse as ErrorResponse).errors}" }
 
   val offerings = (getOfferingsResponse as GetOfferingsResponse).data
-  println("Got offerings! $offerings")
+  println("Got offerings! ${offerings.toString().replace("), ", "),\n")}")
 
   assert(offerings.isNotEmpty())
 
@@ -45,7 +45,7 @@ fun main() {
     )
   val rfq = Rfq.create(pfiDid, myDid.uri, rfqData)
 
-  println("Sending RFQ against first offering ${offerings[0]}")
+  println("Sending RFQ against first offering ${offerings[0].metadata.id}")
   val sendRfqResponse = client.sendMessage(rfq)
 
   assert(sendRfqResponse !is ErrorResponse) { "Error returned from sending RFQ. Errors: ${(sendRfqResponse as ErrorResponse).errors}"}
