@@ -4,14 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersion
-import org.everit.json.schema.ValidationException
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.ResourceKind
 
 /**
- * Thrown by [Validator.validate]. Note: inspect causing exception for specific [ValidationException]s
+ * Thrown by [Validator.validate]
  */
-class ValidatorException(message: String, cause: Exception? = null) : Exception(message, cause)
+class ValidatorException(message: String, val errors: List<String> = listOf()) : Exception(message)
 
 /**
  * Utility for validating JSON payloads against predefined schemas.
@@ -47,15 +46,11 @@ object Validator {
    * @throws Exception if validation fails, including a list of validation errors.
    */
   fun validate(jsonMessage: JsonNode, schemaName: String) {
-    try {
-      val schema = schemaMap[schemaName] ?: throw ValidatorException("No schema with name $schemaName exists")
+    val schema = schemaMap[schemaName] ?: throw ValidatorException("No schema with name $schemaName exists")
+    val validationMessages = schema.validate(jsonMessage)
 
-      val validationMessages = schema.validate(jsonMessage)
-      println(validationMessages)
-
-    } catch (e: ValidationException) {
-
-      throw ValidatorException("Validation failed", e)
+    if (validationMessages.isNotEmpty()) {
+      throw ValidatorException(message = "invalid payload", errors = validationMessages.map { it.message })
     }
   }
 }

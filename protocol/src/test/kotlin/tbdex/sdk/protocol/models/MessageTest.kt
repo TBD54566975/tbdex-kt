@@ -62,8 +62,7 @@ class MessageTest {
       Message.parse(Json.stringify(TestData.getQuote()))
     }
 
-    val validationException = exception.cause as ValidationException
-    assertContains(validationException.allMessages, "#/signature: expected type: String, found: Null")
+    assertContains(exception.errors, "$.signature: null found, string expected")
   }
 
   @Test
