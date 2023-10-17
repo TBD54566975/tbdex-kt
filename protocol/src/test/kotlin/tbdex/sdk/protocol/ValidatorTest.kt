@@ -1,5 +1,7 @@
 package tbdex.sdk.protocol
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.module.kotlin.convertValue
 import org.everit.json.schema.ValidationException
 import org.json.JSONObject
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -15,8 +17,9 @@ class ValidatorTest {
     val rfq = TestData.getRfq()
     rfq.sign(TestData.ALICE_DID)
     assertDoesNotThrow {
-      Validator.validate(JSONObject(Json.stringify(rfq)), "message")
-      Validator.validate(JSONObject(Json.stringify(rfq.data)), "rfq")
+      val jsonRfq = Json.jsonMapper.convertValue<JsonNode>(rfq)
+      Validator.validate(jsonRfq, "message")
+      Validator.validate(jsonRfq.get("data"), rfq.metadata.kind.name)
     }
   }
 
@@ -24,8 +27,10 @@ class ValidatorTest {
   fun validateFailsWithProperOrderMessageAndInvalidSchemaName() {
     val order = TestData.getOrder()
     order.sign(TestData.ALICE_DID)
+
+    val jsonOrder = Json.jsonMapper.convertValue<JsonNode>(order)
     val exception = assertFailsWith<ValidatorException> {
-      Validator.validate(JSONObject(Json.stringify(order)), "asdf")
+      Validator.validate(jsonOrder, "asdf")
     }
 
     exception.message?.let { assertContains(it, "No schema with name") }
@@ -35,8 +40,10 @@ class ValidatorTest {
   fun validateFailsWithProperOrderStatusMessageAndWrongSchemaName() {
     val orderStatus = TestData.getOrderStatus()
     orderStatus.sign(TestData.ALICE_DID)
+
+    val jsonOrderStatus = Json.jsonMapper.convertValue<JsonNode>(orderStatus)
     val exception = assertFailsWith<ValidatorException> {
-      Validator.validate(JSONObject(Json.stringify(orderStatus.data)), "quote")
+      Validator.validate(jsonOrderStatus, "quote")
     }
     exception.message?.let { assertContains(it, "Validation failed") }
   }
@@ -45,9 +52,12 @@ class ValidatorTest {
   fun validateFailsWithImproperOrderStatusMessage() {
     val orderStatus = TestData.getOrderStatusWithInvalidDid()
     orderStatus.sign(TestData.ALICE_DID)
+
+    val jsonOrderStatus = Json.jsonMapper.convertValue<JsonNode>(orderStatus)
+
     val exception = assertFailsWith<Exception> {
-      Validator.validate(JSONObject(Json.stringify(orderStatus)), "message")
-      Validator.validate(JSONObject(Json.stringify(orderStatus.data)), "orderstatus")
+      Validator.validate(jsonOrderStatus, "message")
+      Validator.validate(jsonOrderStatus.get("data"), orderStatus.metadata.kind.name)
     }
 
     val expectedValidationErrors = setOf(
@@ -94,12 +104,11 @@ class ValidatorTest {
         "signature": "blah"
       }
     """.trimIndent()
-    val rfq = JSONObject(stringRfqWithoutPayinSubunits)
-    val dataJson = rfq.getJSONObject("data")
+    val jsonRfq = Json.parse(stringRfqWithoutPayinSubunits)
 
     val exception = assertFailsWith<Exception> {
-      Validator.validate(rfq, "message")
-      Validator.validate(dataJson, "rfq")
+      Validator.validate(jsonRfq, "message")
+      Validator.validate(jsonRfq.get("data"), "rfq")
     }
 
     val validationException = exception.cause as ValidationException

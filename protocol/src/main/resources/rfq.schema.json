@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://tbdex.io/rfq.schema.json",
+  "$id": "https://tbdex.dev/rfq.schema.json",
   "definitions": {
     "SelectedPaymentMethod": {
       "type": "object",
@@ -14,10 +14,7 @@
           "description": "An object containing the properties defined in the respective Offering's requiredPaymentDetails json schema"
         }
       },
-      "required": [
-        "kind",
-        "paymentDetails"
-      ]
+      "required": ["kind", "paymentDetails"]
     }
   },
   "type": "object",
@@ -44,11 +41,5 @@
       "$ref": "#/definitions/SelectedPaymentMethod"
     }
   },
-  "required": [
-    "offeringId",
-    "payinSubunits",
-    "claims",
-    "payinMethod",
-    "payoutMethod"
-  ]
+  "required": ["offeringId", "payinSubunits", "claims", "payinMethod", "payoutMethod"]
 }
