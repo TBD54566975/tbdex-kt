@@ -1,5 +1,6 @@
 package tbdex.sdk.httpclient
 
+import com.fasterxml.jackson.module.kotlin.convertValue
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -7,11 +8,19 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import tbdex.sdk.httpclient.Json.objectMapper
-import tbdex.sdk.httpclient.models.*
+import tbdex.sdk.httpclient.models.ErrorDetail
+import tbdex.sdk.httpclient.models.ErrorResponse
+import tbdex.sdk.httpclient.models.GetExchangeResponse
+import tbdex.sdk.httpclient.models.GetExchangesFilter
+import tbdex.sdk.httpclient.models.GetExchangesResponse
+import tbdex.sdk.httpclient.models.GetOfferingsFilter
+import tbdex.sdk.httpclient.models.GetOfferingsResponse
+import tbdex.sdk.httpclient.models.SendMessageResponse
+import tbdex.sdk.httpclient.models.TbdexResponse
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
 import web5.sdk.dids.Did
-import web5.sdk.dids.DidResolutionResult
+import web5.sdk.dids.DidKey
 import web5.sdk.dids.DidResolvers
 
 object RealTbdexClient : TbdexClient {
@@ -20,9 +29,10 @@ object RealTbdexClient : TbdexClient {
   private const val JSON_HEADER = "application/json"
 
   init {
-    DidResolvers.addResolver("ion") { did, _ ->
-      // TODO drop in logic here
-      DidResolutionResult()
+    // methodName of ion does not fit with the resolver
+    DidResolvers.addResolver("ion") { did, resolverDidOptions ->
+      DidKey.resolve(did, resolverDidOptions)
+      // todo need this? DidIon.resolve(did, resolverDidOptions)
     }
   }
 
@@ -31,10 +41,10 @@ object RealTbdexClient : TbdexClient {
     val baseUrl = "$pfiServiceEndpoint/offerings/"
 
     // compose query param
-    val queryMap = objectMapper.convertValue(filter, Map::class.java) as Map<String, String?>
-    val notNullQueries = queryMap.filterValues { it != null }
+    val queryMap: Map<String, String?>? = filter?.let { objectMapper.convertValue(it) }
+    val notNullQueryMap = queryMap?.filterValues { it != null }
     val httpUrlBuilder = baseUrl.toHttpUrl().newBuilder()
-    notNullQueries.forEach { httpUrlBuilder.addQueryParameter(it.key, it.value) }
+    notNullQueryMap?.forEach { httpUrlBuilder.addQueryParameter(it.key, it.value) }
 
     val request = Request.Builder()
       .url(httpUrlBuilder.build())
@@ -59,14 +69,7 @@ object RealTbdexClient : TbdexClient {
       }
 
       else -> {
-        val errors: List<ErrorDetail> =
-          objectMapper.readerForListOf(ErrorDetail::class.java).readValue(response.body!!.string())
-
-        ErrorResponse(
-          status = response.code,
-          headers = response.headers,
-          errors = errors
-        )
+        buildErrorResponse(response)
       }
     }
   }
@@ -97,14 +100,7 @@ object RealTbdexClient : TbdexClient {
       }
 
       else -> {
-        val errors: List<ErrorDetail> =
-          objectMapper.readerForListOf(ErrorDetail::class.java).readValue(response.body!!.string())
-
-        ErrorResponse(
-          status = response.code,
-          headers = response.headers,
-          errors = errors
-        )
+        buildErrorResponse(response)
       }
     }
   }
@@ -138,14 +134,7 @@ object RealTbdexClient : TbdexClient {
       }
 
       else -> {
-        val errors: List<ErrorDetail> =
-          objectMapper.readerForListOf(ErrorDetail::class.java).readValue(response.body!!.string())
-
-        ErrorResponse(
-          status = response.code,
-          headers = response.headers,
-          errors = errors
-        )
+        buildErrorResponse(response)
       }
     }
   }
@@ -156,7 +145,7 @@ object RealTbdexClient : TbdexClient {
     filter: GetExchangesFilter?
   ): TbdexResponse {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
-    val baseUrl = "$pfiServiceEndpoint/exchanges"
+    val baseUrl = "$pfiServiceEndpoint/exchanges/"
     val requestToken = generateRequestToken(did)
 
     // compose query param
@@ -191,15 +180,19 @@ object RealTbdexClient : TbdexClient {
       }
 
       else -> {
-        val errors: List<ErrorDetail> =
-          objectMapper.readerForListOf(ErrorDetail::class.java).readValue(response.body!!.string())
-
-        ErrorResponse(
-          status = response.code,
-          headers = response.headers,
-          errors = errors
-        )
+        buildErrorResponse(response)
       }
     }
+  }
+
+  private fun buildErrorResponse(response: Response): ErrorResponse {
+    val errors: List<ErrorDetail> =
+      objectMapper.readerForListOf(ErrorDetail::class.java).readValue(response.body!!.string())
+
+    return ErrorResponse(
+      status = response.code,
+      headers = response.headers,
+      errors = errors
+    )
   }
 }
