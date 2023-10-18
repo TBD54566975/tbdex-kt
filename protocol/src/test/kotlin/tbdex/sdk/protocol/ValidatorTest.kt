@@ -98,7 +98,7 @@ class ValidatorTest {
       }
     """.trimIndent()
 
-    val jsonRfq = Json.parse(stringRfqWithoutPayinSubunits)
+    val jsonRfq = Json.jsonMapper.readTree(stringRfqWithoutPayinSubunits)
     val exception = assertFailsWith<ValidatorException> {
       Validator.validate(jsonRfq, "message")
       Validator.validate(jsonRfq.get("data"), "rfq")

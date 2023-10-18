@@ -8,7 +8,7 @@ object TestVectors {
   fun readVectors(): JsonNode {
     val loader = Thread.currentThread().contextClassLoader
     val vectorsJson = loader.getResourceAsStream("testVectors.json")?.bufferedReader()?.readText()!!
-    return Json.parse(vectorsJson)
+    return Json.jsonMapper.readTree(vectorsJson)
   }
 
   fun offering() = vectors["resources"]["offering"].toString()
