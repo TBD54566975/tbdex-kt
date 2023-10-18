@@ -1,9 +1,9 @@
 package tbdex.sdk.protocol
 
+import assertk.assertThat
+import assertk.assertions.support.appendName
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.convertValue
-import org.everit.json.schema.ValidationException
-import org.json.JSONObject
 import org.junit.jupiter.api.assertDoesNotThrow
 import kotlin.test.Test
 import kotlin.test.assertContains
@@ -45,7 +45,7 @@ class ValidatorTest {
     val exception = assertFailsWith<ValidatorException> {
       Validator.validate(jsonOrderStatus, "quote")
     }
-    exception.message?.let { assertContains(it, "Validation failed") }
+    exception.message?.let { assertContains(it, "invalid payload") }
   }
 
   @Test
@@ -55,22 +55,15 @@ class ValidatorTest {
 
     val jsonOrderStatus = Json.jsonMapper.convertValue<JsonNode>(orderStatus)
 
-    val exception = assertFailsWith<Exception> {
+    val exception = assertFailsWith<ValidatorException> {
       Validator.validate(jsonOrderStatus, "message")
       Validator.validate(jsonOrderStatus.get("data"), orderStatus.metadata.kind.name)
     }
 
-    val expectedValidationErrors = setOf(
-      "#/metadata/from: string [pfi] does not match pattern",
-      "#/metadata/to: string [alice] does not match pattern"
-    )
+    assertEquals(2, exception.errors.size)
 
-    val validationException = exception.cause as ValidationException
-    assertEquals(expectedValidationErrors.size, validationException.allMessages.size)
-
-    for (message in validationException.allMessages) {
-      expectedValidationErrors.contains(message)
-    }
+      assertThat(exception.errors[0]).appendName("$.metadata.from: does not match")
+      assertThat(exception.errors[1]).appendName("$.metadata.to: does not match")
   }
 
   @Test
@@ -104,16 +97,14 @@ class ValidatorTest {
         "signature": "blah"
       }
     """.trimIndent()
-    val jsonRfq = Json.parse(stringRfqWithoutPayinSubunits)
 
-    val exception = assertFailsWith<Exception> {
+    val jsonRfq = Json.parse(stringRfqWithoutPayinSubunits)
+    val exception = assertFailsWith<ValidatorException> {
       Validator.validate(jsonRfq, "message")
       Validator.validate(jsonRfq.get("data"), "rfq")
     }
 
-    val validationException = exception.cause as ValidationException
-    assertEquals(1, validationException.allMessages.size)
-    assertEquals("#: required key [payinSubunits] not found", validationException.allMessages[0])
-
+    assertEquals(1, exception.errors.size)
+    assertContains(exception.errors, "$.payinSubunits: is missing but it is required")
   }
 }
