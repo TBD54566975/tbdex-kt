@@ -14,9 +14,6 @@ comments:
   active: true
   DeprecatedBlockTag:
     active: true
-  EndOfSentenceFormat:
-    active: true
-    endOfSentenceFormat: '([.?!][ \t\n\r\f<])|([.?!:]$)'
   CommentOverPrivateProperty:
     active: true
   UndocumentedPublicClass:

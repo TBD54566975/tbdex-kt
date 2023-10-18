@@ -8,6 +8,12 @@ import web5.sdk.dids.DidResolvers
 import java.security.SignatureException
 import java.time.Instant
 
+/**
+ * Get pfi service endpoint
+ *
+ * @param pfiDid
+ * @return
+ */
 fun getPfiServiceEndpoint(pfiDid: String): String {
   val didResolutionResult = DidResolvers.resolve(pfiDid)
   val service = didResolutionResult.didDocument.services.find { it.isType("PFI") }
@@ -20,6 +26,13 @@ fun getPfiServiceEndpoint(pfiDid: String): String {
 }
 
 
+/**
+ * Generate request token.
+ *
+ * @param did
+ * @param assertionMethodId
+ * @return
+ */
 fun generateRequestToken(did: Did, assertionMethodId: String? = null): String {
   val didResolutionResult = DidResolvers.resolve(did.uri)
   val assertionMethods = didResolutionResult.didDocument.assertionMethodVerificationMethodsDereferenced

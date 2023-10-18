@@ -5,6 +5,11 @@ import com.fasterxml.jackson.databind.ObjectWriter
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 
+/**
+ * Wrapper for Jackson objectMapper
+ *
+ * @constructor create Json object with Jackson objectMapper
+ */
 object Json {
   val objectMapper: ObjectMapper = ObjectMapper()
     .registerKotlinModule()
