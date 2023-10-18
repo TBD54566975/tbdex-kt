@@ -3,6 +3,7 @@ package tbdex.sdk.protocol.models
 import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.contains
+import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import com.nimbusds.jose.JWSObject
 import org.everit.json.schema.ValidationException
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.assertThrows
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.Json
 import tbdex.sdk.protocol.ValidatorException
+import java.lang.IllegalArgumentException
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertFailsWith
@@ -53,7 +55,8 @@ class MessageTest {
 
   @Test
   fun `parse throws error if json string is not valid`() {
-    assertThrows<JSONException> { Message.parse(";;;;") }
+    val exception = assertThrows<IllegalArgumentException> { Message.parse(";;;;") }
+    assertThat(exception.message!!).contains("unexpected character at offset")
   }
 
   @Test
@@ -62,8 +65,7 @@ class MessageTest {
       Message.parse(Json.stringify(TestData.getQuote()))
     }
 
-    val validationException = exception.cause as ValidationException
-    assertContains(validationException.allMessages, "#/signature: expected type: String, found: Null")
+    assertContains(exception.errors, "$.signature: null found, string expected")
   }
 
   @Test

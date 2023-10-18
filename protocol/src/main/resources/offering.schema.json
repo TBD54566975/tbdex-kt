@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://tbdex.io/offering.schema.json",
+  "$id": "https://tbdex.dev/offering.schema.json",
   "definitions": {
     "CurrencyDetails": {
       "type": "object",
@@ -10,23 +10,15 @@
           "description": "ISO 3166 currency code string"
         },
         "minSubunits": {
-          "type": [
-            "string",
-            "null"
-          ],
+          "type": "string",
           "description": "Minimum amount of currency that can be requested"
         },
         "maxSubunits": {
-          "type": [
-            "string",
-            "null"
-          ],
+          "type": "string",
           "description": "Maximum amount of currency that can be requested"
         }
       },
-      "required": [
-        "currencyCode"
-      ]
+      "required": ["currencyCode"]
     },
     "PaymentMethod": {
       "type": "object",
@@ -40,10 +32,7 @@
           "description": "A JSON Schema containing the fields that need to be collected in order to use this payment method"
         }
       },
-      "required": [
-        "kind",
-        "requiredPaymentDetails"
-      ]
+      "required": ["kind", "requiredPaymentDetails"]
     }
   },
   "type": "object",
@@ -54,7 +43,7 @@
     },
     "payoutUnitsPerPayinUnit": {
       "type": "string",
-      "description": "Number of quote currency units for one base currency unit (i.e 290000 USD for 1 BTC)"
+      "description": "Number of payout currency units for one payin currency unit (i.e 290000 USD for 1 BTC)"
     },
     "payinCurrency": {
       "$ref": "#/definitions/CurrencyDetails"
@@ -75,7 +64,7 @@
       }
     },
     "requiredClaims": {
-      "type": "array",
+      "type": "object",
       "description": "PresentationDefinition that describes the credential(s) the PFI requires in order to provide a quote."
     }
   },

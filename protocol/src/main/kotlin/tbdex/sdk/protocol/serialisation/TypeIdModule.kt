@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.Module
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.module.SimpleModule
 import typeid.TypeID
+import java.io.IOException
 
 /**
  * Jackson [Module] the serialise [TypeID] fields.

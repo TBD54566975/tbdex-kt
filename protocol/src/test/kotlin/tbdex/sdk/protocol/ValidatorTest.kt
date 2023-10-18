@@ -1,7 +1,9 @@
 package tbdex.sdk.protocol
 
-import org.everit.json.schema.ValidationException
-import org.json.JSONObject
+import assertk.assertThat
+import assertk.assertions.support.appendName
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.module.kotlin.convertValue
 import org.junit.jupiter.api.assertDoesNotThrow
 import kotlin.test.Test
 import kotlin.test.assertContains
@@ -15,8 +17,9 @@ class ValidatorTest {
     val rfq = TestData.getRfq()
     rfq.sign(TestData.ALICE_DID)
     assertDoesNotThrow {
-      Validator.validate(JSONObject(Json.stringify(rfq)), "message")
-      Validator.validate(JSONObject(Json.stringify(rfq.data)), "rfq")
+      val jsonRfq = Json.jsonMapper.convertValue<JsonNode>(rfq)
+      Validator.validate(jsonRfq, "message")
+      Validator.validate(jsonRfq.get("data"), rfq.metadata.kind.name)
     }
   }
 
@@ -24,8 +27,10 @@ class ValidatorTest {
   fun validateFailsWithProperOrderMessageAndInvalidSchemaName() {
     val order = TestData.getOrder()
     order.sign(TestData.ALICE_DID)
+
+    val jsonOrder = Json.jsonMapper.convertValue<JsonNode>(order)
     val exception = assertFailsWith<ValidatorException> {
-      Validator.validate(JSONObject(Json.stringify(order)), "asdf")
+      Validator.validate(jsonOrder, "asdf")
     }
 
     exception.message?.let { assertContains(it, "No schema with name") }
@@ -35,32 +40,30 @@ class ValidatorTest {
   fun validateFailsWithProperOrderStatusMessageAndWrongSchemaName() {
     val orderStatus = TestData.getOrderStatus()
     orderStatus.sign(TestData.ALICE_DID)
+
+    val jsonOrderStatus = Json.jsonMapper.convertValue<JsonNode>(orderStatus)
     val exception = assertFailsWith<ValidatorException> {
-      Validator.validate(JSONObject(Json.stringify(orderStatus.data)), "quote")
+      Validator.validate(jsonOrderStatus, "quote")
     }
-    exception.message?.let { assertContains(it, "Validation failed") }
+    exception.message?.let { assertContains(it, "invalid payload") }
   }
 
   @Test
   fun validateFailsWithImproperOrderStatusMessage() {
     val orderStatus = TestData.getOrderStatusWithInvalidDid()
     orderStatus.sign(TestData.ALICE_DID)
-    val exception = assertFailsWith<Exception> {
-      Validator.validate(JSONObject(Json.stringify(orderStatus)), "message")
-      Validator.validate(JSONObject(Json.stringify(orderStatus.data)), "orderstatus")
+
+    val jsonOrderStatus = Json.jsonMapper.convertValue<JsonNode>(orderStatus)
+
+    val exception = assertFailsWith<ValidatorException> {
+      Validator.validate(jsonOrderStatus, "message")
+      Validator.validate(jsonOrderStatus.get("data"), orderStatus.metadata.kind.name)
     }
 
-    val expectedValidationErrors = setOf(
-      "#/metadata/from: string [pfi] does not match pattern",
-      "#/metadata/to: string [alice] does not match pattern"
-    )
+    assertEquals(2, exception.errors.size)
 
-    val validationException = exception.cause as ValidationException
-    assertEquals(expectedValidationErrors.size, validationException.allMessages.size)
-
-    for (message in validationException.allMessages) {
-      expectedValidationErrors.contains(message)
-    }
+      assertThat(exception.errors[0]).appendName("$.metadata.from: does not match")
+      assertThat(exception.errors[1]).appendName("$.metadata.to: does not match")
   }
 
   @Test
@@ -94,17 +97,14 @@ class ValidatorTest {
         "signature": "blah"
       }
     """.trimIndent()
-    val rfq = JSONObject(stringRfqWithoutPayinSubunits)
-    val dataJson = rfq.getJSONObject("data")
 
-    val exception = assertFailsWith<Exception> {
-      Validator.validate(rfq, "message")
-      Validator.validate(dataJson, "rfq")
+    val jsonRfq = Json.parse(stringRfqWithoutPayinSubunits)
+    val exception = assertFailsWith<ValidatorException> {
+      Validator.validate(jsonRfq, "message")
+      Validator.validate(jsonRfq.get("data"), "rfq")
     }
 
-    val validationException = exception.cause as ValidationException
-    assertEquals(1, validationException.allMessages.size)
-    assertEquals("#: required key [payinSubunits] not found", validationException.allMessages[0])
-
+    assertEquals(1, exception.errors.size)
+    assertContains(exception.errors, "$.payinSubunits: is missing but it is required")
   }
 }

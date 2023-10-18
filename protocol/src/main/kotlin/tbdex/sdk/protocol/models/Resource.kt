@@ -86,23 +86,23 @@ sealed class Resource {
      * @throws IllegalArgumentException if the payload signature verification fails.
      */
     fun parse(payload: String): Resource {
-      val resourceJson = JSONObject(payload)
+      val jsonResource = jsonMapper.readTree(payload)
 
       // validate message structure
-      Validator.validate(resourceJson, "resource")
+      Validator.validate(jsonResource, "resource")
 
-      val dataJson = resourceJson.getJSONObject("data")
-      val kind = resourceJson.getJSONObject("metadata").getString("kind")
+      val dataJson = jsonResource.get("data")
+      val kind = jsonResource.get("metadata").get("kind").asText()
 
       // validate specific resource data
       Validator.validate(dataJson, kind)
 
       val resourceType =  when (ResourceKind.valueOf(kind)) {
         ResourceKind.offering -> Offering::class.java
-//        ResourceKind.reputation -> TODO()
+        // ResourceKind.reputation -> TODO()
       }
 
-      val resource = jsonMapper.convertValue(resourceJson, resourceType)
+      val resource = jsonMapper.convertValue(jsonResource, resourceType)
       resource.verify()
 
       return resource
