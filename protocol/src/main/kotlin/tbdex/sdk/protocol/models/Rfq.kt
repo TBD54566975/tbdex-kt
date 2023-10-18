@@ -1,5 +1,6 @@
 package tbdex.sdk.protocol.models
 
+import tbdex.sdk.protocol.CryptoUtils
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Rfq.Companion.create
 import typeid.TypeID
@@ -19,9 +20,15 @@ import java.time.OffsetDateTime
 class Rfq private constructor(
   override val metadata: MessageMetadata,
   override val data: RfqData,
-  private: Map<String, Any>? = null,
+  var private: MutableMap<String, Any> = mutableMapOf(),
   override var signature: String? = null
 ) : Message() {
+
+  fun hashPrivate() {
+    val claimsHash = CryptoUtils.hash(this.data.claims)
+    private["claims"] = claimsHash
+    this.data.claims = 
+  }
 
   /**
    * Evaluates this Rfq against the provided [Offering].
@@ -95,9 +102,6 @@ class Rfq private constructor(
         exchangeId = id,
         createdAt = OffsetDateTime.now()
       )
-
-      // TODO: hash `data.payinMethod.paymentDetails` and set `private`
-      // TODO: hash `data.payoutMethod.paymentDetails` and set `private`
 
       return Rfq(metadata, rfqData, private)
     }
