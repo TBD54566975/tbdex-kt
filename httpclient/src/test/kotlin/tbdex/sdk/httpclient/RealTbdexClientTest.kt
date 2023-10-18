@@ -7,7 +7,11 @@ import org.junit.jupiter.api.BeforeEach
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidKey
 
-
+/**
+ * Real tbdex client test
+ *
+ * @constructor Create empty Real tbdex client test
+ */
 class RealTbdexClientTest {
   private lateinit var server: MockWebServer
   private val did = DidKey.create(InMemoryKeyManager())

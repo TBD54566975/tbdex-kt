@@ -23,6 +23,11 @@ import web5.sdk.dids.Did
 import web5.sdk.dids.DidKey
 import web5.sdk.dids.DidResolvers
 
+/**
+ * Real tbdex client
+ *
+ * @constructor Create empty Real tbdex client
+ */
 object RealTbdexClient : TbdexClient {
   private val client = OkHttpClient()
   private val jsonMediaType = "application/json; charset=utf-8".toMediaType()

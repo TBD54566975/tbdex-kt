@@ -1,4 +1,4 @@
-package protocol.tbdex.sdk.protocol
+package tbdex.sdk.httpclient
 
 import com.danubetech.verifiablecredentials.CredentialSubject
 import tbdex.sdk.protocol.models.Close
