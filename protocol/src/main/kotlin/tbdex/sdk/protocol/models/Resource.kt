@@ -1,6 +1,8 @@
 package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.core.JsonParseException
+import com.fasterxml.jackson.databind.JsonNode
 import org.json.JSONObject
 import tbdex.sdk.protocol.CryptoUtils
 import tbdex.sdk.protocol.Json
@@ -9,6 +11,7 @@ import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.dateTimeFormat
 import typeid.TypeID
 import web5.sdk.dids.Did
+import java.lang.IllegalArgumentException
 import java.time.OffsetDateTime
 
 /**
@@ -86,7 +89,15 @@ sealed class Resource {
      * @throws IllegalArgumentException if the payload signature verification fails.
      */
     fun parse(payload: String): Resource {
-      val jsonResource = jsonMapper.readTree(payload)
+      val jsonResource: JsonNode
+
+      try {
+        jsonResource = jsonMapper.readTree(payload)
+      } catch(e: JsonParseException) {
+        throw IllegalArgumentException("unexpected character at offset ${e.location.charOffset}")
+      }
+
+      require(jsonResource.isObject) { "expected payload to be a json object" }
 
       // validate message structure
       Validator.validate(jsonResource, "resource")
