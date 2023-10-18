@@ -1,6 +1,8 @@
 package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.core.JsonParseException
+import com.fasterxml.jackson.databind.JsonNode
 import tbdex.sdk.protocol.CryptoUtils
 import tbdex.sdk.protocol.Json
 import tbdex.sdk.protocol.Json.jsonMapper
@@ -89,7 +91,15 @@ sealed class Message {
      * @throws IllegalArgumentException if the payload signature verification fails.
      */
     fun parse(payload: String): Message {
-      val jsonMessage = jsonMapper.readTree(payload)
+      val jsonMessage: JsonNode
+
+      try {
+        jsonMessage = jsonMapper.readTree(payload)
+      } catch(e: JsonParseException) {
+        throw IllegalArgumentException("unexpected character at offset ${e.location.charOffset}")
+      }
+
+      require(jsonMessage.isObject) { "expected payload to be a json object" }
 
       // validate message structure
       Validator.validate(jsonMessage, "message")
