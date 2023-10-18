@@ -1,5 +1,6 @@
 package tbdex.sdk.protocol.models
 
+import com.fasterxml.jackson.databind.JsonNode
 import java.time.OffsetDateTime
 import tbdex.sdk.protocol.Json
 import tbdex.sdk.protocol.models.Close.Companion.create
@@ -48,7 +49,7 @@ class Rfq private constructor(
   private fun validatePaymentMethod(selectedMethod: SelectedPaymentMethod, offeringMethods: List<PaymentMethod>) {
     val matchedOfferingMethod = offeringMethods.first { it.kind == selectedMethod.kind }
     matchedOfferingMethod.requiredPaymentDetailsSchema?.let {
-      val jsonNodePaymentDetails = Json.parse(selectedMethod.paymentDetails)
+      val jsonNodePaymentDetails = Json.jsonMapper.valueToTree<JsonNode>(selectedMethod.paymentDetails)
       it.validate(jsonNodePaymentDetails)
     }
   }

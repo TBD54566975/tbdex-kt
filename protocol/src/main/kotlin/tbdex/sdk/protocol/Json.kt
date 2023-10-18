@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ObjectWriter
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import tbdex.sdk.protocol.serialisation.TypeIdModule
 
 const val dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
 
@@ -31,6 +32,7 @@ object Json {
   val jsonMapper: ObjectMapper = ObjectMapper()
     .registerKotlinModule()
     .findAndRegisterModules()
+    .registerModule(TypeIdModule())
     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 
   private val objectWriter: ObjectWriter = jsonMapper.writer()

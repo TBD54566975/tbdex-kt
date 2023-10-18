@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import typeid.TypeID
 
 /**
- * Jackson [Module] the serialise [TypeID] fields
+ * Jackson [Module] the serialise [TypeID] fields.
  */
 class TypeIdModule: SimpleModule() {
   init {
