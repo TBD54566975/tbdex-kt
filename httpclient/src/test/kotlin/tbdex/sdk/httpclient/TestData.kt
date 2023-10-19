@@ -67,7 +67,7 @@ object TestData {
       from = PFI_DID.uri,
       OfferingData(
         description = "my fake offering",
-        payoutUnitsPerPayinUnit = 1,
+        payoutUnitsPerPayinUnit = "1",
         payinCurrency = CurrencyDetails("AUD"),
         payoutCurrency = CurrencyDetails("USDC"),
         payinMethods = listOf(),
@@ -76,16 +76,12 @@ object TestData {
       )
     )
 
-  fun getRfq(
-    to: String = PFI_DID.uri,
-    offeringId: TypeID = TypeID(ResourceKind.offering.name),
-    claims: List<String> = emptyList()
-  ) = Rfq.create(
-    to = to,
-    from = ALICE_DID.uri,
-    rfqData = RfqData(
+  fun getRfq(offeringId: TypeID = TypeID(ResourceKind.offering.name), claims: List<String> = emptyList()) = Rfq.create(
+    PFI_DID.uri,
+    ALICE_DID.uri,
+    RfqData(
       offeringId = offeringId,
-      payinSubunits = 10_00,
+      payinSubunits = "1000",
       payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
       payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
       claims = claims
@@ -96,8 +92,8 @@ object TestData {
     ALICE_DID.uri, PFI_DID.uri, TypeID(MessageKind.rfq.name),
     QuoteData(
       expiresAt = OffsetDateTime.now().plusDays(1),
-      payin = QuoteDetails("AUD", 10_00, 0),
-      payout = QuoteDetails("BTC", 12, 0)
+      payin = QuoteDetails("AUD", "1000", "0"),
+      payout = QuoteDetails("BTC", "12", "0")
     )
   )
 

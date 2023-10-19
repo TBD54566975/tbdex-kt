@@ -1,15 +1,36 @@
 package tbdex.sdk.protocol
 
 import com.danubetech.verifiablecredentials.CredentialSubject
-import tbdex.sdk.protocol.models.*
+import tbdex.sdk.protocol.models.Close
+import tbdex.sdk.protocol.models.CloseData
+import tbdex.sdk.protocol.models.CurrencyDetails
+import tbdex.sdk.protocol.models.MessageKind
+import tbdex.sdk.protocol.models.Offering
+import tbdex.sdk.protocol.models.OfferingData
+import tbdex.sdk.protocol.models.Order
+import tbdex.sdk.protocol.models.OrderStatus
+import tbdex.sdk.protocol.models.OrderStatusData
+import tbdex.sdk.protocol.models.Quote
+import tbdex.sdk.protocol.models.QuoteData
+import tbdex.sdk.protocol.models.QuoteDetails
+import tbdex.sdk.protocol.models.ResourceKind
+import tbdex.sdk.protocol.models.Rfq
+import tbdex.sdk.protocol.models.RfqData
+import tbdex.sdk.protocol.models.SelectedPaymentMethod
 import typeid.TypeID
-import web5.sdk.credentials.*
+import web5.sdk.credentials.ConstraintsV2
+import web5.sdk.credentials.FieldV2
+import web5.sdk.credentials.InputDescriptorV2
+import web5.sdk.credentials.PresentationDefinitionV2
+import web5.sdk.credentials.VcDataModel
+import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.Did
 import web5.sdk.dids.DidKey
 import java.net.URI
 import java.time.OffsetDateTime
-import java.util.*
+import java.util.Date
+import java.util.UUID
 
 object TestData {
   const val ALICE = "alice"
