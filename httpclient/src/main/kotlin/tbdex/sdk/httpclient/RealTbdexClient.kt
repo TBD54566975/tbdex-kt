@@ -57,7 +57,7 @@ object RealTbdexClient : TbdexClient {
       response.isSuccessful -> {
         val responseString = response.body?.string()
         val jsonNode = objectMapper.readTree(responseString)
-        val jsonData = jsonNode.get("data").asText()
+        val jsonData = jsonNode.get("data").toString()
 
         // response body is an object with a data field
         val data: List<Offering> = objectMapper.readerForListOf(Offering::class.java).readValue(jsonData)
@@ -139,7 +139,7 @@ object RealTbdexClient : TbdexClient {
         val jsonNode = objectMapper.readTree(responseString)
 
         val exchange = mutableListOf<Message>()
-        jsonNode.get("data").elements().forEach { exchange.add(Message.parse(it.asText())) }
+        jsonNode.get("data").elements().forEach { exchange.add(Message.parse(it.toString())) }
 
         GetExchangeResponse(
           status = response.code,
