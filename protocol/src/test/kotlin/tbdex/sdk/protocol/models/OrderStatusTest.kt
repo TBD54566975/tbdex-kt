@@ -19,7 +19,7 @@ class OrderStatusTest {
 
     assertk.assertAll {
       assertThat(orderStatus.metadata.id.prefix).isEqualTo("orderstatus")
-      assertThat(orderStatus.data.status).isEqualTo("my status")
+      assertThat(orderStatus.data.orderStatus).isEqualTo("my status")
     }
   }
 

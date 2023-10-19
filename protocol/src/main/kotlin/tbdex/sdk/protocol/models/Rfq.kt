@@ -1,5 +1,7 @@
 package tbdex.sdk.protocol.models
 
+import com.fasterxml.jackson.databind.JsonNode
+import tbdex.sdk.protocol.Json
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Rfq.Companion.create
 import typeid.TypeID
@@ -46,13 +48,14 @@ class Rfq private constructor(
 
   private fun validatePaymentMethod(selectedMethod: SelectedPaymentMethod, offeringMethods: List<PaymentMethod>) {
     val matchedOfferingMethod = offeringMethods.first { it.kind == selectedMethod.kind }
-    if (matchedOfferingMethod.requiredPaymentDetails !== null) {
-      matchedOfferingMethod.requiredPaymentDetails.validate(selectedMethod.paymentDetails.toString())
+    matchedOfferingMethod.requiredPaymentDetails?.let {
+      val schema = matchedOfferingMethod.getRequiredPaymentDetailsSchema()
+      val jsonNodePaymentDetails = Json.jsonMapper.valueToTree<JsonNode>(selectedMethod.paymentDetails)
+      schema?.validate(jsonNodePaymentDetails)
     }
-
   }
 
-  private fun verifyClaims(requiredClaims: List<PresentationDefinitionV2>) {
+  private fun verifyClaims(requiredClaims: PresentationDefinitionV2) {
     throw NotImplementedError()
 //    // check that all requirements are satisfied by one of the VC JWTs
 //    // and that the VC satisfying it is crypto verified
