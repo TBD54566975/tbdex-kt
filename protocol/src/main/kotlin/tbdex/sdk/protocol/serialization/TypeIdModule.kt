@@ -1,4 +1,4 @@
-package tbdex.sdk.protocol.serialisation
+package tbdex.sdk.protocol.serialization
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParseException

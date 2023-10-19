@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ObjectWriter
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import tbdex.sdk.protocol.serialisation.TypeIdModule
+import tbdex.sdk.protocol.serialization.TypeIdModule
 
 const val dateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
 
