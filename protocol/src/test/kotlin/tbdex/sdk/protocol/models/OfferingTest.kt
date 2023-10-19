@@ -49,8 +49,6 @@ class OfferingTest {
     val offering = TestData.getOffering()
     offering.sign(TestData.ALICE_DID)
 
-    println(Json.jsonMapper.convertValue<JsonNode>(offering).toPrettyString())
-
     assertDoesNotThrow { Resource.parse(Json.stringify(offering)) }
   }
 }
