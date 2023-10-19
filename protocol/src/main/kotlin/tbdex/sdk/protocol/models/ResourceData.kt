@@ -1,6 +1,10 @@
 package tbdex.sdk.protocol.models
 
-import org.everit.json.schema.Schema
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.databind.JsonNode
+import com.networknt.schema.JsonSchema
+import com.networknt.schema.JsonSchemaFactory
+import com.networknt.schema.SpecVersion
 import web5.sdk.credentials.PresentationDefinitionV2
 
 /**
@@ -18,7 +22,7 @@ class OfferingData(
   val payinCurrency: CurrencyDetails,
   val payinMethods: List<PaymentMethod>,
   val payoutMethods: List<PaymentMethod>,
-  val requiredClaims: List<PresentationDefinitionV2>
+  val requiredClaims: PresentationDefinitionV2
 ) : ResourceData
 
 /**
@@ -35,5 +39,16 @@ class CurrencyDetails(
  */
 class PaymentMethod(
   val kind: String,
-  val requiredPaymentDetails: Schema? = null
-)
+  val requiredPaymentDetails: JsonNode? = null
+) {
+  /**
+   * Parse the contents of [requiredPaymentDetails] into a [JsonSchema] that can do validation.
+   */
+  @JsonIgnore
+  fun getRequiredPaymentDetailsSchema(): JsonSchema? {
+    if (requiredPaymentDetails == null) return null
+    val schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7)
+    return schemaFactory.getSchema(requiredPaymentDetails)
+  }
+}
+

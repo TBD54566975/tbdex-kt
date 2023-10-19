@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://tbdex.io/quote.schema.json",
+  "$id": "https://tbdex.dev/quote.schema.json",
   "definitions": {
     "QuoteDetails": {
       "type": "object",
@@ -18,11 +18,7 @@
           "description": "The amount paid in fees"
         }
       },
-      "required": [
-        "currencyCode",
-        "amountSubunits",
-        "feeSubunits"
-      ]
+      "required": ["currencyCode", "amountSubunits", "feeSubunits"]
     },
     "PaymentInstruction": {
       "type": "object",
@@ -38,10 +34,7 @@
       }
     },
     "PaymentInstructions": {
-      "type": [
-        "object",
-        "null"
-      ],
+      "type": "object",
       "properties": {
         "payin": {
           "$ref": "#/definitions/PaymentInstruction"
@@ -68,10 +61,5 @@
       "$ref": "#/definitions/PaymentInstructions"
     }
   },
-  "required": [
-    "expiresAt",
-    "payin",
-    "payout",
-    "paymentInstructions"
-  ]
+  "required": ["expiresAt", "payin", "payout"]
 }

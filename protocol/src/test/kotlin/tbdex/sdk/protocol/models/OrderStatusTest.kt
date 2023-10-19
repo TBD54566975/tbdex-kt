@@ -3,9 +3,9 @@ package tbdex.sdk.protocol.models
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.assertDoesNotThrow
-import protocol.tbdex.sdk.protocol.TestData
-import protocol.tbdex.sdk.protocol.TestData.PFI_DID
 import tbdex.sdk.protocol.Json
+import tbdex.sdk.protocol.TestData
+import tbdex.sdk.protocol.TestData.PFI_DID
 import typeid.TypeID
 import kotlin.test.Test
 import kotlin.test.assertIs
@@ -19,7 +19,7 @@ class OrderStatusTest {
 
     assertk.assertAll {
       assertThat(orderStatus.metadata.id.prefix).isEqualTo("orderstatus")
-      assertThat(orderStatus.data.status).isEqualTo("my status")
+      assertThat(orderStatus.data.orderStatus).isEqualTo("my status")
     }
   }
 

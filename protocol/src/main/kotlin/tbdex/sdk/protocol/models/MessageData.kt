@@ -1,10 +1,6 @@
 package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import tbdex.sdk.protocol.StringToTypeIdDeserializer
-import tbdex.sdk.protocol.TypeIDToStringSerializer
 import tbdex.sdk.protocol.dateTimeFormat
 import typeid.TypeID
 import java.time.OffsetDateTime
@@ -18,8 +14,6 @@ sealed interface MessageData
  * A data class implementing [MessageData] that represents the contents of an [Rfq].
  */
 class RfqData(
-  @JsonSerialize(using = TypeIDToStringSerializer::class)
-  @JsonDeserialize(using = StringToTypeIdDeserializer::class)
   val offeringId: TypeID,
   val payinSubunits: String,
   val payinMethod: SelectedPaymentMethod,
@@ -84,4 +78,4 @@ class OrderData : MessageData
 /**
  * A data class implementing [MessageData] that represents the contents of an [OrderStatus].
  */
-class OrderStatusData(val status: String) : MessageData
+class OrderStatusData(val orderStatus: String) : MessageData

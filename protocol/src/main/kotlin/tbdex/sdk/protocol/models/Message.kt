@@ -1,18 +1,17 @@
 package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
-import org.json.JSONObject
+import com.fasterxml.jackson.core.JsonParseException
+import com.fasterxml.jackson.databind.JsonNode
 import tbdex.sdk.protocol.CryptoUtils
 import tbdex.sdk.protocol.Json
 import tbdex.sdk.protocol.Json.jsonMapper
-import tbdex.sdk.protocol.StringToTypeIdDeserializer
-import tbdex.sdk.protocol.TypeIDToStringSerializer
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.dateTimeFormat
 import typeid.TypeID
 import web5.sdk.dids.Did
+import java.lang.IllegalArgumentException
+import java.text.ParseException
 import java.time.OffsetDateTime
 
 /**
@@ -31,11 +30,7 @@ class MessageMetadata(
   val kind: MessageKind,
   val to: String,
   val from: String,
-  @JsonSerialize(using = TypeIDToStringSerializer::class)
-  @JsonDeserialize(using = StringToTypeIdDeserializer::class)
   val id: TypeID,
-  @JsonDeserialize(using = StringToTypeIdDeserializer::class)
-  @JsonSerialize(using = TypeIDToStringSerializer::class)
   val exchangeId: TypeID,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val createdAt: OffsetDateTime
@@ -96,16 +91,24 @@ sealed class Message {
      * @throws IllegalArgumentException if the payload signature verification fails.
      */
     fun parse(payload: String): Message {
-      val messageJson = JSONObject(payload)
+      val jsonMessage: JsonNode
+
+      try {
+        jsonMessage = jsonMapper.readTree(payload)
+      } catch(e: JsonParseException) {
+        throw IllegalArgumentException("unexpected character at offset ${e.location.charOffset}")
+      }
+
+      require(jsonMessage.isObject) { "expected payload to be a json object" }
 
       // validate message structure
-      Validator.validate(messageJson, "message")
+      Validator.validate(jsonMessage, "message")
 
-      val dataJson = messageJson.getJSONObject("data")
-      val kind = messageJson.getJSONObject("metadata").getString("kind")
+      val jsonMessageData = jsonMessage.get("data")
+      val kind = jsonMessage.get("metadata").get("kind").asText()
 
       // validate specific message data (Rfq, Quote, etc)
-      Validator.validate(dataJson, kind)
+      Validator.validate(jsonMessageData, kind)
 
       val messageType = when (MessageKind.valueOf(kind)) {
         MessageKind.rfq -> Rfq::class.java
@@ -115,7 +118,7 @@ sealed class Message {
         MessageKind.close -> Close::class.java
       }
 
-      val message = jsonMapper.convertValue(messageJson, messageType)
+      val message = jsonMapper.convertValue(jsonMessage, messageType)
       message.verify()
 
       return message
