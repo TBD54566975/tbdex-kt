@@ -16,7 +16,7 @@ class OfferingTest {
       from = TestData.PFI,
       OfferingData(
         description = "my fake offering",
-        payoutUnitsPerPayinUnit = 1,
+        payoutUnitsPerPayinUnit = "1",
         payinCurrency = CurrencyDetails("AUD"),
         payoutCurrency = CurrencyDetails("BTC"),
         payinMethods = listOf(),

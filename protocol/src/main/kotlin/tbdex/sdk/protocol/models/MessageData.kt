@@ -21,7 +21,7 @@ class RfqData(
   @JsonSerialize(using = TypeIDToStringSerializer::class)
   @JsonDeserialize(using = StringToTypeIdDeserializer::class)
   val offeringId: TypeID,
-  val payinSubunits: Int,
+  val payinSubunits: String,
   val payinMethod: SelectedPaymentMethod,
   val payoutMethod: SelectedPaymentMethod,
   val claims: List<String>
@@ -51,8 +51,8 @@ class QuoteData(
  */
 class QuoteDetails(
   val currencyCode: String,
-  val amountSubunits: Int,
-  val feeSubunits: Int? = null
+  val amountSubunits: String,
+  val feeSubunits: String? = null
 )
 
 /**

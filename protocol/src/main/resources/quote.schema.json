@@ -10,15 +10,19 @@
           "description": "ISO 3166 currency code string"
         },
         "amountSubunits": {
-          "type": "integer",
+          "type": "string",
           "description": "The amount of currency expressed in the smallest respective unit"
         },
         "feeSubunits": {
-          "type": "integer",
+          "type": "string",
           "description": "The amount paid in fees"
         }
       },
-      "required": ["currencyCode", "amountSubunits", "feeSubunits"]
+      "required": [
+        "currencyCode",
+        "amountSubunits",
+        "feeSubunits"
+      ]
     },
     "PaymentInstruction": {
       "type": "object",
@@ -34,7 +38,10 @@
       }
     },
     "PaymentInstructions": {
-      "type": ["object", "null"],
+      "type": [
+        "object",
+        "null"
+      ],
       "properties": {
         "payin": {
           "$ref": "#/definitions/PaymentInstruction"
@@ -61,5 +68,10 @@
       "$ref": "#/definitions/PaymentInstructions"
     }
   },
-  "required": ["expiresAt", "payin", "payout", "paymentInstructions"]
+  "required": [
+    "expiresAt",
+    "payin",
+    "payout",
+    "paymentInstructions"
+  ]
 }
