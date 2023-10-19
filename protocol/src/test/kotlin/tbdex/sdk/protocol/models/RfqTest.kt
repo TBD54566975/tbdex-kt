@@ -6,8 +6,8 @@ import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
-import protocol.tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.Json
+import tbdex.sdk.protocol.TestData
 import typeid.TypeID
 import kotlin.test.Test
 import kotlin.test.assertIs
@@ -50,7 +50,7 @@ class RfqTest {
 
     assertDoesNotThrow { Message.parse(Json.stringify(rfq)) }
   }
-  
+
   @Test
   @Disabled
   fun `verifyOfferingRequirements succeeds when claims satisfy pd`() {

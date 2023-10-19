@@ -1,4 +1,4 @@
-package protocol.tbdex.sdk.protocol
+package tbdex.sdk.protocol
 
 import com.danubetech.verifiablecredentials.CredentialSubject
 import tbdex.sdk.protocol.models.Close
@@ -115,7 +115,7 @@ object TestData {
     os.sign(ALICE_DID)
     return os
   }
-  
+
   private fun buildField(id: String? = null, vararg paths: String): FieldV2 {
     return FieldV2(id = id, path = paths.toList())
   }

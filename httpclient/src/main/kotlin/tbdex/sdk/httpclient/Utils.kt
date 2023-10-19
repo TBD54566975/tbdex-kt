@@ -1,6 +1,11 @@
 package tbdex.sdk.httpclient
 
+import com.nimbusds.jose.JWSAlgorithm
+import com.nimbusds.jose.JWSHeader
+import com.nimbusds.jose.JWSObject
+import com.nimbusds.jose.Payload
 import com.nimbusds.jose.jwk.JWK
+import com.nimbusds.jose.util.Base64URL
 import foundation.identity.did.VerificationMethod
 import web5.sdk.common.Convert
 import web5.sdk.dids.Did
@@ -46,10 +51,24 @@ fun generateRequestToken(did: Did, assertionMethodId: String? = null): String {
   val publicKeyJwk = JWK.parse(assertionMethod.publicKeyJwk)
   val keyAlias = did.keyManager.getDeterministicAlias(publicKeyJwk)
 
+  val algorithm = publicKeyJwk.algorithm
+  val jwsAlgorithm = JWSAlgorithm.parse(algorithm.toString())
 
-  val payload = Instant.now()
-  val payloadBytes = Convert(payload).toByteArray()
+  val jwsHeader = JWSHeader.Builder(jwsAlgorithm)
+    .keyID(assertionMethod.id.toString())
+    .build()
 
-  val signed = did.keyManager.sign(keyAlias, payloadBytes)
-  return signed.toString()
+  val payload = mapOf("timestamp" to Instant.now().toString())
+  val jwsPayload = Payload(payload)
+  val base64UrlEncodedPayload = jwsPayload.toBase64URL().toString()
+
+  val jwsObject = JWSObject(jwsHeader, jwsPayload)
+  val toSign = jwsObject.signingInput
+
+  val signedBytes = did.keyManager.sign(keyAlias, toSign)
+  val base64UrlEncodedSignature = Base64URL(Convert(signedBytes).toBase64Url(padding = false))
+  val base64UrlEncodedHeader = jwsHeader.toBase64URL()
+
+
+  return "$base64UrlEncodedHeader.$base64UrlEncodedPayload.$base64UrlEncodedSignature"
 }

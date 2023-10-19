@@ -20,8 +20,6 @@ import tbdex.sdk.httpclient.models.TbdexResponse
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
 import web5.sdk.dids.Did
-import web5.sdk.dids.DidKey
-import web5.sdk.dids.DidResolvers
 
 /**
  * Real tbdex client
@@ -32,14 +30,6 @@ object RealTbdexClient : TbdexClient {
   private val client = OkHttpClient()
   private val jsonMediaType = "application/json; charset=utf-8".toMediaType()
   private const val JSON_HEADER = "application/json"
-
-  init {
-    // methodName of ion does not fit with the resolver
-    DidResolvers.addResolver("ion") { did, resolverDidOptions ->
-      DidKey.resolve(did, resolverDidOptions)
-      // todo need this? DidIon.resolve(did, resolverDidOptions)
-    }
-  }
 
   override fun getOfferings(pfiDid: String, filter: GetOfferingsFilter?): TbdexResponse {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
@@ -163,6 +153,8 @@ object RealTbdexClient : TbdexClient {
       .addHeader("Authorization", "Bearer $requestToken")
       .get()
       .build()
+
+    print(request)
 
     val response: Response = client.newCall(request).execute()
     return when {

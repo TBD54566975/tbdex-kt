@@ -4,8 +4,8 @@ import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.assertDoesNotThrow
-import protocol.tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.Json
+import tbdex.sdk.protocol.TestData
 import kotlin.test.Test
 import kotlin.test.assertIs
 
@@ -41,7 +41,7 @@ class OfferingTest {
     assertIs<Offering>(parsed)
     assertThat(parsed.toString()).isEqualTo(jsonResource)
   }
-  
+
   @Test
   fun `can parse an offering`() {
     val offering = TestData.getOffering()

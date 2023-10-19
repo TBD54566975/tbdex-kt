@@ -9,8 +9,8 @@ import org.everit.json.schema.ValidationException
 import org.json.JSONException
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
-import protocol.tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.Json
+import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.ValidatorException
 import kotlin.test.Test
 import kotlin.test.assertContains
