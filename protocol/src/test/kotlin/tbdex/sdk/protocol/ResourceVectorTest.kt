@@ -9,18 +9,18 @@ import kotlin.test.assertIs
 class ResourceVectorTest {
   @Test
   fun `parse offering`() {
-    val serialisedOffering = TestVectors.offering()
-    val offering = Resource.parse(serialisedOffering)
+    val serializedOffering = TestVectors.offering()
+    val offering = Resource.parse(serializedOffering)
     assertIs<Offering>(offering)
   }
 
   @Test
-  fun `serialised offering matches original`() {
-    val serialisedOffering = TestVectors.offering()
-    val offering = Resource.parse(serialisedOffering)
-    val serialisedOffering2 = Json.stringify(offering)
+  fun `serialized offering matches original`() {
+    val serializedOffering = TestVectors.offering()
+    val offering = Resource.parse(serializedOffering)
+    val serializedOffering2 = Json.stringify(offering)
 
-    assertEquals(serialisedOffering, serialisedOffering2)
+    assertEquals(serializedOffering, serializedOffering2)
   }
 
 }

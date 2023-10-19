@@ -17,7 +17,7 @@ class MessagesVectorTest {
   }
 
   @Test
-  fun `serialise rfq`() {
+  fun `serialize rfq`() {
     testSerialisation(TestVectors.rfq())
   }
   @Test
@@ -26,7 +26,7 @@ class MessagesVectorTest {
   }
 
   @Test
-  fun `serialise quote`() {
+  fun `serialize quote`() {
     testSerialisation(TestVectors.quote())
   }
   @Test
@@ -35,7 +35,7 @@ class MessagesVectorTest {
   }
 
   @Test
-  fun `serialise order`() {
+  fun `serialize order`() {
     testSerialisation(TestVectors.order())
   }
   @Test
@@ -44,7 +44,7 @@ class MessagesVectorTest {
   }
 
   @Test
-  fun `serialise order status`() {
+  fun `serialize order status`() {
     testSerialisation(TestVectors.orderStatus())
   }
   @Test
@@ -53,7 +53,7 @@ class MessagesVectorTest {
   }
 
   @Test
-  fun `serialise close`() {
+  fun `serialize close`() {
     testSerialisation(TestVectors.close())
   }
 
@@ -67,9 +67,9 @@ class MessagesVectorTest {
 
   private fun testSerialisation(original: String) {
     val tbDEXMessage = Message.parse(original)
-    val serialised = Json.stringify(tbDEXMessage)
+    val serialized = Json.stringify(tbDEXMessage)
 
-    assertEquals(original, serialised)
+    assertEquals(original, serialized)
   }
 
 }

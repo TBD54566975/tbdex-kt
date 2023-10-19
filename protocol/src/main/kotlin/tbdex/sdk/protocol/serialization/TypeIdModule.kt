@@ -13,7 +13,7 @@ import typeid.TypeID
 import java.io.IOException
 
 /**
- * Jackson [Module] to serialise [TypeID] fields.
+ * Jackson [Module] to serialize [TypeID] fields.
  */
 class TypeIdModule: SimpleModule() {
   init {
