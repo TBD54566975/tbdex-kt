@@ -76,10 +76,14 @@ object TestData {
       )
     )
 
-  fun getRfq(offeringId: TypeID = TypeID(ResourceKind.offering.name), claims: List<String> = emptyList()) = Rfq.create(
-    PFI_DID.uri,
-    ALICE_DID.uri,
-    RfqData(
+  fun getRfq(
+    to: String = PFI_DID.uri,
+    offeringId: TypeID = TypeID(ResourceKind.offering.name),
+    claims: List<String> = emptyList()
+  ) = Rfq.create(
+    to = to,
+    from = ALICE_DID.uri,
+    rfqData = RfqData(
       offeringId = offeringId,
       payinSubunits = "1000",
       payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
