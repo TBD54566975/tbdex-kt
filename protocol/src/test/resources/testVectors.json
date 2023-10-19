@@ -3,18 +3,16 @@
     "offering": {
       "metadata": {
         "kind": "offering",
-        "from": "did:key:zQ3shN8cQkn3XQyzTtWcoGBuCGhPhbLdXYWQim8vQE7duiHBZ",
-        "id": "offering_01hcvcdxskekp8002mxg000d6j",
-        "createdAt": "2023-10-16T04:38:09.456Z",
-        "updatedAt": "2023-10-16T04:38:09.456Z"
+        "from": "did:key:zQ3shRoCAVh99rw9uXNpAXJXC1RFXU4FfwBRA59BnAjEExsxZ",
+        "id": "offering_7zzzzzzzekfyd8001fk8000ccy",
+        "createdAt": "2023-10-19T17:14:27.132Z",
+        "updatedAt": "2023-10-19T17:14:27.132Z"
       },
       "data": {
         "description": "A sample offering",
         "payoutUnitsPerPayinUnit": "1",
         "payoutCurrency": {
-          "currencyCode": "USDC",
-          "minSubunits": null,
-          "maxSubunits": null
+          "currencyCode": "USDC"
         },
         "payinCurrency": {
           "currencyCode": "AUD",
@@ -83,56 +81,42 @@
             }
           }
         ],
-        "requiredClaims": [
-          {
-            "id": "test-pd-id",
-            "name": "simple PD",
-            "purpose": "pd for testing",
-            "format": null,
-            "submissionRequirements": null,
-            "inputDescriptors": [
-              {
-                "id": "whatever",
-                "name": null,
-                "purpose": "id for testing",
-                "format": null,
-                "constraints": {
-                  "fields": [
-                    {
-                      "id": null,
-                      "path": [
-                        "$.credentialSubject.btcAddress"
-                      ],
-                      "purpose": null,
-                      "filter": null,
-                      "predicate": null,
-                      "name": null,
-                      "optional": null
-                    }
-                  ],
-                  "limitDisclosure": null
-                }
+        "requiredClaims": {
+          "id": "test-pd-id",
+          "name": "simple PD",
+          "purpose": "pd for testing",
+          "inputDescriptors": [
+            {
+              "id": "whatever",
+              "purpose": "id for testing",
+              "constraints": {
+                "fields": [
+                  {
+                    "path": [
+                      "$.credentialSubject.btcAddress"
+                    ]
+                  }
+                ]
               }
-            ],
-            "frame": null
-          }
-        ]
+            }
+          ]
+        }
       },
-      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoTjhjUWtuM1hReXpUdFdjb0dCdUNHaFBoYkxkWFlXUWltOHZRRTdkdWlIQlojelEzc2hOOGNRa24zWFF5elR0V2NvR0J1Q0doUGhiTGRYWVdRaW04dlFFN2R1aUhCWiIsImFsZyI6IkVTMjU2SyJ9..4ONifVUhH9qsKzPYQTHttWJ9Pc03qDmMXrjqPsnZUStArrd-c8AjvZJRAurdDlPc9Fz3ToU1BI6cKzw1k-VhUQ"
+      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoUm9DQVZoOTlydzl1WE5wQVhKWEMxUkZYVTRGZndCUkE1OUJuQWpFRXhzeFojelEzc2hSb0NBVmg5OXJ3OXVYTnBBWEpYQzFSRlhVNEZmd0JSQTU5Qm5BakVFeHN4WiIsImFsZyI6IkVTMjU2SyJ9..vvFYR_WAr6_Ln9Y3E_C0oCSj_gydZjcgvS8B8jkufyJmwE8iBIuVn7u-d6ujHFO_h7fqcKe6k6MMf4yBXzJk-Q"
     }
   },
   "messages": {
     "rfq": {
       "metadata": {
         "kind": "rfq",
-        "to": "did:key:zQ3shN8cQkn3XQyzTtWcoGBuCGhPhbLdXYWQim8vQE7duiHBZ",
-        "from": "did:key:zQ3shbYReYaPpVpVMJ1YsnSuMCuLfEjnk38DXrTtvseQhGxno",
-        "id": "rfq_01hcvcdypzf198004ra8001nng",
-        "exchangeId": "rfq_01hcvcdypzf198004ra8001nng",
-        "createdAt": "2023-10-16T04:38:09.884Z"
+        "to": "did:key:zQ3shRoCAVh99rw9uXNpAXJXC1RFXU4FfwBRA59BnAjEExsxZ",
+        "from": "did:key:zQ3shYCN87E5GqKwDsnqZwSuWeC1rmozhorDnAAsGTXTwr2Qf",
+        "id": "rfq_01hd4ewvyserw8000p70001wa4",
+        "exchangeId": "rfq_01hd4ewvyserw8000p70001wa4",
+        "createdAt": "2023-10-19T17:14:27.650Z"
       },
       "data": {
-        "offeringId": "offering_7zzzzzzzpzew68003q1g000qx9",
+        "offeringId": "offering_7zzzzzzvzqen3800758r000eq3",
         "payinSubunits": "1000",
         "payinMethod": {
           "kind": "BTC_ADDRESS",
@@ -151,19 +135,19 @@
           "presentation submission"
         ]
       },
-      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoYllSZVlhUHBWcFZNSjFZc25TdU1DdUxmRWpuazM4RFhyVHR2c2VRaEd4bm8jelEzc2hiWVJlWWFQcFZwVk1KMVlzblN1TUN1TGZFam5rMzhEWHJUdHZzZVFoR3hubyIsImFsZyI6IkVTMjU2SyJ9..DzWE4z2sFz6Z3RKu0traPLKQzw0v-pKMSMOWuizdqCISjVATSEvicuiVJAeUdQhGbM0yXhur5hgGc_nScONTiA"
+      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoWUNOODdFNUdxS3dEc25xWndTdVdlQzFybW96aG9yRG5BQXNHVFhUd3IyUWYjelEzc2hZQ044N0U1R3FLd0RzbnFad1N1V2VDMXJtb3pob3JEbkFBc0dUWFR3cjJRZiIsImFsZyI6IkVTMjU2SyJ9..vthoHiVBv4IoRVzPp9QmaEFi4zdMFlmCF7x3fRYpcUKsZfQBq8SQUVveg8PXFnIhSgIWRmR9HZ7roPXEKukXtw"
     },
     "quote": {
       "metadata": {
         "kind": "quote",
-        "to": "did:key:zQ3shbYReYaPpVpVMJ1YsnSuMCuLfEjnk38DXrTtvseQhGxno",
-        "from": "did:key:zQ3shN8cQkn3XQyzTtWcoGBuCGhPhbLdXYWQim8vQE7duiHBZ",
-        "id": "quote_7zzzzzzyz9fv4r004ys4001m70",
-        "exchangeId": "rfq_7zzzzzzzqefmqr004x5w001see",
-        "createdAt": "2023-10-16T04:38:09.896Z"
+        "to": "did:key:zQ3shYCN87E5GqKwDsnqZwSuWeC1rmozhorDnAAsGTXTwr2Qf",
+        "from": "did:key:zQ3shRoCAVh99rw9uXNpAXJXC1RFXU4FfwBRA59BnAjEExsxZ",
+        "id": "quote_01hd4ewvyjf3n80018x8000k8k",
+        "exchangeId": "rfq_01hd4ewzyqe05r00001c001474",
+        "createdAt": "2023-10-19T17:14:27.666Z"
       },
       "data": {
-        "expiresAt": "2023-10-17T04:38:09.896Z",
+        "expiresAt": "2023-10-20T17:14:27.665Z",
         "payin": {
           "currencyCode": "AUD",
           "amountSubunits": "1000",
@@ -185,47 +169,47 @@
           }
         }
       },
-      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoTjhjUWtuM1hReXpUdFdjb0dCdUNHaFBoYkxkWFlXUWltOHZRRTdkdWlIQlojelEzc2hOOGNRa24zWFF5elR0V2NvR0J1Q0doUGhiTGRYWVdRaW04dlFFN2R1aUhCWiIsImFsZyI6IkVTMjU2SyJ9..QueT7nZShR2v9uocSuurBo3oSOsxmJ-eYgPKWKYiChxBkkxKfhBwjey9OJpf23y_SdqnY-eMUxDJSjInaC6sSQ"
+      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoUm9DQVZoOTlydzl1WE5wQVhKWEMxUkZYVTRGZndCUkE1OUJuQWpFRXhzeFojelEzc2hSb0NBVmg5OXJ3OXVYTnBBWEpYQzFSRlhVNEZmd0JSQTU5Qm5BakVFeHN4WiIsImFsZyI6IkVTMjU2SyJ9..Rr9B6XPVyY9kS42PuxnPSklIINoCyDLY-qsykvJBv0zLiDxRPpBzJ2NDuVe4aQfidlJ83-XdFZiG3zBjEi5xTw"
     },
     "order": {
       "metadata": {
         "kind": "order",
-        "to": "did:key:zQ3shN8cQkn3XQyzTtWcoGBuCGhPhbLdXYWQim8vQE7duiHBZ",
-        "from": "did:key:zQ3shbYReYaPpVpVMJ1YsnSuMCuLfEjnk38DXrTtvseQhGxno",
-        "id": "order_7zzzzzzwzfenpr005ndm001yxh",
-        "exchangeId": "rfq_01hcvcdyzffx4r007z94001nym",
-        "createdAt": "2023-10-16T04:38:09.903Z"
+        "to": "did:key:zQ3shRoCAVh99rw9uXNpAXJXC1RFXU4FfwBRA59BnAjEExsxZ",
+        "from": "did:key:zQ3shYCN87E5GqKwDsnqZwSuWeC1rmozhorDnAAsGTXTwr2Qf",
+        "id": "order_7zzzzzzzzzehpr0024dm001ybc",
+        "exchangeId": "rfq_7zzzzzzvyxf398000rt80002dc",
+        "createdAt": "2023-10-19T17:14:27.677Z"
       },
       "data": {},
-      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoYllSZVlhUHBWcFZNSjFZc25TdU1DdUxmRWpuazM4RFhyVHR2c2VRaEd4bm8jelEzc2hiWVJlWWFQcFZwVk1KMVlzblN1TUN1TGZFam5rMzhEWHJUdHZzZVFoR3hubyIsImFsZyI6IkVTMjU2SyJ9..evxDdqqFflM9bMOef6SlwIGpXk4VjRxHjtuvXtL2OQSjsdbtNbu9VJa-LSXYzN8NOILux5OC47yh6lwAStJP1g"
+      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoWUNOODdFNUdxS3dEc25xWndTdVdlQzFybW96aG9yRG5BQXNHVFhUd3IyUWYjelEzc2hZQ044N0U1R3FLd0RzbnFad1N1V2VDMXJtb3pob3JEbkFBc0dUWFR3cjJRZiIsImFsZyI6IkVTMjU2SyJ9..QwVCQ55xwGTGuNp7-xq34huj9eM7-LjHMVst7xYKSNQtQ2G5TdE_fGrI-jFTQvsWpXsNzgPAhoJfSLwoqrVvGA"
     },
     "orderStatus": {
       "metadata": {
         "kind": "orderstatus",
-        "to": "did:key:zQ3shbYReYaPpVpVMJ1YsnSuMCuLfEjnk38DXrTtvseQhGxno",
-        "from": "did:key:zQ3shN8cQkn3XQyzTtWcoGBuCGhPhbLdXYWQim8vQE7duiHBZ",
-        "id": "orderstatus_01hcvcdwqhev180026r8001rp1",
-        "exchangeId": "rfq_7zzzzzzxzqf6hr001smc000635",
-        "createdAt": "2023-10-16T04:38:09.905Z"
+        "to": "did:key:zQ3shYCN87E5GqKwDsnqZwSuWeC1rmozhorDnAAsGTXTwr2Qf",
+        "from": "did:key:zQ3shRoCAVh99rw9uXNpAXJXC1RFXU4FfwBRA59BnAjEExsxZ",
+        "id": "orderstatus_7zzzzzzvz2fy38004zgr000tgk",
+        "exchangeId": "rfq_7zzzzzzvzbe4j800014g00124m",
+        "createdAt": "2023-10-19T17:14:27.682Z"
       },
       "data": {
-        "status": "PENDING"
+        "orderStatus": "PENDING"
       },
-      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoTjhjUWtuM1hReXpUdFdjb0dCdUNHaFBoYkxkWFlXUWltOHZRRTdkdWlIQlojelEzc2hOOGNRa24zWFF5elR0V2NvR0J1Q0doUGhiTGRYWVdRaW04dlFFN2R1aUhCWiIsImFsZyI6IkVTMjU2SyJ9..G-Q314lR9aSha7JSmGC4WN9wagZSJ1gbmNEH3lPy98XSw2IkGssPecT67huj1pOO4n35tNfUai5j_J3Yi_JIew"
+      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoUm9DQVZoOTlydzl1WE5wQVhKWEMxUkZYVTRGZndCUkE1OUJuQWpFRXhzeFojelEzc2hSb0NBVmg5OXJ3OXVYTnBBWEpYQzFSRlhVNEZmd0JSQTU5Qm5BakVFeHN4WiIsImFsZyI6IkVTMjU2SyJ9..1oPvHB67U_jxuf4vhQOvdZaLVEFnlYtDXewYgLUWG-63Q_SL-Dys24mf9M7B8gsohxXC-zRz2xEU6ThKo2otHA"
     },
     "close": {
       "metadata": {
         "kind": "close",
-        "to": "did:key:zQ3shbYReYaPpVpVMJ1YsnSuMCuLfEjnk38DXrTtvseQhGxno",
-        "from": "did:key:zQ3shN8cQkn3XQyzTtWcoGBuCGhPhbLdXYWQim8vQE7duiHBZ",
-        "id": "close_7zzzzzzzzxe43800410r001n73",
-        "exchangeId": "rfq_7zzzzzzzqzff68005bsg001mgx",
-        "createdAt": "2023-10-16T04:38:09.908Z"
+        "to": "did:key:zQ3shYCN87E5GqKwDsnqZwSuWeC1rmozhorDnAAsGTXTwr2Qf",
+        "from": "did:key:zQ3shRoCAVh99rw9uXNpAXJXC1RFXU4FfwBRA59BnAjEExsxZ",
+        "id": "close_01hd4ewzzyf4vr00196w001nta",
+        "exchangeId": "rfq_01hd4ewvz7e56r005h9m001mw0",
+        "createdAt": "2023-10-19T17:14:27.686Z"
       },
       "data": {
         "reason": "test reason"
       },
-      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoTjhjUWtuM1hReXpUdFdjb0dCdUNHaFBoYkxkWFlXUWltOHZRRTdkdWlIQlojelEzc2hOOGNRa24zWFF5elR0V2NvR0J1Q0doUGhiTGRYWVdRaW04dlFFN2R1aUhCWiIsImFsZyI6IkVTMjU2SyJ9..4cGD-WIA_jXqNrsYyYfFg4L0zrLCiRVJ7tzEtyXnRVNpqQS3hPdg4GIiMCiaZ5zMNc2Tbt2KVm1k0jkX0VAsmA"
+      "signature": "eyJraWQiOiJkaWQ6a2V5OnpRM3NoUm9DQVZoOTlydzl1WE5wQVhKWEMxUkZYVTRGZndCUkE1OUJuQWpFRXhzeFojelEzc2hSb0NBVmg5OXJ3OXVYTnBBWEpYQzFSRlhVNEZmd0JSQTU5Qm5BakVFeHN4WiIsImFsZyI6IkVTMjU2SyJ9..QONRQgIbnQhLzwM1tYtEZWvSfXZiOMhmkOl89MqpMopMMx9qxcocfA9uIlE6DRPhCl8bN-nO-hK8fq-n4bfsXQ"
     }
   }
 }

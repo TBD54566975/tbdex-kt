@@ -67,7 +67,7 @@ object TestData {
     return VerifiableCredential.create("test type", ALICE_DID.uri, ALICE_DID.uri, vc)
   }
 
-  fun getOffering(requiredClaims: List<PresentationDefinitionV2> = listOf(getPresentationDefinition())) =
+  fun getOffering(requiredClaims: PresentationDefinitionV2 = getPresentationDefinition()) =
     Offering.create(
       from = PFI_DID.uri,
       OfferingData(
@@ -185,30 +185,33 @@ object TestData {
     )
   }
 
-  private fun requiredPaymentDetailsSchema() = mapOf(
-    "${'$'}schema" to "http://json-schema.org/draft-07/schema",
-    "additionalProperties" to false,
-    "type" to "object",
-    "properties" to mapOf(
-      "phoneNumber" to mapOf(
-        "minLength" to 12,
-        "pattern" to "^+2547[0-9]{8}${'$'}",
-        "description" to "Mobile Money account number of the Recipient",
-        "type" to "string",
-        "title" to "Phone Number",
-        "maxLength" to 12
-      ),
-      "accountHolderName" to mapOf(
-        "pattern" to "^[A-Za-zs'-]+${'$'}",
-        "description" to "Name of the account holder as it appears on the Mobile Money account",
-        "type" to "string",
-        "title" to "Account Holder Name",
-        "maxLength" to 32
-      )
-    ),
-    "required" to listOf(
-      "accountNumber",
-      "accountHolderName"
-    )
+  private fun requiredPaymentDetailsSchema() = Json.jsonMapper.readTree("""
+    {
+      "${'$'}schema": "http://json-schema.org/draft-07/schema",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "phoneNumber": {
+          "minLength": 12,
+          "pattern": "^+2547[0-9]{8}${'$'}",
+          "description": "Mobile Money account number of the Recipient",
+          "type": "string",
+          "title": "Phone Number",
+          "maxLength": 12
+        },
+        "accountHolderName": {
+          "pattern": "^[A-Za-zs'-]+${'$'}",
+          "description": "Name of the account holder as it appears on the Mobile Money account",
+          "type": "string",
+          "title": "Account Holder Name",
+          "maxLength": 32
+        }
+      },
+      "required": [
+        "accountNumber",
+        "accountHolderName"
+      ]
+    }
+  """.trimIndent()
   )
 }

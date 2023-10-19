@@ -4,8 +4,8 @@ import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isNotNull
+import com.fasterxml.jackson.core.JsonParseException
 import com.nimbusds.jose.JWSObject
-import org.json.JSONException
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import tbdex.sdk.protocol.TestData
@@ -28,6 +28,6 @@ class ResourceTest {
 
   @Test
   fun `parse throws error if json string is not valid`() {
-    assertThrows<JSONException> { Resource.parse(";;;;") }
+    assertThrows<JsonParseException> { Resource.parse(";;;;") }
   }
 }

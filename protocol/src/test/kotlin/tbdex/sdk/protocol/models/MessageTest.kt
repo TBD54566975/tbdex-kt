@@ -3,11 +3,8 @@ package tbdex.sdk.protocol.models
 import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.contains
-import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import com.nimbusds.jose.JWSObject
-import org.everit.json.schema.ValidationException
-import org.json.JSONException
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import tbdex.sdk.protocol.TestData
@@ -65,17 +62,16 @@ class MessageTest {
       Message.parse(Json.stringify(TestData.getQuote()))
     }
 
-    assertContains(exception.errors, "$.signature: null found, string expected")
+    assertContains(exception.errors, "$.signature: is missing but it is required")
   }
 
   @Test
   fun `parse throws error if message did is invalid`() {
-    val exception = assertFailsWith<Exception> {
+    val exception = assertFailsWith<ValidatorException> {
       Message.parse(Json.stringify(TestData.getOrderStatusWithInvalidDid()))
     }
 
-    val validationException = exception.cause as ValidationException
-    assertContains(validationException.allMessages[0], "does not match pattern ^did")
+    assertContains(exception.errors[0], "does not match the regex pattern ^did")
   }
 
   @Test

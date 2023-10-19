@@ -1,10 +1,10 @@
 package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import org.everit.json.schema.Schema
-import org.everit.json.schema.loader.SchemaClient
-import org.everit.json.schema.loader.SchemaLoader
-import org.json.JSONObject
+import com.fasterxml.jackson.databind.JsonNode
+import com.networknt.schema.JsonSchema
+import com.networknt.schema.JsonSchemaFactory
+import com.networknt.schema.SpecVersion
 import web5.sdk.credentials.PresentationDefinitionV2
 
 /**
@@ -22,7 +22,7 @@ class OfferingData(
   val payinCurrency: CurrencyDetails,
   val payinMethods: List<PaymentMethod>,
   val payoutMethods: List<PaymentMethod>,
-  val requiredClaims: List<PresentationDefinitionV2>
+  val requiredClaims: PresentationDefinitionV2
 ) : ResourceData
 
 /**
@@ -39,20 +39,13 @@ class CurrencyDetails(
  */
 class PaymentMethod(
   val kind: String,
-  val requiredPaymentDetails: Map<String, Any>? = null
+  val requiredPaymentDetails: JsonNode? = null
 ) {
   @JsonIgnore
-  var requiredPaymentDetailsSchema: Schema? = loadSchema()
-
-  private fun loadSchema(): Schema? {
+  fun getRequiredPaymentDetailsSchema(): JsonSchema? {
     if (requiredPaymentDetails == null) return null
-    return SchemaLoader.builder()
-      .schemaClient(SchemaClient.classPathAwareClient())
-      .draftV7Support()
-      .schemaJson(JSONObject(requiredPaymentDetails))
-      .build()
-      .load()
-      .build()
+    val schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7)
+    return schemaFactory.getSchema(requiredPaymentDetails)
   }
 }
 

@@ -8,9 +8,11 @@ import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.ResourceKind
 
 /**
- * Thrown by [Validator.validate]
+ * Thrown by [Validator.validate].
  */
-class ValidatorException(message: String, val errors: List<String> = listOf()) : Exception(message)
+class ValidatorException(message: String, val errors: List<String> = listOf()) : Exception(message) {
+  override val message: String? get() = "${super.message}. Errors: ${errors.joinToString()}"
+}
 
 /**
  * Utility for validating JSON payloads against predefined schemas.

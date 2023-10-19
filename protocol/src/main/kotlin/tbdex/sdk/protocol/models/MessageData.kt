@@ -78,4 +78,4 @@ class OrderData : MessageData
 /**
  * A data class implementing [MessageData] that represents the contents of an [OrderStatus].
  */
-class OrderStatusData(val status: String) : MessageData
+class OrderStatusData(val orderStatus: String) : MessageData

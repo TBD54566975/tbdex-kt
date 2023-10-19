@@ -21,7 +21,7 @@ class OfferingTest {
         payoutCurrency = CurrencyDetails("BTC"),
         payinMethods = listOf(),
         payoutMethods = listOf(),
-        requiredClaims = listOf(TestData.getPresentationDefinition())
+        requiredClaims = TestData.getPresentationDefinition()
       )
     )
 
