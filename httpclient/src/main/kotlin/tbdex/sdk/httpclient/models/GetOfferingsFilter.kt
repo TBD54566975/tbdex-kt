@@ -1,12 +1,11 @@
 package tbdex.sdk.httpclient.models
 
 /**
- * Get offerings filter
+ * A filter object used to query offerings.
  *
- * @property payinCurrency
- * @property payoutCurrency
- * @property id
- * @constructor Create empty Get offerings filter
+ * @property payinCurrency The currency used for payments (optional).
+ * @property payoutCurrency The currency used for payouts (optional).
+ * @property id The unique identifier of the offering (optional).
  */
 class GetOfferingsFilter(
   val payinCurrency: String? = null,

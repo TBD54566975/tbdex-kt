@@ -1,5 +1,6 @@
 package tbdex.sdk.httpclient
 
+import GetOfferingsResponse
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import okhttp3.mockwebserver.MockResponse
@@ -8,9 +9,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.Json.objectMapper
-import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.httpclient.models.GetExchangesFilter
-import tbdex.sdk.httpclient.models.GetOfferingsResponse
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidIonManager
 import web5.sdk.dids.DidKey
@@ -46,13 +45,6 @@ class RealTbdexClientTest {
   fun `can get offerings`() {
     val resp =
       RealTbdexClient.getOfferings(ionDid)
-    if (resp.status == 200) {
-      resp as GetOfferingsResponse
-      println(resp.data[0])
-    } else {
-      resp as ErrorResponse
-      println(resp.errors)
-    }
   }
 
   @Test
@@ -89,7 +81,7 @@ class RealTbdexClientTest {
   @Test
   @Disabled
   fun testGetOfferingsSuccess() {
-    val mockOfferings = TestData.getOffering(listOf(TestData.getPresentationDefinition()))
+    val mockOfferings = TestData.getOffering(TestData.getPresentationDefinition())
     val mockResponseString = objectMapper.writeValueAsString(mapOf("data" to mockOfferings))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
 
