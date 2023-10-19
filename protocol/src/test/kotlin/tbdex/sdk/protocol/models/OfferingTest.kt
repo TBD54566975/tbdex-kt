@@ -6,8 +6,8 @@ import assertk.assertions.isEqualTo
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.convertValue
 import org.junit.jupiter.api.assertDoesNotThrow
-import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.Json
+import tbdex.sdk.protocol.TestData
 import kotlin.test.Test
 import kotlin.test.assertIs
 

@@ -41,6 +41,9 @@ class PaymentMethod(
   val kind: String,
   val requiredPaymentDetails: JsonNode? = null
 ) {
+  /**
+   * Parse the contents of [requiredPaymentDetails] into a [JsonSchema] that can do validation.
+   */
   @JsonIgnore
   fun getRequiredPaymentDetailsSchema(): JsonSchema? {
     if (requiredPaymentDetails == null) return null

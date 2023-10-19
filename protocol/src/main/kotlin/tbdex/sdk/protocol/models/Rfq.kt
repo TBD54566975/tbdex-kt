@@ -1,12 +1,12 @@
 package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.databind.JsonNode
-import java.time.OffsetDateTime
 import tbdex.sdk.protocol.Json
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Rfq.Companion.create
 import typeid.TypeID
 import web5.sdk.credentials.PresentationDefinitionV2
+import java.time.OffsetDateTime
 
 /**
  * A class representing the Rfq message.

@@ -1,7 +1,7 @@
 package tbdex.sdk.protocol.vectors
 
-import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.Json
+import tbdex.sdk.protocol.TestData
 
 fun main() {
   TestVectorBuilder.writeTestVectors()
