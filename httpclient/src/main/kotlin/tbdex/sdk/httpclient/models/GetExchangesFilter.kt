@@ -1,10 +1,9 @@
 package tbdex.sdk.httpclient.models
 
 /**
- * Get exchanges filter
+ * A filter object used to query exchanges.
  *
- * @property exchangeIds
- * @constructor Create empty Get exchanges filter
+ * @property exchangeIds The list of exchange IDs to filter by.
  */
 class GetExchangesFilter(
   val exchangeIds: List<String>

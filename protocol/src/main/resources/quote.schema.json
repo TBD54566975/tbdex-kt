@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://tbdex.io/quote.schema.json",
+  "$id": "https://tbdex.dev/quote.schema.json",
   "definitions": {
     "QuoteDetails": {
       "type": "object",
@@ -10,11 +10,11 @@
           "description": "ISO 3166 currency code string"
         },
         "amountSubunits": {
-          "type": "integer",
+          "type": "string",
           "description": "The amount of currency expressed in the smallest respective unit"
         },
         "feeSubunits": {
-          "type": "integer",
+          "type": "string",
           "description": "The amount paid in fees"
         }
       },
@@ -34,7 +34,7 @@
       }
     },
     "PaymentInstructions": {
-      "type": ["object", "null"],
+      "type": "object",
       "properties": {
         "payin": {
           "$ref": "#/definitions/PaymentInstruction"
@@ -61,5 +61,5 @@
       "$ref": "#/definitions/PaymentInstructions"
     }
   },
-  "required": ["expiresAt", "payin", "payout", "paymentInstructions"]
+  "required": ["expiresAt", "payin", "payout"]
 }

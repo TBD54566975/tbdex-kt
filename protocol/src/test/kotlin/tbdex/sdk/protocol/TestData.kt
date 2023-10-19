@@ -1,4 +1,4 @@
-package protocol.tbdex.sdk.protocol
+package tbdex.sdk.protocol
 
 import com.danubetech.verifiablecredentials.CredentialSubject
 import tbdex.sdk.protocol.models.Close
@@ -10,6 +10,9 @@ import tbdex.sdk.protocol.models.OfferingData
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.OrderStatusData
+import tbdex.sdk.protocol.models.PaymentInstruction
+import tbdex.sdk.protocol.models.PaymentInstructions
+import tbdex.sdk.protocol.models.PaymentMethod
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.QuoteData
 import tbdex.sdk.protocol.models.QuoteDetails
@@ -64,28 +67,42 @@ object TestData {
     return VerifiableCredential.create("test type", ALICE_DID.uri, ALICE_DID.uri, vc)
   }
 
-  fun getOffering(requiredClaims: List<PresentationDefinitionV2> = listOf(getPresentationDefinition())) =
+  fun getOffering(requiredClaims: PresentationDefinitionV2 = getPresentationDefinition()) =
     Offering.create(
       from = PFI_DID.uri,
       OfferingData(
-        description = "my fake offering",
-        payoutUnitsPerPayinUnit = 1,
-        payinCurrency = CurrencyDetails("AUD"),
+        description = "A sample offering",
+        payoutUnitsPerPayinUnit = "1",
+        payinCurrency = CurrencyDetails("AUD", "1", "10000"),
         payoutCurrency = CurrencyDetails("USDC"),
-        payinMethods = listOf(),
-        payoutMethods = listOf(),
+        payinMethods = listOf(
+          PaymentMethod(
+            kind = "BTC_ADDRESS",
+            requiredPaymentDetails = requiredPaymentDetailsSchema()
+          )
+        ),
+        payoutMethods = listOf(
+          PaymentMethod(
+            kind = "MOMO",
+            requiredPaymentDetails = requiredPaymentDetailsSchema()
+          )
+        ),
         requiredClaims = requiredClaims
       )
     )
 
   fun getRfq(offeringId: TypeID = TypeID(ResourceKind.offering.name), claims: List<String> = emptyList()) = Rfq.create(
-    PFI_DID.uri,
-    ALICE_DID.uri,
-    RfqData(
+    to = PFI_DID.uri,
+    from = ALICE_DID.uri,
+    rfqData = RfqData(
       offeringId = offeringId,
-      payinSubunits = 10_00,
-      payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
-      payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
+      payinSubunits = "1000",
+      payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to "123456")),
+      payoutMethod = SelectedPaymentMethod("MOMO", mapOf(
+        "phoneNumber" to "+254712345678",
+        "accountHolderName" to "Alfred Holder"
+        )
+      ),
       claims = claims
     )
   )
@@ -94,17 +111,39 @@ object TestData {
     ALICE_DID.uri, PFI_DID.uri, TypeID(MessageKind.rfq.name),
     QuoteData(
       expiresAt = OffsetDateTime.now().plusDays(1),
-      payin = QuoteDetails("AUD", 10_00, 0),
-      payout = QuoteDetails("BTC", 12, 0)
+      payin = QuoteDetails("AUD", "1000", "1"),
+      payout = QuoteDetails("BTC", "12", "2"),
+      paymentInstructions = PaymentInstructions(
+        payin = PaymentInstruction(
+          link = "https://block.xyz",
+          instruction = "payin instruction"
+        ),
+        payout = PaymentInstruction(
+          link = "https://block.xyz",
+          instruction = "payout instruction"
+        )
+      )
     )
   )
 
-  fun getClose() = Close.create(ALICE_DID.uri, PFI_DID.uri, TypeID(MessageKind.rfq.name), CloseData("test reason"))
+  fun getClose() = Close.create(
+    to = ALICE_DID.uri,
+    from = PFI_DID.uri,
+    exchangeId = TypeID(MessageKind.rfq.name),
+    closeData = CloseData("test reason")
+  )
 
-  fun getOrder() = Order.create(PFI_DID.uri, ALICE_DID.uri, TypeID(MessageKind.rfq.name))
+  fun getOrder() = Order.create(
+    to = PFI_DID.uri,
+    from = ALICE_DID.uri,
+    exchangeId = TypeID(MessageKind.rfq.name)
+  )
 
   fun getOrderStatus() = OrderStatus.create(
-    ALICE_DID.uri, PFI_DID.uri, TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
+    to = ALICE_DID.uri,
+    from = PFI_DID.uri,
+    exchangeId = TypeID(MessageKind.rfq.name),
+    orderStatusData = OrderStatusData("PENDING")
   )
 
   fun getOrderStatusWithInvalidDid(): OrderStatus {
@@ -115,7 +154,7 @@ object TestData {
     os.sign(ALICE_DID)
     return os
   }
-  
+
   private fun buildField(id: String? = null, vararg paths: String): FieldV2 {
     return FieldV2(id = id, path = paths.toList())
   }
@@ -145,4 +184,34 @@ object TestData {
       constraints = ConstraintsV2(fields = fields)
     )
   }
+
+  private fun requiredPaymentDetailsSchema() = Json.jsonMapper.readTree("""
+    {
+      "${'$'}schema": "http://json-schema.org/draft-07/schema",
+      "additionalProperties": false,
+      "type": "object",
+      "properties": {
+        "phoneNumber": {
+          "minLength": 12,
+          "pattern": "^+2547[0-9]{8}${'$'}",
+          "description": "Mobile Money account number of the Recipient",
+          "type": "string",
+          "title": "Phone Number",
+          "maxLength": 12
+        },
+        "accountHolderName": {
+          "pattern": "^[A-Za-zs'-]+${'$'}",
+          "description": "Name of the account holder as it appears on the Mobile Money account",
+          "type": "string",
+          "title": "Account Holder Name",
+          "maxLength": 32
+        }
+      },
+      "required": [
+        "accountNumber",
+        "accountHolderName"
+      ]
+    }
+  """.trimIndent()
+  )
 }

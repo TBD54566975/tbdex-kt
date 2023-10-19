@@ -1,37 +1,42 @@
 package tbdex.sdk.protocol
 
-import org.everit.json.schema.Schema
-import org.everit.json.schema.ValidationException
-import org.everit.json.schema.loader.SchemaClient
-import org.everit.json.schema.loader.SchemaLoader
-import org.json.JSONObject
+import com.fasterxml.jackson.databind.JsonNode
+import com.networknt.schema.JsonSchema
+import com.networknt.schema.JsonSchemaFactory
+import com.networknt.schema.SpecVersion
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.ResourceKind
 
 /**
- * Thrown by [Validator.validate]. Note: inspect causing exception for specific [ValidationException]s
+ * Thrown by [Validator.validate].
  */
-class ValidatorException(message: String, cause: Exception? = null) : Exception(message, cause)
+class ValidatorException(message: String, val errors: List<String> = listOf()) : Exception(message) {
+  override val message: String? get() = "${super.message}. Errors: ${errors.joinToString()}"
+}
 
 /**
  * Utility for validating JSON payloads against predefined schemas.
  */
 object Validator {
-  private val schemaMap = mutableMapOf<String, Schema>()
-  private const val RESOLUTION_SCOPE_URL = "classpath:/"
+  private val schemaMap = mutableMapOf<String, JsonSchema>()
 
   /**
    * Initializes the validator by loading schemas for messages and resources.
    */
   init {
-    schemaMap["message"] = loadSchema("message")
-    schemaMap["resource"] = loadSchema("resource")
+    val factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7)
+
+    val definitionsStream = object {}.javaClass.getResourceAsStream("/definitions.json")
+    factory.getSchema(definitionsStream)
+
+    val schemaNames = listOf("message" to "message.schema.json", "resource" to "resource.schema.json") +
+      MessageKind.entries.map { it.name to "${it.name}.schema.json" } +
+      ResourceKind.entries.map { it.name to "${it.name}.schema.json" }
     
-    for (messageKind in MessageKind.entries) {
-      schemaMap[messageKind.name] = loadSchema(messageKind.name)
-    }
-    for (resourceKind in ResourceKind.entries) {
-      schemaMap[resourceKind.name] = loadSchema(resourceKind.name)
+    for (schemaName in schemaNames) {
+      val (name, fileName) = schemaName
+      val schemaStream = object {}.javaClass.getResourceAsStream("/$fileName")
+      schemaMap[name] = factory.getSchema(schemaStream)
     }
   }
 
@@ -42,34 +47,12 @@ object Validator {
    * @param schemaName The name of the schema to use for validation.
    * @throws Exception if validation fails, including a list of validation errors.
    */
-  fun validate(jsonMessage: JSONObject, schemaName: String) {
-    try {
-      val schema = schemaMap[schemaName] ?: throw ValidatorException("No schema with name $schemaName exists")
-      schema.validate(jsonMessage)
-    } catch (e: ValidationException) {
+  fun validate(jsonMessage: JsonNode, schemaName: String) {
+    val schema = schemaMap[schemaName] ?: throw ValidatorException("No schema with name $schemaName exists")
+    val validationMessages = schema.validate(jsonMessage)
 
-      throw ValidatorException("Validation failed", e)
+    if (validationMessages.isNotEmpty()) {
+      throw ValidatorException(message = "invalid payload", errors = validationMessages.map { it.message })
     }
-  }
-
-  /**
-   * Loads a JSON schema from a resources file.
-   *
-   * @param kind The kind of schema to load.
-   * @return The loaded JSON schema.
-   */
-  private fun loadSchema(kind: String): Schema {
-    val schemaFile = JSONObject(
-      object {}.javaClass.getResourceAsStream("/$kind.schema.json")?.bufferedReader()?.readText()
-    )
-
-    return SchemaLoader.builder()
-      .schemaClient(SchemaClient.classPathAwareClient())
-      .resolutionScope(RESOLUTION_SCOPE_URL)
-      .draftV7Support()
-      .schemaJson(schemaFile)
-      .build()
-      .load()
-      .build()
   }
 }

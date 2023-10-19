@@ -4,8 +4,8 @@ import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.assertDoesNotThrow
-import protocol.tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.Json
+import tbdex.sdk.protocol.TestData
 import typeid.TypeID
 import java.time.OffsetDateTime
 import kotlin.test.Test
@@ -18,14 +18,14 @@ class QuoteTest {
       "pfi", "alice", TypeID(MessageKind.rfq.name),
       QuoteData(
         expiresAt = OffsetDateTime.now().plusDays(1),
-        payin = QuoteDetails("AUD", 10_00, 0),
-        payout = QuoteDetails("BTC", 12, 0)
+        payin = QuoteDetails("AUD", "1000", "0"),
+        payout = QuoteDetails("BTC", "12", "0")
       )
     )
 
     assertAll {
       assertThat(quote.metadata.id.prefix).isEqualTo("quote")
-      assertThat(quote.data.payin.amountSubunits).isEqualTo(10_00)
+      assertThat(quote.data.payin.amountSubunits).isEqualTo("1000")
     }
   }
 

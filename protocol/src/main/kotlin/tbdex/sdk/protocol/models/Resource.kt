@@ -1,18 +1,17 @@
 package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.core.JsonParseException
+import com.fasterxml.jackson.databind.JsonNode
 import org.json.JSONObject
 import tbdex.sdk.protocol.CryptoUtils
 import tbdex.sdk.protocol.Json
 import tbdex.sdk.protocol.Json.jsonMapper
-import tbdex.sdk.protocol.StringToTypeIdDeserializer
-import tbdex.sdk.protocol.TypeIDToStringSerializer
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.dateTimeFormat
 import typeid.TypeID
 import web5.sdk.dids.Did
+import java.lang.IllegalArgumentException
 import java.time.OffsetDateTime
 
 /**
@@ -28,8 +27,6 @@ enum class ResourceKind {
 class ResourceMetadata(
   val kind: ResourceKind,
   val from: String,
-  @JsonSerialize(using = TypeIDToStringSerializer::class)
-  @JsonDeserialize(using = StringToTypeIdDeserializer::class)
   val id: TypeID,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val createdAt: OffsetDateTime,
@@ -92,23 +89,31 @@ sealed class Resource {
      * @throws IllegalArgumentException if the payload signature verification fails.
      */
     fun parse(payload: String): Resource {
-      val resourceJson = JSONObject(payload)
+      val jsonResource: JsonNode
+
+      try {
+        jsonResource = jsonMapper.readTree(payload)
+      } catch(e: JsonParseException) {
+        throw IllegalArgumentException("unexpected character at offset ${e.location.charOffset}")
+      }
+
+      require(jsonResource.isObject) { "expected payload to be a json object" }
 
       // validate message structure
-      Validator.validate(resourceJson, "resource")
+      Validator.validate(jsonResource, "resource")
 
-      val dataJson = resourceJson.getJSONObject("data")
-      val kind = resourceJson.getJSONObject("metadata").getString("kind")
+      val dataJson = jsonResource.get("data")
+      val kind = jsonResource.get("metadata").get("kind").asText()
 
       // validate specific resource data
       Validator.validate(dataJson, kind)
 
       val resourceType =  when (ResourceKind.valueOf(kind)) {
         ResourceKind.offering -> Offering::class.java
-//        ResourceKind.reputation -> TODO()
+        // ResourceKind.reputation -> TODO()
       }
 
-      val resource = jsonMapper.convertValue(resourceJson, resourceType)
+      val resource = jsonMapper.convertValue(jsonResource, resourceType)
       resource.verify()
 
       return resource

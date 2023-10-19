@@ -1,5 +1,3 @@
-package tbdex.sdk.httpclient.models
-
 import okhttp3.Headers
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
@@ -7,7 +5,8 @@ import tbdex.sdk.protocol.models.Offering
 /**
  * Tbdex response parent class.
  *
- * @constructor Create empty Tbdex response
+ * @property status The HTTP status code of the response.
+ * @property headers The HTTP headers of the response.
  */
 sealed class TbdexResponse {
   abstract val status: Int
@@ -15,12 +14,11 @@ sealed class TbdexResponse {
 }
 
 /**
- * Get offerings response
+ * Get offerings response.
  *
- * @property status
- * @property headers
- * @property data
- * @constructor Create empty Get offerings response
+ * @property status The HTTP status code of the response.
+ * @property headers The HTTP headers of the response.
+ * @property data The list of offerings.
  */
 class GetOfferingsResponse(
   override val status: Int,
@@ -29,11 +27,10 @@ class GetOfferingsResponse(
 ) : TbdexResponse()
 
 /**
- * Send message response
+ * Send message response.
  *
- * @property status
- * @property headers
- * @constructor Create empty Send message response
+ * @property status The HTTP status code of the response.
+ * @property headers The HTTP headers of the response.
  */
 class SendMessageResponse(
   override val status: Int,
@@ -41,12 +38,11 @@ class SendMessageResponse(
 ) : TbdexResponse()
 
 /**
- * Get exchange response
+ * Get exchange response.
  *
- * @property status
- * @property headers
- * @property data
- * @constructor Create empty Get exchange response
+ * @property status The HTTP status code of the response.
+ * @property headers The HTTP headers of the response.
+ * @property data The list of messages.
  */
 class GetExchangeResponse(
   override val status: Int,
@@ -55,12 +51,11 @@ class GetExchangeResponse(
 ) : TbdexResponse()
 
 /**
- * Get exchanges response
+ * Get exchanges response.
  *
- * @property status
- * @property headers
- * @property data
- * @constructor Create empty Get exchanges response
+ * @property status The HTTP status code of the response.
+ * @property headers The HTTP headers of the response.
+ * @property data The list of lists of messages.
  */
 class GetExchangesResponse(
   override val status: Int,
@@ -69,12 +64,11 @@ class GetExchangesResponse(
 ) : TbdexResponse()
 
 /**
- * Error response
+ * Error response.
  *
- * @property status
- * @property headers
- * @property errors
- * @constructor Create empty Error response
+ * @property status The HTTP status code of the response.
+ * @property headers The HTTP headers of the response.
+ * @property errors The list of error details.
  */
 class ErrorResponse(
   override val status: Int,
@@ -83,16 +77,15 @@ class ErrorResponse(
 ) : TbdexResponse()
 
 /**
- * Error detail
+ * Error detail.
  *
- * @property id
- * @property status
- * @property code
- * @property title
- * @property detail
- * @property source
- * @property meta
- * @constructor Create empty Error detail
+ * @property id The error ID.
+ * @property status The error status.
+ * @property code The error code.
+ * @property title The error title.
+ * @property detail The error detail message.
+ * @property source The error source information.
+ * @property meta Additional error metadata.
  */
 class ErrorDetail(
   val id: String?,
@@ -105,12 +98,11 @@ class ErrorDetail(
 )
 
 /**
- * Source
+ * Source.
  *
- * @property pointer
- * @property parameter
- * @property header
- * @constructor Create empty Source
+ * @property pointer The source pointer.
+ * @property parameter The source parameter.
+ * @property header The source header.
  */
 class Source(
   val pointer: String?,

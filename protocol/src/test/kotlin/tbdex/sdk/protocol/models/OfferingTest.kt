@@ -3,9 +3,11 @@ package tbdex.sdk.protocol.models
 import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.module.kotlin.convertValue
 import org.junit.jupiter.api.assertDoesNotThrow
-import protocol.tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.Json
+import tbdex.sdk.protocol.TestData
 import kotlin.test.Test
 import kotlin.test.assertIs
 
@@ -16,12 +18,12 @@ class OfferingTest {
       from = TestData.PFI,
       OfferingData(
         description = "my fake offering",
-        payoutUnitsPerPayinUnit = 1,
+        payoutUnitsPerPayinUnit = "1",
         payinCurrency = CurrencyDetails("AUD"),
         payoutCurrency = CurrencyDetails("BTC"),
         payinMethods = listOf(),
         payoutMethods = listOf(),
-        requiredClaims = listOf(TestData.getPresentationDefinition())
+        requiredClaims = TestData.getPresentationDefinition()
       )
     )
 
@@ -41,7 +43,7 @@ class OfferingTest {
     assertIs<Offering>(parsed)
     assertThat(parsed.toString()).isEqualTo(jsonResource)
   }
-  
+
   @Test
   fun `can parse an offering`() {
     val offering = TestData.getOffering()
