@@ -1,11 +1,10 @@
-package tbdex.sdk.protocol
+package tbdex.sdk.protocol.serialization
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.dataformat.cbor.databind.CBORMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import tbdex.sdk.protocol.serialization.TypeIdModule
 
 /**
  * Object providing a configured ObjectMapper for CBOR (Concise Binary Object Representation) serialization.

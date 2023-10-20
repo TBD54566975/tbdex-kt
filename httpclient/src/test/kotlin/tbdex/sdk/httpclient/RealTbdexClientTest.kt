@@ -14,8 +14,8 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.GetExchangesFilter
-import tbdex.sdk.protocol.Json.jsonMapper
 import tbdex.sdk.protocol.models.Rfq
+import tbdex.sdk.protocol.serialization.Json
 import typeid.TypeID
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidIonManager
@@ -83,15 +83,17 @@ class RealTbdexClientTest {
 
   @Test
   fun `get offerings success via mockwebserver`() {
-    val mockOfferings = listOf(TestData.getOffering(TestData.getPresentationDefinition()))
-    val mockResponseString = jsonMapper.writeValueAsString(mapOf("data" to mockOfferings))
+
+    val offering = TestData.getOffering(TestData.getPresentationDefinition())
+    offering.sign(alice)
+    val mockOfferings = listOf(offering)
+    val mockResponseString = Json.jsonMapper.writeValueAsString(mapOf("data" to mockOfferings))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
 
     val response = RealTbdexClient.getOfferings(ionDid, null)
 
     assertEquals(HttpURLConnection.HTTP_OK, response.status)
     assertTrue(response is GetOfferingsResponse)
-    assertEquals("my fake offering", (response as GetOfferingsResponse).data[0].data.description)
   }
 
   @Test
@@ -108,7 +110,7 @@ class RealTbdexClientTest {
       )
     )
 
-    val mockResponseString = jsonMapper.writeValueAsString(errorDetails)
+    val mockResponseString = Json.jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
 
     val response = RealTbdexClient.getOfferings(ionDid, null)
@@ -143,7 +145,7 @@ class RealTbdexClientTest {
       )
     )
 
-    val mockResponseString = jsonMapper.writeValueAsString(errorDetails)
+    val mockResponseString = Json.jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
 
     val rfq = TestData.getRfq(ionDid, TypeID("offering"))
@@ -161,7 +163,7 @@ class RealTbdexClientTest {
     val quote = TestData.getQuote()
     quote.sign(alice) // todo quote should probably signed by pfiDid but we currently don't have the full pfi did + key
     val exchange = listOf(rfq, quote)
-    val mockResponseString = jsonMapper.writeValueAsString(mapOf("data" to exchange))
+    val mockResponseString = Json.jsonMapper.writeValueAsString(mapOf("data" to exchange))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
 
     val response = RealTbdexClient.getExchange(ionDid, "exchange_1234", alice)
@@ -185,7 +187,7 @@ class RealTbdexClientTest {
       )
     )
 
-    val mockResponseString = jsonMapper.writeValueAsString(errorDetails)
+    val mockResponseString = Json.jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
 
     val response = RealTbdexClient.getExchange(ionDid, "exchange_1234", alice)
@@ -201,7 +203,7 @@ class RealTbdexClientTest {
     val quote = TestData.getQuote()
     quote.sign(alice) // todo quote should probably signed by pfiDid but we currently don't have the full pfi did + key
     val exchanges = listOf(listOf(rfq, quote))
-    val mockResponseString = jsonMapper.writeValueAsString(mapOf("data" to exchanges))
+    val mockResponseString = Json.jsonMapper.writeValueAsString(mapOf("data" to exchanges))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
 
     val response = RealTbdexClient.getExchanges(ionDid, alice)
@@ -225,7 +227,7 @@ class RealTbdexClientTest {
       )
     )
 
-    val mockResponseString = jsonMapper.writeValueAsString(errorDetails)
+    val mockResponseString = Json.jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
 
     val response = RealTbdexClient.getExchanges(ionDid, alice)

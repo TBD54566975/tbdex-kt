@@ -8,7 +8,7 @@ import com.nimbusds.jose.jwk.JWK
 import com.nimbusds.jose.util.Base64URL
 import foundation.identity.did.DIDURL
 import foundation.identity.did.VerificationMethod
-import tbdex.sdk.protocol.Cbor.cborMapper
+import tbdex.sdk.protocol.serialization.Cbor.cborMapper
 import web5.sdk.common.Convert
 import web5.sdk.crypto.Crypto
 import web5.sdk.dids.Did

@@ -7,9 +7,9 @@ import assertk.assertions.isNotNull
 import com.nimbusds.jose.JWSObject
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
-import tbdex.sdk.protocol.Json
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.ValidatorException
+import tbdex.sdk.protocol.serialization.Json
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertFailsWith
