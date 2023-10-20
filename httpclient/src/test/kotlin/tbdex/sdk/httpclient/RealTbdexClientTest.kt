@@ -2,16 +2,19 @@ package tbdex.sdk.httpclient
 
 import ErrorDetail
 import ErrorResponse
+import GetExchangeResponse
 import GetOfferingsResponse
+import SendMessageResponse
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.protocol.Json.jsonMapper
+import typeid.TypeID
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidIonManager
 import web5.sdk.dids.DidKey
@@ -110,7 +113,57 @@ class RealTbdexClientTest {
 
   }
 
-  @After
+  @Test
+  fun `send RFQ success via mockwebserver`() {
+
+    server.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_ACCEPTED))
+
+    val rfq = TestData.getRfq(ionDid, TypeID("offering"))
+    val response = RealTbdexClient.sendMessage(rfq)
+    assertEquals(HttpURLConnection.HTTP_ACCEPTED, response.status)
+    assertTrue(response is SendMessageResponse)
+  }
+
+  @Test
+  fun `send RFQ fail via mockwebserver`() {
+
+    val errorDetails = listOf(ErrorDetail(
+      id = "1",
+      status = "400",
+      code = "INVALID_INPUT",
+      title = "Invalid Input",
+      detail = "The request input is invalid.",
+      source = null,
+      meta = null
+    ))
+
+    val mockResponseString = jsonMapper.writeValueAsString(errorDetails)
+    server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
+
+    val rfq = TestData.getRfq(ionDid, TypeID("offering"))
+    val response = RealTbdexClient.sendMessage(rfq)
+    assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, response.status)
+    assertTrue(response is ErrorResponse)
+  }
+
+  // todo: fails right now because TestData.getXYZ() does not produce Messages with valid signatures
+  @Test
+  fun `get exchange success via mockwebserver`() {
+
+    val rfq = TestData.getRfq(ionDid, TypeID("offering"))
+    val quote = TestData.getQuote()
+    val order = TestData.getOrder()
+    val orderStatus = TestData.getOrderStatus()
+    val exchange = listOf(rfq, quote, order, orderStatus)
+    val mockResponseString = jsonMapper.writeValueAsString(mapOf("data" to exchange))
+    server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
+
+    val response = RealTbdexClient.getExchange(ionDid, "exchange_1234", alice)
+    assertEquals(HttpURLConnection.HTTP_OK, response.status)
+    assertTrue(response is GetExchangeResponse)
+  }
+
+  @AfterEach
   fun teardown() {
     server.shutdown()
   }
