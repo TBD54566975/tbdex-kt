@@ -29,7 +29,8 @@ import web5.sdk.dids.Did
 import web5.sdk.dids.DidKey
 import java.net.URI
 import java.time.OffsetDateTime
-import java.util.*
+import java.util.Date
+import java.util.UUID
 
 object TestData {
   private val aliceKeyManager = InMemoryKeyManager()
