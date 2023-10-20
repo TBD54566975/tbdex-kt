@@ -14,9 +14,10 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import tbdex.sdk.httpclient.Json.objectMapper
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
+import tbdex.sdk.protocol.Json
+import tbdex.sdk.protocol.Json.jsonMapper
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
 import web5.sdk.dids.Did
@@ -42,7 +43,7 @@ object RealTbdexClient : TbdexClient {
     val baseUrl = "$pfiServiceEndpoint/offerings/"
 
     // compose query param
-    val queryMap: Map<String, String?>? = filter?.let { objectMapper.convertValue(it) }
+    val queryMap: Map<String, String?>? = filter?.let { jsonMapper.convertValue(it) }
     val notNullQueryMap = queryMap?.filterValues { it != null }
     val httpUrlBuilder = baseUrl.toHttpUrl().newBuilder()
     notNullQueryMap?.forEach { httpUrlBuilder.addQueryParameter(it.key, it.value) }
@@ -56,11 +57,12 @@ object RealTbdexClient : TbdexClient {
     return when {
       response.isSuccessful -> {
         val responseString = response.body?.string()
-        val jsonNode = objectMapper.readTree(responseString)
+        val jsonNode = Json.jsonMapper.readTree(responseString)
         val jsonData = jsonNode.get("data").toString()
+        println(responseString)
 
         // response body is an object with a data field
-        val data: List<Offering> = objectMapper.readerForListOf(Offering::class.java).readValue(jsonData)
+        val data: List<Offering> = jsonMapper.readerForListOf(Offering::class.java).readValue(jsonData)
 
         GetOfferingsResponse(
           status = response.code,
@@ -136,7 +138,7 @@ object RealTbdexClient : TbdexClient {
     return when {
       response.isSuccessful -> {
         val responseString = response.body?.string()
-        val jsonNode = objectMapper.readTree(responseString)
+        val jsonNode = jsonMapper.readTree(responseString)
 
         val exchange = mutableListOf<Message>()
         jsonNode.get("data").elements().forEach { exchange.add(Message.parse(it.toString())) }
@@ -189,7 +191,7 @@ object RealTbdexClient : TbdexClient {
     return when {
       response.isSuccessful -> {
         val responseString = response.body?.string()
-        val jsonNode = objectMapper.readTree(responseString)
+        val jsonNode = jsonMapper.readTree(responseString)
 
         val exchanges = mutableListOf<List<Message>>()
         jsonNode.get("data").elements().forEach { jsonExchange ->
@@ -219,7 +221,7 @@ object RealTbdexClient : TbdexClient {
    */
   private fun buildErrorResponse(response: Response): ErrorResponse {
     val errors: List<ErrorDetail> =
-      objectMapper.readerForListOf(ErrorDetail::class.java).readValue(response.body!!.string())
+      jsonMapper.readerForListOf(ErrorDetail::class.java).readValue(response.body!!.string())
 
     return ErrorResponse(
       status = response.code,
