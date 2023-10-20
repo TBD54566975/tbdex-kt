@@ -14,11 +14,18 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.protocol.Json.jsonMapper
+import tbdex.sdk.protocol.models.Quote
+import tbdex.sdk.protocol.models.QuoteData
+import tbdex.sdk.protocol.models.QuoteDetails
+import tbdex.sdk.protocol.models.Rfq
+import tbdex.sdk.protocol.models.RfqData
+import tbdex.sdk.protocol.models.SelectedPaymentMethod
 import typeid.TypeID
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidIonManager
 import web5.sdk.dids.DidKey
 import java.net.HttpURLConnection
+import java.time.OffsetDateTime
 import kotlin.test.Test
 
 /**
@@ -146,21 +153,34 @@ class RealTbdexClientTest {
     assertTrue(response is ErrorResponse)
   }
 
-  // todo: fails right now because TestData.getXYZ() does not produce Messages with valid signatures
   @Test
   fun `get exchange success via mockwebserver`() {
 
-    val rfq = TestData.getRfq(ionDid, TypeID("offering"))
-    val quote = TestData.getQuote()
-    val order = TestData.getOrder()
-    val orderStatus = TestData.getOrderStatus()
-    val exchange = listOf(rfq, quote, order, orderStatus)
+    val offeringId = TypeID("offering")
+    val rfqData = RfqData(
+      offeringId = offeringId,
+      payinSubunits = "100",
+      payinMethod = SelectedPaymentMethod(kind = "BALANCE", paymentDetails = mapOf("accountNumber" to "3794324")),
+      payoutMethod = SelectedPaymentMethod(kind = "MOMO_MPESA", paymentDetails = mapOf("name" to "lainey wilson", "phoneNumber" to "1234567890")),
+      claims = listOf("vcJwt")
+    )
+    val rfq = Rfq.create(ionDid, alice.uri, rfqData)
+    rfq.sign(alice)
+    val quoteData = QuoteData(
+      expiresAt = OffsetDateTime.now().plusDays(2),
+      payin = QuoteDetails("USD", "1000", "0"),
+      payout = QuoteDetails("BTC", "10", "0")
+    )
+    val quote = Quote.create(alice.uri, ionDid, TypeID("exchange"), quoteData)
+    quote.sign(alice) // todo quote should probably signed by pfiDid but we currently don't have the full pfi did + key
+    val exchange = listOf(rfq, quote)
     val mockResponseString = jsonMapper.writeValueAsString(mapOf("data" to exchange))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
 
     val response = RealTbdexClient.getExchange(ionDid, "exchange_1234", alice)
     assertEquals(HttpURLConnection.HTTP_OK, response.status)
     assertTrue(response is GetExchangeResponse)
+    assertEquals(offeringId, ((response as GetExchangeResponse).data[0] as Rfq).data.offeringId)
   }
 
   @AfterEach

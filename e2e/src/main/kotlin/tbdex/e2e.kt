@@ -1,11 +1,11 @@
 package tbdex
 
+import ErrorResponse
+import GetExchangeResponse
+import GetOfferingsResponse
+import TbdexResponse
 import tbdex.sdk.httpclient.FakeTbdexClient
-import tbdex.sdk.httpclient.models.ErrorResponse
-import tbdex.sdk.httpclient.models.GetExchangeResponse
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
-import tbdex.sdk.httpclient.models.GetOfferingsResponse
-import tbdex.sdk.httpclient.models.TbdexResponse
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
@@ -38,7 +38,7 @@ fun main() {
 
   val rfqData = RfqData(
     offeringId = firstOfferingId,
-    payinSubunits = 100,
+    payinSubunits = "100",
     payinMethod = SelectedPaymentMethod(kind = "BALANCE"),
     payoutMethod = SelectedPaymentMethod(kind = "MOMO_MPESA", paymentDetails = mapOf("name" to "lainey wilson", "phoneNumber" to "1234567890")),
     claims = listOf("vcJwt")
@@ -52,7 +52,7 @@ fun main() {
 
   println("Pinging for quote")
 
-  var messages: List<Message> = emptyList()
+  var messages: List<Message>
   do {
     val getExchangeResponse: TbdexResponse = client.getExchange(pfiDid, rfq.metadata.exchangeId.toString(), myDid)
 
@@ -80,16 +80,16 @@ fun main() {
 
     messages = (getExchangeResponse as GetExchangeResponse).data
     val lastMessage = messages.last()
-    if (lastMessage !is OrderStatus || lastMessage.data.status !== "COMPLETED") {
+    if (lastMessage !is OrderStatus || lastMessage.data.orderStatus !== "COMPLETED") {
       if (lastMessage is OrderStatus) {
-        println("Latest orderstatus: ${lastMessage.data.status}")
+        println("Latest orderstatus: ${lastMessage.data.orderStatus}")
       }
       Thread.sleep(pollInterval)
     }
 
-  } while (messages.last() !is OrderStatus || (messages.last() as OrderStatus).data.status !== "COMPLETED")
+  } while (messages.last() !is OrderStatus || (messages.last() as OrderStatus).data.orderStatus !== "COMPLETED")
 
   val lastMessage = messages.last() as OrderStatus
-  assert(lastMessage.data.status == "COMPLETED")
+  assert(lastMessage.data.orderStatus == "COMPLETED")
   println("you have finished your mission of completing a tbdex transaction. the last order message status is COMPLETED. farewell!")
 }
