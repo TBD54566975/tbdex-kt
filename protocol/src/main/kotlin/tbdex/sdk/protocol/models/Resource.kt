@@ -3,6 +3,9 @@ package tbdex.sdk.protocol.models
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.module.kotlin.convertValue
+import com.nimbusds.jose.util.Base64URL
+import org.erdtman.jcs.JsonCanonicalizer
 import org.json.JSONObject
 import tbdex.sdk.protocol.CryptoUtils
 import tbdex.sdk.protocol.Json
@@ -10,8 +13,10 @@ import tbdex.sdk.protocol.Json.jsonMapper
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.dateTimeFormat
 import typeid.TypeID
+import web5.sdk.common.Convert
 import web5.sdk.dids.Did
 import java.lang.IllegalArgumentException
+import java.security.MessageDigest
 import java.time.OffsetDateTime
 
 /**
@@ -50,8 +55,7 @@ sealed class Resource {
    * @throws Exception if the signing operation fails.
    */
   fun sign(did: Did, keyAlias: String? = null) {
-    val payload = mapOf("metadata" to this.metadata, "data" to this.data)
-    this.signature = CryptoUtils.sign(did = did, payload = payload, assertionMethodId = keyAlias)
+    this.signature = CryptoUtils.sign(did = did, payload = digest(), assertionMethodId = keyAlias)
   }
 
   /**
@@ -63,9 +67,19 @@ sealed class Resource {
    * @throws Exception if the verification fails or if the signature is missing.
    */
   fun verify() {
+    CryptoUtils.verify(detachedPayload = digest(), signature = this.signature)
+  }
+
+  /**
+   * Generates a digest of the message for signing or verification.
+   *
+   * @return The message digest as a byte array.
+   */
+  fun digest(): ByteArray {
     val payload = mapOf("metadata" to this.metadata, "data" to this.data)
-    val base64UrlHashedPayload = CryptoUtils.hash(payload)
-    CryptoUtils.verify(detachedPayload = base64UrlHashedPayload, signature = this.signature)
+    val canonicalJsonSerializedPayload = JsonCanonicalizer(Json.stringify(payload))
+
+    return canonicalJsonSerializedPayload.encodedUTF8
   }
 
   /**
