@@ -1,15 +1,17 @@
 package tbdex.sdk.httpclient
 
+import ErrorDetail
+import ErrorResponse
 import GetOfferingsResponse
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.jupiter.api.AfterEach
+import org.junit.After
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
-import tbdex.sdk.httpclient.Json.objectMapper
 import tbdex.sdk.httpclient.models.GetExchangesFilter
+import tbdex.sdk.protocol.Json.jsonMapper
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidIonManager
 import web5.sdk.dids.DidKey
@@ -32,12 +34,8 @@ class RealTbdexClientTest {
 
   @BeforeEach
   fun setup() {
-//    server = MockWebServer()
-//    server.enqueue(MockResponse().setBody("hello, world!"))
-//    server.enqueue(MockResponse().setBody("sup, bra?"))
-//
-//    server.start()
-//    val baseUrl = server.url("")
+    server = MockWebServer()
+    server.start(9000) // doing this because ^ iondid resolves to localhost:9000
   }
 
   @Test
@@ -79,20 +77,41 @@ class RealTbdexClientTest {
   }
 
   @Test
-  @Disabled
-  fun testGetOfferingsSuccess() {
-    val mockOfferings = TestData.getOffering(TestData.getPresentationDefinition())
-    val mockResponseString = objectMapper.writeValueAsString(mapOf("data" to mockOfferings))
+  fun `get offerings success via mockwebserver`() {
+    val mockOfferings = listOf(TestData.getOffering(TestData.getPresentationDefinition()))
+    val mockResponseString = jsonMapper.writeValueAsString(mapOf("data" to mockOfferings))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
 
-    val response = RealTbdexClient.getOfferings("someDid", null)
+    val response = RealTbdexClient.getOfferings(ionDid, null)
 
     assertEquals(HttpURLConnection.HTTP_OK, response.status)
     assertTrue(response is GetOfferingsResponse)
+    assertEquals("my fake offering", (response as GetOfferingsResponse).data[0].data.description)
   }
 
-  @AfterEach
+  @Test
+  fun `get offerings fail via mockwebserver`() {
+    val errorDetails = listOf(ErrorDetail(
+      id = "1",
+      status = "400",
+      code = "INVALID_INPUT",
+      title = "Invalid Input",
+      detail = "The request input is invalid.",
+      source = null,
+      meta = null
+    ))
+
+    val mockResponseString = jsonMapper.writeValueAsString(errorDetails)
+    server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
+
+    val response = RealTbdexClient.getOfferings(ionDid, null)
+    assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, response.status)
+    assertTrue(response is ErrorResponse)
+
+  }
+
+  @After
   fun teardown() {
-//    server.shutdown()
+    server.shutdown()
   }
 }

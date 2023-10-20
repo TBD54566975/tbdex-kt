@@ -3,7 +3,6 @@ package tbdex.sdk.protocol.models
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
-import org.json.JSONObject
 import tbdex.sdk.protocol.CryptoUtils
 import tbdex.sdk.protocol.Json
 import tbdex.sdk.protocol.Json.jsonMapper
@@ -11,7 +10,6 @@ import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.dateTimeFormat
 import typeid.TypeID
 import web5.sdk.dids.Did
-import java.lang.IllegalArgumentException
 import java.time.OffsetDateTime
 
 /**

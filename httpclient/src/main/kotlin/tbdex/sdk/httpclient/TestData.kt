@@ -69,12 +69,12 @@ object TestData {
       from = PFI_DID.uri,
       OfferingData(
         description = "my fake offering",
-        payoutUnitsPerPayinUnit = 1,
+        payoutUnitsPerPayinUnit = "1",
         payinCurrency = CurrencyDetails("AUD"),
         payoutCurrency = CurrencyDetails("USDC"),
         payinMethods = listOf(),
         payoutMethods = listOf(),
-        requiredClaims = requiredClaims
+        requiredClaims = requiredClaims.first()
       )
     )
 
@@ -83,7 +83,7 @@ object TestData {
     ALICE_DID.uri,
     RfqData(
       offeringId = offeringId,
-      payinSubunits = 10_00,
+      payinSubunits = "1000",
       payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
       payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
       claims = claims
@@ -94,8 +94,8 @@ object TestData {
     ALICE_DID.uri, PFI_DID.uri, TypeID(MessageKind.rfq.name),
     QuoteData(
       expiresAt = OffsetDateTime.now().plusDays(1),
-      payin = QuoteDetails("AUD", 10_00, 0),
-      payout = QuoteDetails("BTC", 12, 0)
+      payin = QuoteDetails("AUD", "1000", "0"),
+      payout = QuoteDetails("BTC", "12", "0")
     )
   )
 
