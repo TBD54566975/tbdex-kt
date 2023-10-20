@@ -14,18 +14,12 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.protocol.Json.jsonMapper
-import tbdex.sdk.protocol.models.Quote
-import tbdex.sdk.protocol.models.QuoteData
-import tbdex.sdk.protocol.models.QuoteDetails
 import tbdex.sdk.protocol.models.Rfq
-import tbdex.sdk.protocol.models.RfqData
-import tbdex.sdk.protocol.models.SelectedPaymentMethod
 import typeid.TypeID
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidIonManager
 import web5.sdk.dids.DidKey
 import java.net.HttpURLConnection
-import java.time.OffsetDateTime
 import kotlin.test.Test
 
 /**
@@ -58,7 +52,7 @@ class RealTbdexClientTest {
   @Test
   @Disabled
   fun `can send message`() {
-    val message = TestData.getRfq(ionDid)
+    val message = TestData.getRfq(ionDid, TypeID("offering"))
     message.sign(alice)
     val resp =
       RealTbdexClient.sendMessage(message)
@@ -157,21 +151,9 @@ class RealTbdexClientTest {
   fun `get exchange success via mockwebserver`() {
 
     val offeringId = TypeID("offering")
-    val rfqData = RfqData(
-      offeringId = offeringId,
-      payinSubunits = "100",
-      payinMethod = SelectedPaymentMethod(kind = "BALANCE", paymentDetails = mapOf("accountNumber" to "3794324")),
-      payoutMethod = SelectedPaymentMethod(kind = "MOMO_MPESA", paymentDetails = mapOf("name" to "lainey wilson", "phoneNumber" to "1234567890")),
-      claims = listOf("vcJwt")
-    )
-    val rfq = Rfq.create(ionDid, alice.uri, rfqData)
+    val rfq = TestData.getRfq(ionDid, offeringId)
     rfq.sign(alice)
-    val quoteData = QuoteData(
-      expiresAt = OffsetDateTime.now().plusDays(2),
-      payin = QuoteDetails("USD", "1000", "0"),
-      payout = QuoteDetails("BTC", "10", "0")
-    )
-    val quote = Quote.create(alice.uri, ionDid, TypeID("exchange"), quoteData)
+    val quote = TestData.getQuote()
     quote.sign(alice) // todo quote should probably signed by pfiDid but we currently don't have the full pfi did + key
     val exchange = listOf(rfq, quote)
     val mockResponseString = jsonMapper.writeValueAsString(mapOf("data" to exchange))

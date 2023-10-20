@@ -4,7 +4,7 @@ import ErrorResponse
 import GetExchangeResponse
 import GetOfferingsResponse
 import TbdexResponse
-import tbdex.sdk.httpclient.FakeTbdexClient
+import tbdex.sdk.httpclient.RealTbdexClient
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Order
@@ -23,7 +23,7 @@ private const val pollInterval = 1000L
  *
  */
 fun main() {
-  val client = FakeTbdexClient // swap this with RealTbdexClient
+  val client = RealTbdexClient
   val pfiDid = "did:pfi:0:0" // todo use a real did
   val myDid = DidKey.create(InMemoryKeyManager())
 
