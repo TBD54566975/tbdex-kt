@@ -190,12 +190,12 @@ object RealTbdexClient : TbdexClient {
     return when {
       response.isSuccessful -> {
         val responseString = response.body?.string()
-        val jsonNode = jsonMapper.readTree(responseString)
+        val jsonNode = jsonMapper.readTree(responseString).get("data")
 
         val exchanges = mutableListOf<List<Message>>()
-        jsonNode.get("data").elements().forEach { jsonExchange ->
+        jsonNode.elements().forEach { jsonExchange ->
           val exchange = mutableListOf<Message>()
-          jsonExchange.elements().forEach { exchange.add(Message.parse(it.asText())) }
+          jsonExchange.elements().forEach { message -> exchange.add(Message.parse(message.toString())) }
           exchanges.add(exchange)
         }
 

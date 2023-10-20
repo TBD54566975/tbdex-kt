@@ -3,6 +3,7 @@ package tbdex.sdk.httpclient
 import ErrorDetail
 import ErrorResponse
 import GetExchangeResponse
+import GetExchangesResponse
 import GetOfferingsResponse
 import SendMessageResponse
 import junit.framework.TestCase.assertEquals
@@ -163,6 +164,65 @@ class RealTbdexClientTest {
     assertEquals(HttpURLConnection.HTTP_OK, response.status)
     assertTrue(response is GetExchangeResponse)
     assertEquals(offeringId, ((response as GetExchangeResponse).data[0] as Rfq).data.offeringId)
+  }
+
+  @Test
+  fun `get exchange fail via mockwebserver`() {
+
+    val errorDetails = listOf(ErrorDetail(
+      id = "1",
+      status = "400",
+      code = "INVALID_INPUT",
+      title = "Invalid Input",
+      detail = "The request input is invalid.",
+      source = null,
+      meta = null
+    ))
+
+    val mockResponseString = jsonMapper.writeValueAsString(errorDetails)
+    server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
+
+    val response = RealTbdexClient.getExchange(ionDid, "exchange_1234", alice)
+    assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, response.status)
+    assertTrue(response is ErrorResponse)
+  }
+
+  @Test
+  fun `get exchanges success via mockwebserver`() {
+    val offeringId = TypeID("offering")
+    val rfq = TestData.getRfq(ionDid, offeringId)
+    rfq.sign(alice)
+    val quote = TestData.getQuote()
+    quote.sign(alice) // todo quote should probably signed by pfiDid but we currently don't have the full pfi did + key
+    val exchanges = listOf(listOf(rfq, quote))
+    val mockResponseString = jsonMapper.writeValueAsString(mapOf("data" to exchanges))
+    server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
+
+    val response = RealTbdexClient.getExchanges(ionDid, alice)
+    assertEquals(HttpURLConnection.HTTP_OK, response.status)
+    assertTrue(response is GetExchangesResponse)
+    assertEquals(offeringId, ((response as GetExchangesResponse).data[0][0] as Rfq).data.offeringId)
+  }
+
+  @Test
+  fun `get exchanges fail via mockwebserver`() {
+
+    val errorDetails = listOf(ErrorDetail(
+      id = "1",
+      status = "400",
+      code = "INVALID_INPUT",
+      title = "Invalid Input",
+      detail = "The request input is invalid.",
+      source = null,
+      meta = null
+    ))
+
+    val mockResponseString = jsonMapper.writeValueAsString(errorDetails)
+    server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
+
+    val response = RealTbdexClient.getExchanges(ionDid, alice)
+    assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, response.status)
+    assertTrue(response is ErrorResponse)
   }
 
   @AfterEach
