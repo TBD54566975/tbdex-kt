@@ -41,7 +41,7 @@ class RealTbdexClientTest {
   }
 
   @Test
-//  @Disabled
+  @Disabled
   fun `can get offerings`() {
     val resp =
       RealTbdexClient.getOfferings(ionDid)
