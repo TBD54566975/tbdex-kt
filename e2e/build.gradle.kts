@@ -19,9 +19,10 @@ dependencies {
   implementation(project(":protocol"))
   implementation(project(":httpclient"))
   implementation("me.lessis:typeid:0.0.2")
-  implementation("com.github.TBD54566975:web5-kt:0.0.0-beta")
+  implementation("com.github.TBD54566975:web5-kt:0.0.4-beta")
   testImplementation(platform("org.junit:junit-bom:5.9.1"))
   testImplementation("org.junit.jupiter:junit-jupiter")
+  testImplementation(kotlin("test"))
 }
 
 tasks.test {
