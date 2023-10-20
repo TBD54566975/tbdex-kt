@@ -1,6 +1,7 @@
 import okhttp3.Headers
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
+import tbdex.sdk.protocol.models.Resource
 
 /**
  * Tbdex response parent class.
@@ -23,7 +24,7 @@ sealed class TbdexResponse {
 class GetOfferingsResponse(
   override val status: Int,
   override val headers: Headers,
-  val data: List<Offering>
+  val data: List<Resource>
 ) : TbdexResponse()
 
 /**

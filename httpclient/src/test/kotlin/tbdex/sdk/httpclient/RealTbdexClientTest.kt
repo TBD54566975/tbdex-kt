@@ -8,8 +8,8 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
-import tbdex.sdk.httpclient.Json.objectMapper
 import tbdex.sdk.httpclient.models.GetExchangesFilter
+import tbdex.sdk.protocol.Json
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidIonManager
 import web5.sdk.dids.DidKey
@@ -41,7 +41,7 @@ class RealTbdexClientTest {
   }
 
   @Test
-  @Disabled
+//  @Disabled
   fun `can get offerings`() {
     val resp =
       RealTbdexClient.getOfferings(ionDid)
@@ -82,7 +82,7 @@ class RealTbdexClientTest {
   @Disabled
   fun testGetOfferingsSuccess() {
     val mockOfferings = TestData.getOffering(TestData.getPresentationDefinition())
-    val mockResponseString = objectMapper.writeValueAsString(mapOf("data" to mockOfferings))
+    val mockResponseString = Json.jsonMapper.writeValueAsString(mapOf("data" to mockOfferings))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
 
     val response = RealTbdexClient.getOfferings("someDid", null)
