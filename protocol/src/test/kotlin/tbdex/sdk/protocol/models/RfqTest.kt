@@ -6,8 +6,8 @@ import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
-import tbdex.sdk.protocol.Json
 import tbdex.sdk.protocol.TestData
+import tbdex.sdk.protocol.serialization.Json
 import typeid.TypeID
 import kotlin.test.Test
 import kotlin.test.assertIs

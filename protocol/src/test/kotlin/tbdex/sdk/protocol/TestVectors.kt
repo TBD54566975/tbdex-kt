@@ -1,6 +1,7 @@
 package tbdex.sdk.protocol
 
 import com.fasterxml.jackson.databind.JsonNode
+import tbdex.sdk.protocol.serialization.Json
 
 object TestVectors {
   val vectors = readVectors()
