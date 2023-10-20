@@ -192,7 +192,7 @@ object RealTbdexClient : TbdexClient {
         val exchanges = mutableListOf<List<Message>>()
         jsonNode.get("data").elements().forEach { jsonExchange ->
           val exchange = jsonExchange.elements().asSequence()
-            .map { Message.parse(it.asText()) }
+            .map { Message.parse(it.toString()) }
             .toList()
           exchanges.add(exchange)
         }
