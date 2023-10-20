@@ -16,7 +16,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
-import tbdex.sdk.protocol.Json
+import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Resource
 import web5.sdk.dids.Did

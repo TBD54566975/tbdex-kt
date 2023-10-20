@@ -9,7 +9,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.GetExchangesFilter
-import tbdex.sdk.protocol.Json
+import tbdex.sdk.protocol.serialization.Json
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidIonManager
 import web5.sdk.dids.DidKey

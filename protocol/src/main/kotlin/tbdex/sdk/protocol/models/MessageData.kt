@@ -1,7 +1,7 @@
 package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import tbdex.sdk.protocol.dateTimeFormat
+import tbdex.sdk.protocol.serialization.dateTimeFormat
 import typeid.TypeID
 import java.time.OffsetDateTime
 

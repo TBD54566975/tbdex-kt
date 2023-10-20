@@ -1,6 +1,6 @@
 package tbdex.sdk.protocol.vectors
 
-import tbdex.sdk.protocol.Json
+import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.TestData
 
 fun main() {

@@ -1,7 +1,7 @@
 package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.databind.JsonNode
-import tbdex.sdk.protocol.Json
+import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Rfq.Companion.create
 import typeid.TypeID
