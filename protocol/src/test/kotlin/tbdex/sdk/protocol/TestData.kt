@@ -33,8 +33,7 @@ import web5.sdk.dids.Did
 import web5.sdk.dids.DidKey
 import java.net.URI
 import java.time.OffsetDateTime
-import java.util.Date
-import java.util.UUID
+import java.util.*
 
 object TestData {
   const val ALICE = "alice"

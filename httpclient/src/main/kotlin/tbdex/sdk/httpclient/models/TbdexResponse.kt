@@ -1,6 +1,5 @@
 import okhttp3.Headers
 import tbdex.sdk.protocol.models.Message
-import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Resource
 
 /**

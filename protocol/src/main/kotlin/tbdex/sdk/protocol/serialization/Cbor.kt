@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.dataformat.cbor.databind.CBORMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import tbdex.sdk.protocol.serialization.TypeIdModule
 
 /**
  * Object providing a configured ObjectMapper for CBOR (Concise Binary Object Representation) serialization.
