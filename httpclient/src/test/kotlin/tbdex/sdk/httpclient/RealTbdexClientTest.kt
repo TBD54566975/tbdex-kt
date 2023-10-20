@@ -96,15 +96,17 @@ class RealTbdexClientTest {
 
   @Test
   fun `get offerings fail via mockwebserver`() {
-    val errorDetails = listOf(ErrorDetail(
-      id = "1",
-      status = "400",
-      code = "INVALID_INPUT",
-      title = "Invalid Input",
-      detail = "The request input is invalid.",
-      source = null,
-      meta = null
-    ))
+    val errorDetails = listOf(
+      ErrorDetail(
+        id = "1",
+        status = "400",
+        code = "INVALID_INPUT",
+        title = "Invalid Input",
+        detail = "The request input is invalid.",
+        source = null,
+        meta = null
+      )
+    )
 
     val mockResponseString = jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
@@ -129,15 +131,17 @@ class RealTbdexClientTest {
   @Test
   fun `send RFQ fail via mockwebserver`() {
 
-    val errorDetails = listOf(ErrorDetail(
-      id = "1",
-      status = "400",
-      code = "INVALID_INPUT",
-      title = "Invalid Input",
-      detail = "The request input is invalid.",
-      source = null,
-      meta = null
-    ))
+    val errorDetails = listOf(
+      ErrorDetail(
+        id = "1",
+        status = "400",
+        code = "INVALID_INPUT",
+        title = "Invalid Input",
+        detail = "The request input is invalid.",
+        source = null,
+        meta = null
+      )
+    )
 
     val mockResponseString = jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
@@ -169,15 +173,17 @@ class RealTbdexClientTest {
   @Test
   fun `get exchange fail via mockwebserver`() {
 
-    val errorDetails = listOf(ErrorDetail(
-      id = "1",
-      status = "400",
-      code = "INVALID_INPUT",
-      title = "Invalid Input",
-      detail = "The request input is invalid.",
-      source = null,
-      meta = null
-    ))
+    val errorDetails = listOf(
+      ErrorDetail(
+        id = "1",
+        status = "400",
+        code = "INVALID_INPUT",
+        title = "Invalid Input",
+        detail = "The request input is invalid.",
+        source = null,
+        meta = null
+      )
+    )
 
     val mockResponseString = jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
@@ -207,15 +213,17 @@ class RealTbdexClientTest {
   @Test
   fun `get exchanges fail via mockwebserver`() {
 
-    val errorDetails = listOf(ErrorDetail(
-      id = "1",
-      status = "400",
-      code = "INVALID_INPUT",
-      title = "Invalid Input",
-      detail = "The request input is invalid.",
-      source = null,
-      meta = null
-    ))
+    val errorDetails = listOf(
+      ErrorDetail(
+        id = "1",
+        status = "400",
+        code = "INVALID_INPUT",
+        title = "Invalid Input",
+        detail = "The request input is invalid.",
+        source = null,
+        meta = null
+      )
+    )
 
     val mockResponseString = jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))

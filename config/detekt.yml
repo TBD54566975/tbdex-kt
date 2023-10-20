@@ -77,6 +77,8 @@ formatting:
     continuationIndentSize: 2
   ParameterListWrapping:
     indentSize: 2
+  MaximumLineLength:
+    active: true
   ImportOrdering:
     active: true
 
