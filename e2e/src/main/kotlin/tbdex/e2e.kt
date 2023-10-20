@@ -18,6 +18,10 @@ import web5.sdk.dids.DidKey
 
 private const val pollInterval = 1000L
 
+/**
+ * An e2e test calling a tbdex client to perform a tbdex transaction.
+ *
+ */
 fun main() {
   val client = FakeTbdexClient // swap this with RealTbdexClient
   val pfiDid = "did:pfi:0:0" // todo use a real did
