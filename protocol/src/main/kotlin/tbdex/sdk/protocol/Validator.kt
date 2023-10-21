@@ -1,8 +1,6 @@
 package tbdex.sdk.protocol
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.node.ObjectNode
-import com.fasterxml.jackson.module.kotlin.jsonMapper
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersion
@@ -34,7 +32,7 @@ object Validator {
     val schemaNames = listOf("message" to "message.schema.json", "resource" to "resource.schema.json") +
       MessageKind.entries.map { it.name to "${it.name}.schema.json" } +
       ResourceKind.entries.map { it.name to "${it.name}.schema.json" }
-    
+
     for (schemaName in schemaNames) {
       val (name, fileName) = schemaName
       val schemaStream = object {}.javaClass.getResourceAsStream("/$fileName")

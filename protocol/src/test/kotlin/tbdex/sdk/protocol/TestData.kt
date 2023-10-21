@@ -1,8 +1,6 @@
 package tbdex.sdk.protocol
 
 import com.danubetech.verifiablecredentials.CredentialSubject
-import com.nimbusds.jose.JWSAlgorithm
-import com.nimbusds.jose.jwk.Curve
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.CloseData
 import tbdex.sdk.protocol.models.CurrencyDetails
@@ -100,10 +98,11 @@ object TestData {
       offeringId = offeringId,
       payinSubunits = "1000",
       payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to "123456")),
-      payoutMethod = SelectedPaymentMethod("MOMO", mapOf(
+      payoutMethod = SelectedPaymentMethod(
+        "MOMO", mapOf(
         "phoneNumber" to "+254712345678",
         "accountHolderName" to "Alfred Holder"
-        )
+      )
       ),
       claims = claims
     )
@@ -187,7 +186,8 @@ object TestData {
     )
   }
 
-  private fun requiredPaymentDetailsSchema() = Json.jsonMapper.readTree("""
+  private fun requiredPaymentDetailsSchema() = Json.jsonMapper.readTree(
+    """
     {
       "${'$'}schema": "http://json-schema.org/draft-07/schema",
       "additionalProperties": false,

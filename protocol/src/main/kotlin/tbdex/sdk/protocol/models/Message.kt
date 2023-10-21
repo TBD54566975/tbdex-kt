@@ -11,8 +11,6 @@ import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.dateTimeFormat
 import typeid.TypeID
 import web5.sdk.dids.Did
-import java.lang.IllegalArgumentException
-import java.text.ParseException
 import java.time.OffsetDateTime
 
 /**
@@ -105,7 +103,7 @@ sealed class Message {
 
       try {
         jsonMessage = jsonMapper.readTree(payload)
-      } catch(e: JsonParseException) {
+      } catch (e: JsonParseException) {
         throw IllegalArgumentException("unexpected character at offset ${e.location.charOffset}")
       }
 

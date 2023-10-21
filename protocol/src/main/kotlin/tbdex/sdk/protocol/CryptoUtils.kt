@@ -5,15 +5,12 @@ import com.nimbusds.jose.JWSHeader
 import com.nimbusds.jose.JWSObject
 import com.nimbusds.jose.Payload
 import com.nimbusds.jose.jwk.JWK
-import com.nimbusds.jose.util.Base64URL
 import foundation.identity.did.DIDURL
 import foundation.identity.did.VerificationMethod
-import org.erdtman.jcs.JsonCanonicalizer
 import web5.sdk.common.Convert
 import web5.sdk.crypto.Crypto
 import web5.sdk.dids.Did
 import web5.sdk.dids.DidResolvers
-import java.security.MessageDigest
 import java.security.SignatureException
 
 /**

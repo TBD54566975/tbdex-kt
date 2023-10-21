@@ -3,20 +3,14 @@ package tbdex.sdk.protocol.models
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.module.kotlin.convertValue
-import com.nimbusds.jose.util.Base64URL
 import org.erdtman.jcs.JsonCanonicalizer
-import org.json.JSONObject
 import tbdex.sdk.protocol.CryptoUtils
 import tbdex.sdk.protocol.Json
 import tbdex.sdk.protocol.Json.jsonMapper
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.dateTimeFormat
 import typeid.TypeID
-import web5.sdk.common.Convert
 import web5.sdk.dids.Did
-import java.lang.IllegalArgumentException
-import java.security.MessageDigest
 import java.time.OffsetDateTime
 
 /**
@@ -107,7 +101,7 @@ sealed class Resource {
 
       try {
         jsonResource = jsonMapper.readTree(payload)
-      } catch(e: JsonParseException) {
+      } catch (e: JsonParseException) {
         throw IllegalArgumentException("unexpected character at offset ${e.location.charOffset}")
       }
 
@@ -122,7 +116,7 @@ sealed class Resource {
       // validate specific resource data
       Validator.validate(dataJson, kind)
 
-      val resourceType =  when (ResourceKind.valueOf(kind)) {
+      val resourceType = when (ResourceKind.valueOf(kind)) {
         ResourceKind.offering -> Offering::class.java
         // ResourceKind.reputation -> TODO()
       }

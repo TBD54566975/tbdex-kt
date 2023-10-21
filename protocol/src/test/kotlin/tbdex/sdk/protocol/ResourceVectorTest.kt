@@ -1,6 +1,5 @@
 package tbdex.sdk.protocol
 
-import com.networknt.schema.JsonSchema
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Resource
 import kotlin.test.Test
