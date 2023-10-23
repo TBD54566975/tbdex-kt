@@ -7,6 +7,7 @@ import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.Rfq
+import tbdex.sdk.protocol.serialization.Json
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 

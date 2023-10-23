@@ -1,4 +1,4 @@
-package tbdex.sdk.protocol
+package tbdex.sdk.protocol.serialization
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.ObjectMapper
