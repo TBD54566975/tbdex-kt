@@ -131,7 +131,6 @@ sealed class Message {
 
       return message
     }
-
   }
 }
 
