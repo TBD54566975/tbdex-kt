@@ -21,7 +21,7 @@ dependencies {
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-json-org:2.11.0")
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.15.3")
-  implementation("com.github.TBD54566975:web5-kt:0.0.4-beta")
+  implementation("com.github.TBD54566975:web5-kt:main-SNAPSHOT")
   implementation("com.networknt:json-schema-validator:1.0.87")
   implementation("com.nimbusds:nimbus-jose-jwt:9.36")
   implementation("decentralized-identity:did-common-java:1.9.0")
