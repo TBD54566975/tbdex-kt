@@ -1,11 +1,5 @@
 package tbdex.sdk.httpclient
 
-import ErrorDetail
-import ErrorResponse
-import GetExchangeResponse
-import GetExchangesResponse
-import GetOfferingsResponse
-import SendMessageResponse
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import okhttp3.mockwebserver.MockResponse
@@ -13,7 +7,13 @@ import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
+import tbdex.sdk.httpclient.models.ErrorDetail
+import tbdex.sdk.httpclient.models.ErrorResponse
+import tbdex.sdk.httpclient.models.GetExchangeResponse
 import tbdex.sdk.httpclient.models.GetExchangesFilter
+import tbdex.sdk.httpclient.models.GetExchangesResponse
+import tbdex.sdk.httpclient.models.GetOfferingsResponse
+import tbdex.sdk.httpclient.models.SendMessageResponse
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
 import typeid.TypeID
