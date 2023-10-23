@@ -56,10 +56,11 @@ object RealTbdexClient : TbdexClient {
     return when {
       response.isSuccessful -> {
         val responseString = response.body?.string()
+        println(responseString)
         // response body is an object with a data field
         val jsonNode = Json.jsonMapper.readTree(responseString)
         val data = jsonNode.get("data").elements().asSequence()
-          .map{ Resource.parse(it.toString()) }
+          .map { Resource.parse(it.toString()) }
           .toList()
 
         GetOfferingsResponse(
@@ -217,8 +218,13 @@ object RealTbdexClient : TbdexClient {
    * @return An [ErrorResponse] containing the errors and related information extracted from the HTTP response.
    */
   private fun buildErrorResponse(response: Response): ErrorResponse {
-    val errors: List<ErrorDetail> =
-      Json.jsonMapper.readerForListOf(ErrorDetail::class.java).readValue(response.body!!.string())
+    val responseString = response.body?.string()
+    val jsonNode = Json.jsonMapper.readTree(responseString)
+
+    val errors = jsonNode.get("errors").elements()
+      .asSequence()
+      .map { Json.jsonMapper.readValue(it.toString(), ErrorDetail::class.java) }
+      .toList()
 
     return ErrorResponse(
       status = response.code,

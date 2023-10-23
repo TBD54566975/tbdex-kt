@@ -39,7 +39,8 @@ class CurrencyDetails(
  */
 class PaymentMethod(
   val kind: String,
-  val requiredPaymentDetails: JsonNode? = null
+  val requiredPaymentDetails: JsonNode? = null,
+  val feeSubunits: String? = null
 ) {
   /**
    * Parse the contents of [requiredPaymentDetails] into a [JsonSchema] that can do validation.

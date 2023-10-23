@@ -99,10 +99,8 @@ sealed class Resource {
      * @throws IllegalArgumentException if the payload signature verification fails.
      */
     fun parse(payload: String): Resource {
-      val jsonResource: JsonNode
-
-      try {
-        jsonResource = jsonMapper.readTree(payload)
+      val jsonResource: JsonNode = try {
+        jsonMapper.readTree(payload)
       } catch (e: JsonParseException) {
         throw IllegalArgumentException("unexpected character at offset ${e.location.charOffset}")
       }
