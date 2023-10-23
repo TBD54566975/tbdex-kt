@@ -1,3 +1,5 @@
+package tbdex.sdk.httpclient.models
+
 import okhttp3.Headers
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Resource
