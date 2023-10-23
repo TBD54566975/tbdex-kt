@@ -14,7 +14,8 @@ repositories {
 }
 
 dependencies {
-  implementation("me.lessis:typeid:0.0.2")
+  api("me.lessis:typeid:0.0.2")
+
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-json-org:2.11.0")
