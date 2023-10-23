@@ -4,7 +4,6 @@ plugins {
   id("idea")
 }
 
-version = "1.0"
 var ktorVersion = "2.3.4"
 
 repositories {
