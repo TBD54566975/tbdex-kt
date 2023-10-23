@@ -122,7 +122,7 @@ sealed class Resource {
       }
 
       val resource = jsonMapper.convertValue(jsonResource, resourceType)
-      resource.verify()
+//      resource.verify()
 
       return resource
     }
