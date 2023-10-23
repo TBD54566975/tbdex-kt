@@ -46,9 +46,16 @@ subprojects {
     config.setFrom("$rootDir/config/detekt.yml")
   }
 
+  kotlin {
+    jvmToolchain(17)
+  }
+
   java {
     withJavadocJar()
     withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
   }
 
   publishing {
