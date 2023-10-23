@@ -5,33 +5,18 @@ import com.nimbusds.jose.JWSHeader
 import com.nimbusds.jose.JWSObject
 import com.nimbusds.jose.Payload
 import com.nimbusds.jose.jwk.JWK
-import com.nimbusds.jose.util.Base64URL
 import foundation.identity.did.DIDURL
 import foundation.identity.did.VerificationMethod
-import tbdex.sdk.protocol.serialization.Cbor.cborMapper
 import web5.sdk.common.Convert
 import web5.sdk.crypto.Crypto
 import web5.sdk.dids.Did
 import web5.sdk.dids.DidResolvers
-import java.security.MessageDigest
 import java.security.SignatureException
 
 /**
  * Utility functions for cryptographic operations and DID (Decentralized Identifier) handling.
  */
 object CryptoUtils {
-  /**
-   * Hashes the provided payload using SHA-256.
-   *
-   * @param payload The payload to be hashed.
-   * @return The Base64URL-encoded hash of the payload.
-   */
-  fun hash(payload: Any): Base64URL {
-    val cborEncodedPayloadBuffer: ByteArray = cborMapper.writeValueAsBytes(payload)
-    val sha256CborEncodedPayloadBytes: ByteArray = MessageDigest.getInstance("SHA-256").digest(cborEncodedPayloadBuffer)
-    return Base64URL(Convert(sha256CborEncodedPayloadBytes).toBase64Url(padding = false))
-  }
-
   /**
    * Verifies a detached signature against the provided payload.
    *
@@ -40,7 +25,7 @@ object CryptoUtils {
    * @throws IllegalArgumentException if the signature is missing.
    * @throws SignatureException if the verification fails.
    */
-  fun verify(detachedPayload: Base64URL?, signature: String?) {
+  fun verify(detachedPayload: ByteArray, signature: String?) {
     require(signature != null) {
       throw IllegalArgumentException("Signature verification failed: Expected signature property to exist")
     }
@@ -110,7 +95,7 @@ object CryptoUtils {
    * @param assertionMethodId The alias of the key to be used for signing (optional).
    * @return The signed payload as a detached payload JWT (JSON Web Token).
    */
-  fun sign(did: Did, payload: Any, assertionMethodId: String? = null): String {
+  fun sign(did: Did, payload: ByteArray, assertionMethodId: String? = null): String {
     val didResolutionResult = DidResolvers.resolve(did.uri)
     val assertionMethods = didResolutionResult.didDocument.assertionMethodVerificationMethodsDereferenced
 
@@ -132,15 +117,13 @@ object CryptoUtils {
       .build()
 
     // Create payload
-    val base64UrlHashedPayload = hash(payload)
-    val jwsPayload = Payload(base64UrlHashedPayload)
-
+    val jwsPayload = Payload(payload)
     val jwsObject = JWSObject(jwsHeader, jwsPayload)
-    val toSign = jwsObject.signingInput
 
+    val toSign = jwsObject.signingInput
     val signatureBytes = did.keyManager.sign(keyAlias, toSign)
 
-    val base64UrlEncodedSignature = Base64URL(Convert(signatureBytes).toBase64Url(padding = false))
+    val base64UrlEncodedSignature = Convert(signatureBytes).toBase64Url(padding = false)
     val base64UrlEncodedHeader = jwsHeader.toBase64URL()
 
     return "$base64UrlEncodedHeader..$base64UrlEncodedSignature"

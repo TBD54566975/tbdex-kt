@@ -2,6 +2,8 @@ package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.core.JsonParseException
+import com.fasterxml.jackson.databind.JsonNode
+import org.erdtman.jcs.JsonCanonicalizer
 import tbdex.sdk.protocol.CryptoUtils
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.serialization.Json
@@ -47,8 +49,7 @@ sealed class Resource {
    * @throws Exception if the signing operation fails.
    */
   fun sign(did: Did, keyAlias: String? = null) {
-    val payload = mapOf("metadata" to this.metadata, "data" to this.data)
-    this.signature = CryptoUtils.sign(did = did, payload = payload, assertionMethodId = keyAlias)
+    this.signature = CryptoUtils.sign(did = did, payload = digest(), assertionMethodId = keyAlias)
   }
 
   /**
@@ -60,9 +61,19 @@ sealed class Resource {
    * @throws Exception if the verification fails or if the signature is missing.
    */
   fun verify() {
+    CryptoUtils.verify(detachedPayload = digest(), signature = this.signature)
+  }
+
+  /**
+   * Generates a digest of the message for signing or verification.
+   *
+   * @return The message digest as a byte array.
+   */
+  fun digest(): ByteArray {
     val payload = mapOf("metadata" to this.metadata, "data" to this.data)
-    val base64UrlHashedPayload = CryptoUtils.hash(payload)
-    CryptoUtils.verify(detachedPayload = base64UrlHashedPayload, signature = this.signature)
+    val canonicalJsonSerializedPayload = JsonCanonicalizer(Json.stringify(payload))
+
+    return canonicalJsonSerializedPayload.encodedUTF8
   }
 
   /**
@@ -86,9 +97,11 @@ sealed class Resource {
      * @throws IllegalArgumentException if the payload signature verification fails.
      */
     fun parse(payload: String): Resource {
-      val jsonResource = try {
-        jsonMapper.readTree(payload)
-      } catch(e: JsonParseException) {
+      val jsonResource: JsonNode
+
+      try {
+        jsonResource = jsonMapper.readTree(payload)
+      } catch (e: JsonParseException) {
         throw IllegalArgumentException("unexpected character at offset ${e.location.charOffset}")
       }
 
@@ -103,7 +116,7 @@ sealed class Resource {
       // validate specific resource data
       Validator.validate(dataJson, kind)
 
-      val resourceType =  when (ResourceKind.valueOf(kind)) {
+      val resourceType = when (ResourceKind.valueOf(kind)) {
         ResourceKind.offering -> Offering::class.java
         // ResourceKind.reputation -> TODO()
       }

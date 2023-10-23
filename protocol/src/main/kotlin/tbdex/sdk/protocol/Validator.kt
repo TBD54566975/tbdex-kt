@@ -32,7 +32,7 @@ object Validator {
     val schemaNames = listOf("message" to "message.schema.json", "resource" to "resource.schema.json") +
       MessageKind.entries.map { it.name to "${it.name}.schema.json" } +
       ResourceKind.entries.map { it.name to "${it.name}.schema.json" }
-    
+
     for (schemaName in schemaNames) {
       val (name, fileName) = schemaName
       val schemaStream = object {}.javaClass.getResourceAsStream("/$fileName")
