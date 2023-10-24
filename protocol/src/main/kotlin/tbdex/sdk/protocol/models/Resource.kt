@@ -11,6 +11,7 @@ import tbdex.sdk.protocol.serialization.Json.jsonMapper
 import tbdex.sdk.protocol.serialization.dateTimeFormat
 import typeid.TypeID
 import web5.sdk.dids.Did
+import java.security.MessageDigest
 import java.time.OffsetDateTime
 
 /**
@@ -73,7 +74,8 @@ sealed class Resource {
     val payload = mapOf("metadata" to this.metadata, "data" to this.data)
     val canonicalJsonSerializedPayload = JsonCanonicalizer(Json.stringify(payload))
 
-    return canonicalJsonSerializedPayload.encodedUTF8
+    val sha256 = MessageDigest.getInstance("SHA-256")
+    return sha256.digest(canonicalJsonSerializedPayload.encodedUTF8)
   }
 
   /**
