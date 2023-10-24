@@ -3,8 +3,6 @@ plugins {
   id("java-library")
 }
 
-version = "1.0"
-
 repositories {
   mavenCentral()
   maven {
@@ -22,7 +20,7 @@ dependencies {
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8")
   implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
-  implementation("com.github.TBD54566975:web5-kt:0.0.4-beta")
+  implementation("com.github.TBD54566975:web5-kt:0.0.5-beta")
   implementation("decentralized-identity:did-common-java:1.9.0") // would like to grab this via web5 dids
 
   testImplementation(kotlin("test"))

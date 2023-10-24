@@ -6,7 +6,6 @@ import io.ktor.server.application.Application
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.withTestApplication
 import org.junit.jupiter.api.Test
-import tbdex.server.tbdex.sdk.http_server.module
 import kotlin.test.assertEquals
 
 class ServerTest {

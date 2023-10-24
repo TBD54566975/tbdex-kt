@@ -1,4 +1,4 @@
-package tbdex.server.tbdex.sdk.http_server
+package tbdex.sdk.httpserver
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
