@@ -1,2 +1,2 @@
 rootProject.name = "tbdex"
-include("httpclient", "httpserver", "protocol", "e2e")
+include("httpclient", "protocol", "e2e")
