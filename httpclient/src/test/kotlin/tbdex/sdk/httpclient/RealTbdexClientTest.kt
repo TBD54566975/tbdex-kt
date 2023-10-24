@@ -18,10 +18,8 @@ import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
 import typeid.TypeID
 import web5.sdk.crypto.InMemoryKeyManager
-import web5.sdk.dids.CreateDidIonOptions
 import web5.sdk.dids.DidIonManager
 import web5.sdk.dids.DidKey
-import web5.sdk.dids.ion.model.Service
 import java.net.HttpURLConnection
 import kotlin.test.Test
 
@@ -80,26 +78,6 @@ class RealTbdexClientTest {
         did = alice,
         filter = GetExchangesFilter(listOf(rfq.metadata.exchangeId.toString(), rfq2.metadata.exchangeId.toString()))
       )
-
-  }
-
-  @Test
-  fun `write ion did`() {
-    val keyManager = InMemoryKeyManager()
-
-    val opts = CreateDidIonOptions(
-      servicesToAdd = listOf(
-        Service(
-          id = "pfi",
-          type = "PFI",
-          serviceEndpoint = "https://pfi.yellowcard.engineering",
-        )
-      ),
-    )
-    val did = DidIonManager.create(keyManager, opts)
-    val did1 = DidIonManager.create(InMemoryKeyManager())
-    println("did: ${did.uri}")
-    println("did1: ${did1.uri}")
 
   }
 
