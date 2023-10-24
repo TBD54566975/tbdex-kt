@@ -51,15 +51,10 @@ object CryptoUtils {
     // or just `#fragment`. See: https://www.w3.org/TR/did-core/#relative-did-urls.
     // Using a set for fast string comparison. DIDs can be long.
     val verificationMethodIds = setOf(parsedDidUrl.didUrlString, "#${parsedDidUrl.fragment}")
-    val assertionMethods = didResolutionResult.didDocument.assertionMethodVerificationMethodsDereferenced ?: emptyList()
-    var assertionMethod: VerificationMethod? = null
-
-    for (method in assertionMethods) {
-      val id = method.id.toString()
-      if (verificationMethodIds.contains(id)) {
-        assertionMethod = method
-        break
-      }
+    val assertionMethods = didResolutionResult.didDocument.assertionMethodVerificationMethodsDereferenced
+    val assertionMethod = assertionMethods?.firstOrNull {
+      val id = it.id.toString()
+      verificationMethodIds.contains(id)
     }
 
     if (assertionMethod == null) {
