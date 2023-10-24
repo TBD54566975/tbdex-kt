@@ -55,7 +55,7 @@ class Rfq private constructor(
     }
   }
 
-  private fun verifyClaims(requiredClaims: PresentationDefinitionV2?) {
+  private fun verifyClaims(requiredClaims: PresentationDefinitionV2) {
     throw NotImplementedError()
 //    // check that all requirements are satisfied by one of the VC JWTs
 //    // and that the VC satisfying it is crypto verified

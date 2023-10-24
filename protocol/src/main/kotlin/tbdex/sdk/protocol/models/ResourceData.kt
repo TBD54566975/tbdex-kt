@@ -22,7 +22,7 @@ class OfferingData(
   val payinCurrency: CurrencyDetails,
   val payinMethods: List<PaymentMethod>,
   val payoutMethods: List<PaymentMethod>,
-  val requiredClaims: PresentationDefinitionV2?
+  val requiredClaims: PresentationDefinitionV2
 ) : ResourceData
 
 /**
