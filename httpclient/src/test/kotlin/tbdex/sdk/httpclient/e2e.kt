@@ -1,6 +1,5 @@
-package tbdex
+package tbdex.sdk.httpclient
 
-import tbdex.sdk.httpclient.RealTbdexClient
 import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.httpclient.models.GetExchangeResponse
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
