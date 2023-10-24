@@ -75,6 +75,8 @@ formatting:
   Indentation:
     indentSize: 2
     continuationIndentSize: 2
+  PackageNaming:
+    active: true
   ParameterListWrapping:
     indentSize: 2
   MaximumLineLength:

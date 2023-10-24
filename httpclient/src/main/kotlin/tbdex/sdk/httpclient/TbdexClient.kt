@@ -1,8 +1,8 @@
 package tbdex.sdk.httpclient
 
-import TbdexResponse
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
+import tbdex.sdk.httpclient.models.TbdexResponse
 import tbdex.sdk.protocol.models.Message
 import web5.sdk.dids.Did
 

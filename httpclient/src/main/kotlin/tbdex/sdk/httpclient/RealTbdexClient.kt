@@ -1,12 +1,5 @@
 package tbdex.sdk.httpclient
 
-import ErrorDetail
-import ErrorResponse
-import GetExchangeResponse
-import GetExchangesResponse
-import GetOfferingsResponse
-import SendMessageResponse
-import TbdexResponse
 import com.fasterxml.jackson.module.kotlin.convertValue
 import com.fasterxml.jackson.module.kotlin.readValue
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -15,8 +8,15 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import tbdex.sdk.httpclient.models.ErrorDetail
+import tbdex.sdk.httpclient.models.ErrorResponse
+import tbdex.sdk.httpclient.models.GetExchangeResponse
 import tbdex.sdk.httpclient.models.GetExchangesFilter
+import tbdex.sdk.httpclient.models.GetExchangesResponse
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
+import tbdex.sdk.httpclient.models.GetOfferingsResponse
+import tbdex.sdk.httpclient.models.SendMessageResponse
+import tbdex.sdk.httpclient.models.TbdexResponse
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Resource
 import tbdex.sdk.protocol.serialization.Json

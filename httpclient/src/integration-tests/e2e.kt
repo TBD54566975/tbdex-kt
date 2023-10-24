@@ -1,12 +1,11 @@
 package tbdex
 
-import ErrorResponse
-import GetExchangeResponse
-import GetOfferingsResponse
-import SendMessageResponse
-import TbdexResponse
 import tbdex.sdk.httpclient.RealTbdexClient
+import tbdex.sdk.httpclient.models.ErrorResponse
+import tbdex.sdk.httpclient.models.GetExchangeResponse
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
+import tbdex.sdk.httpclient.models.GetOfferingsResponse
+import tbdex.sdk.httpclient.models.TbdexResponse
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
