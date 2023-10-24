@@ -22,7 +22,11 @@ dependencies {
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8")
   implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
-  implementation("com.github.TBD54566975:web5-kt:0.0.4-beta")
+  implementation("com.github.TBD54566975:web5-kt:0.0.5-beta")
+//  implementation(files("/Users/jiyoon/.m2/repository/web5/common/0.0.5/common-0.0.5.jar"))
+//  implementation(files("/Users/jiyoon/.m2/repository/web5/crypto/0.0.5/crypto-0.0.5.jar"))
+//  implementation(files("/Users/jiyoon/.m2/repository/web5/credentials/0.0.5/credentials-0.0.5.jar"))
+//  implementation(files("/Users/jiyoon/.m2/repository/web5/dids/0.0.5/dids-0.0.5.jar"))
   implementation("decentralized-identity:did-common-java:1.9.0") // would like to grab this via web5 dids
 
   testImplementation(kotlin("test"))

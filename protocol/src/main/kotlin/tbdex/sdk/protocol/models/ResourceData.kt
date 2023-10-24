@@ -22,7 +22,7 @@ class OfferingData(
   val payinCurrency: CurrencyDetails,
   val payinMethods: List<PaymentMethod>,
   val payoutMethods: List<PaymentMethod>,
-  val requiredClaims: PresentationDefinitionV2
+  val requiredClaims: PresentationDefinitionV2?
 ) : ResourceData
 
 /**
@@ -39,7 +39,8 @@ class CurrencyDetails(
  */
 class PaymentMethod(
   val kind: String,
-  val requiredPaymentDetails: JsonNode? = null
+  val requiredPaymentDetails: JsonNode? = null,
+  val feeSubunits: String? = null
 ) {
   /**
    * Parse the contents of [requiredPaymentDetails] into a [JsonSchema] that can do validation.

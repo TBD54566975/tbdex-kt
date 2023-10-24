@@ -8,6 +8,7 @@ import GetOfferingsResponse
 import SendMessageResponse
 import TbdexResponse
 import com.fasterxml.jackson.module.kotlin.convertValue
+import com.fasterxml.jackson.module.kotlin.readValue
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -217,8 +218,11 @@ object RealTbdexClient : TbdexClient {
    * @return An [ErrorResponse] containing the errors and related information extracted from the HTTP response.
    */
   private fun buildErrorResponse(response: Response): ErrorResponse {
-    val errors: List<ErrorDetail> =
-      Json.jsonMapper.readerForListOf(ErrorDetail::class.java).readValue(response.body!!.string())
+
+    val jsonNode = Json.jsonMapper.readTree(response.body!!.string())
+    val errors = jsonNode.get("errors").elements().asSequence()
+      .map { Json.jsonMapper.readValue<ErrorDetail>(it.toString()) }
+      .toList()
 
     return ErrorResponse(
       status = response.code,
