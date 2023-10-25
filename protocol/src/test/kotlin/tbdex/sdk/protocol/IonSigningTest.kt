@@ -11,7 +11,7 @@ import typeid.TypeID
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidIonManager
 
-class HomelessTest {
+class IonSigningTest {
   @Test
   fun `can sign a tbdex message with an ion did`() {
     val km = InMemoryKeyManager()
