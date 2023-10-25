@@ -2,14 +2,19 @@ package tbdex.sdk.protocol
 
 import assertk.assertThat
 import assertk.assertions.contains
+import assertk.assertions.isEqualTo
 import com.nimbusds.jose.JWSObject
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.CloseData
 import tbdex.sdk.protocol.models.Message
+import tbdex.sdk.protocol.models.Offering
+import tbdex.sdk.protocol.models.Resource
 import typeid.TypeID
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidIonManager
+import kotlin.test.assertIs
 
 class IonSigningTest {
   @Test
@@ -30,6 +35,18 @@ class IonSigningTest {
     assertThat(jwsObject.header.keyID).contains(did.uri)
 
     val serializedClose = close.toString()
-    Message.parse(serializedClose) // will throw if parsing fails
+    assertDoesNotThrow { Message.parse(serializedClose) }
+  }
+
+  @Test
+  fun `can parse ION signed offering from a json string`() {
+    val did = DidIonManager.create(InMemoryKeyManager())
+    val offering = TestData.getOffering()
+    offering.sign(did)
+    val jsonResource = offering.toString()
+    val parsed = Resource.parse(jsonResource)
+
+    assertIs<Offering>(parsed)
+    assertThat(parsed.toString()).isEqualTo(jsonResource)
   }
 }

@@ -43,7 +43,7 @@ object RealTbdexClient : TbdexClient {
     val baseUrl = "$pfiServiceEndpoint/offerings/"
 
     // compose query param
-    val queryMap: Map<String, String?>? = filter?.let { Json.jsonMapper.convertValue(it) }
+    val queryMap: Map<String, String?>? = filter?.let { jsonMapper.convertValue(it) }
     val notNullQueryMap = queryMap?.filterValues { it != null }
     val httpUrlBuilder = baseUrl.toHttpUrl().newBuilder()
     notNullQueryMap?.forEach { httpUrlBuilder.addQueryParameter(it.key, it.value) }
@@ -57,9 +57,9 @@ object RealTbdexClient : TbdexClient {
     return when {
       response.isSuccessful -> {
         val responseString = response.body?.string()
-        println(responseString)
+
         // response body is an object with a data field
-        val jsonNode = Json.jsonMapper.readTree(responseString)
+        val jsonNode = jsonMapper.readTree(responseString)
         val data = jsonNode.get("data").elements().asSequence()
           .map { Resource.parse(it.toString()) }
           .toList()
@@ -138,7 +138,7 @@ object RealTbdexClient : TbdexClient {
     return when {
       response.isSuccessful -> {
         val responseString = response.body?.string()
-        val jsonNode = Json.jsonMapper.readTree(responseString)
+        val jsonNode = jsonMapper.readTree(responseString)
         val exchange = jsonNode.get("data").elements().asSequence()
           .map { Message.parse(it.toString()) }
           .toList()
