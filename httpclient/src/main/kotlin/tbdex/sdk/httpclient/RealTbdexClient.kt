@@ -218,12 +218,16 @@ object RealTbdexClient : TbdexClient {
    * @return An [ErrorResponse] containing the errors and related information extracted from the HTTP response.
    */
   private fun buildErrorResponse(response: Response): ErrorResponse {
-    val jsonNode = jsonMapper.readTree(response.body?.string())
-
-    val errors = jsonNode.get("errors").elements()
-      .asSequence()
-      .map { jsonMapper.readValue(it.toString(), ErrorDetail::class.java) }
-      .toList()
+    val errors = when (val responseBody = response.body?.string()) {
+      null -> listOf()
+      else -> {
+        val jsonNode = jsonMapper.readTree(responseBody)
+        jsonNode.get("errors").elements()
+          .asSequence()
+          .map { jsonMapper.readValue(it.toString(), ErrorDetail::class.java) }
+          .toList()
+      }
+    }
 
     return ErrorResponse(
       status = response.code,

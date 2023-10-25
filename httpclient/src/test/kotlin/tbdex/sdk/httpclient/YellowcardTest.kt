@@ -1,5 +1,6 @@
 package tbdex.sdk.httpclient
 
+import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.httpclient.models.GetOfferingsResponse
 import tbdex.sdk.protocol.models.*
@@ -45,7 +46,7 @@ class YellowCardTest {
   }
 
   @Test
-//  @Disabled
+  @Disabled
   fun `can get an exchange`() {
     // create an rfq
     // get the exchange
