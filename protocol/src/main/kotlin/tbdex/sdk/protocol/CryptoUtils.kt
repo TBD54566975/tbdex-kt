@@ -102,7 +102,7 @@ object CryptoUtils {
     val assertionMethod: VerificationMethod = when {
       assertionMethodId != null -> assertionMethods.find { it.id.toString() == assertionMethodId }
       else -> assertionMethods.firstOrNull()
-    } ?: throw SignatureException("assertion method $assertionMethodId not found")
+    } ?: throw SignatureException("Assertion method $assertionMethodId not found")
 
     // TODO: ensure that publicKeyJwk is not null
     val publicKeyJwk = JWK.parse(assertionMethod.publicKeyJwk)
@@ -111,9 +111,13 @@ object CryptoUtils {
     val publicKey = did.keyManager.getPublicKey(keyAlias)
     val algorithm = publicKey.algorithm
     val jwsAlgorithm = JWSAlgorithm.parse(algorithm.toString())
+    val kid = when (assertionMethod.id.isAbsolute) {
+      true -> assertionMethod.id.toString()
+      false -> "${did.uri}${assertionMethod.id}"
+    }
 
     val jwsHeader = JWSHeader.Builder(jwsAlgorithm)
-      .keyID(assertionMethod.id.toString())
+      .keyID(kid)
       .build()
 
     // Create payload

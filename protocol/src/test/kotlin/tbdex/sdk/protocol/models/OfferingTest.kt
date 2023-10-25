@@ -49,4 +49,13 @@ class OfferingTest {
 
     assertDoesNotThrow { Resource.parse(Json.stringify(offering)) }
   }
+
+  @Test
+  fun `can parse an offering sign with ION DID`() {
+    val offering = TestData.getOffering()
+    offering.sign(TestData.ION_DID)
+
+    assertDoesNotThrow { Resource.parse(Json.stringify(offering)) }
+  }
+
 }

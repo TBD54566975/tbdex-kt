@@ -30,6 +30,7 @@ import web5.sdk.credentials.VcDataModel
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.Did
+import web5.sdk.dids.DidIonManager
 import web5.sdk.dids.DidKey
 import java.net.URI
 import java.time.OffsetDateTime
@@ -43,6 +44,8 @@ object TestData {
   private val pfiKeyManager = InMemoryKeyManager()
   val ALICE_DID: Did = DidKey.create(aliceKeyManager)
   val PFI_DID: Did = DidKey.create(pfiKeyManager)
+
+  val ION_DID: Did = DidIonManager.create(pfiKeyManager)
 
   fun getPresentationDefinition(): PresentationDefinitionV2 {
     return buildPresentationDefinition(
