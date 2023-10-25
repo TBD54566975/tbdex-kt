@@ -51,7 +51,7 @@ object CryptoUtils {
     // or just `#fragment`. See: https://www.w3.org/TR/did-core/#relative-did-urls.
     // Using a set for fast string comparison. DIDs can be long.
     val verificationMethodIds = setOf(parsedDidUrl.didUrlString, "#${parsedDidUrl.fragment}")
-    val assertionMethods = didResolutionResult.didDocument.verificationMethods
+    val assertionMethods = didResolutionResult.didDocument.assertionMethodVerificationMethodsDereferenced
     val assertionMethod = assertionMethods?.firstOrNull {
       val id = it.id.toString()
       verificationMethodIds.contains(id)
@@ -101,8 +101,13 @@ object CryptoUtils {
     val algorithm = publicKey.algorithm
     val jwsAlgorithm = JWSAlgorithm.parse(algorithm.toString())
 
+    val selectedAssertionMethodId = when {
+      assertionMethod.id.isAbsolute -> assertionMethod.id.toString()
+      else -> "${did.uri}${assertionMethod.id}"
+    }
+
     val jwsHeader = JWSHeader.Builder(jwsAlgorithm)
-      .keyID(assertionMethod.id.toString())
+      .keyID(selectedAssertionMethodId)
       .build()
 
     // Create payload
