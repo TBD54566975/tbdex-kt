@@ -2,9 +2,11 @@ package tbdex.sdk.httpclient
 
 import com.nimbusds.jose.JWSAlgorithm
 import tbdex.sdk.httpclient.models.ErrorResponse
-import tbdex.sdk.httpclient.models.GetExchangeResponse
+import tbdex.sdk.httpclient.models.GetExchangesFilter
+import tbdex.sdk.httpclient.models.GetExchangesResponse
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
 import tbdex.sdk.httpclient.models.GetOfferingsResponse
+import tbdex.sdk.httpclient.models.SendMessageResponse
 import tbdex.sdk.httpclient.models.TbdexResponse
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Order
@@ -33,6 +35,9 @@ fun main() {
   // tbdex-mock-pfi did
   val pfiDid =
     "did:ion:EiBwNQC_lRp1cAOZJC3XmtCXzSIL_rr0JOVYG82ORwVE_g:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoiaTZjbnN1SDRKVEJNWEtic2VnMjhIaTN3NFhwMTNFODVVd25TVzNaZ1lrOCJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHA6Ly9sb2NhbGhvc3Q6OTAwMCIsInR5cGUiOiJQRkkifV19fV0sInVwZGF0ZUNvbW1pdG1lbnQiOiJFaUNSNlB0MGY3SkRORVdqaFlsazBOdWtJSVFOMGVyc3ZfdHJLeERKdTlmZHZRIn0sInN1ZmZpeERhdGEiOnsiZGVsdGFIYXNoIjoiRWlBLTEzYUNoMmRrcW9oOWIxWDZudnppSXI2VS1JYUpJTFd3UU5sZjJNczBkZyIsInJlY292ZXJ5Q29tbWl0bWVudCI6IkVpQlhoX2dsN1pCd2JUOGNHOU5LT0FSV0xSUzZWUjRRVm44OWEyWldtdzhHOXcifX0"
+  // yc staging did
+//  val pfiDid =
+//    "did:ion:EiDCYKaMtz8hWnylrPKaDsOqNoM973GWqfGCUIeLQesWcg:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoidGdXWUF3ajlSRkhXaEJON2Fya0pnQTJKSUlDbHg2Zm54cjVjeE9jNm95SSJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHBzOi8vcGZpLnllbGxvd2NhcmQuZW5naW5lZXJpbmciLCJ0eXBlIjoiUEZJIn1dfX1dLCJ1cGRhdGVDb21taXRtZW50IjoiRWlCSk9ha3M4WmI2LXJueDdzMERnWnZqel9YS3NfUEJoN3BTcUgycUQzMXphQSJ9LCJzdWZmaXhEYXRhIjp7ImRlbHRhSGFzaCI6IkVpQWQxRTRSWVBEdlUtTUNlZnY3cUZUOEszaTVZcjNrZ3BnOWhiSkhsWXg0ZnciLCJyZWNvdmVyeUNvbW1pdG1lbnQiOiJFaUNXYzVzekFiWUpsMzVWci1Sdzl6ZE1hWDNlaGZPQUlBUHhEVnhsY3NjWWZBIn19"
   val issuerDid = DidKey("did:key:z6MkhVUvUEdEbFpQgRyqLryBfE3frxuEyNsqWUmhm2FoKhpp", InMemoryKeyManager())
   val keyAlias = issuerDid.keyManager.generatePrivateKey(JWSAlgorithm.ES256K)
   println("keyalias $keyAlias")
@@ -61,7 +66,7 @@ fun main() {
   val firstOfferingId = offerings[0].metadata.id
   val vc = VerifiableCredential.create(
     type = "SanctionCredential",
-    issuer = issuerDid.uri,
+    issuer = myDid.uri,
     subject = myDid.uri,
     data = mapOf("fullName" to "Lainey Wilson", "country" to "US")
   )
@@ -87,7 +92,7 @@ fun main() {
   val rfq = Rfq.create(pfiDid, myDid.uri, rfqData)
   rfq.sign(myDid)
   println("Sending RFQ against first offering ${offerings[0].metadata.id}")
-  println("Claim ${rfq.data.claims[0]}")
+//  println("Claim ${rfq.data.claims[0]}")
   val sendRfqResponse = client.sendMessage(rfq)
 
   if (sendRfqResponse is ErrorResponse) {
@@ -96,12 +101,14 @@ fun main() {
         "Errors: ${sendRfqResponse.errors?.joinToString(", ") { it.detail }}"
     )
   }
-
+  println("SendRfqResponse is success?? ${sendRfqResponse is SendMessageResponse}")
   println("Pinging for quote")
 
-  var messages: List<Message>
+  var listOfExchanges: List<List<Message>>
+  var currentExchange: List<Message>
+  var attempt = 0
   do {
-    val getExchangeResponse: TbdexResponse = client.getExchange(pfiDid, rfq.metadata.exchangeId.toString(), myDid)
+    val getExchangeResponse: TbdexResponse = client.getExchanges(pfiDid, myDid, GetExchangesFilter(listOf(rfq.metadata.exchangeId.toString())))
 
     if (getExchangeResponse is ErrorResponse) {
       throw AssertionError(
@@ -110,13 +117,26 @@ fun main() {
       )
     }
 
-    messages = (getExchangeResponse as GetExchangeResponse).data
-    if (messages.size < 2) {
-      Thread.sleep(pollInterval)
+    listOfExchanges = (getExchangeResponse as GetExchangesResponse).data
+    if (listOfExchanges.isEmpty()) {
+      throw AssertionError("No Exchange available (RFQ we sent earlier not being persisted!)")
     }
-  } while (messages.size < 2)
+    println("Filtering list of exchanges for an exchange with exchangeId of ${rfq.metadata.exchangeId}")
+    currentExchange = listOfExchanges.first { exchanges -> exchanges.any { msg -> msg.metadata.exchangeId == rfq.metadata.exchangeId } }
+    if (currentExchange.size < 2) {
+      Thread.sleep(pollInterval)
+      attempt++
+      println("Attempt #$attempt")
+    }
+    if (attempt > 5) {
+      break
+    }
+  } while (currentExchange.size < 2)
 
-  val quote = messages.last() as Quote
+  if (currentExchange.last() !is Quote) {
+    throw AssertionError("Timed out trying to get a Quote")
+  }
+  val quote = currentExchange.last() as Quote
   println("Got quote! QuoteData: ${quote.data}")
 
   val order = Order.create(pfiDid, myDid.uri, rfq.metadata.exchangeId)
@@ -142,8 +162,9 @@ fun main() {
       )
     }
 
-    messages = (getExchangeResponse as GetExchangeResponse).data
-    val lastMessage = messages.last()
+    listOfExchanges = (getExchangeResponse as GetExchangesResponse).data
+    currentExchange = listOfExchanges.first { exchanges -> exchanges.any { msg -> msg.metadata.exchangeId == rfq.metadata.exchangeId } }
+    val lastMessage = currentExchange.last()
     if (lastMessage !is OrderStatus || lastMessage.data.orderStatus !== "COMPLETED") {
       if (lastMessage is OrderStatus) {
         println("Latest orderstatus: ${lastMessage.data.orderStatus}")
@@ -151,9 +172,9 @@ fun main() {
       Thread.sleep(pollInterval)
     }
 
-  } while (messages.last() !is OrderStatus || (messages.last() as OrderStatus).data.orderStatus !== "COMPLETED")
+  } while (currentExchange.last() !is OrderStatus || (currentExchange.last() as OrderStatus).data.orderStatus !== "COMPLETED")
 
-  val lastMessage = messages.last() as OrderStatus
+  val lastMessage = currentExchange.last() as OrderStatus
 
   println(
     "you have finished your mission of completing a tbdex transaction. \n" +

@@ -9,4 +9,7 @@ fun main() {
   println(didKey.uri)
   val keyAlias = didKey.keyManager.generatePrivateKey(JWSAlgorithm.ES256K)
   val wat = didKey.keyManager.getPublicKey(keyAlias)
+
+  val didResolutionResult = DidKey.resolve(didKey.uri)
+  println(didResolutionResult)
 }
