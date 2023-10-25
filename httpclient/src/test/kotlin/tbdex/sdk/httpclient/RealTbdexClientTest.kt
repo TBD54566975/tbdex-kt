@@ -83,7 +83,6 @@ class RealTbdexClientTest {
 
   @Test
   fun `get offerings success via mockwebserver`() {
-
     val offering = TestData.getOffering(TestData.getPresentationDefinition())
     offering.sign(alice)
     val mockOfferings = listOf(offering)
@@ -98,15 +97,17 @@ class RealTbdexClientTest {
 
   @Test
   fun `get offerings fail via mockwebserver`() {
-    val errorDetails = listOf(
-      ErrorDetail(
-        id = "1",
-        status = "400",
-        code = "INVALID_INPUT",
-        title = "Invalid Input",
-        detail = "The request input is invalid.",
-        source = null,
-        meta = null
+    val errorDetails = mapOf(
+      "errors" to listOf(
+        ErrorDetail(
+          id = "1",
+          status = "400",
+          code = "INVALID_INPUT",
+          title = "Invalid Input",
+          detail = "The request input is invalid.",
+          source = null,
+          meta = null
+        )
       )
     )
 
@@ -133,15 +134,17 @@ class RealTbdexClientTest {
   @Test
   fun `send RFQ fail via mockwebserver`() {
 
-    val errorDetails = listOf(
-      ErrorDetail(
-        id = "1",
-        status = "400",
-        code = "INVALID_INPUT",
-        title = "Invalid Input",
-        detail = "The request input is invalid.",
-        source = null,
-        meta = null
+    val errorDetails = mapOf(
+      "errors" to listOf(
+        ErrorDetail(
+          id = "1",
+          status = "400",
+          code = "INVALID_INPUT",
+          title = "Invalid Input",
+          detail = "The request input is invalid.",
+          source = null,
+          meta = null
+        )
       )
     )
 
@@ -175,15 +178,17 @@ class RealTbdexClientTest {
   @Test
   fun `get exchange fail via mockwebserver`() {
 
-    val errorDetails = listOf(
-      ErrorDetail(
-        id = "1",
-        status = "400",
-        code = "INVALID_INPUT",
-        title = "Invalid Input",
-        detail = "The request input is invalid.",
-        source = null,
-        meta = null
+    val errorDetails = mapOf(
+      "errors" to listOf(
+        ErrorDetail(
+          id = "1",
+          status = "400",
+          code = "INVALID_INPUT",
+          title = "Invalid Input",
+          detail = "The request input is invalid.",
+          source = null,
+          meta = null
+        )
       )
     )
 
@@ -215,15 +220,17 @@ class RealTbdexClientTest {
   @Test
   fun `get exchanges fail via mockwebserver`() {
 
-    val errorDetails = listOf(
-      ErrorDetail(
-        id = "1",
-        status = "400",
-        code = "INVALID_INPUT",
-        title = "Invalid Input",
-        detail = "The request input is invalid.",
-        source = null,
-        meta = null
+    val errorDetails = mapOf(
+      "errors" to listOf(
+        ErrorDetail(
+          id = "1",
+          status = "400",
+          code = "INVALID_INPUT",
+          title = "Invalid Input",
+          detail = "The request input is invalid.",
+          source = null,
+          meta = null
+        )
       )
     )
 
