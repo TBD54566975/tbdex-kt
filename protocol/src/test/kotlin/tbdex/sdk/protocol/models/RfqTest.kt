@@ -44,6 +44,15 @@ class RfqTest {
   }
 
   @Test
+  fun `can parse an RFQ signed with ION DID`() {
+    val rfq = TestData.getRfq()
+    rfq.sign(TestData.ION_DID)
+    val payload = Json.stringify(rfq)
+
+    assertDoesNotThrow { Message.parse(payload) }
+  }
+
+  @Test
   fun `can validate a rfq`() {
     val rfq = TestData.getRfq()
     rfq.sign(TestData.ALICE_DID)
