@@ -1,4 +1,6 @@
 # tbdex-kt
+[![License](https://img.shields.io/github/license/TBD54566975/web5-kt)](https://github.com/TBD54566975/tbdex-kt/blob/main/LICENSE) [![CI](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yaml/badge.svg)](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yaml)
+
 This repo contains 3 jvm packages:
 
 * [`/protocol`](./protocol/) - create, parse, verify, and validate the tbdex messages and resources defined in the [protocol draft specification](https://github.com/TBD54566975/tbdex/blob/main/README.md)
