@@ -6,11 +6,10 @@ import com.nimbusds.jose.JWSObject
 import com.nimbusds.jose.Payload
 import com.nimbusds.jose.jwk.JWK
 import com.nimbusds.jose.util.Base64URL
-import foundation.identity.did.VerificationMethod
+import tbdex.sdk.protocol.CryptoUtils
 import web5.sdk.common.Convert
 import web5.sdk.dids.Did
 import web5.sdk.dids.DidResolvers
-import java.security.SignatureException
 import java.time.Instant
 
 /**
@@ -39,13 +38,7 @@ fun getPfiServiceEndpoint(pfiDid: String): String {
  * @return
  */
 fun generateRequestToken(did: Did, assertionMethodId: String? = null): String {
-  val didResolutionResult = DidResolvers.resolve(did.uri)
-  val assertionMethods = didResolutionResult.didDocument.assertionMethodVerificationMethodsDereferenced
-
-  val assertionMethod: VerificationMethod = when {
-    assertionMethodId != null -> assertionMethods.find { it.id.toString() == assertionMethodId }
-    else -> assertionMethods.firstOrNull()
-  } ?: throw SignatureException("assertion method $assertionMethodId not found")
+  val assertionMethod = CryptoUtils.getAssertionMethod(did, assertionMethodId)
 
   // TODO: ensure that publicKeyJwk is not null
   val publicKeyJwk = JWK.parse(assertionMethod.publicKeyJwk)

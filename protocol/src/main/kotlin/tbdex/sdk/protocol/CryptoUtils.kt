@@ -57,7 +57,7 @@ object CryptoUtils {
       verificationMethodIds.contains(id)
     }
 
-    if (assertionMethod == null) {
+    require(assertionMethod != null) {
       throw SignatureException(
         "Signature verification failed: Expected kid in JWS header to dereference " +
           "a DID Document Verification Method with an Assertion verification relationship"
@@ -91,13 +91,7 @@ object CryptoUtils {
    * @return The signed payload as a detached payload JWT (JSON Web Token).
    */
   fun sign(did: Did, payload: ByteArray, assertionMethodId: String? = null): String {
-    val didResolutionResult = DidResolvers.resolve(did.uri)
-    val assertionMethods = didResolutionResult.didDocument.assertionMethodVerificationMethodsDereferenced
-
-    val assertionMethod: VerificationMethod = when {
-      assertionMethodId != null -> assertionMethods.find { it.id.toString() == assertionMethodId }
-      else -> assertionMethods.firstOrNull()
-    } ?: throw SignatureException("assertion method $assertionMethodId not found")
+    val assertionMethod = getAssertionMethod(did, assertionMethodId)
 
     // TODO: ensure that publicKeyJwk is not null
     val publicKeyJwk = JWK.parse(assertionMethod.publicKeyJwk)
@@ -122,5 +116,31 @@ object CryptoUtils {
     val base64UrlEncodedHeader = jwsHeader.toBase64URL()
 
     return "$base64UrlEncodedHeader..$base64UrlEncodedSignature"
+  }
+
+  /**
+   * Retrieves the desired assertion verification method from a DID (Decentralized Identifier) based on the provided
+   * assertion method identifier.
+   *
+   * This function resolves the DID, extracts the assertion methods from the DID Document, and returns the specific
+   * assertion verification method associated with the provided `assertionMethodId`, if specified. If
+   * `assertionMethodId` is not provided, it returns the first assertion verification method found in the DID Document.
+   *
+   * @param did The Decentralized Identifier (DID) to retrieve the assertion method from.
+   * @param assertionMethodId The identifier of the specific assertion verification method to retrieve (optional).
+   * @return The assertion verification method corresponding to the provided `assertionMethodId` or the first assertion
+   *         verification method found in the DID Document.
+   * @throws SignatureException If the specified `assertionMethodId` is not found in the DID Document.
+   */
+  fun getAssertionMethod(did: Did, assertionMethodId: String?): VerificationMethod {
+    val didResolutionResult = DidResolvers.resolve(did.uri)
+    val assertionMethods = didResolutionResult.didDocument.assertionMethodVerificationMethodsDereferenced
+
+    val assertionMethod: VerificationMethod = when {
+      assertionMethodId != null -> assertionMethods.find { it.id.toString() == assertionMethodId }
+      else -> assertionMethods.firstOrNull()
+    } ?: throw SignatureException("assertion method $assertionMethodId not found")
+
+    return assertionMethod
   }
 }

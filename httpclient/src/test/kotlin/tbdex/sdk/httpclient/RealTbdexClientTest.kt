@@ -83,7 +83,6 @@ class RealTbdexClientTest {
 
   @Test
   fun `get offerings success via mockwebserver`() {
-
     val offering = TestData.getOffering(TestData.getPresentationDefinition())
     offering.sign(alice)
     val mockOfferings = listOf(offering)
