@@ -97,12 +97,12 @@ object CryptoUtils {
    */
   fun sign(did: Did, payload: ByteArray, assertionMethodId: String? = null): String {
     val didResolutionResult = DidResolvers.resolve(did.uri)
-    val assertionMethods = didResolutionResult.didDocument.assertionMethodVerificationMethodsDereferenced
+    val assertionMethods = didResolutionResult.didDocument.assertionMethodVerificationMethodsDereferenced ?: emptyList()
 
     val assertionMethod: VerificationMethod = when {
       assertionMethodId != null -> assertionMethods.find { it.id.toString() == assertionMethodId }
       else -> assertionMethods.firstOrNull()
-    } ?: throw SignatureException("assertion method $assertionMethodId not found")
+    } ?: throw SignatureException("assertion method not found")
 
     // TODO: ensure that publicKeyJwk is not null
     val publicKeyJwk = JWK.parse(assertionMethod.publicKeyJwk)
@@ -112,8 +112,13 @@ object CryptoUtils {
     val algorithm = publicKey.algorithm
     val jwsAlgorithm = JWSAlgorithm.parse(algorithm.toString())
 
+    val selectedAssertionMethodId = when {
+      assertionMethod.id.isAbsolute -> assertionMethod.id.toString()
+      else -> "${did.uri}${assertionMethod.id}"
+    }
+
     val jwsHeader = JWSHeader.Builder(jwsAlgorithm)
-      .keyID(assertionMethod.id.toString())
+      .keyID(selectedAssertionMethodId)
       .build()
 
     // Create payload
