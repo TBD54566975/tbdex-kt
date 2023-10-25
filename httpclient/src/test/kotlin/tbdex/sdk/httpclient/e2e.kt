@@ -1,6 +1,5 @@
 package tbdex.sdk.httpclient
 
-import com.nimbusds.jose.JWSAlgorithm
 import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetExchangesResponse
@@ -9,6 +8,7 @@ import tbdex.sdk.httpclient.models.GetOfferingsResponse
 import tbdex.sdk.httpclient.models.SendMessageResponse
 import tbdex.sdk.httpclient.models.TbdexResponse
 import tbdex.sdk.protocol.models.Message
+import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.Quote
@@ -38,11 +38,6 @@ fun main() {
   // yc staging did
 //  val pfiDid =
 //    "did:ion:EiDCYKaMtz8hWnylrPKaDsOqNoM973GWqfGCUIeLQesWcg:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoidGdXWUF3ajlSRkhXaEJON2Fya0pnQTJKSUlDbHg2Zm54cjVjeE9jNm95SSJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHBzOi8vcGZpLnllbGxvd2NhcmQuZW5naW5lZXJpbmciLCJ0eXBlIjoiUEZJIn1dfX1dLCJ1cGRhdGVDb21taXRtZW50IjoiRWlCSk9ha3M4WmI2LXJueDdzMERnWnZqel9YS3NfUEJoN3BTcUgycUQzMXphQSJ9LCJzdWZmaXhEYXRhIjp7ImRlbHRhSGFzaCI6IkVpQWQxRTRSWVBEdlUtTUNlZnY3cUZUOEszaTVZcjNrZ3BnOWhiSkhsWXg0ZnciLCJyZWNvdmVyeUNvbW1pdG1lbnQiOiJFaUNXYzVzekFiWUpsMzVWci1Sdzl6ZE1hWDNlaGZPQUlBUHhEVnhsY3NjWWZBIn19"
-  val issuerDid = DidKey("did:key:z6MkhVUvUEdEbFpQgRyqLryBfE3frxuEyNsqWUmhm2FoKhpp", InMemoryKeyManager())
-  val keyAlias = issuerDid.keyManager.generatePrivateKey(JWSAlgorithm.ES256K)
-  println("keyalias $keyAlias")
-  val pubKey = issuerDid.keyManager.getPublicKey(keyAlias)
-  println("pubkey $pubKey")
   val myDid = DidKey.create(InMemoryKeyManager())
 
   println("let's do a tbdex transaction!")
@@ -57,7 +52,8 @@ fun main() {
   }
 
   val offerings = (getOfferingsResponse as GetOfferingsResponse).data
-  println("Got offerings! ${offerings.toString().replace("), ", "),\n")}")
+  println("Got offerings! payin ${(offerings.first() as Offering).data.payinCurrency.currencyCode}, " +
+    "payout ${(offerings.first() as Offering).data.payoutCurrency.currencyCode}")
 
   if (offerings.isEmpty()) {
     throw AssertionError("Offerings are empty")
@@ -91,8 +87,7 @@ fun main() {
   )
   val rfq = Rfq.create(pfiDid, myDid.uri, rfqData)
   rfq.sign(myDid)
-  println("Sending RFQ against first offering ${offerings[0].metadata.id}")
-//  println("Claim ${rfq.data.claims[0]}")
+  println("Sending RFQ against first offering id: ${offerings[0].metadata.id}")
   val sendRfqResponse = client.sendMessage(rfq)
 
   if (sendRfqResponse is ErrorResponse) {
@@ -126,7 +121,7 @@ fun main() {
     if (currentExchange.size < 2) {
       Thread.sleep(pollInterval)
       attempt++
-      println("Attempt #$attempt")
+      println("Attempt #$attempt at fetching exchanges after sending RFQ")
     }
     if (attempt > 5) {
       break
@@ -137,12 +132,12 @@ fun main() {
     throw AssertionError("Timed out trying to get a Quote")
   }
   val quote = currentExchange.last() as Quote
-  println("Got quote! QuoteData: ${quote.data}")
+  println("Got quote! QuoteData: Hurry, quote expires at ${quote.data.expiresAt}")
 
   val order = Order.create(pfiDid, myDid.uri, rfq.metadata.exchangeId)
   order.sign(myDid)
 
-  println("Sending order $order")
+  println("Sending order against Quote with exchangeId of ${order.metadata.exchangeId}")
   val sendOrderResponse = client.sendMessage(order)
 
   if (sendOrderResponse is ErrorResponse) {
@@ -152,9 +147,11 @@ fun main() {
     )
   }
 
+  println("Successfully sent order?? ${sendOrderResponse is SendMessageResponse}")
   println("Polling for exchanges to get latest order status...")
+  attempt = 0
   do {
-    val getExchangeResponse: TbdexResponse = client.getExchange(pfiDid, rfq.metadata.exchangeId.toString(), myDid)
+    val getExchangeResponse: TbdexResponse = client.getExchanges(pfiDid, myDid, GetExchangesFilter(listOf(rfq.metadata.exchangeId.toString())))
 
     if (getExchangeResponse is ErrorResponse) {
       throw AssertionError("Error returned from getting Exchanges after sending Order. \n" +
@@ -166,15 +163,27 @@ fun main() {
     currentExchange = listOfExchanges.first { exchanges -> exchanges.any { msg -> msg.metadata.exchangeId == rfq.metadata.exchangeId } }
     val lastMessage = currentExchange.last()
     if (lastMessage !is OrderStatus || lastMessage.data.orderStatus !== "COMPLETED") {
+      println("Attempt #$attempt at fetching exchanges after sending Order")
       if (lastMessage is OrderStatus) {
         println("Latest orderstatus: ${lastMessage.data.orderStatus}")
       }
+      if (lastMessage is Order) {
+        println("Still no OrderStatus, last message is Order")
+      }
       Thread.sleep(pollInterval)
+      attempt++
+    }
+    if (attempt > 5) {
+      break
     }
 
-  } while (currentExchange.last() !is OrderStatus || (currentExchange.last() as OrderStatus).data.orderStatus !== "COMPLETED")
+  } while (currentExchange.last() !is OrderStatus || (currentExchange.last() as OrderStatus).data.orderStatus != "COMPLETED")
 
-  val lastMessage = currentExchange.last() as OrderStatus
+  val lastMessage = currentExchange.last()
+
+  if (lastMessage !is OrderStatus || lastMessage.data.orderStatus != "COMPLETED") {
+    throw AssertionError("Timed out trying to get a COMPLETED OrderStatus")
+  }
 
   println(
     "you have finished your mission of completing a tbdex transaction. \n" +
