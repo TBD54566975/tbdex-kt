@@ -1,11 +1,11 @@
 package tbdex.sdk.httpclient
 
+import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetExchangesResponse
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
 import tbdex.sdk.httpclient.models.GetOfferingsResponse
-import tbdex.sdk.httpclient.models.SendMessageResponse
 import tbdex.sdk.httpclient.models.TbdexResponse
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
@@ -18,10 +18,9 @@ import tbdex.sdk.protocol.models.SelectedPaymentMethod
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidKey
-import kotlin.test.Ignore
 import kotlin.test.Test
 
-private const val pollInterval = 1000L
+private const val POLL_INTERVAL = 1000L
 
 class E2ETest {
   /**
@@ -29,26 +28,13 @@ class E2ETest {
    *
    */
   @Test
-  @Ignore
+  @Disabled("Must be run alongside tbdex-mock-pfi. See README for details")
   fun `tests e2e flow`() {
     val client = RealTbdexClient
 
     // tbdex-mock-pfi did
     val pfiDid =
-      "did:ion:EiAaZYIgSSwrAqds9V5HSVshYmz1g5EUxV0cqlAFgBM4ZA:" +
-        "eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwi" +
-        "ZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwi" +
-        "cHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiL" +
-        "CJ4IjoieEVnVkNvVEYtUHpXejQ2elFuUEVQS2RtTk9mTWpuVXVhWWx0Qll" +
-        "UZGxtWSJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiIsImFzc2Vyd" +
-        "Glvbk1ldGhvZCJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZ" +
-        "pY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHA6L" +
-        "y9sb2NhbGhvc3Q6OTAwMCIsInR5cGUiOiJQRkkifV19fV0sInVwZGF0ZUNv" +
-        "bW1pdG1lbnQiOiJFaUR0YnphSndFaG5kbS05Y1Q0eDc2OGFTUmIxS29nRVh" +
-        "0MzJEbkZ5OU05Q2xnIn0sInN1ZmZpeERhdGEiOnsiZGVsdGFIYXNoIjoiRWl" +
-        "Ed3l2OXhsQW83cUt4NjRjOThHeTJKMFliTldwbGw2ZkNfcmJ5eGZ3b29pQSIs" +
-        "InJlY292ZXJ5Q29tbWl0bWVudCI6IkVpQ1hMaWVpRnlCa1hKYU84eEVwOTV0Z" +
-        "Ed3bUlaVG4wZEV4UnpBR3MyaXJueHcifX0"
+      "did:ion:EiBxWCFvogkmSmQrEpxXM3kT0bcf1_maNQi4r4FExBgSwg:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoiTDlyblBQSXc3QkdEc2RBdm5PMTJuU1NjZTBZLTdLQlp0bkh6WHF4enYyTSJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiIsImFzc2VydGlvbk1ldGhvZCJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHA6Ly9sb2NhbGhvc3Q6OTAwMCIsInR5cGUiOiJQRkkifV19fV0sInVwZGF0ZUNvbW1pdG1lbnQiOiJFaURhYmhUeUNRTHBHeDZJNTVnY0J1ZGlON2NJS2ZIQUtlYVBwVG5RMUVoZzB3In0sInN1ZmZpeERhdGEiOnsiZGVsdGFIYXNoIjoiRWlCQVdrOEthMlNVbzcxemZpMXo5SjBkd1hNZ0N0MlN2SjZUWTVaMmNKTzIwQSIsInJlY292ZXJ5Q29tbWl0bWVudCI6IkVpQ3pwMGlkX01SaXFQNVZ2WVlfNjM2WVZzb0xVcWY1VERFeE5jRlU4RmNBWncifX0"
     val myDid = DidKey.create(InMemoryKeyManager())
 
     println("let's do a tbdex transaction!")
@@ -109,7 +95,6 @@ class E2ETest {
           "Errors: ${sendRfqResponse.errors?.joinToString(", ") { it.detail }}"
       )
     }
-    println("SendRfqResponse is success?? ${sendRfqResponse is SendMessageResponse}")
     println("Pinging for quote")
 
     var listOfExchanges: List<List<Message>>
@@ -145,7 +130,7 @@ class E2ETest {
           exchanges.any { msg -> msg.metadata.exchangeId == rfq.metadata.exchangeId }
         }
       if (currentExchange.size < 2) {
-        Thread.sleep(pollInterval)
+        Thread.sleep(POLL_INTERVAL)
         attempt++
         println("Attempt #$attempt at fetching exchanges after sending RFQ")
       }
@@ -173,7 +158,6 @@ class E2ETest {
       )
     }
 
-    println("Successfully sent order?? ${sendOrderResponse is SendMessageResponse}")
     println("Polling for exchanges to get latest order status...")
     attempt = 0
     do {
@@ -207,7 +191,7 @@ class E2ETest {
         if (lastMessage is Order) {
           println("Still no OrderStatus, last message is Order")
         }
-        Thread.sleep(pollInterval)
+        Thread.sleep(POLL_INTERVAL)
         attempt++
       }
       if (attempt > 5) {
