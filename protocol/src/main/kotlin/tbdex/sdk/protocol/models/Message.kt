@@ -64,7 +64,7 @@ sealed class Message {
    * @throws Exception if the verification fails or if the signature is missing.
    */
   fun verify() {
-    CryptoUtils.verify(detachedPayload = digest(), signature = this.signature)
+    CryptoUtils.verify(detachedPayload = this.digest(), signature = this.signature)
   }
 
   /**
@@ -129,9 +129,7 @@ sealed class Message {
       }
 
       val message = jsonMapper.convertValue(jsonMessage, messageType)
-      // TODO uncomment later when we can fix this error message
-      // Exception in thread "main" foundation.identity.did.parser.ParserException: Cannot parse DID URL: dwn-sig
-//      message.verify()
+      message.verify()
 
       return message
     }

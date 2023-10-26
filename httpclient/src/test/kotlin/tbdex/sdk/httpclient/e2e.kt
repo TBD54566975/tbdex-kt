@@ -34,7 +34,7 @@ fun main() {
 //    "did:ion:EiA92VwRF0pNYrhT7TXdTO8-VSMr7bUaKJzn8ZQIEZou6g:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiIxMGUxYWRlOC05ZjIxLTQ4ZDEtOGFhZS1jYzUxZGI1ZWNkYTEiLCJwdWJsaWNLZXlKd2siOnsiYWxnIjoiRVMyNTZLIiwiY3J2Ijoic2VjcDI1NmsxIiwia2lkIjoiOVp1RzRCbkdKdmc3NWxQN2VlU3BPSDJkUDFhS1ZpZmRNaDVqd3FxUFpWQSIsImt0eSI6IkVDIiwidXNlIjoic2lnIiwieCI6ImtOWk5vUWNYYVZFUndYeUYtdmRqcFRnV2FmNTdkcHR0V1VmTURIUHgtbU0iLCJ5Ijoid21oWXRXcjBKSzc5eTNpSnBXQmFkd0tBZnktR3FRUmJzUWFUYVpDVk9COCJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiIsImFzc2VydGlvbk1ldGhvZCJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHBzOi8vcGZpLnllbGxvd2NhcmQuZW5naW5lZXJpbmciLCJ0eXBlIjoiUEZJIn1dfX1dLCJ1cGRhdGVDb21taXRtZW50IjoiRWlDQzBRa0lBMzBYaDlRYjh6MnhCeW1XQWkzajlrQVNFZlpqOG9UX3dRYjI1dyJ9LCJzdWZmaXhEYXRhIjp7ImRlbHRhSGFzaCI6IkVpRHlnZDRJcGkwbU5JZkVJNVR2VWY4NTR4aE5iZXJoTjJzR1IzZE9LaFJDZGciLCJyZWNvdmVyeUNvbW1pdG1lbnQiOiJFaURsNFRYdWlwRE9lZG9LQkRzWjBjYWNidUY1T1haOG5qTmVFZlIyeExJdnJRIn19"
   // tbdex-mock-pfi did
   val pfiDid =
-    "did:ion:EiBwNQC_lRp1cAOZJC3XmtCXzSIL_rr0JOVYG82ORwVE_g:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoiaTZjbnN1SDRKVEJNWEtic2VnMjhIaTN3NFhwMTNFODVVd25TVzNaZ1lrOCJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHA6Ly9sb2NhbGhvc3Q6OTAwMCIsInR5cGUiOiJQRkkifV19fV0sInVwZGF0ZUNvbW1pdG1lbnQiOiJFaUNSNlB0MGY3SkRORVdqaFlsazBOdWtJSVFOMGVyc3ZfdHJLeERKdTlmZHZRIn0sInN1ZmZpeERhdGEiOnsiZGVsdGFIYXNoIjoiRWlBLTEzYUNoMmRrcW9oOWIxWDZudnppSXI2VS1JYUpJTFd3UU5sZjJNczBkZyIsInJlY292ZXJ5Q29tbWl0bWVudCI6IkVpQlhoX2dsN1pCd2JUOGNHOU5LT0FSV0xSUzZWUjRRVm44OWEyWldtdzhHOXcifX0"
+    "did:ion:EiAaZYIgSSwrAqds9V5HSVshYmz1g5EUxV0cqlAFgBM4ZA:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoieEVnVkNvVEYtUHpXejQ2elFuUEVQS2RtTk9mTWpuVXVhWWx0QllUZGxtWSJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiIsImFzc2VydGlvbk1ldGhvZCJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHA6Ly9sb2NhbGhvc3Q6OTAwMCIsInR5cGUiOiJQRkkifV19fV0sInVwZGF0ZUNvbW1pdG1lbnQiOiJFaUR0YnphSndFaG5kbS05Y1Q0eDc2OGFTUmIxS29nRVh0MzJEbkZ5OU05Q2xnIn0sInN1ZmZpeERhdGEiOnsiZGVsdGFIYXNoIjoiRWlEd3l2OXhsQW83cUt4NjRjOThHeTJKMFliTldwbGw2ZkNfcmJ5eGZ3b29pQSIsInJlY292ZXJ5Q29tbWl0bWVudCI6IkVpQ1hMaWVpRnlCa1hKYU84eEVwOTV0ZEd3bUlaVG4wZEV4UnpBR3MyaXJueHcifX0"
   // yc staging did
 //  val pfiDid =
 //    "did:ion:EiDCYKaMtz8hWnylrPKaDsOqNoM973GWqfGCUIeLQesWcg:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoidGdXWUF3ajlSRkhXaEJON2Fya0pnQTJKSUlDbHg2Zm54cjVjeE9jNm95SSJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHBzOi8vcGZpLnllbGxvd2NhcmQuZW5naW5lZXJpbmciLCJ0eXBlIjoiUEZJIn1dfX1dLCJ1cGRhdGVDb21taXRtZW50IjoiRWlCSk9ha3M4WmI2LXJueDdzMERnWnZqel9YS3NfUEJoN3BTcUgycUQzMXphQSJ9LCJzdWZmaXhEYXRhIjp7ImRlbHRhSGFzaCI6IkVpQWQxRTRSWVBEdlUtTUNlZnY3cUZUOEszaTVZcjNrZ3BnOWhiSkhsWXg0ZnciLCJyZWNvdmVyeUNvbW1pdG1lbnQiOiJFaUNXYzVzekFiWUpsMzVWci1Sdzl6ZE1hWDNlaGZPQUlBUHhEVnhsY3NjWWZBIn19"
@@ -52,8 +52,10 @@ fun main() {
   }
 
   val offerings = (getOfferingsResponse as GetOfferingsResponse).data
-  println("Got offerings! payin ${(offerings.first() as Offering).data.payinCurrency.currencyCode}, " +
-    "payout ${(offerings.first() as Offering).data.payoutCurrency.currencyCode}")
+  println(
+    "Got offerings! payin ${(offerings.first() as Offering).data.payinCurrency.currencyCode}, " +
+      "payout ${(offerings.first() as Offering).data.payoutCurrency.currencyCode}"
+  )
 
   if (offerings.isEmpty()) {
     throw AssertionError("Offerings are empty")
@@ -103,7 +105,11 @@ fun main() {
   var currentExchange: List<Message>
   var attempt = 0
   do {
-    val getExchangeResponse: TbdexResponse = client.getExchanges(pfiDid, myDid, GetExchangesFilter(listOf(rfq.metadata.exchangeId.toString())))
+    val getExchangeResponse: TbdexResponse = client.getExchanges(
+      pfiDid,
+      myDid,
+      GetExchangesFilter(listOf(rfq.metadata.exchangeId.toString()))
+    )
 
     if (getExchangeResponse is ErrorResponse) {
       throw AssertionError(
@@ -114,10 +120,19 @@ fun main() {
 
     listOfExchanges = (getExchangeResponse as GetExchangesResponse).data
     if (listOfExchanges.isEmpty()) {
-      throw AssertionError("No Exchange available (RFQ we sent earlier not being persisted!)")
+      throw AssertionError(
+        "No Exchange available " +
+          "(RFQ we sent earlier not being persisted!)"
+      )
     }
-    println("Filtering list of exchanges for an exchange with exchangeId of ${rfq.metadata.exchangeId}")
-    currentExchange = listOfExchanges.first { exchanges -> exchanges.any { msg -> msg.metadata.exchangeId == rfq.metadata.exchangeId } }
+    println(
+      "Filtering list of exchanges for an exchange " +
+        "with exchangeId of ${rfq.metadata.exchangeId}"
+    )
+    currentExchange =
+      listOfExchanges.first { exchanges ->
+        exchanges.any { msg -> msg.metadata.exchangeId == rfq.metadata.exchangeId }
+      }
     if (currentExchange.size < 2) {
       Thread.sleep(pollInterval)
       attempt++
@@ -151,16 +166,27 @@ fun main() {
   println("Polling for exchanges to get latest order status...")
   attempt = 0
   do {
-    val getExchangeResponse: TbdexResponse = client.getExchanges(pfiDid, myDid, GetExchangesFilter(listOf(rfq.metadata.exchangeId.toString())))
+    val getExchangeResponse: TbdexResponse =
+      client.getExchanges(
+        pfiDid,
+        myDid,
+        GetExchangesFilter(listOf(rfq.metadata.exchangeId.toString()))
+      )
 
     if (getExchangeResponse is ErrorResponse) {
-      throw AssertionError("Error returned from getting Exchanges after sending Order. \n" +
-        "Errors: ${getExchangeResponse.errors?.joinToString(", ") { it.detail }}"
+      throw AssertionError(
+        "Error returned from getting Exchanges after sending Order. \n" +
+          "Errors: ${getExchangeResponse.errors?.joinToString(", ") { it.detail }}"
       )
     }
 
     listOfExchanges = (getExchangeResponse as GetExchangesResponse).data
-    currentExchange = listOfExchanges.first { exchanges -> exchanges.any { msg -> msg.metadata.exchangeId == rfq.metadata.exchangeId } }
+    currentExchange =
+      listOfExchanges.first { exchanges ->
+        exchanges.any { msg ->
+          msg.metadata.exchangeId == rfq.metadata.exchangeId
+        }
+      }
     val lastMessage = currentExchange.last()
     if (lastMessage !is OrderStatus || lastMessage.data.orderStatus !== "COMPLETED") {
       println("Attempt #$attempt at fetching exchanges after sending Order")
@@ -177,7 +203,9 @@ fun main() {
       break
     }
 
-  } while (currentExchange.last() !is OrderStatus || (currentExchange.last() as OrderStatus).data.orderStatus != "COMPLETED")
+  } while (currentExchange.last() !is OrderStatus ||
+    (currentExchange.last() as OrderStatus).data.orderStatus != "COMPLETED"
+  )
 
   val lastMessage = currentExchange.last()
 
