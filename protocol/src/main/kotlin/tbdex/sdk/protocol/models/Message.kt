@@ -64,7 +64,7 @@ sealed class Message {
    * @throws Exception if the verification fails or if the signature is missing.
    */
   fun verify() {
-    CryptoUtils.verify(detachedPayload = digest(), signature = this.signature)
+    CryptoUtils.verify(detachedPayload = this.digest(), signature = this.signature)
   }
 
   /**
