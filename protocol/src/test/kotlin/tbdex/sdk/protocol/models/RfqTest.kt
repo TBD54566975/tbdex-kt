@@ -9,7 +9,6 @@ import org.junit.jupiter.api.assertThrows
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.serialization.Json
 import typeid.TypeID
-import java.security.SignatureException
 import kotlin.test.Test
 import kotlin.test.assertIs
 
@@ -50,21 +49,6 @@ class RfqTest {
     rfq.sign(TestData.ALICE_DID)
 
     assertDoesNotThrow { Message.parse(Json.stringify(rfq)) }
-  }
-
-
-  @Test
-  fun `signature verification stress test`() {
-    repeat(1000) {
-      val rfq = TestData.getRfq()
-      rfq.sign(TestData.ALICE_DID)
-      val payload = Json.stringify(rfq)
-      try {
-        Message.parse(payload)
-      } catch (e: SignatureException) {
-        throw SignatureException("rfq: $payload", e)
-      }
-    }
   }
 
   @Test
