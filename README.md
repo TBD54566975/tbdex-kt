@@ -1,5 +1,6 @@
 # tbdex-kt
-[![License](https://img.shields.io/github/license/TBD54566975/web5-kt)](https://github.com/TBD54566975/tbdex-kt/blob/main/LICENSE) [![CI](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yaml/badge.svg)](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yaml)
+[![License](https://img.shields.io/github/license/TBD54566975/web5-kt)](https://github.com/TBD54566975/tbdex-kt/blob/main/LICENSE) [![CI](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yaml/badge.svg)](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yaml) [![](https://jitpack.io/v/TBD54566975/tbdex-kt.svg)](https://jitpack.io/#TBD54566975/tbdex-kt)
+
 
 This repo contains 3 jvm packages:
 
@@ -7,21 +8,23 @@ This repo contains 3 jvm packages:
 * [`/httpclient`](./httpclient) - An HTTP client that can be used to send tbdex messages to PFIs
 * [`/httpserver`](./httpserver) - A configurable implementation of the [tbdex http api draft specification](https://github.com/TBD54566975/tbdex/blob/main/rest-api/README.md)
 
-## tbDEX Schemas
-> **Warning**  
-> Until `tbdex` is stable, do not sync schemas into `tbdex-kt`
+# Usage
 
-Make sure to import/update the JSON schemas which define the tbDEX message and resource formats.
+tbdex sdk is consumable through [JitPack](https://jitpack.io):
 
-Navigate to the `tbdex` directory and run:
-```
-git submodule update --init --recursive
+```kotlin
+repositories {
+  maven("https://jitpack.io")
+  maven("https://repo.danubetech.com/repository/maven-public/")
+}
+
+dependencies {
+  implementation("com.github.TBD54566975:tbdex-kt:0.1.0-beta")
+}
 ```
 
-Navigate back to root directory and run:
-```
-./gradlew syncSchemas
-```
+> [!IMPORTANT]
+> The repository at `https://repo.danubetech.com/repository/maven-public/` is required for resolving transitive dependencies.
 
 
 # Other Docs
