@@ -1,5 +1,6 @@
 package tbdex.sdk.httpclient
 
+import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetExchangesResponse
@@ -29,7 +30,7 @@ class E2ETest {
    *
    */
   @Test
-//  @Disabled("Must be run alongside tbdex-mock-pfi. See README for details")
+  @Disabled("Must be run alongside tbdex-mock-pfi. See README for details")
   fun `tests e2e flow`() {
     val client = RealTbdexClient
 
