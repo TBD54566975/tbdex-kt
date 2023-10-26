@@ -29,13 +29,6 @@ dependencies {
 
 }
 
-sourceSets {
-  main {
-    kotlin {
-      srcDir("integration-tests")  // Change this to include your custom folder
-    }
-  }
-}
 
 tasks.test {
   useJUnitPlatform()
