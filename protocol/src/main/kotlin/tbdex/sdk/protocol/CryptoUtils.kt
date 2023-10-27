@@ -8,8 +8,8 @@ import com.nimbusds.jose.jwk.JWK
 import foundation.identity.did.DIDURL
 import foundation.identity.did.VerificationMethod
 import org.erdtman.jcs.JsonCanonicalizer
-import tbdex.sdk.protocol.models.Metadata
 import tbdex.sdk.protocol.models.Data
+import tbdex.sdk.protocol.models.Metadata
 import tbdex.sdk.protocol.serialization.Json
 import web5.sdk.common.Convert
 import web5.sdk.crypto.Crypto
@@ -61,7 +61,8 @@ object CryptoUtils {
     if (signingDid != did) {
       throw SignatureException(
         "Signature verification failed: Was not signed by the expected DID. " +
-          "Expected DID: $did. Actual DID: $signingDid")
+          "Expected DID: $did. Actual DID: $signingDid"
+      )
     }
 
     val didResolutionResult = DidResolvers.resolve(parsedDidUrl.did.didString)
