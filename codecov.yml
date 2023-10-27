@@ -1,0 +1,11 @@
+component_management:
+  individual_components:
+    - component_id: "protocol"
+      paths:
+        - "protocol/"
+    - component_id: "httpclient"
+      paths:
+        - "httpclient/"
+
+comment:
+  layout: "header, diff, components"
