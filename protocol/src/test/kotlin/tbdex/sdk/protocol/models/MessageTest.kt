@@ -10,6 +10,7 @@ import org.junit.jupiter.api.assertThrows
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.ValidatorException
 import tbdex.sdk.protocol.serialization.Json
+import java.security.SignatureException
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertFailsWith
@@ -79,11 +80,23 @@ class MessageTest {
     val quote = TestData.getQuote()
     val order = TestData.getOrder()
     rfq.sign(TestData.ALICE_DID)
-    quote.sign(TestData.ALICE_DID)
+    quote.sign(TestData.PFI_DID)
     order.sign(TestData.ALICE_DID)
 
     listOf(rfq, quote, order).map {
       assertDoesNotThrow { Message.parse(Json.stringify(it)) }
     }
+  }
+
+  @Test
+  fun `messages must be signed by the sender`() {
+    val rfqFromAlice = TestData.getRfq()
+    //sign it with the wrong DID
+    rfqFromAlice.sign(TestData.PFI_DID)
+
+    val exception = assertThrows<SignatureException> {
+      Message.parse(Json.stringify(rfqFromAlice))
+    }
+    assertThat(exception.message!!).contains("Signature verification failed: Was not signed by the expected DID")
   }
 }

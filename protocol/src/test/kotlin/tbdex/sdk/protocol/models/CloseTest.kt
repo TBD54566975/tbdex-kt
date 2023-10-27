@@ -39,7 +39,7 @@ class CloseTest {
   @Test
   fun `can parse an close from a json string`() {
     val close = TestData.getClose()
-    close.sign(TestData.ALICE_DID)
+    close.sign(TestData.PFI_DID)
     val jsonMessage = close.toString()
     val parsedMessage = Message.parse(jsonMessage)
 
@@ -50,7 +50,7 @@ class CloseTest {
   @Test
   fun `can validate a close`() {
     val close = TestData.getClose()
-    close.sign(TestData.ALICE_DID)
+    close.sign(TestData.PFI_DID)
 
     assertDoesNotThrow { Message.parse(Json.stringify(close)) }
   }

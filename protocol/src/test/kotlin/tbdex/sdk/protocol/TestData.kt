@@ -68,9 +68,9 @@ object TestData {
     return VerifiableCredential.create("test type", ALICE_DID.uri, ALICE_DID.uri, vc)
   }
 
-  fun getOffering(requiredClaims: PresentationDefinitionV2 = getPresentationDefinition()) =
+  fun getOffering(from: String = PFI_DID.uri, requiredClaims: PresentationDefinitionV2 = getPresentationDefinition()) =
     Offering.create(
-      from = PFI_DID.uri,
+      from = from,
       OfferingData(
         description = "A sample offering",
         payoutUnitsPerPayinUnit = "1",

@@ -41,7 +41,7 @@ class IonSigningTest {
   @Test
   fun `can parse ION signed offering from a json string`() {
     val did = DidIonManager.create(InMemoryKeyManager())
-    val offering = TestData.getOffering()
+    val offering = TestData.getOffering(from = did.uri)
     offering.sign(did)
     val jsonResource = offering.toString()
     val parsed = Resource.parse(jsonResource)
