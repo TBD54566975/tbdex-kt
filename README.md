@@ -5,7 +5,7 @@
 
 This repo contains 2 jvm packages:
 
-* [`/protocol`](./protocol/) - create, parse, verify, and validate the tbdex messages and resources defined in the [protocol draft specification]https://github.com/TBD54566975/tbdex/blob/main/specs/protocol/README.md)
+* [`/protocol`](./protocol/) - create, parse, verify, and validate the tbdex messages and resources defined in the [protocol draft specification](https://github.com/TBD54566975/tbdex/blob/main/specs/protocol/README.md)
 * [`/httpclient`](./httpclient) - An HTTP client that can be used to send tbdex messages to PFIs
 
 # Usage
