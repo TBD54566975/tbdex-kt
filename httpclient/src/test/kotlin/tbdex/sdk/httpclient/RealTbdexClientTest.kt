@@ -14,6 +14,7 @@ import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetExchangesResponse
 import tbdex.sdk.httpclient.models.GetOfferingsResponse
 import tbdex.sdk.httpclient.models.SendMessageResponse
+import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
 import typeid.TypeID
@@ -24,7 +25,7 @@ import java.net.HttpURLConnection
 import kotlin.test.Test
 
 /**
- * Real tbdex client test
+ * Real tbdex client test.
  *
  * @constructor Create empty Real tbdex client test
  */
@@ -84,7 +85,7 @@ class RealTbdexClientTest {
   @Test
   fun `get offerings success via mockwebserver`() {
     val offering = TestData.getOffering(TestData.getPresentationDefinition())
-    offering.sign(alice)
+    offering.sign(TestData.PFI_DID)
     val mockOfferings = listOf(offering)
     val mockResponseString = Json.jsonMapper.writeValueAsString(mapOf("data" to mockOfferings))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
@@ -159,13 +160,8 @@ class RealTbdexClientTest {
 
   @Test
   fun `get exchange success via mockwebserver`() {
-
     val offeringId = TypeID("offering")
-    val rfq = TestData.getRfq(ionDid, offeringId)
-    rfq.sign(alice)
-    val quote = TestData.getQuote()
-    quote.sign(alice) // todo quote should probably signed by pfiDid but we currently don't have the full pfi did + key
-    val exchange = listOf(rfq, quote)
+    val exchange = listOf(rfq(offeringId), quote())
     val mockResponseString = Json.jsonMapper.writeValueAsString(mapOf("data" to exchange))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
 
@@ -203,11 +199,7 @@ class RealTbdexClientTest {
   @Test
   fun `get exchanges success via mockwebserver`() {
     val offeringId = TypeID("offering")
-    val rfq = TestData.getRfq(ionDid, offeringId)
-    rfq.sign(alice)
-    val quote = TestData.getQuote()
-    quote.sign(alice) // todo quote should probably signed by pfiDid but we currently don't have the full pfi did + key
-    val exchanges = listOf(listOf(rfq, quote))
+    val exchanges = listOf(listOf(rfq(offeringId), quote()))
     val mockResponseString = Json.jsonMapper.writeValueAsString(mapOf("data" to exchanges))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
 
@@ -215,6 +207,18 @@ class RealTbdexClientTest {
     assertEquals(HttpURLConnection.HTTP_OK, response.status)
     assertTrue(response is GetExchangesResponse)
     assertEquals(offeringId, ((response as GetExchangesResponse).data[0][0] as Rfq).data.offeringId)
+  }
+
+  private fun quote(): Quote {
+    val quote = TestData.getQuote()
+    quote.sign(TestData.PFI_DID)
+    return quote
+  }
+
+  private fun rfq(offeringId: TypeID): Rfq {
+    val rfq = TestData.getRfq(ionDid, offeringId)
+    rfq.sign(TestData.ALICE_DID)
+    return rfq
   }
 
   @Test
