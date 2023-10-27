@@ -8,9 +8,14 @@ import com.networknt.schema.SpecVersion
 import web5.sdk.credentials.PresentationDefinitionV2
 
 /**
+ * An interface that represents the data content of any tbDEX object.
+ */
+sealed interface Data
+
+/**
  * An interface that represents the contents of a [Resource].
  */
-sealed interface ResourceData
+sealed interface ResourceData: Data
 
 /**
  * A data class implementing [ResourceData], which represents the contents of an [Offering].

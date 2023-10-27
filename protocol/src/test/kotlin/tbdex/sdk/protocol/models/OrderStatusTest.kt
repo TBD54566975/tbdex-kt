@@ -4,7 +4,6 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.assertDoesNotThrow
 import tbdex.sdk.protocol.TestData
-import tbdex.sdk.protocol.TestData.PFI_DID
 import tbdex.sdk.protocol.serialization.Json
 import typeid.TypeID
 import kotlin.test.Test
@@ -26,7 +25,7 @@ class OrderStatusTest {
   @Test
   fun `can parse an orderStatus from a json string`() {
     val orderStatus = TestData.getOrderStatus()
-    orderStatus.sign(PFI_DID)
+    orderStatus.sign(TestData.PFI_DID)
     val jsonMessage = orderStatus.toString()
     val parsedMessage = Message.parse(jsonMessage)
 
@@ -37,7 +36,7 @@ class OrderStatusTest {
   @Test
   fun `can validate an orderStatus`() {
     val orderStatus = TestData.getOrderStatus()
-    orderStatus.sign(TestData.ALICE_DID)
+    orderStatus.sign(TestData.PFI_DID)
 
     assertDoesNotThrow { Message.parse(Json.stringify(orderStatus)) }
   }

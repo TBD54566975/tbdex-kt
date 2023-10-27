@@ -45,7 +45,7 @@ class OfferingTest {
   @Test
   fun `can parse an offering`() {
     val offering = TestData.getOffering()
-    offering.sign(TestData.ALICE_DID)
+    offering.sign(TestData.PFI_DID)
 
     assertDoesNotThrow { Resource.parse(Json.stringify(offering)) }
   }

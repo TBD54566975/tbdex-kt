@@ -8,7 +8,7 @@ import java.time.OffsetDateTime
 /**
  * An interface that represents the contents of a [Message].
  */
-sealed interface MessageData
+sealed interface MessageData: Data
 
 /**
  * A data class implementing [MessageData] that represents the contents of an [Rfq].

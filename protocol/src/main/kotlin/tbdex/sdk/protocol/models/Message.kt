@@ -3,7 +3,6 @@ package tbdex.sdk.protocol.models
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
-import org.erdtman.jcs.JsonCanonicalizer
 import tbdex.sdk.protocol.CryptoUtils
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.serialization.Json
@@ -11,7 +10,6 @@ import tbdex.sdk.protocol.serialization.Json.jsonMapper
 import tbdex.sdk.protocol.serialization.dateTimeFormat
 import typeid.TypeID
 import web5.sdk.dids.Did
-import java.security.MessageDigest
 import java.time.OffsetDateTime
 
 /**
@@ -34,7 +32,7 @@ class MessageMetadata(
   val exchangeId: TypeID,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val createdAt: OffsetDateTime
-)
+): Metadata
 
 /**
  * An abstract class representing the structure and common functionality available on all Messages.
@@ -64,7 +62,7 @@ sealed class Message {
    * @throws Exception if the verification fails or if the signature is missing.
    */
   fun verify() {
-    CryptoUtils.verify(detachedPayload = this.digest(), signature = this.signature)
+    CryptoUtils.verify(detachedPayload = this.digest(), signature = this.signature, did = this.metadata.from)
   }
 
   /**
@@ -72,13 +70,7 @@ sealed class Message {
    *
    * @return The message digest as a byte array.
    */
-  fun digest(): ByteArray {
-    val payload = mapOf("metadata" to this.metadata, "data" to this.data)
-    val canonicalJsonSerializedPayload = JsonCanonicalizer(Json.stringify(payload))
-
-    val sha256 = MessageDigest.getInstance("SHA-256")
-    return sha256.digest(canonicalJsonSerializedPayload.encodedUTF8)
-  }
+  private fun digest(): ByteArray = CryptoUtils.digestOf(this.metadata, this.data)
 
   /**
    * Uses [Json] to serialize the Message as a json string.

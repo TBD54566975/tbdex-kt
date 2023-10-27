@@ -43,7 +43,7 @@ class QuoteTest {
   @Test
   fun `can validate a quote`() {
     val quote = TestData.getQuote()
-    quote.sign(TestData.ALICE_DID)
+    quote.sign(TestData.PFI_DID)
 
     assertDoesNotThrow { Message.parse(Json.stringify(quote)) }
   }
