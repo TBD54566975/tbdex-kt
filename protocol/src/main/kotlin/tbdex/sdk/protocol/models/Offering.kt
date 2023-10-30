@@ -23,6 +23,15 @@ class Offering private constructor(
 ) : Resource() {
   companion object {
     /**
+     * Takes an existing Offering in the form of a json string and parses it into an Offering object.
+     * Validates object structure and performs an integrity check using the signature.
+     *
+     * @param payload The offering as a json string.
+     * @return The json string parsed into a concrete Offering implementation.
+     */
+    fun parse(toString: String) = Resource.parse(toString) as Offering
+
+    /**
      * Creates a new `Offering` resource, autopopulating the id, creation/updated time, and resource kind.
      *
      * @param from DID of the PFI.

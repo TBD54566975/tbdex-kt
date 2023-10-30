@@ -8,37 +8,32 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import tbdex.sdk.httpclient.models.ErrorDetail
-import tbdex.sdk.httpclient.models.ErrorResponse
-import tbdex.sdk.httpclient.models.GetExchangeResponse
+import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.httpclient.models.GetExchangesFilter
-import tbdex.sdk.httpclient.models.GetExchangesResponse
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
-import tbdex.sdk.httpclient.models.GetOfferingsResponse
-import tbdex.sdk.httpclient.models.SendMessageResponse
-import tbdex.sdk.httpclient.models.TbdexResponse
 import tbdex.sdk.protocol.models.Message
-import tbdex.sdk.protocol.models.Resource
+import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.serialization.Json.jsonMapper
 import web5.sdk.dids.Did
 
 /**
- * A real client implementation of the [TbdexClient] interface for communicating with a TBD Exchange server.
+ * A client of the tbDEX HTTP interface for communicating with a PFI.
  */
-object RealTbdexClient : TbdexClient {
+object TbdexHttpClient {
   private val client = OkHttpClient()
   private val jsonMediaType = "application/json; charset=utf-8".toMediaType()
   private const val JSON_HEADER = "application/json"
 
   /**
-   * Fetches offerings from the TBD Exchange server.
+   * Fetches offerings from a PFI.
    *
    * @param pfiDid The decentralized identifier of the PFI.
-   * @param filter An optional filter to apply for fetching offerings.
-   * If null, all offerings for the given PFI will be fetched.
-   * @return A [TbdexResponse] containing the offerings fetched and related information, or an error response.
+   * @param filter An optional filter to apply for fetching offerings. If null, all offerings for the given PFI will be
+   * fetched.
+   * @return A list of [Offering] matching the request.
    */
-  override fun getOfferings(pfiDid: String, filter: GetOfferingsFilter?): TbdexResponse {
+  fun getOfferings(pfiDid: String, filter: GetOfferingsFilter? = null): List<Offering> {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/offerings/"
 
@@ -54,36 +49,27 @@ object RealTbdexClient : TbdexClient {
       .build()
 
     val response: Response = client.newCall(request).execute()
-    return when {
+    when {
       response.isSuccessful -> {
         val responseString = response.body?.string()
-
         // response body is an object with a data field
         val jsonNode = jsonMapper.readTree(responseString)
-        val data = jsonNode.get("data").elements().asSequence()
-          .map { Resource.parse(it.toString()) }
+        return jsonNode.get("data").elements()
+          .asSequence()
+          .map { Offering.parse(it.toString()) }
           .toList()
-
-        GetOfferingsResponse(
-          status = response.code,
-          headers = response.headers,
-          data = data
-        )
-      }
-
-      else -> {
-        buildErrorResponse(response)
+      } else -> {
+        throw buildResponseException(response)
       }
     }
   }
 
   /**
-   * Sends a message to the TBD Exchange server.
+   * Sends a message to the PFI.
    *
    * @param message The [Message] object containing the message details to be sent.
-   * @return A [TbdexResponse] indicating the success or failure of the message sending operation.
    */
-  override fun sendMessage(message: Message): TbdexResponse {
+  fun sendMessage(message: Message) {
     val pfiDid = message.metadata.to
     val exchangeId = message.metadata.exchangeId
     val kind = message.metadata.kind
@@ -100,32 +86,23 @@ object RealTbdexClient : TbdexClient {
       .build()
 
     val response: Response = client.newCall(request).execute()
-    return when {
-      response.isSuccessful -> {
-        SendMessageResponse(
-          status = response.code,
-          headers = response.headers,
-        )
-      }
-
-      else -> {
-        buildErrorResponse(response)
-      }
+    if (!response.isSuccessful) {
+      throw buildResponseException(response)
     }
   }
 
   /**
-   * Fetches a specific exchange identified by its ID from the TBD Exchange server.
+   * Fetches a specific exchange identified by its ID from the PFI.
    *
    * @param pfiDid The decentralized identifier of the PFI.
+   * @param requesterDid The decentralized identifier of the entity requesting the exchange.
    * @param exchangeId The unique identifier of the exchange to be fetched.
-   * @param did The decentralized identifier of the entity requesting the exchange.
-   * @return A [TbdexResponse] containing the requested exchange and related information, or an error response.
+   * @return An [Exchange] containing the requested exchange.
    */
-  override fun getExchange(pfiDid: String, exchangeId: String, did: Did): TbdexResponse {
+  fun getExchange(pfiDid: String, requesterDid: Did, exchangeId: String): Exchange {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
-    val baseUrl = "$pfiServiceEndpoint/exchanges/${exchangeId}"
-    val requestToken = generateRequestToken(did)
+    val baseUrl = "$pfiServiceEndpoint/exchanges/$exchangeId"
+    val requestToken = generateRequestToken(requesterDid)
 
     val request = Request.Builder()
       .url(baseUrl)
@@ -135,44 +112,32 @@ object RealTbdexClient : TbdexClient {
       .build()
 
     val response: Response = client.newCall(request).execute()
-    return when {
+    when {
       response.isSuccessful -> {
         val responseString = response.body?.string()
         val jsonNode = jsonMapper.readTree(responseString)
-        val exchange = jsonNode.get("data").elements().asSequence()
+        return jsonNode.get("data").elements().asSequence()
           .map { Message.parse(it.toString()) }
           .toList()
-
-        GetExchangeResponse(
-          status = response.code,
-          headers = response.headers,
-          data = exchange
-        )
-      }
-
-      else -> {
-        buildErrorResponse(response)
+      } else -> {
+        throw buildResponseException(response)
       }
     }
   }
 
   /**
-   * Fetches exchanges from the TBD Exchange server based on the provided filters.
+   * Fetches exchanges from the PFI based on the provided filters.
    *
    * @param pfiDid The decentralized identifier of the PFI.
-   * @param did The decentralized identifier of the entity requesting the exchanges.
-   * @param filter An optional filter to apply for fetching exchanges.
-   * If null, all exchanges for the given PFI and DID will be fetched.
-   * @return A [TbdexResponse] containing the exchanges fetched and related information, or an error response.
+   * @param requesterDid The decentralized identifier of the entity requesting the exchange.
+   * @param filter An optional filter to apply for fetching exchanges. If null, all exchanges for the given PFI and DID
+   * will be fetched.
+   * @return A list of matching [Exchange].
    */
-  override fun getExchanges(
-    pfiDid: String,
-    did: Did,
-    filter: GetExchangesFilter?
-  ): TbdexResponse {
+  fun getExchanges(pfiDid: String, requesterDid: Did, filter: GetExchangesFilter? = null): List<Exchange> {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/exchanges/"
-    val requestToken = generateRequestToken(did)
+    val requestToken = generateRequestToken(requesterDid)
 
     // compose query param
     val httpUrlBuilder = baseUrl.toHttpUrl().newBuilder()
@@ -186,7 +151,7 @@ object RealTbdexClient : TbdexClient {
       .build()
 
     val response: Response = client.newCall(request).execute()
-    return when {
+    when {
       response.isSuccessful -> {
         val jsonNode = jsonMapper.readTree(response.body?.string())
         val exchanges = mutableListOf<List<Message>>()
@@ -197,16 +162,9 @@ object RealTbdexClient : TbdexClient {
             .toList()
           exchanges.add(exchange)
         }
-
-        GetExchangesResponse(
-          status = response.code,
-          headers = response.headers,
-          data = exchanges
-        )
-      }
-
-      else -> {
-        buildErrorResponse(response)
+        return exchanges
+      } else -> {
+        throw buildResponseException(response)
       }
     }
   }
@@ -214,25 +172,27 @@ object RealTbdexClient : TbdexClient {
   /**
    * Builds an error response based on the provided HTTP response.
    *
-   * @param response The HTTP response received from the TBD Exchange server.
-   * @return An [ErrorResponse] containing the errors and related information extracted from the HTTP response.
+   * @param response The HTTP response received from the PFI.
+   * @return An [TbdexResponseException] containing the errors and related information extracted from the HTTP response.
    */
-  private fun buildErrorResponse(response: Response): ErrorResponse {
+  private fun buildResponseException(response: Response): TbdexResponseException {
     val errors = when (val responseBody = response.body?.string()) {
       null -> listOf()
       else -> {
         val jsonNode = jsonMapper.readTree(responseBody)
-        jsonNode.get("errors").elements()
+        val errors = jsonNode.get("errors").elements()
           .asSequence()
           .map { jsonMapper.readValue(it.toString(), ErrorDetail::class.java) }
           .toList()
+        errors
       }
     }
 
-    return ErrorResponse(
-      status = response.code,
-      headers = response.headers,
+    return TbdexResponseException(
+      "response status: ${response.code}",
       errors = errors
     )
   }
 }
+
+typealias Exchange = List<Message>

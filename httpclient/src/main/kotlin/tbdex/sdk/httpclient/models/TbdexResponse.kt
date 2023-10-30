@@ -1,82 +1,15 @@
 package tbdex.sdk.httpclient.models
 
-import okhttp3.Headers
-import tbdex.sdk.protocol.models.Message
-import tbdex.sdk.protocol.models.Resource
-
-/**
- * Tbdex response parent class.
- *
- * @property status The HTTP status code of the response.
- * @property headers The HTTP headers of the response.
- */
-sealed class TbdexResponse {
-  abstract val status: Int
-  abstract val headers: Headers
-}
-
-/**
- * Get offerings response.
- *
- * @property status The HTTP status code of the response.
- * @property headers The HTTP headers of the response.
- * @property data The list of offerings.
- */
-class GetOfferingsResponse(
-  override val status: Int,
-  override val headers: Headers,
-  val data: List<Resource>
-) : TbdexResponse()
-
-/**
- * Send message response.
- *
- * @property status The HTTP status code of the response.
- * @property headers The HTTP headers of the response.
- */
-class SendMessageResponse(
-  override val status: Int,
-  override val headers: Headers,
-) : TbdexResponse()
-
-/**
- * Get exchange response.
- *
- * @property status The HTTP status code of the response.
- * @property headers The HTTP headers of the response.
- * @property data The list of messages.
- */
-class GetExchangeResponse(
-  override val status: Int,
-  override val headers: Headers,
-  val data: List<Message>
-) : TbdexResponse()
-
-/**
- * Get exchanges response.
- *
- * @property status The HTTP status code of the response.
- * @property headers The HTTP headers of the response.
- * @property data The list of lists of messages.
- */
-class GetExchangesResponse(
-  override val status: Int,
-  override val headers: Headers,
-  val data: List<List<Message>>
-) : TbdexResponse()
-
 /**
  * Error response.
  *
- * @property status The HTTP status code of the response.
- * @property headers The HTTP headers of the response.
  * @property errors The list of error details.
  */
-class ErrorResponse(
-  override val status: Int,
-  override val headers: Headers,
+class TbdexResponseException(
+  message: String,
+  cause: Exception? = null,
   val errors: List<ErrorDetail>?
-) : TbdexResponse()
+) : Exception(message, cause)
 
 /**
  * Error detail.

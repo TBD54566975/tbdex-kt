@@ -1,14 +1,10 @@
 package tbdex.sdk.httpclient
 
 import org.junit.jupiter.api.Disabled
-import tbdex.sdk.httpclient.models.ErrorResponse
+import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.httpclient.models.GetExchangesFilter
-import tbdex.sdk.httpclient.models.GetExchangesResponse
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
-import tbdex.sdk.httpclient.models.GetOfferingsResponse
-import tbdex.sdk.httpclient.models.TbdexResponse
 import tbdex.sdk.protocol.models.Message
-import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.Quote
@@ -32,7 +28,7 @@ class E2ETest {
   @Test
   @Disabled("Must be run alongside tbdex-mock-pfi. See README for details")
   fun `tests e2e flow`() {
-    val client = RealTbdexClient
+    val client = TbdexHttpClient
 
     @Suppress("MaxLineLength")
     val pfiDid =
@@ -42,19 +38,19 @@ class E2ETest {
     println("let's do a tbdex transaction!")
     println("Getting offerings...")
 
-    val getOfferingsResponse = client.getOfferings(pfiDid, GetOfferingsFilter("BTC", "KES"))
-
-    if (getOfferingsResponse is ErrorResponse) {
+    val offerings = try {
+      client.getOfferings(pfiDid, GetOfferingsFilter("BTC", "KES"))
+    } catch (e: TbdexResponseException) {
       throw AssertionError(
         "Error getting offerings. " +
-          "Errors: ${getOfferingsResponse.errors?.joinToString(", ") { it.detail }}"
+          "Errors: ${e.errors?.joinToString(", ") { it.detail }}",
+          e
       )
     }
 
-    val offerings = (getOfferingsResponse as GetOfferingsResponse).data
     println(
-      "Got offerings! payin ${(offerings.first() as Offering).data.payinCurrency.currencyCode}, " +
-        "payout ${(offerings.first() as Offering).data.payoutCurrency.currencyCode}"
+      "Got offerings! payin ${offerings.first().data.payinCurrency.currencyCode}, " +
+        "payout ${offerings.first().data.payoutCurrency.currencyCode}"
     )
 
     if (offerings.isEmpty()) {
@@ -67,18 +63,19 @@ class E2ETest {
     val vcJwt = vc.sign(myDid)
 
     val rfqData = buildRfqData(firstOfferingId, vcJwt)
-    val rfq = Rfq.create(pfiDid, myDid.uri, rfqData)
+    val rfq = Rfq.create(to = pfiDid, from = myDid.uri, rfqData)
     rfq.sign(myDid)
 
     println("Sending RFQ against first offering id: ${offerings[0].metadata.id}.")
     println("ExchangeId for the rest of this exchange is ${rfq.metadata.exchangeId}")
 
-    val sendRfqResponse = client.sendMessage(rfq)
-
-    if (sendRfqResponse is ErrorResponse) {
+    try {
+       client.sendMessage(rfq)
+    } catch (e: TbdexResponseException) {
       throw AssertionError(
         "Error in sending RFQ. " +
-          "Errors: ${sendRfqResponse.errors?.joinToString(", ") { it.detail }}"
+          "Errors: ${e.errors?.joinToString(", ") { it.detail }}",
+        e
       )
     }
     println("Pinging for quote")
@@ -95,12 +92,13 @@ class E2ETest {
     order.sign(myDid)
 
     println("Sending order against Quote with exchangeId of ${order.metadata.exchangeId}")
-    val sendOrderResponse = client.sendMessage(order)
-
-    if (sendOrderResponse is ErrorResponse) {
+    try {
+      client.sendMessage(order)
+    } catch (e: TbdexResponseException) {
       throw AssertionError(
         "Error returned from sending Order. " +
-          "Errors: ${sendOrderResponse.errors?.joinToString(", ") { it.detail }}"
+          "Errors: ${e.errors?.joinToString(", ") { it.detail }}",
+        e
       )
     }
 
@@ -121,7 +119,7 @@ class E2ETest {
   }
 
   private fun getExchangeWithOrderStatus(
-    client: RealTbdexClient,
+    client: TbdexHttpClient,
     pfiDid: String,
     myDid: DidKey,
     rfq: Rfq,
@@ -130,21 +128,21 @@ class E2ETest {
     var listOfExchanges: List<List<Message>>
     var currentExchange: List<Message>
     do {
-      val getExchangeResponse: TbdexResponse =
+      listOfExchanges = try {
         client.getExchanges(
           pfiDid,
           myDid,
           GetExchangesFilter(listOf(rfq.metadata.exchangeId.toString()))
         )
 
-      if (getExchangeResponse is ErrorResponse) {
+      } catch (e: TbdexResponseException) {
         throw AssertionError(
           "Error returned from getting Exchanges after sending Order. \n" +
-            "Errors: ${getExchangeResponse.errors?.joinToString(", ") { it.detail }}"
+            "Errors: ${e.errors?.joinToString(", ") { it.detail }}",
+          e
         )
       }
 
-      listOfExchanges = (getExchangeResponse as GetExchangesResponse).data
       currentExchange =
         listOfExchanges.first { exchanges ->
           exchanges.any { msg ->
@@ -174,7 +172,7 @@ class E2ETest {
   }
 
   private fun getCurrentExchange(
-    client: RealTbdexClient,
+    client: TbdexHttpClient,
     pfiDid: String,
     myDid: Did,
     rfq: Rfq
@@ -183,20 +181,20 @@ class E2ETest {
     var currentExchange: List<Message>
     var attempt = 0
     do {
-      val getExchangeResponse: TbdexResponse = client.getExchanges(
-        pfiDid,
-        myDid,
-        GetExchangesFilter(listOf(rfq.metadata.exchangeId.toString()))
-      )
-
-      if (getExchangeResponse is ErrorResponse) {
+      listOfExchanges = try {
+        client.getExchanges(
+          pfiDid,
+          myDid,
+          GetExchangesFilter(listOf(rfq.metadata.exchangeId.toString()))
+        )
+      } catch (e: TbdexResponseException) {
         throw AssertionError(
           "Error returned from getting Exchanges. " +
-            "Errors: ${getExchangeResponse.errors?.joinToString(", ") { it.detail }}"
+            "Errors: ${e.errors?.joinToString(", ") { it.detail }}",
+          e
         )
       }
 
-      listOfExchanges = (getExchangeResponse as GetExchangesResponse).data
       if (listOfExchanges.isEmpty()) {
         throw AssertionError(
           "No Exchange available " +
