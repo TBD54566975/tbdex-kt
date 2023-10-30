@@ -8,9 +8,9 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import tbdex.sdk.httpclient.models.ErrorDetail
-import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
+import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.serialization.Json
@@ -58,7 +58,9 @@ object TbdexHttpClient {
           .asSequence()
           .map { Offering.parse(it.toString()) }
           .toList()
-      } else -> {
+      }
+
+      else -> {
         throw buildResponseException(response)
       }
     }
@@ -119,7 +121,9 @@ object TbdexHttpClient {
         return jsonNode.get("data").elements().asSequence()
           .map { Message.parse(it.toString()) }
           .toList()
-      } else -> {
+      }
+
+      else -> {
         throw buildResponseException(response)
       }
     }
@@ -163,7 +167,9 @@ object TbdexHttpClient {
           exchanges.add(exchange)
         }
         return exchanges
-      } else -> {
+      }
+
+      else -> {
         throw buildResponseException(response)
       }
     }

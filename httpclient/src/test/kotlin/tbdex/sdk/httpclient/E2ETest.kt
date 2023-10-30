@@ -1,9 +1,9 @@
 package tbdex.sdk.httpclient
 
 import org.junit.jupiter.api.Disabled
-import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
+import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
