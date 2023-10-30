@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-  implementation("com.github.TBD54566975:tbdex-kt:0.1.0-beta")
+  implementation("com.github.TBD54566975:tbdex-kt:0.4.0-beta")
 }
 ```
 
