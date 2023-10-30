@@ -47,6 +47,16 @@ class OfferingTest {
     val offering = TestData.getOffering()
     offering.sign(TestData.PFI_DID)
 
-    assertDoesNotThrow { Resource.parse(Json.stringify(offering)) }
+    val parsedOffering = assertDoesNotThrow { Resource.parse(Json.stringify(offering)) }
+    assertIs<Offering>(parsedOffering)
+  }
+
+  @Test
+  fun `can parse an offering explicitly`() {
+    val offering = TestData.getOffering()
+    offering.sign(TestData.PFI_DID)
+
+    val parsedOffering = assertDoesNotThrow { Offering.parse(Json.stringify(offering)) }
+    assertIs<Offering>(parsedOffering)
   }
 }

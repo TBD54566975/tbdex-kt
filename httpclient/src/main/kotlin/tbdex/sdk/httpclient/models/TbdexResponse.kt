@@ -1,5 +1,9 @@
 package tbdex.sdk.httpclient.models
 
+import tbdex.sdk.protocol.models.Message
+
+typealias Exchange = List<Message>
+
 /**
  * Error response.
  *

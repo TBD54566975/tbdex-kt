@@ -8,6 +8,7 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import tbdex.sdk.httpclient.models.ErrorDetail
+import tbdex.sdk.httpclient.models.Exchange
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
 import tbdex.sdk.httpclient.models.TbdexResponseException
@@ -32,6 +33,7 @@ object TbdexHttpClient {
    * @param filter An optional filter to apply for fetching offerings. If null, all offerings for the given PFI will be
    * fetched.
    * @return A list of [Offering] matching the request.
+   * @throws TbdexResponseException for request or response errors.
    */
   fun getOfferings(pfiDid: String, filter: GetOfferingsFilter? = null): List<Offering> {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
@@ -59,10 +61,7 @@ object TbdexHttpClient {
           .map { Offering.parse(it.toString()) }
           .toList()
       }
-
-      else -> {
-        throw buildResponseException(response)
-      }
+      else -> throw buildResponseException(response)
     }
   }
 
@@ -70,6 +69,7 @@ object TbdexHttpClient {
    * Sends a message to the PFI.
    *
    * @param message The [Message] object containing the message details to be sent.
+   * @throws TbdexResponseException for request or response errors.
    */
   fun sendMessage(message: Message) {
     val pfiDid = message.metadata.to
@@ -100,6 +100,7 @@ object TbdexHttpClient {
    * @param requesterDid The decentralized identifier of the entity requesting the exchange.
    * @param exchangeId The unique identifier of the exchange to be fetched.
    * @return An [Exchange] containing the requested exchange.
+   * @throws TbdexResponseException for request or response errors.
    */
   fun getExchange(pfiDid: String, requesterDid: Did, exchangeId: String): Exchange {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
@@ -122,10 +123,7 @@ object TbdexHttpClient {
           .map { Message.parse(it.toString()) }
           .toList()
       }
-
-      else -> {
-        throw buildResponseException(response)
-      }
+      else -> throw buildResponseException(response)
     }
   }
 
@@ -137,6 +135,7 @@ object TbdexHttpClient {
    * @param filter An optional filter to apply for fetching exchanges. If null, all exchanges for the given PFI and DID
    * will be fetched.
    * @return A list of matching [Exchange].
+   * @throws TbdexResponseException for request or response errors.
    */
   fun getExchanges(pfiDid: String, requesterDid: Did, filter: GetExchangesFilter? = null): List<Exchange> {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
@@ -168,10 +167,7 @@ object TbdexHttpClient {
         }
         return exchanges
       }
-
-      else -> {
-        throw buildResponseException(response)
-      }
+      else -> throw buildResponseException(response)
     }
   }
 
@@ -200,5 +196,3 @@ object TbdexHttpClient {
     )
   }
 }
-
-typealias Exchange = List<Message>
