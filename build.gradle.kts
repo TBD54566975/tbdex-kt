@@ -49,15 +49,15 @@ subprojects {
   }
 
   kotlin {
-    jvmToolchain(17)
+    jvmToolchain(11)
   }
 
   java {
     withJavadocJar()
     withSourcesJar()
 
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
   }
 
   publishing {
