@@ -2,17 +2,21 @@ package tbdex.sdk.protocol.models
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import de.fxlae.typeid.TypeId
 import org.junit.jupiter.api.assertDoesNotThrow
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.serialization.Json
-import typeid.TypeID
 import kotlin.test.Test
 import kotlin.test.assertIs
 
 class OrderTest {
   @Test
   fun `can create a new order`() {
-    val order = Order.create("pfi", "alice", TypeID(MessageKind.rfq.name))
+    val order = Order.create(
+      to = "pfi",
+      from = "alice",
+      exchangeId = TypeId.generate(MessageKind.rfq.name)
+    )
 
     assertThat(order.metadata.id.prefix).isEqualTo("order")
   }

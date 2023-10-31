@@ -1,20 +1,20 @@
 package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.serialization.dateTimeFormat
-import typeid.TypeID
 import java.time.OffsetDateTime
 
 /**
  * An interface that represents the contents of a [Message].
  */
-sealed interface MessageData: Data
+sealed interface MessageData : Data
 
 /**
  * A data class implementing [MessageData] that represents the contents of an [Rfq].
  */
 class RfqData(
-  val offeringId: TypeID,
+  val offeringId: TypeId,
   val payinSubunits: String,
   val payinMethod: SelectedPaymentMethod,
   val payoutMethod: SelectedPaymentMethod,

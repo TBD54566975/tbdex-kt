@@ -1,6 +1,7 @@
 package tbdex.sdk.protocol
 
 import com.danubetech.verifiablecredentials.CredentialSubject
+import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.CloseData
 import tbdex.sdk.protocol.models.CurrencyDetails
@@ -21,7 +22,6 @@ import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.models.RfqData
 import tbdex.sdk.protocol.models.SelectedPaymentMethod
 import tbdex.sdk.protocol.serialization.Json
-import typeid.TypeID
 import web5.sdk.credentials.ConstraintsV2
 import web5.sdk.credentials.FieldV2
 import web5.sdk.credentials.InputDescriptorV2
@@ -92,7 +92,7 @@ object TestData {
       )
     )
 
-  fun getRfq(offeringId: TypeID = TypeID(ResourceKind.offering.name), claims: List<String> = emptyList()) = Rfq.create(
+  fun getRfq(offeringId: TypeId = TypeId.generate(ResourceKind.offering.name), claims: List<String> = emptyList()) = Rfq.create(
     to = PFI_DID.uri,
     from = ALICE_DID.uri,
     rfqData = RfqData(
@@ -110,7 +110,7 @@ object TestData {
   )
 
   fun getQuote() = Quote.create(
-    ALICE_DID.uri, PFI_DID.uri, TypeID(MessageKind.rfq.name),
+    ALICE_DID.uri, PFI_DID.uri, TypeId.generate(MessageKind.rfq.name),
     QuoteData(
       expiresAt = OffsetDateTime.now().plusDays(1),
       payin = QuoteDetails("AUD", "1000", "1"),
@@ -131,26 +131,26 @@ object TestData {
   fun getClose() = Close.create(
     to = ALICE_DID.uri,
     from = PFI_DID.uri,
-    exchangeId = TypeID(MessageKind.rfq.name),
+    exchangeId = TypeId.generate(MessageKind.rfq.name),
     closeData = CloseData("test reason")
   )
 
   fun getOrder() = Order.create(
     to = PFI_DID.uri,
     from = ALICE_DID.uri,
-    exchangeId = TypeID(MessageKind.rfq.name)
+    exchangeId = TypeId.generate(MessageKind.rfq.name)
   )
 
   fun getOrderStatus() = OrderStatus.create(
     to = ALICE_DID.uri,
     from = PFI_DID.uri,
-    exchangeId = TypeID(MessageKind.rfq.name),
+    exchangeId = TypeId.generate(MessageKind.rfq.name),
     orderStatusData = OrderStatusData("PENDING")
   )
 
   fun getOrderStatusWithInvalidDid(): OrderStatus {
     val os = OrderStatus.create(
-      "alice", "pfi", TypeID(MessageKind.rfq.name), OrderStatusData("PENDING")
+      "alice", "pfi", TypeId.generate(MessageKind.rfq.name), OrderStatusData("PENDING")
     )
 
     os.sign(ALICE_DID)

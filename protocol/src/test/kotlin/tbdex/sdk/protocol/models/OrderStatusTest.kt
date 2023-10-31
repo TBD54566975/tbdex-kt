@@ -2,10 +2,10 @@ package tbdex.sdk.protocol.models
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import de.fxlae.typeid.TypeId
 import org.junit.jupiter.api.assertDoesNotThrow
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.serialization.Json
-import typeid.TypeID
 import kotlin.test.Test
 import kotlin.test.assertIs
 
@@ -13,7 +13,10 @@ class OrderStatusTest {
   @Test
   fun `can create a new orderStatus`() {
     val orderStatus = OrderStatus.create(
-      "pfi", "alice", TypeID(MessageKind.rfq.name), OrderStatusData("my status")
+      to = "pfi",
+      from = "alice",
+      exchangeId = TypeId.generate(MessageKind.rfq.name),
+      orderStatusData = OrderStatusData("my status")
     )
 
     assertk.assertAll {

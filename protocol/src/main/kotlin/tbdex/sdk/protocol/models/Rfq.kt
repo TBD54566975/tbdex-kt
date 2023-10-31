@@ -1,10 +1,10 @@
 package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.databind.JsonNode
+import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Rfq.Companion.create
 import tbdex.sdk.protocol.serialization.Json
-import typeid.TypeID
 import web5.sdk.credentials.PresentationDefinitionV2
 import java.time.OffsetDateTime
 
@@ -89,7 +89,7 @@ class Rfq private constructor(
       rfqData: RfqData,
       private: Map<String, Any>? = null
     ): Rfq {
-      val id = TypeID(MessageKind.rfq.name)
+      val id = TypeId.generate(MessageKind.rfq.name)
       val metadata = MessageMetadata(
         kind = MessageKind.rfq,
         to = to,

@@ -1,9 +1,9 @@
 package tbdex.sdk.protocol.models
 
+import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Offering.Companion.create
 import tbdex.sdk.protocol.models.Order.Companion.create
-import typeid.TypeID
 import java.time.OffsetDateTime
 
 /**
@@ -43,7 +43,7 @@ class Offering private constructor(
       val metadata = ResourceMetadata(
         kind = ResourceKind.offering,
         from = from,
-        id = TypeID(ResourceKind.offering.name),
+        id = TypeId.generate(ResourceKind.offering.name),
         createdAt = now,
         updatedAt = now
       )

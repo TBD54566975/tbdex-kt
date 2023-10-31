@@ -1,8 +1,8 @@
 package tbdex.sdk.protocol.models
 
+import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.OrderStatus.Companion.create
-import typeid.TypeID
 import java.time.OffsetDateTime
 
 /**
@@ -30,12 +30,12 @@ class OrderStatus private constructor(
      * @param orderStatusData Specific parameters relevant to an OrderStatus.
      * @return OrderStatus instance.
      */
-    fun create(to: String, from: String, exchangeId: TypeID, orderStatusData: OrderStatusData): OrderStatus {
+    fun create(to: String, from: String, exchangeId: TypeId, orderStatusData: OrderStatusData): OrderStatus {
       val metadata = MessageMetadata(
         kind = MessageKind.orderstatus,
         to = to,
         from = from,
-        id = TypeID(MessageKind.orderstatus.name),
+        id = TypeId.generate(MessageKind.orderstatus.name),
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now()
       )
