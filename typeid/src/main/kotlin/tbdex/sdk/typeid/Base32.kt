@@ -1,5 +1,6 @@
 package tbdex.sdk.typeid
 
+import kotlin.experimental.and
 
 private val ALPHABET = "0123456789abcdefghjkmnpqrstvwxyz".toCharArray()
 private val DECODE = intArrayOf(
@@ -36,8 +37,37 @@ fun encode(src: ByteArray): String {
     "Invalid length"
   }
 
-  val dst = arrayOfNulls<Byte>(23)
-  return ""
+  return StringBuilder(26)
+    // 10 byte timestamp
+    .append(ALPHABET[((src[0] and 244.toByte()).toInt() shr 5)])
+    .append(ALPHABET[(src[0] and 31).toInt()])
+    .append(ALPHABET[(src[1] and 248.toByte()).toInt() shr 3])
+    .append(ALPHABET[((src[1] and 7).toInt() shl 2) or ((src[2] and 192.toByte()).toInt() shr 6)])
+    .append(ALPHABET[(src[2] and 62).toInt() shr 1])
+    .append(ALPHABET[((src[2] and 1).toInt() shl 4) or ((src[3] and 240.toByte()).toInt() shr 4)])
+    .append(ALPHABET[((src[3] and 15).toInt() shl 1) or ((src[4] and 128.toByte()).toInt() shr 7)])
+    .append(ALPHABET[(src[4] and 124).toInt() shr 2])
+    .append(ALPHABET[((src[4] and 3).toInt() shl 3) or ((src[5] and 224.toByte()).toInt() shr 5)])
+    .append(ALPHABET[((src[5] and 31).toInt())])
+
+    // 16 bytes of randomness
+    .append(ALPHABET[(src[6] and 248.toByte()).toInt() shr 3])
+    .append(ALPHABET[((src[6] and 7).toInt() shl 2) or ((src[7] and 192.toByte()).toInt() shr 6)])
+    .append(ALPHABET[(src[7] and 62).toInt() shr 1])
+    .append(ALPHABET[((src[7] and 1).toInt() shl 4) or ((src[8] and 240.toByte()).toInt() shr 4)])
+    .append(ALPHABET[((src[8] and 15).toInt() shl 1) or ((src[9] and 128.toByte()).toInt() shr 7)])
+    .append(ALPHABET[(src[9] and 124).toInt() shr 2])
+    .append(ALPHABET[((src[9] and 3).toInt() shl 3) or ((src[10] and 224.toByte()).toInt() shr 5)])
+    .append(ALPHABET[(src[10] and 31.toByte()).toInt()])
+    .append(ALPHABET[(src[11] and 248.toByte()).toInt() shr 3])
+    .append(ALPHABET[((src[11] and 7).toInt() shl 2) or ((src[12] and 192.toByte()).toInt() shr 6)])
+    .append(ALPHABET[(src[12] and 62).toInt() shr 1])
+    .append(ALPHABET[((src[12] and 1).toInt() shl 4) or ((src[13] and 240.toByte()).toInt() shr 4)])
+    .append(ALPHABET[((src[13] and 15).toInt() shl 1) or ((src[14] and 128.toByte()).toInt() shr 7)])
+    .append(ALPHABET[(src[14] and 124).toInt() shr 2])
+    .append(ALPHABET[((src[14] and 3).toInt() shl 3) or ((src[15] and 224.toByte()).toInt() shr 5)])
+    .append(ALPHABET[(src[15] and 31).toInt()])
+    .toString()
 }
 
 fun decode(src: String): ByteArray {
@@ -72,7 +102,8 @@ fun decode(src: String): ByteArray {
     || DECODE[v[22]] == 0xFF
     || DECODE[v[23]] == 0xFF
     || DECODE[v[24]] == 0xFF
-    || DECODE[v[25]] == 0xFF) {
+    || DECODE[v[25]] == 0xFF
+  ) {
     throw IllegalArgumentException("Invalid base32 character")
   }
 
@@ -97,5 +128,4 @@ fun decode(src: String): ByteArray {
     (DECODE[src[22].code] and 1 shl 7 or (DECODE[src[23].code] shl 2) or (DECODE[src[24].code] shr 3)).toByte(),
     (DECODE[src[24].code] and 7 shl 5 or DECODE[src[25].code]).toByte()
   )
-
 }

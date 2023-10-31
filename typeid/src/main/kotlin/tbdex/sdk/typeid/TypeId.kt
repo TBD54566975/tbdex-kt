@@ -1,11 +1,17 @@
 package tbdex.sdk.typeid
 
 import com.github.f4b6a3.uuid.UuidCreator
+import java.util.function.Predicate
+import java.util.regex.Pattern
 
 class TypeId(private val prefix: String, var suffix: String? = null) {
+  private val PREFIX = Pattern.compile("^[a-z]{0,62}$").asMatchPredicate()
+  private val SUFFIX: Predicate<String> =
+    Pattern.compile("^[0-7][0123456789abcdefghjkmnpqrstvwxyz]{1,25}$").asMatchPredicate()
+
   init {
-    require(isValidPrefix(prefix)) {
-      "Invalid prefix. Must be at most 63 ascii letters [a-z]"
+    require(PREFIX.test(prefix)) {
+      "$prefix is not a valid prefix"
     }
 
     if (suffix == null) {
@@ -13,8 +19,10 @@ class TypeId(private val prefix: String, var suffix: String? = null) {
       suffix = encode(UuidCreator.toBytes(uuidv7))
     }
 
-    check(suffix?.length == 26)
-    check(suffix?.get(0)!! > '7')
+
+    require(SUFFIX.test(suffix!!)) {
+      "$suffix is not a valid suffix"
+    }
     decode(suffix!!)
   }
 
@@ -73,6 +81,44 @@ class TypeId(private val prefix: String, var suffix: String? = null) {
     fun fromUUID(prefix: String, uuid: String): TypeId {
       val suffix = encode(parseUUID(uuid))
       return TypeId(prefix, suffix)
+    }
+
+    private fun parseUUID(uuid: String): ByteArray {
+      val arr = ByteArray(16)
+      var v: Long
+
+      // Block 1
+      v = uuid.substring(0, 8).toLong(16)
+      arr[0] = (v ushr 24).toByte()
+      arr[1] = ((v ushr 16) and 0xFF).toByte()
+      arr[2] = ((v ushr 8) and 0xFF).toByte()
+      arr[3] = (v and 0xFF).toByte()
+
+      // Block 2
+      v = uuid.substring(9, 13).toLong(16)
+      arr[4] = (v ushr 8).toByte()
+      arr[5] = (v and 0xFF).toByte()
+
+      // Block 3
+      v = uuid.substring(14, 18).toLong(16)
+      arr[6] = (v ushr 8).toByte()
+      arr[7] = (v and 0xFF).toByte()
+
+      // Block 4
+      v = uuid.substring(19, 23).toLong(16)
+      arr[8] = (v ushr 8).toByte()
+      arr[9] = (v and 0xFF).toByte()
+
+      // Block 5
+      v = uuid.substring(24, 36).toLong(16)
+      arr[10] = ((v / 0x10000000000) and 0xFF).toByte()
+      arr[11] = ((v / 0x100000000) and 0xFF).toByte()
+      arr[12] = ((v ushr 24) and 0xFF).toByte()
+      arr[13] = ((v ushr 16) and 0xFF).toByte()
+      arr[14] = ((v ushr 8) and 0xFF).toByte()
+      arr[15] = (v and 0xFF).toByte()
+
+      return arr
     }
   }
 }
