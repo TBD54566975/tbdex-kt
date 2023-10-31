@@ -92,7 +92,10 @@ object TestData {
       )
     )
 
-  fun getRfq(offeringId: TypeId = TypeId.generate(ResourceKind.offering.name), claims: List<String> = emptyList()) = Rfq.create(
+  fun getRfq(
+    offeringId: TypeId = TypeId.generate(ResourceKind.offering.name),
+    claims: List<String> = emptyList()
+  ) = Rfq.create(
     to = PFI_DID.uri,
     from = ALICE_DID.uri,
     rfqData = RfqData(
