@@ -3,10 +3,10 @@ package tbdex.sdk.protocol.models
 import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import de.fxlae.typeid.TypeId
 import org.junit.jupiter.api.assertDoesNotThrow
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.serialization.Json
-import typeid.TypeID
 import java.time.OffsetDateTime
 import kotlin.test.Test
 import kotlin.test.assertIs
@@ -15,8 +15,10 @@ class QuoteTest {
   @Test
   fun `can create a new quote`() {
     val quote = Quote.create(
-      "pfi", "alice", TypeID(MessageKind.rfq.name),
-      QuoteData(
+      to = "pfi",
+      from = "alice",
+      exchangeId = TypeId.generate(MessageKind.rfq.name),
+      quoteData = QuoteData(
         expiresAt = OffsetDateTime.now().plusDays(1),
         payin = QuoteDetails("AUD", "1000", "0"),
         payout = QuoteDetails("BTC", "12", "0")

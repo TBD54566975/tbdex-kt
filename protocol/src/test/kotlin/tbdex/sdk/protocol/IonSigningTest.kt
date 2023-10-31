@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
 import com.nimbusds.jose.JWSObject
+import de.fxlae.typeid.TypeId
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import tbdex.sdk.protocol.models.Close
@@ -11,7 +12,6 @@ import tbdex.sdk.protocol.models.CloseData
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Resource
-import typeid.TypeID
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.DidIonManager
 import kotlin.test.assertIs
@@ -25,7 +25,7 @@ class IonSigningTest {
     val close = Close.create(
       to = "did:ex:pfi",
       from = did.uri,
-      exchangeId = TypeID("offering"),
+      exchangeId = TypeId.generate("offering"),
       closeData = CloseData(reason = "hi")
     )
 

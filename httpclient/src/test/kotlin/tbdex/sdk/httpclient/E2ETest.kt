@@ -1,5 +1,6 @@
 package tbdex.sdk.httpclient
 
+import de.fxlae.typeid.TypeId
 import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
@@ -11,7 +12,6 @@ import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.models.RfqData
 import tbdex.sdk.protocol.models.SelectedPaymentMethod
-import typeid.TypeID
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.Did
@@ -44,7 +44,7 @@ class E2ETest {
       throw AssertionError(
         "Error getting offerings. " +
           "Errors: ${e.errors?.joinToString(", ") { it.detail }}",
-          e
+        e
       )
     }
 
@@ -70,7 +70,7 @@ class E2ETest {
     println("ExchangeId for the rest of this exchange is ${rfq.metadata.exchangeId}")
 
     try {
-       client.sendMessage(rfq)
+      client.sendMessage(rfq)
     } catch (e: TbdexResponseException) {
       throw AssertionError(
         "Error in sending RFQ. " +
@@ -222,7 +222,7 @@ class E2ETest {
   }
 
   private fun buildRfqData(
-    firstOfferingId: TypeID,
+    firstOfferingId: TypeId,
     vcJwt: String
   ) = RfqData(
     offeringId = firstOfferingId,

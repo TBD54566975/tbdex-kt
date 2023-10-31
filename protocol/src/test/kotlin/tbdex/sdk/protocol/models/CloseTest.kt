@@ -4,10 +4,10 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import com.nimbusds.jose.JWSObject
+import de.fxlae.typeid.TypeId
 import org.junit.jupiter.api.assertDoesNotThrow
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.serialization.Json
-import typeid.TypeID
 import kotlin.test.Test
 import kotlin.test.assertIs
 
@@ -17,7 +17,7 @@ class CloseTest {
     val close = Close.create(
       to = "pfi",
       from = "alice",
-      exchangeId = TypeID(MessageKind.rfq.name),
+      exchangeId = TypeId.generate(MessageKind.rfq.name),
       closeData = CloseData("my reason")
     )
 

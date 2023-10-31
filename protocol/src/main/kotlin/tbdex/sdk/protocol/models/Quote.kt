@@ -1,8 +1,8 @@
 package tbdex.sdk.protocol.models
 
+import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Quote.Companion.create
-import typeid.TypeID
 import java.time.OffsetDateTime
 
 /**
@@ -34,14 +34,14 @@ class Quote private constructor(
     fun create(
       to: String,
       from: String,
-      exchangeId: TypeID,
+      exchangeId: TypeId,
       quoteData: QuoteData,
     ): Quote {
       val metadata = MessageMetadata(
         kind = MessageKind.quote,
         to = to,
         from = from,
-        id = TypeID(MessageKind.quote.name),
+        id = TypeId.generate(MessageKind.quote.name),
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now()
       )
