@@ -61,6 +61,7 @@ object TbdexHttpClient {
           .map { Offering.parse(it.toString()) }
           .toList()
       }
+
       else -> throw buildResponseException(response)
     }
   }
@@ -86,6 +87,8 @@ object TbdexHttpClient {
       .addHeader("Content-Type", JSON_HEADER)
       .post(body)
       .build()
+
+    println("attempting to send message to: ${request.url}")
 
     val response: Response = client.newCall(request).execute()
     if (!response.isSuccessful) {
@@ -115,6 +118,8 @@ object TbdexHttpClient {
       .build()
 
     val response: Response = client.newCall(request).execute()
+    println("attempting to get exchange: ${request.url}")
+
     when {
       response.isSuccessful -> {
         val responseString = response.body?.string()
@@ -123,6 +128,7 @@ object TbdexHttpClient {
           .map { Message.parse(it.toString()) }
           .toList()
       }
+
       else -> throw buildResponseException(response)
     }
   }
@@ -153,6 +159,8 @@ object TbdexHttpClient {
       .get()
       .build()
 
+    println("attempting to get exchanges: ${request.url}")
+
     val response: Response = client.newCall(request).execute()
     when {
       response.isSuccessful -> {
@@ -167,6 +175,7 @@ object TbdexHttpClient {
         }
         return exchanges
       }
+
       else -> throw buildResponseException(response)
     }
   }
