@@ -10,6 +10,11 @@ plugins {
   `maven-publish`
   id("org.jetbrains.dokka") version "1.9.0"
   id("org.jetbrains.kotlinx.kover") version "0.7.3"
+  id("com.github.jk1.dependency-license-report") version "2.0"
+}
+
+licenseReport {
+   allowedLicensesFile = file("allowed-licenses.json")
 }
 
 repositories {
