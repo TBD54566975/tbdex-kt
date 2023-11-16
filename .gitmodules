@@ -1,7 +1,0 @@
-[submodule "tbdex"]
-	path = tbdex
-	url = https://github.com/TBD54566975/tbdex.git
-[submodule "protocol/src/test/vectors"]
-	path = protocol/src/test/vectors
-	url = https://github.com/TBD54566975/sdk-development.git
-	branch = plew.test-vectors-prototype

@@ -2,13 +2,16 @@ package tbdex.sdk.protocol
 
 import com.fasterxml.jackson.databind.JsonNode
 import tbdex.sdk.protocol.serialization.Json
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.URL
 
 object TestVectors {
   val vectors = readVectors()
 
   fun readVectors(): JsonNode {
-    val loader = Thread.currentThread().contextClassLoader
-    val vectorsJson = loader.getResourceAsStream("testVectors.json")?.bufferedReader()?.readText()!!
+    val stream = URL("https://tbdex.dev/test-vectors/protocol.json").openStream()
+    val vectorsJson = BufferedReader(InputStreamReader(stream)).readText()
     return Json.jsonMapper.readTree(vectorsJson)
   }
 
