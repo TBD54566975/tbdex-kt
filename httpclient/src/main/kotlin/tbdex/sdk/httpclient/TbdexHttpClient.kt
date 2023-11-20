@@ -1,12 +1,14 @@
 package tbdex.sdk.httpclient
 
 import com.fasterxml.jackson.module.kotlin.convertValue
+import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import okhttp3.dnsoverhttps.DnsOverHttps
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpclient.models.Exchange
 import tbdex.sdk.httpclient.models.GetExchangesFilter
@@ -17,12 +19,23 @@ import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.serialization.Json.jsonMapper
 import web5.sdk.dids.Did
+import java.io.File
+import java.net.InetAddress
 
 /**
  * A client of the tbDEX HTTP interface for communicating with a PFI.
  */
 object TbdexHttpClient {
-  private val client = OkHttpClient()
+  private val client = run {
+    val appCache = Cache(File("cacheDir", "okhttpcache"), 10 * 1024 * 1024)
+    val bootstrapClient = OkHttpClient.Builder().cache(appCache).build()
+    val dns = DnsOverHttps.Builder().client(bootstrapClient)
+      .url("https://dns.google/dns-query".toHttpUrl())
+      .bootstrapDnsHosts(InetAddress.getByName("9.9.9.9"))
+      .build()
+    bootstrapClient.newBuilder().dns(dns).build()
+  }
+
   private val jsonMediaType = "application/json; charset=utf-8".toMediaType()
   private const val JSON_HEADER = "application/json"
 
