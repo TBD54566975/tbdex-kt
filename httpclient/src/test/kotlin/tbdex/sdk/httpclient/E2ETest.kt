@@ -1,6 +1,8 @@
 package tbdex.sdk.httpclient
 
+import com.nimbusds.jose.jwk.JWK
 import de.fxlae.typeid.TypeId
+import foundation.identity.did.Service
 import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
@@ -15,7 +17,11 @@ import tbdex.sdk.protocol.models.SelectedPaymentMethod
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.Did
+import web5.sdk.dids.PublicKeyPurpose
+import web5.sdk.dids.methods.dht.CreateDidDhtOptions
+import web5.sdk.dids.methods.dht.DidDht
 import web5.sdk.dids.methods.key.DidKey
+import java.net.URI
 import kotlin.test.Test
 
 private const val POLL_INTERVAL = 1000L
@@ -30,10 +36,34 @@ class E2ETest {
   fun `tests e2e flow`() {
     val client = TbdexHttpClient
 
-    @Suppress("MaxLineLength")
-    val pfiDid =
-      "did:ion:EiBxWCFvogkmSmQrEpxXM3kT0bcf1_maNQi4r4FExBgSwg:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoiTDlyblBQSXc3QkdEc2RBdm5PMTJuU1NjZTBZLTdLQlp0bkh6WHF4enYyTSJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiIsImFzc2VydGlvbk1ldGhvZCJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHA6Ly9sb2NhbGhvc3Q6OTAwMCIsInR5cGUiOiJQRkkifV19fV0sInVwZGF0ZUNvbW1pdG1lbnQiOiJFaURhYmhUeUNRTHBHeDZJNTVnY0J1ZGlON2NJS2ZIQUtlYVBwVG5RMUVoZzB3In0sInN1ZmZpeERhdGEiOnsiZGVsdGFIYXNoIjoiRWlCQVdrOEthMlNVbzcxemZpMXo5SjBkd1hNZ0N0MlN2SjZUWTVaMmNKTzIwQSIsInJlY292ZXJ5Q29tbWl0bWVudCI6IkVpQ3pwMGlkX01SaXFQNVZ2WVlfNjM2WVZzb0xVcWY1VERFeE5jRlU4RmNBWncifX0"
-    val myDid = DidKey.create(InMemoryKeyManager())
+    val keyManager = InMemoryKeyManager()
+    val pfiDid = DidDht.create(
+      keyManager,
+      CreateDidDhtOptions(
+        verificationMethods = listOf(
+          Pair(
+            JWK.parse(
+              """{
+        "crv": "Ed25519",
+        "kty": "OKP",
+        "x": "i6cnsuH4JTBMXKbseg28Hi3w4Xp13E85UwnSW3ZgYk8"
+      }"""
+            ),
+            arrayOf(PublicKeyPurpose.AUTHENTICATION)
+          )
+        ),
+        services = listOf(
+          Service.builder()
+            .id(URI.create("#pfi"))
+            .type("PFI")
+            .serviceEndpoint("http://localhost:9000")
+            .build()
+        ),
+        publish = false,
+      )
+    ).uri
+
+    val myDid = DidKey.create(keyManager)
 
     println("let's do a tbdex transaction!")
     println("Getting offerings...")
