@@ -13,6 +13,9 @@ repositories {
   maven {
     url = uri("https://jitpack.io")
   }
+  maven {
+    url = uri("https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/")
+  }
 }
 
 dependencies {
@@ -22,7 +25,7 @@ dependencies {
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8")
   implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
-  implementation("com.github.TBD54566975:web5-kt:0.0.9-beta")
+  implementation("com.github.TBD54566975:web5-kt:v0.0.9-gamma")
   implementation("decentralized-identity:did-common-java:1.9.0") // would like to grab this via web5 dids
 
   testImplementation(kotlin("test"))

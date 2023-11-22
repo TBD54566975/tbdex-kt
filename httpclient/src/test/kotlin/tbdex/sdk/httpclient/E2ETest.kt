@@ -15,7 +15,7 @@ import tbdex.sdk.protocol.models.SelectedPaymentMethod
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.Did
-import web5.sdk.dids.DidKey
+import web5.sdk.dids.methods.key.DidKey
 import kotlin.test.Test
 
 private const val POLL_INTERVAL = 1000L

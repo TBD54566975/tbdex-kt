@@ -14,8 +14,8 @@ import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
 import web5.sdk.crypto.InMemoryKeyManager
-import web5.sdk.dids.DidIonManager
-import web5.sdk.dids.DidKey
+import web5.sdk.dids.methods.ion.DidIon
+import web5.sdk.dids.methods.key.DidKey
 import java.net.HttpURLConnection
 import kotlin.test.Test
 
@@ -26,7 +26,7 @@ import kotlin.test.Test
  */
 class TbdexHttpClientTest {
   private lateinit var server: MockWebServer
-  private val pfi = DidIonManager.create(InMemoryKeyManager())
+  private val pfi = DidIon.create(InMemoryKeyManager())
   private val alice = DidKey.create(InMemoryKeyManager())
 
   @Suppress("MaximumLineLength")

@@ -30,7 +30,7 @@ import web5.sdk.credentials.VcDataModel
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.Did
-import web5.sdk.dids.DidKey
+import web5.sdk.dids.methods.key.DidKey
 import java.net.URI
 import java.time.OffsetDateTime
 import java.util.Date
