@@ -13,14 +13,14 @@ import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Resource
 import web5.sdk.crypto.InMemoryKeyManager
-import web5.sdk.dids.DidIonManager
+import web5.sdk.dids.methods.ion.DidIon
 import kotlin.test.assertIs
 
 class IonSigningTest {
   @Test
   fun `can sign a tbdex message with an ion did`() {
     val km = InMemoryKeyManager()
-    val did = DidIonManager.create(km)
+    val did = DidIon.create(km)
 
     val close = Close.create(
       to = "did:ex:pfi",
@@ -40,7 +40,7 @@ class IonSigningTest {
 
   @Test
   fun `can parse ION signed offering from a json string`() {
-    val did = DidIonManager.create(InMemoryKeyManager())
+    val did = DidIon.create(InMemoryKeyManager())
     val offering = TestData.getOffering(from = did.uri)
     offering.sign(did)
     val jsonResource = offering.toString()
