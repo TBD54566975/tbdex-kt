@@ -4,32 +4,40 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.request.receive
-import io.ktor.server.request.receiveText
-import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import tbdex.sdk.httpserver.models.ExchangesApi
+import tbdex.sdk.httpserver.models.FakeExchangesApi
+import tbdex.sdk.httpserver.models.FakeOfferingsApi
+import tbdex.sdk.httpserver.models.Filter
 import tbdex.sdk.httpserver.models.GetCallback
 import tbdex.sdk.httpserver.models.OfferingsApi
 import tbdex.sdk.httpserver.models.SubmitCallback
-import tbdex.sdk.httpserver.models.TbdexCallback
-import tbdex.sdk.protocol.models.Message
+import tbdex.sdk.protocol.models.MessageKind
+import tbdex.sdk.protocol.models.Offering
 import tbdex.server.tbdex.sdk.httpserver.handlers.submitRfq
 
 fun main() {
   val serverConfig = TbdexHttpServerConfig(
     port = 8080,
-    callbackFunctions = mapOf(
-      "rfq" to { println("Callback function for RFQ endpoint") },
+    getCallbacks = mapOf(
+      "exchanges" to { applicationCall: ApplicationCall, filter: Filter -> },
+      "offerings" to { applicationCall: ApplicationCall, filter: Filter -> }
+    ),
+    submitCallbacks = mapOf(
+      "rfq" to { applicationCall: ApplicationCall, messageKind: MessageKind, offering: Offering? -> },
+      "order" to { applicationCall: ApplicationCall, messageKind: MessageKind, _: Offering? -> },
+      "close" to { applicationCall: ApplicationCall, messageKind: MessageKind, _: Offering? -> }
+
     )
   )
 
@@ -51,9 +59,10 @@ data class TbdexHttpServerConfig(
 
 class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
 
-  private val offeringsApi = config.offeringsApi ?: fakeOfferingsApi
-  private val exchangesApi = config.exchangesApi ?: fakeExchangesApi
-//  private val callbackFunctions = config.callbackFunctions
+  private val offeringsApi = config.offeringsApi ?: FakeOfferingsApi()
+  private val exchangesApi = config.exchangesApi ?: FakeExchangesApi()
+
+  //  private val callbackFunctions = config.callbackFunctions
   private val getCallbacks = config.getCallbacks
   private val submitCallbacks = config.submitCallbacks
   private val server = embeddedServer(Netty, port = config.port) {
@@ -79,35 +88,41 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
 
       route("/exchanges") {
         post("/{exchangeId}/rfq") {
-          submitRfq(call, offeringsApi, exchangesApi,submitCallbacks.getOrDefault("rfq", null))
-          val response = submitRfq(request, callback)
-          call.respond(response)
+          submitRfq(
+            call = call,
+            offeringsApi = offeringsApi,
+            exchangesApi = exchangesApi,
+            callback = submitCallbacks.getOrDefault("rfq", null)
+          )
         }
 
         post("/{exchangeId}/order") {
-          val request = call.receive<OrderRequest>()
-          val callback =
-          val response = submitOrder(request, callback)
-          call.respond(response)
+          submitOrder(
+            call = call,
+            offeringsApi = offeringsApi,
+            exchangesApi = exchangesApi,
+            callback = submitCallbacks.getOrDefault("order", null)
+          )
         }
 
         post("/{exchangeId}/close") {
-          val request = call.receive<CloseRequest>()
-          val callback =
-          val response = submitClose(request, callback)
-          call.respond(response)
+          submitClose(
+            call = call,
+            offeringsApi = offeringsApi,
+            exchangesApi = exchangesApi,
+            callback = submitCallbacks.getOrDefault("close", null)
+          )
         }
 
         get {
-          val callback = call.receive<TbdexCallback>()
-          val response = getExchanges(callback)
-          call.respond(response)
+          val callback = getCallbacks.getOrDefault("exchanges", null)
+          getExchanges(callback)
         }
       }
 
       get("/offerings") {
-        val response = getOfferings(callback)
-        call.respond(response)
+        val callback = getCallbacks.getOrDefault("offerings", null)
+        getOfferings(callback)
       }
     }
   }
