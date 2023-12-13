@@ -27,13 +27,13 @@ class TbdexResponseException(
  * @property meta Additional error metadata.
  */
 class ErrorDetail(
-  val id: String?,
-  val status: String?,
-  val code: String?,
-  val title: String?,
+  val id: String? = null,
+  val status: String? = null,
+  val code: String? = null,
+  val title: String? = null,
   val detail: String,
-  val source: Source?,
-  val meta: Map<String, Any?>?
+  val source: Source? = null,
+  val meta: Map<String, Any?>? = null
 )
 
 /**
