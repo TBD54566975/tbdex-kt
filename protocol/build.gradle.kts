@@ -20,7 +20,7 @@ repositories {
 
 dependencies {
   api("de.fxlae:typeid-java-jdk8:0.2.0")
-  api("com.github.TBD54566975:web5-kt:v0.0.9-gamma")
+  api("xyz.block:web5:0.0.9-delta")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8")
