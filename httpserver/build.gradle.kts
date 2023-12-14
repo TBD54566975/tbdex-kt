@@ -35,6 +35,7 @@ dependencies {
   testImplementation(kotlin("test"))
   testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
   testImplementation("io.ktor:ktor-server-test-host:2.3.4")
+  testImplementation("com.squareup.okhttp3:okhttp:4.11.0")
 }
 
 tasks.test {

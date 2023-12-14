@@ -9,6 +9,14 @@ import tbdex.sdk.protocol.models.Offering
 typealias GetCallback = (ApplicationCall, Filter) -> Any
 typealias SubmitCallback = (ApplicationCall, MessageKind, Offering?) -> Unit
 
+enum class SubmitKind {
+  rfq, order, close
+}
+
+enum class GetKind {
+  exchanges, offerings
+}
+
 class GetOfferingsFilter(
   val payinCurrency: String? = null,
   val payoutCurrency: String? = null,
@@ -22,3 +30,5 @@ class GetExchangesFilter(
 
 sealed interface Filter
 class CallbackError(val statusCode: HttpStatusCode, val details: List<ErrorDetail>?) : Exception()
+
+class ErrorResponse(val errors: List<ErrorDetail>?)
