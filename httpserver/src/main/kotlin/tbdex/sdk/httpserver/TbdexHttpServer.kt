@@ -4,7 +4,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
-import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.call
 import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
@@ -15,30 +14,17 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import tbdex.sdk.httpserver.handlers.submitRfq
 import tbdex.sdk.httpserver.models.ExchangesApi
 import tbdex.sdk.httpserver.models.FakeExchangesApi
 import tbdex.sdk.httpserver.models.FakeOfferingsApi
-import tbdex.sdk.httpserver.models.Filter
 import tbdex.sdk.httpserver.models.GetCallback
 import tbdex.sdk.httpserver.models.OfferingsApi
 import tbdex.sdk.httpserver.models.SubmitCallback
-import tbdex.sdk.protocol.models.MessageKind
-import tbdex.sdk.protocol.models.Offering
-import tbdex.sdk.httpserver.handlers.submitRfq
 
 fun main() {
   val serverConfig = TbdexHttpServerConfig(
     port = 8080,
-    getCallbacks = mapOf(
-      "exchanges" to { applicationCall: ApplicationCall, filter: Filter -> },
-      "offerings" to { applicationCall: ApplicationCall, filter: Filter -> }
-    ),
-    submitCallbacks = mapOf(
-      "rfq" to { applicationCall: ApplicationCall, messageKind: MessageKind, offering: Offering? -> },
-      "order" to { applicationCall: ApplicationCall, messageKind: MessageKind, _: Offering? -> },
-      "close" to { applicationCall: ApplicationCall, messageKind: MessageKind, _: Offering? -> }
-
-    )
   )
 
   val serverWrapper = TbdexHttpServer(serverConfig)
@@ -51,22 +37,46 @@ fun main() {
 
 data class TbdexHttpServerConfig(
   val port: Int,
-  val getCallbacks: Map<String, GetCallback>,
-  val submitCallbacks: Map<String, SubmitCallback>,
   val offeringsApi: OfferingsApi? = null,
   val exchangesApi: ExchangesApi? = null
 )
+
+enum class SubmitKind {
+  rfq, order, close
+}
+
+enum class GetKind {
+  exchanges, offerings
+}
+
 
 class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
 
   private val offeringsApi = config.offeringsApi ?: FakeOfferingsApi()
   private val exchangesApi = config.exchangesApi ?: FakeExchangesApi()
 
-  //  private val callbackFunctions = config.callbackFunctions
-  private val getCallbacks = config.getCallbacks
-  private val submitCallbacks = config.submitCallbacks
+  private val getCallbacks: MutableMap<String, GetCallback> = mutableMapOf()
+  private val submitCallbacks: MutableMap<String, SubmitCallback> = mutableMapOf()
   private val server = embeddedServer(Netty, port = config.port) {
     module()
+  }
+
+  /**
+   * Setup the callback for the available Submit Requests (eg. RFQ, Order, Close)
+   * @param messageKind - the kind of message to be handled
+   * @param callback - the handler for the message
+   */
+  fun <T : SubmitKind> submit(messageKind: T, callback: SubmitCallback) {
+    this.submitCallbacks[messageKind.toString()] = callback
+  }
+
+  /**
+   * Setup the callback for the available Get Requests (eg. offerings, exchanges)
+   * @param resourceKind - the kind of resource to be handled
+   * @param callback - the handler for the resource
+   */
+  fun <T : GetKind> get(resourceKind: T, callback: GetCallback) {
+    this.getCallbacks[resourceKind.toString()] = callback
   }
 
   private fun Application.module() {
