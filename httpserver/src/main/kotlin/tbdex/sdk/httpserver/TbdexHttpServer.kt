@@ -2,6 +2,7 @@ package tbdex.sdk.httpserver
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
@@ -9,7 +10,7 @@ import io.ktor.server.application.install
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.response.respondText
+import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
@@ -65,10 +66,10 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
 
     app.routing {
       get("/") {
-        call.respondText {
-          "Please use the tbdex protocol to communicate with this server " +
-            "or a suitable library: https://github.com/TBD54566975/tbdex-protocol"
-        }
+        call.respond(
+          HttpStatusCode.OK, "Please use the tbdex protocol to communicate with this server " +
+          "or a suitable library: https://github.com/TBD54566975/tbdex-protocol"
+        )
       }
 
       route("/exchanges") {

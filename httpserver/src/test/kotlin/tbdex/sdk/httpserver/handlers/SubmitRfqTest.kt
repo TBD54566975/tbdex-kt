@@ -11,11 +11,13 @@ import io.ktor.server.testing.testApplication
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.junit.After
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import software.amazon.ion.system.IonTextWriterBuilder.json
 import tbdex.sdk.httpserver.TbdexHttpServer
 import tbdex.sdk.httpserver.TbdexHttpServerConfig
+import kotlin.concurrent.thread
 import kotlin.test.assertEquals
 
 class SubmitRfqTest {
@@ -28,17 +30,15 @@ class SubmitRfqTest {
   }
   val client = OkHttpClient()
 
-  @After
-  fun teardown() {
-    api.stop()
-  }
+//  @After
+//  fun teardown() {
+//    api.stop()
+//  }
 
   @Test
   fun `returns 400 if no request body is provided`() {
-//    api.start(wait = true)
-
     val request = Request.Builder()
-      .url("http://localhost:8000/exchanges/123/rfq")
+      .url("http://10.0.2.2:8080/exchanges/123/rfq")
       .post("".toRequestBody())
       .build()
 
@@ -70,6 +70,26 @@ class SubmitRfqTest {
     }
 
   }
+
+  companion object {
+    private lateinit var server: TbdexHttpServer
+
+    @JvmStatic
+    @BeforeAll
+    fun setup() {
+      thread {
+        server = TbdexHttpServer(TbdexHttpServerConfig(8080))
+        server.start()
+      }
+    }
+
+    @JvmStatic
+    @AfterAll
+    fun teardown() {
+      server.stop()
+    }
+  }
+}
 //
 //  companion object {
 //    lateinit var testApp: TestApplication
@@ -90,4 +110,3 @@ class SubmitRfqTest {
 //      testApp.stop()
 //    }
 //  }
-}
