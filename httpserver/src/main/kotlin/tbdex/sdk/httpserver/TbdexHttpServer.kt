@@ -24,7 +24,7 @@ import tbdex.sdk.httpserver.models.OfferingsApi
 import tbdex.sdk.httpserver.models.SubmitCallback
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
-import tbdex.server.tbdex.sdk.httpserver.handlers.submitRfq
+import tbdex.sdk.httpserver.handlers.submitRfq
 
 fun main() {
   val serverConfig = TbdexHttpServerConfig(

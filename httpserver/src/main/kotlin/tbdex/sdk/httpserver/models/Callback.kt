@@ -6,9 +6,6 @@ import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 
-//typealias GetCallback<T> = (RequestContext, Filters[T]) -> Any
-//typealias SubmitCallback<T, O> = (RequestContext, MessageKindClasses[T], SubmitCallbackOpts[O]) -> Unit
-
 typealias GetCallback = (ApplicationCall, Filter) -> Any
 typealias SubmitCallback = (ApplicationCall, MessageKind, Offering?) -> Unit
 
@@ -19,7 +16,8 @@ class GetOfferingsFilter(
 ) : Filter
 
 class GetExchangesFilter(
-  val exchangeIds: List<String>
+  val exchangeIds: List<String>,
+  val from: String
 ) : Filter
 
 sealed interface Filter
