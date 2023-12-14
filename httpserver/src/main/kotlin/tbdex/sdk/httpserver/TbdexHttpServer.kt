@@ -25,12 +25,15 @@ import tbdex.sdk.httpserver.models.SubmitCallback
 import tbdex.sdk.httpserver.models.SubmitKind
 
 fun main() {
-  val serverConfig = TbdexHttpServerConfig(
-    port = 8080,
-  )
 
-  val tbdexServer = TbdexHttpServer(serverConfig)
-  tbdexServer.start()
+  embeddedServer(Netty, port = 8080) {
+    val serverConfig = TbdexHttpServerConfig(
+      port = 8080,
+    )
+    val tbdexServer = TbdexHttpServer(serverConfig)
+    tbdexServer.configure(this)
+  }.start(wait = true)
+
 }
 
 class TbdexHttpServerConfig(
@@ -47,12 +50,12 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
 
   private val getCallbacks: MutableMap<String, GetCallback> = mutableMapOf()
   private val submitCallbacks: MutableMap<String, SubmitCallback> = mutableMapOf()
-  val server = embeddedServer(Netty, port = config.port) {
-    module()
+  private var embedded = embeddedServer(Netty, port = config.port) {
+    configure(this)
   }
 
-  fun Application.module() {
-    install(ContentNegotiation) {
+  fun configure(app: Application) {
+    app.install(ContentNegotiation) {
       jackson {
         registerModule(JavaTimeModule())
         registerKotlinModule()
@@ -60,7 +63,7 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
       }
     }
 
-    routing {
+    app.routing {
       get("/") {
         call.respondText {
           "Please use the tbdex protocol to communicate with this server " +
@@ -114,10 +117,11 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
   }
 
   fun start() {
-    server.start(wait = true)
+    embedded.start(wait = true)
   }
 
   fun stop() {
-    server.stop(1000, 5000)
+    embedded.stop(1000, 5000)
   }
+
 }

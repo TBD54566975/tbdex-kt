@@ -1,19 +1,31 @@
 package tbdex.sdk.httpserver.handlers
 
-import io.ktor.server.testing.TestApplication
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.post
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 import io.ktor.server.testing.testApplication
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.junit.After
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import software.amazon.ion.system.IonTextWriterBuilder.json
 import tbdex.sdk.httpserver.TbdexHttpServer
 import tbdex.sdk.httpserver.TbdexHttpServerConfig
+import kotlin.test.assertEquals
 
 class SubmitRfqTest {
-  val api = TbdexHttpServer(TbdexHttpServerConfig(8080))
+  val api = embeddedServer(Netty, port = 8080) {
+    val serverConfig = TbdexHttpServerConfig(
+      port = 8080,
+    )
+    val tbdexServer = TbdexHttpServer(serverConfig)
+    tbdexServer.configure(this)
+  }
   val client = OkHttpClient()
 
   @After
@@ -23,7 +35,7 @@ class SubmitRfqTest {
 
   @Test
   fun `returns 400 if no request body is provided`() {
-    api.start()
+//    api.start(wait = true)
 
     val request = Request.Builder()
       .url("http://localhost:8000/exchanges/123/rfq")
@@ -33,36 +45,49 @@ class SubmitRfqTest {
     val response = client.newCall(request).execute()
   }
 
-//  @Test
-//  fun `start server`() {
-//    testApplication {
-//      application {
-//        module()
-//      }
-//    }(api.server) {
-//      handleRequest(HttpMethod.Post, "/").apply {
-//        assertContains("Please use the tbdex protocol", response.content!!)
-//      }
-//    }
-//  }
+  @Test
+  fun `returns 400 if no request body is provided - using testApplication`() {
+    testApplication {
+      application {
+        val serverConfig = TbdexHttpServerConfig(
+          port = 8080,
+        )
+        val tbdexServer = TbdexHttpServer(serverConfig)
+        tbdexServer.configure(this)
+      }
 
-  companion object {
-    lateinit var testApp: TestApplication
-
-    @JvmStatic
-    @BeforeAll
-    fun setup() {
-      testApp = TestApplication {
-        testApplication {
-          TbdexHttpServer.module
+      val client = createClient {
+        install(ContentNegotiation) {
+          json()
         }
       }
+
+      val response = client.post("/exchanges/123/rfq") {
+        contentType(ContentType.Application.Json)
+      }
+
+      assertEquals(HttpStatusCode.BadRequest, response.status)
     }
 
-    @JvmStatic
-    @AfterAll
-    fun teardown() {
-      testApp.stop()
-    }
   }
+//
+//  companion object {
+//    lateinit var testApp: TestApplication
+//
+//    @JvmStatic
+//    @BeforeAll
+//    fun setup() {
+//      testApp = TestApplication {
+//        testApplication {
+//          TbdexHttpServer.module
+//        }
+//      }
+//    }
+//
+//    @JvmStatic
+//    @AfterAll
+//    fun teardown() {
+//      testApp.stop()
+//    }
+//  }
 }
