@@ -5,6 +5,7 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.receiveText
 import io.ktor.server.response.respond
 import tbdex.sdk.httpclient.models.ErrorDetail
+import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.httpserver.models.CallbackError
 import tbdex.sdk.httpserver.models.ExchangesApi
 import tbdex.sdk.httpserver.models.OfferingsApi
@@ -14,7 +15,6 @@ import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Rfq
 
 
-// todo: decide on the correct error response format
 suspend fun submitRfq(
   call: ApplicationCall,
   offeringsApi: OfferingsApi,
@@ -26,21 +26,24 @@ suspend fun submitRfq(
   try {
     message = Message.parse(call.receiveText()) as Rfq
   } catch (e: Exception) {
-    val errorResponse = ErrorDetail(detail = "Parsing of TBDex message failed: ${e.message}")
+    val errorDetail = ErrorDetail(detail = "Parsing of TBDex message failed: ${e.message}")
+    val errorResponse = ErrorResponse(listOf(errorDetail))
     call.respond(HttpStatusCode.BadRequest, errorResponse)
     return
   }
 
   val existingRfq = exchangesApi.getRfq(message.metadata.exchangeId.toString())
   if (existingRfq != null) {
-    val errorResponse = ErrorDetail(detail = "RFQ already exists.")
+    val errorDetail = ErrorDetail(detail = "RFQ already exists.")
+    val errorResponse = ErrorResponse(listOf(errorDetail))
     call.respond(HttpStatusCode.Conflict, errorResponse)
     return
   }
 
   val offering = offeringsApi.getOffering(message.data.offeringId.toString())
   if (offering == null) {
-    val errorResponse = ErrorDetail(detail = "Offering with id ${message.data.offeringId} does not exist.")
+    val errorDetail = ErrorDetail(detail = "Offering with id ${message.data.offeringId} does not exist.")
+    val errorResponse = ErrorResponse(listOf(errorDetail))
     call.respond(HttpStatusCode.BadRequest, errorResponse)
     return
   }
@@ -48,7 +51,8 @@ suspend fun submitRfq(
   try {
     message.verifyOfferingRequirements(offering)
   } catch (e: Exception) {
-    val errorResponse = ErrorDetail(detail = "Failed to verify offering requirements: ${e.message}")
+    val errorDetail = ErrorDetail(detail = "Failed to verify offering requirements: ${e.message}")
+    val errorResponse = ErrorResponse(listOf(errorDetail))
     call.respond(HttpStatusCode.BadRequest, errorResponse)
     return
   }
@@ -62,11 +66,11 @@ suspend fun submitRfq(
     callback.invoke(call, MessageKind.rfq, offering)
   } catch (e: Exception) {
     if (e is CallbackError) {
-      // todo: e.details is a list of ErrorDetail. do we want to include all the errordetails?
       call.respond(e.statusCode, e.details!!.first())
       return
     } else {
-      val errorResponse = ErrorDetail(detail = "umm idk")
+      val errorDetail = ErrorDetail(detail = "umm idk")
+      val errorResponse = ErrorResponse(listOf(errorDetail))
       call.respond(HttpStatusCode.InternalServerError, errorResponse)
       return
     }

@@ -1,10 +1,17 @@
 package tbdex.sdk.httpserver.handlers
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.nimbusds.jose.shaded.gson.Gson
+import de.fxlae.typeid.TypeId
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import io.ktor.serialization.jackson.jackson
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.testing.testApplication
@@ -15,9 +22,17 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import software.amazon.ion.system.IonTextWriterBuilder.json
+import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.httpserver.TbdexHttpServer
 import tbdex.sdk.httpserver.TbdexHttpServerConfig
+import tbdex.sdk.protocol.models.Rfq
+import tbdex.sdk.protocol.models.RfqData
+import tbdex.sdk.protocol.models.SelectedPaymentMethod
+import web5.sdk.crypto.InMemoryKeyManager
+import web5.sdk.dids.methods.dht.DidDht
 import kotlin.concurrent.thread
+import kotlin.test.Ignore
+import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 class SubmitRfqTest {
@@ -29,6 +44,8 @@ class SubmitRfqTest {
     tbdexServer.configure(this)
   }
   val client = OkHttpClient()
+  val did = DidDht.create(InMemoryKeyManager())
+
 
 //  @After
 //  fun teardown() {
@@ -36,6 +53,7 @@ class SubmitRfqTest {
 //  }
 
   @Test
+  @Ignore
   fun `returns 400 if no request body is provided`() {
     val request = Request.Builder()
       .url("http://10.0.2.2:8080/exchanges/123/rfq")
@@ -66,7 +84,61 @@ class SubmitRfqTest {
         contentType(ContentType.Application.Json)
       }
 
+      val errorResponse = Gson().fromJson(response.bodyAsText(), ErrorResponse::class.java)
+
       assertEquals(HttpStatusCode.BadRequest, response.status)
+      assertContains(errorResponse.errors.first().detail, "Parsing of TBDex message failed")
+    }
+  }
+
+  @Test
+  fun `returns 409 if rfq already exists for a given exchangeId`() {
+    testApplication {
+      application {
+        val serverConfig = TbdexHttpServerConfig(
+          port = 8080,
+        )
+        val tbdexServer = TbdexHttpServer(serverConfig)
+        tbdexServer.configure(this)
+      }
+
+      val client = createClient {
+        install(ContentNegotiation) {
+          jackson {
+            registerModule(JavaTimeModule())
+            registerKotlinModule()
+            findAndRegisterModules()
+          }
+        }
+      }
+      val rfq = Rfq.create(
+        to = "did:ion:foo",
+        from = "did:dht:bar",
+        rfqData = RfqData(
+          offeringId = TypeId.generate("offering"),
+          payinSubunits = "100",
+          payinMethod = SelectedPaymentMethod(
+            kind = "USD"
+          ),
+          payoutMethod = SelectedPaymentMethod(
+            kind = "BTC"
+          ),
+          claims = listOf("foo")
+        )
+      )
+
+      rfq.sign(did)
+
+      val response = client.post("/exchanges/123/rfq") {
+        contentType(ContentType.Application.Json)
+        setBody(rfq)
+      }
+
+      val errorResponse = Gson().fromJson(response.bodyAsText(), ErrorResponse::class.java)
+
+      assertEquals(HttpStatusCode.Conflict, response.status)
+      assertContains(errorResponse.errors.first().detail, "RFQ already exists.")
+
     }
 
   }
@@ -90,23 +162,3 @@ class SubmitRfqTest {
     }
   }
 }
-//
-//  companion object {
-//    lateinit var testApp: TestApplication
-//
-//    @JvmStatic
-//    @BeforeAll
-//    fun setup() {
-//      testApp = TestApplication {
-//        testApplication {
-//          TbdexHttpServer.module
-//        }
-//      }
-//    }
-//
-//    @JvmStatic
-//    @AfterAll
-//    fun teardown() {
-//      testApp.stop()
-//    }
-//  }

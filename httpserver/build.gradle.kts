@@ -31,13 +31,15 @@ dependencies {
   implementation("io.ktor:ktor-server-netty:2.3.4")
   implementation("io.ktor:ktor-server-content-negotiation:2.3.4")
   implementation("io.ktor:ktor-serialization-jackson:2.3.4")
+  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.0")
 
   testImplementation(kotlin("test"))
   testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
   testImplementation("io.ktor:ktor-server-test-host:2.3.4")
   testImplementation("com.squareup.okhttp3:okhttp:4.11.0")
-  testImplementation("io.ktor:ktor-client-content-negotiation:2.1.1")
-
+  testImplementation("io.ktor:ktor-client-content-negotiation:2.3.4")
+  testImplementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")
+  testImplementation("io.ktor:ktor-serialization-jackson:2.3.4")
 }
 
 tasks.test {

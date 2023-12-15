@@ -15,6 +15,15 @@ class TbdexResponseException(
   val errors: List<ErrorDetail>?
 ) : Exception(message, cause)
 
+
+/**
+ * Error response
+ *
+ * @property errors list of errors
+ * @constructor
+ */
+class ErrorResponse(val errors: List<ErrorDetail>)
+
 /**
  * Error detail.
  *

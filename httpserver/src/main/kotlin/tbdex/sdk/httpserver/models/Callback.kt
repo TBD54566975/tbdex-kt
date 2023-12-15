@@ -30,5 +30,3 @@ class GetExchangesFilter(
 
 sealed interface Filter
 class CallbackError(val statusCode: HttpStatusCode, val details: List<ErrorDetail>?) : Exception()
-
-class ErrorResponse(val errors: List<ErrorDetail>?)
