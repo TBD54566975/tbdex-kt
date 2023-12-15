@@ -12,14 +12,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.jackson.jackson
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
 import io.ktor.server.testing.testApplication
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import software.amazon.ion.system.IonTextWriterBuilder.json
 import tbdex.sdk.httpclient.models.ErrorResponse
@@ -31,39 +24,12 @@ import tbdex.sdk.protocol.models.SelectedPaymentMethod
 import tbdex.sdk.protocol.serialization.TypeIdModule
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.methods.dht.DidDht
-import kotlin.concurrent.thread
-import kotlin.test.Ignore
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 class SubmitRfqTest {
-  val api = embeddedServer(Netty, port = 8080) {
-    val serverConfig = TbdexHttpServerConfig(
-      port = 8080,
-    )
-    val tbdexServer = TbdexHttpServer(serverConfig)
-    tbdexServer.configure(this)
-  }
-  val client = OkHttpClient()
   val aliceDid = DidDht.create(InMemoryKeyManager())
   val pfiDid = DidDht.create(InMemoryKeyManager())
-
-
-//  @After
-//  fun teardown() {
-//    api.stop()
-//  }
-
-  @Test
-  @Ignore
-  fun `returns 400 if no request body is provided - using okhttpclient`() {
-    val request = Request.Builder()
-      .url("http://10.0.2.2:8080/exchanges/123/rfq")
-      .post("".toRequestBody())
-      .build()
-
-    val response = client.newCall(request).execute()
-  }
 
   @Test
   fun `returns 400 if no request body is provided`() {
@@ -126,9 +92,7 @@ class SubmitRfqTest {
 
       assertEquals(HttpStatusCode.Conflict, response.status)
       assertContains(errorResponse.errors.first().detail, "RFQ already exists.")
-
     }
-
   }
 
   private fun createRfq() = Rfq.create(
@@ -148,23 +112,4 @@ class SubmitRfqTest {
       claims = listOf("foo")
     )
   )
-
-  companion object {
-    private lateinit var server: TbdexHttpServer
-
-    @JvmStatic
-    @BeforeAll
-    fun setup() {
-      thread {
-        server = TbdexHttpServer(TbdexHttpServerConfig(8080))
-        server.start()
-      }
-    }
-
-    @JvmStatic
-    @AfterAll
-    fun teardown() {
-      server.stop()
-    }
-  }
 }
