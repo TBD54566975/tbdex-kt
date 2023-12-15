@@ -24,6 +24,7 @@ import tbdex.sdk.httpserver.models.GetKind
 import tbdex.sdk.httpserver.models.OfferingsApi
 import tbdex.sdk.httpserver.models.SubmitCallback
 import tbdex.sdk.httpserver.models.SubmitKind
+import tbdex.sdk.protocol.serialization.TypeIdModule
 
 fun main() {
 
@@ -59,6 +60,7 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
     app.install(ContentNegotiation) {
       jackson {
         registerModule(JavaTimeModule())
+        registerModule(TypeIdModule())
         registerKotlinModule()
         findAndRegisterModules()
       }

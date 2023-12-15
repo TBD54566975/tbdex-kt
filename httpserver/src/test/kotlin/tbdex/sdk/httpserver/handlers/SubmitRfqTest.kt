@@ -28,6 +28,7 @@ import tbdex.sdk.httpserver.TbdexHttpServerConfig
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.models.RfqData
 import tbdex.sdk.protocol.models.SelectedPaymentMethod
+import tbdex.sdk.protocol.serialization.TypeIdModule
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.methods.dht.DidDht
 import kotlin.concurrent.thread
@@ -44,7 +45,8 @@ class SubmitRfqTest {
     tbdexServer.configure(this)
   }
   val client = OkHttpClient()
-  val did = DidDht.create(InMemoryKeyManager())
+  val aliceDid = DidDht.create(InMemoryKeyManager())
+  val pfiDid = DidDht.create(InMemoryKeyManager())
 
 
 //  @After
@@ -54,7 +56,7 @@ class SubmitRfqTest {
 
   @Test
   @Ignore
-  fun `returns 400 if no request body is provided`() {
+  fun `returns 400 if no request body is provided - using okhttpclient`() {
     val request = Request.Builder()
       .url("http://10.0.2.2:8080/exchanges/123/rfq")
       .post("".toRequestBody())
@@ -64,7 +66,7 @@ class SubmitRfqTest {
   }
 
   @Test
-  fun `returns 400 if no request body is provided - using testApplication`() {
+  fun `returns 400 if no request body is provided`() {
     testApplication {
       application {
         val serverConfig = TbdexHttpServerConfig(
@@ -106,28 +108,14 @@ class SubmitRfqTest {
         install(ContentNegotiation) {
           jackson {
             registerModule(JavaTimeModule())
+            registerModules(TypeIdModule())
             registerKotlinModule()
             findAndRegisterModules()
           }
         }
       }
-      val rfq = Rfq.create(
-        to = "did:ion:foo",
-        from = "did:dht:bar",
-        rfqData = RfqData(
-          offeringId = TypeId.generate("offering"),
-          payinSubunits = "100",
-          payinMethod = SelectedPaymentMethod(
-            kind = "USD"
-          ),
-          payoutMethod = SelectedPaymentMethod(
-            kind = "BTC"
-          ),
-          claims = listOf("foo")
-        )
-      )
-
-      rfq.sign(did)
+      val rfq = createRfq()
+      rfq.sign(aliceDid)
 
       val response = client.post("/exchanges/123/rfq") {
         contentType(ContentType.Application.Json)
@@ -142,6 +130,24 @@ class SubmitRfqTest {
     }
 
   }
+
+  private fun createRfq() = Rfq.create(
+    to = pfiDid.uri,
+    from = aliceDid.uri,
+    rfqData = RfqData(
+      offeringId = TypeId.generate("offering"),
+      payinSubunits = "100",
+      payinMethod = SelectedPaymentMethod(
+        kind = "USD",
+        paymentDetails = mapOf("foo" to "bar")
+      ),
+      payoutMethod = SelectedPaymentMethod(
+        kind = "BTC",
+        paymentDetails = mapOf("foo" to "bar")
+      ),
+      claims = listOf("foo")
+    )
+  )
 
   companion object {
     private lateinit var server: TbdexHttpServer
