@@ -11,18 +11,18 @@ import web5.sdk.credentials.PresentationDefinitionV2
 class FakeOfferingsApi : OfferingsApi {
   private val offering = Offering.create(
     from = "did:ex:pfi", data = OfferingData(
-    description = "",
-    payinCurrency = CurrencyDetails(currencyCode = "USD"),
-    payoutCurrency = CurrencyDetails(currencyCode = "BTC"),
-    payoutUnitsPerPayinUnit = "0.000038",
-    payinMethods = listOf(PaymentMethod(kind = "DEBIT_CARD")),
-    payoutMethods = listOf(PaymentMethod(kind = "BTC_ADDRESS")),
-    requiredClaims = PresentationDefinitionV2(
-      id = "7ce4004c-3c38-4853-968b-e411bafcd945", inputDescriptors = listOf(
-      InputDescriptorV2(id = "test-input-descriptor", constraints = ConstraintsV2())
+      description = "",
+      payinCurrency = CurrencyDetails(currencyCode = "USD"),
+      payoutCurrency = CurrencyDetails(currencyCode = "BTC"),
+      payoutUnitsPerPayinUnit = "0.000038",
+      payinMethods = listOf(PaymentMethod(kind = "DEBIT_CARD")),
+      payoutMethods = listOf(PaymentMethod(kind = "BTC_ADDRESS")),
+      requiredClaims = PresentationDefinitionV2(
+        id = "7ce4004c-3c38-4853-968b-e411bafcd945", inputDescriptors = listOf(
+          InputDescriptorV2(id = "test-input-descriptor", constraints = ConstraintsV2())
+        )
+      )
     )
-    )
-  )
   )
 
   override fun getOffering(id: String?): Offering = offering
