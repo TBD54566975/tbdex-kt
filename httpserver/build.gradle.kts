@@ -3,6 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 plugins {
   id("org.jetbrains.kotlin.jvm")
   id("java-library")
+  id("io.ktor.plugin") version "2.3.7"
 }
 
 repositories {
@@ -27,15 +28,15 @@ dependencies {
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.0")
   implementation("com.github.TBD54566975:web5-kt:v0.0.9-gamma")
   implementation("decentralized-identity:did-common-java:1.9.0") // would like to grab this via web5 dids
-  implementation("io.ktor:ktor-server-core:2.3.4")
-  implementation("io.ktor:ktor-server-netty:2.3.4")
-  implementation("io.ktor:ktor-server-content-negotiation:2.3.4")
-  implementation("io.ktor:ktor-serialization-jackson:2.3.4")
+  implementation("io.ktor:ktor-server-core")
+  implementation("io.ktor:ktor-server-netty")
+  implementation("io.ktor:ktor-server-content-negotiation")
+  implementation("io.ktor:ktor-serialization-jackson")
 
   testImplementation(kotlin("test"))
   testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
-  testImplementation("io.ktor:ktor-server-test-host:2.3.4")
-  testImplementation("io.ktor:ktor-client-content-negotiation:2.3.4")
+  testImplementation("io.ktor:ktor-server-test-host")
+  testImplementation("io.ktor:ktor-client-content-negotiation")
 }
 
 tasks.test {
