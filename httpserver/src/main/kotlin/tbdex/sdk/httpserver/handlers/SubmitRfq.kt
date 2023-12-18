@@ -5,11 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import tbdex.sdk.httpclient.models.ErrorDetail
-import tbdex.sdk.httpclient.models.ErrorResponse
-import tbdex.sdk.httpserver.models.CallbackError
-import tbdex.sdk.httpserver.models.ExchangesApi
-import tbdex.sdk.httpserver.models.OfferingsApi
-import tbdex.sdk.httpserver.models.SubmitCallback
+import tbdex.sdk.httpserver.models.*
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Rfq
@@ -25,6 +21,7 @@ import tbdex.sdk.protocol.models.Rfq
  * @param exchangesApi An instance of [ExchangesApi] for interacting with exchanges data.
  * @param callback An optional callback function to be invoked after processing the RFQ.
  */
+@Suppress("TooGenericExceptionCaught")
 suspend fun submitRfq(
   call: ApplicationCall,
   offeringsApi: OfferingsApi,
@@ -45,16 +42,14 @@ suspend fun submitRfq(
   val existingRfq = exchangesApi.getRfq(message.metadata.exchangeId.toString())
   if (existingRfq != null) {
     val errorDetail = ErrorDetail(detail = "RFQ already exists.")
-    val errorResponse = ErrorResponse(listOf(errorDetail))
-    call.respond(HttpStatusCode.Conflict, errorResponse)
+    call.respond(HttpStatusCode.Conflict, ErrorResponse(listOf(errorDetail)))
     return
   }
 
   val offering = offeringsApi.getOffering(message.data.offeringId.toString())
   if (offering == null) {
     val errorDetail = ErrorDetail(detail = "Offering with id ${message.data.offeringId} does not exist.")
-    val errorResponse = ErrorResponse(listOf(errorDetail))
-    call.respond(HttpStatusCode.BadRequest, errorResponse)
+    call.respond(HttpStatusCode.BadRequest, ErrorResponse(listOf(errorDetail)))
     return
   }
 
@@ -62,8 +57,7 @@ suspend fun submitRfq(
     message.verifyOfferingRequirements(offering)
   } catch (e: Exception) {
     val errorDetail = ErrorDetail(detail = "Failed to verify offering requirements: ${e.message}")
-    val errorResponse = ErrorResponse(listOf(errorDetail))
-    call.respond(HttpStatusCode.BadRequest, errorResponse)
+    call.respond(HttpStatusCode.BadRequest, ErrorResponse(listOf(errorDetail)))
     return
   }
 
@@ -74,16 +68,13 @@ suspend fun submitRfq(
 
   try {
     callback.invoke(call, MessageKind.rfq, offering)
+  } catch (e: CallbackError) {
+    call.respond(e.statusCode, ErrorResponse(e.details))
+    return
   } catch (e: Exception) {
-    if (e is CallbackError) {
-      call.respond(e.statusCode, e.details!!.first())
-      return
-    } else {
-      val errorDetail = ErrorDetail(detail = "umm idk")
-      val errorResponse = ErrorResponse(listOf(errorDetail))
-      call.respond(HttpStatusCode.InternalServerError, errorResponse)
-      return
-    }
+    val errorDetail = ErrorDetail(detail = e.message ?: "unknown error")
+    call.respond(HttpStatusCode.InternalServerError, ErrorResponse(listOf(errorDetail)))
+    return
   }
 
   call.respond(HttpStatusCode.Accepted)

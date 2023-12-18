@@ -73,4 +73,12 @@ sealed interface Filter
  * @property statusCode The HTTP status code associated with the error.
  * @property details The list of error details providing additional information.
  */
-class CallbackError(val statusCode: HttpStatusCode, val details: List<ErrorDetail>?) : Exception()
+class CallbackError(val statusCode: HttpStatusCode, val details: List<ErrorDetail>) : Exception()
+
+/**
+ * Error response
+ *
+ * @property errors list of errors
+ * @constructor
+ */
+class ErrorResponse(val errors: List<ErrorDetail>)

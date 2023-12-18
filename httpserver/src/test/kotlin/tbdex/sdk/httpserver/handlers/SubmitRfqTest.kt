@@ -17,7 +17,6 @@ import web5.sdk.dids.methods.dht.DidDht
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
-
 class SubmitRfqTest : ServerTest() {
   private val aliceDid = DidDht.create(InMemoryKeyManager())
   private val pfiDid = DidDht.create(InMemoryKeyManager())

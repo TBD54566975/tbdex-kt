@@ -20,11 +20,11 @@ repositories {
 
 dependencies {
   api("de.fxlae:typeid-java-jdk8:0.2.0")
-  api("com.github.TBD54566975:web5-kt:v0.0.9-gamma")
+  api("com.github.TBD54566975:web5-kt:v0.0.9-phi")
 
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8")
-  implementation("com.fasterxml.jackson.datatype:jackson-datatype-json-org:2.11.0")
+  implementation("com.fasterxml.jackson.datatype:jackson-datatype-json-org:2.16.0")
   implementation("com.networknt:json-schema-validator:1.0.87")
   implementation("com.nimbusds:nimbus-jose-jwt:9.36")
   implementation("decentralized-identity:did-common-java:1.9.0")
