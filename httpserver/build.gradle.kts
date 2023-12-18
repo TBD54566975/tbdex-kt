@@ -19,6 +19,10 @@ repositories {
   }
 }
 
+application {
+  mainClass.set("tbdex.sdk.httpserver.TbdexHttpServerKt")
+}
+
 dependencies {
   implementation(project(":protocol"))
   implementation(project(":httpclient"))

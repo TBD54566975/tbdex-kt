@@ -16,6 +16,20 @@ import tbdex.sdk.protocol.serialization.TypeIdModule
 import kotlin.collections.set
 
 /**
+ * Main function to start the TBDex HTTP server.
+ */
+fun main() {
+
+  embeddedServer(Netty, port = 8080) {
+    val serverConfig = TbdexHttpServerConfig(
+      port = 8080,
+    )
+    val tbdexServer = TbdexHttpServer(serverConfig)
+    tbdexServer.configure(this)
+  }.start(wait = true)
+}
+
+/**
  * Configuration data for TBDex HTTP server.
  *
  * @property port The port on which the server will listen.
@@ -138,18 +152,4 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
   fun stop() {
     embedded.stop(1000, 5000)
   }
-}
-
-/**
- * Main function to start the TBDex HTTP server.
- */
-fun main() {
-
-  embeddedServer(Netty, port = 8080) {
-    val serverConfig = TbdexHttpServerConfig(
-      port = 8080,
-    )
-    val tbdexServer = TbdexHttpServer(serverConfig)
-    tbdexServer.configure(this)
-  }.start(wait = true)
 }
