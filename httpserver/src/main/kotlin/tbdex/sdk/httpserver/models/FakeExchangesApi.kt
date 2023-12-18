@@ -7,6 +7,7 @@ import tbdex.sdk.protocol.models.*
  * A fake implementation of the [ExchangesApi] interface for testing purposes.
  * This class provides mock implementations for various methods.
  */
+@Suppress("StringLiteralDuplication")
 class FakeExchangesApi : ExchangesApi {
 
   /**
