@@ -1,2 +1,2 @@
 rootProject.name = "tbdex"
-include("httpclient", "protocol")
+include("httpclient", "protocol", "httpserver")
