@@ -14,6 +14,17 @@ import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Rfq
 
+/**
+ * Handles the submission of a Request for Quote (RFQ) through the TBDex API.
+ *
+ * This function parses an RFQ message, performs necessary validations, and invokes the callback
+ * if provided. It responds with appropriate HTTP status codes for success or failure scenarios.
+ *
+ * @param call The Ktor application call object representing the incoming HTTP request.
+ * @param offeringsApi An instance of [OfferingsApi] for interacting with offerings data.
+ * @param exchangesApi An instance of [ExchangesApi] for interacting with exchanges data.
+ * @param callback An optional callback function to be invoked after processing the RFQ.
+ */
 suspend fun submitRfq(
   call: ApplicationCall,
   offeringsApi: OfferingsApi,

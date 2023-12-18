@@ -1,6 +1,6 @@
 package tbdex.sdk.httpserver.handlers
 
-import com.nimbusds.jose.shaded.gson.Gson
+import ServerTest
 import de.fxlae.typeid.TypeId
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -11,6 +11,7 @@ import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.models.RfqData
 import tbdex.sdk.protocol.models.SelectedPaymentMethod
+import tbdex.sdk.protocol.serialization.Json
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.methods.dht.DidDht
 import kotlin.test.assertContains
@@ -27,7 +28,7 @@ class SubmitRfqTest : ServerTest() {
       contentType(ContentType.Application.Json)
     }
 
-    val errorResponse = Gson().fromJson(response.bodyAsText(), ErrorResponse::class.java)
+    val errorResponse = Json.jsonMapper.readValue(response.bodyAsText(), ErrorResponse::class.java)
 
     assertEquals(HttpStatusCode.BadRequest, response.status)
     assertContains(errorResponse.errors.first().detail, "Parsing of TBDex message failed")
@@ -43,7 +44,7 @@ class SubmitRfqTest : ServerTest() {
       setBody(rfq)
     }
 
-    val errorResponse = Gson().fromJson(response.bodyAsText(), ErrorResponse::class.java)
+    val errorResponse = Json.jsonMapper.readValue(response.bodyAsText(), ErrorResponse::class.java)
 
     assertEquals(HttpStatusCode.Conflict, response.status)
     assertContains(errorResponse.errors.first().detail, "RFQ already exists.")

@@ -2,42 +2,26 @@ package tbdex.sdk.httpserver
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.jackson.jackson
-import io.ktor.server.application.Application
-import io.ktor.server.application.call
-import io.ktor.server.application.install
-import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.response.respond
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
-import io.ktor.server.routing.route
-import io.ktor.server.routing.routing
+import io.ktor.http.*
+import io.ktor.serialization.jackson.*
+import io.ktor.server.application.*
+import io.ktor.server.engine.*
+import io.ktor.server.netty.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import tbdex.sdk.httpserver.handlers.submitRfq
-import tbdex.sdk.httpserver.models.ExchangesApi
-import tbdex.sdk.httpserver.models.FakeExchangesApi
-import tbdex.sdk.httpserver.models.FakeOfferingsApi
-import tbdex.sdk.httpserver.models.GetCallback
-import tbdex.sdk.httpserver.models.GetKind
-import tbdex.sdk.httpserver.models.OfferingsApi
-import tbdex.sdk.httpserver.models.SubmitCallback
-import tbdex.sdk.httpserver.models.SubmitKind
+import tbdex.sdk.httpserver.models.*
 import tbdex.sdk.protocol.serialization.TypeIdModule
+import kotlin.collections.set
 
-fun main() {
-
-  embeddedServer(Netty, port = 8080) {
-    val serverConfig = TbdexHttpServerConfig(
-      port = 8080,
-    )
-    val tbdexServer = TbdexHttpServer(serverConfig)
-    tbdexServer.configure(this)
-  }.start(wait = true)
-
-}
-
+/**
+ * Configuration data for TBDex HTTP server.
+ *
+ * @property port The port on which the server will listen.
+ * @property offeringsApi An optional [OfferingsApi] implementation to use.
+ * @property exchangesApi An optional [ExchangesApi] implementation to use.
+ */
 class TbdexHttpServerConfig(
   val port: Int,
   val offeringsApi: OfferingsApi? = null,
@@ -45,6 +29,11 @@ class TbdexHttpServerConfig(
 )
 
 
+/**
+ * TBDex HTTP server responsible for handling RFQs, orders, and other interactions.
+ *
+ * @property config The configuration for the server, including port and optional APIs.
+ */
 class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
 
   private val offeringsApi = config.offeringsApi ?: FakeOfferingsApi()
@@ -56,6 +45,11 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
     configure(this)
   }
 
+  /**
+   * Configures the Ktor application with necessary settings, including content negotiation.
+   *
+   * @param app The Ktor application to be configured.
+   */
   fun configure(app: Application) {
     app.install(ContentNegotiation) {
       jackson {
@@ -70,7 +64,7 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
       get("/") {
         call.respond(
           HttpStatusCode.OK, "Please use the tbdex protocol to communicate with this server " +
-          "or a suitable library: https://github.com/TBD54566975/tbdex-protocol"
+                  "or a suitable library: https://github.com/TBD54566975/tbdex-protocol"
         )
       }
 
@@ -111,20 +105,51 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
     }
   }
 
+  /**
+   * Adds a submit callback for a specific message kind (RFQ, order, close, etc.).
+   *
+   * @param messageKind The type of message for which the callback is registered.
+   * @param callback The callback to be invoked when a message of the specified kind is received.
+   */
   fun <T : SubmitKind> submit(messageKind: T, callback: SubmitCallback) {
     this.submitCallbacks[messageKind.toString()] = callback
   }
 
+  /**
+   * Adds a get callback for a specific resource kind (exchanges, offerings, etc.).
+   *
+   * @param resourceKind The type of resource for which the callback is registered.
+   * @param callback The callback to be invoked when a request for the specified resource is received.
+   */
   fun <T : GetKind> get(resourceKind: T, callback: GetCallback) {
     this.getCallbacks[resourceKind.toString()] = callback
   }
 
+  /**
+   * Starts the embedded Netty server.
+   */
   fun start() {
     embedded.start(wait = true)
   }
 
+  /**
+   * Stops the embedded Netty server.
+   */
   fun stop() {
     embedded.stop(1000, 5000)
   }
+}
 
+/**
+ * Main function to start the TBDex HTTP server.
+ */
+fun main() {
+
+  embeddedServer(Netty, port = 8080) {
+    val serverConfig = TbdexHttpServerConfig(
+      port = 8080,
+    )
+    val tbdexServer = TbdexHttpServer(serverConfig)
+    tbdexServer.configure(this)
+  }.start(wait = true)
 }
