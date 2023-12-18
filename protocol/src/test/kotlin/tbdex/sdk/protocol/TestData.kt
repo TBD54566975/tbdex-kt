@@ -22,12 +22,12 @@ import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.models.RfqData
 import tbdex.sdk.protocol.models.SelectedPaymentMethod
 import tbdex.sdk.protocol.serialization.Json
-import web5.sdk.credentials.ConstraintsV2
-import web5.sdk.credentials.FieldV2
-import web5.sdk.credentials.InputDescriptorV2
-import web5.sdk.credentials.PresentationDefinitionV2
 import web5.sdk.credentials.VcDataModel
 import web5.sdk.credentials.VerifiableCredential
+import web5.sdk.credentials.model.ConstraintsV2
+import web5.sdk.credentials.model.FieldV2
+import web5.sdk.credentials.model.InputDescriptorV2
+import web5.sdk.credentials.model.PresentationDefinitionV2
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.Did
 import web5.sdk.dids.methods.key.DidKey

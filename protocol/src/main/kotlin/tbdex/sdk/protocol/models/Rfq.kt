@@ -5,7 +5,7 @@ import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Rfq.Companion.create
 import tbdex.sdk.protocol.serialization.Json
-import web5.sdk.credentials.PresentationDefinitionV2
+import web5.sdk.credentials.model.PresentationDefinitionV2
 import java.time.OffsetDateTime
 
 /**
