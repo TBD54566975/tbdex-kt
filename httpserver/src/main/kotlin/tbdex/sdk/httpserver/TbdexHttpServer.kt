@@ -93,19 +93,19 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
         }
 
         post("/{exchangeId}/order") {
-//          submitOrder(
-//            call = call,
-//            exchangesApi = exchangesApi,
-//            callback = submitCallbacks.getOrDefault("order", null)
-//          )
+          submitOrder(
+            call = call,
+            exchangesApi = exchangesApi,
+            callback = submitCallbacks.getOrDefault("order", null)
+          )
         }
 
         post("/{exchangeId}/close") {
-//          submitClose(
-//            call = call,
-//            exchangesApi = exchangesApi,
-//            callback = submitCallbacks.getOrDefault("close", null)
-//          )
+          submitClose(
+            call = call,
+            exchangesApi = exchangesApi,
+            callback = submitCallbacks.getOrDefault("close", null)
+          )
         }
 
         get {
