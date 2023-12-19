@@ -4,9 +4,9 @@ import tbdex.sdk.protocol.models.CurrencyDetails
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.OfferingData
 import tbdex.sdk.protocol.models.PaymentMethod
-import web5.sdk.credentials.ConstraintsV2
-import web5.sdk.credentials.InputDescriptorV2
-import web5.sdk.credentials.PresentationDefinitionV2
+import web5.sdk.credentials.model.ConstraintsV2
+import web5.sdk.credentials.model.InputDescriptorV2
+import web5.sdk.credentials.model.PresentationDefinitionV2
 
 /**
  * A fake implementation of the [OfferingsApi] interface for testing purposes.
