@@ -13,10 +13,10 @@ import tbdex.sdk.protocol.serialization.Json
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
-class SubmitRfqTest : ServerTest() {
+class SubmitCloseTest : ServerTest() {
   @Test
   fun `returns 400 if no request body is provided`() = runBlocking {
-    val response = client.post("/exchanges/123/rfq") {
+    val response = client.post("/exchanges/123/close") {
       contentType(ContentType.Application.Json)
     }
 
@@ -27,11 +27,11 @@ class SubmitRfqTest : ServerTest() {
   }
 
   @Test
-  fun `returns 409 if rfq already exists for a given exchangeId`() = runBlocking {
+  fun `returns 409 if `() = runBlocking {
     val rfq = createRfq()
     rfq.sign(aliceDid)
 
-    val response = client.post("/exchanges/123/rfq") {
+    val response = client.post("/exchanges/123/close") {
       contentType(ContentType.Application.Json)
       setBody(rfq)
     }
