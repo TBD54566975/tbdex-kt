@@ -20,6 +20,7 @@ class Quote private constructor(
   override val data: QuoteData,
   override var signature: String? = null
 ) : Message() {
+  override val validNext: Set<MessageKind> = setOf(MessageKind.order, MessageKind.close)
 
   companion object {
     /**

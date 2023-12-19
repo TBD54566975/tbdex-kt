@@ -11,17 +11,17 @@ interface ExchangesApi {
    * Retrieves the exchange(s) with the specified ID(s).
    *
    * @param id A list of exchange IDs to retrieve. If null, returns null.
-   * @return A list of [MessageKind] representing exchanges with the specified ID(s), or null if not found.
+   * @return A list of [Message] representing exchanges with the specified ID(s), or null if not found.
    */
-  fun getExchange(id: List<String>? = null): List<MessageKind>?
+  fun getExchange(id: List<String>? = null): List<Message>?
 
   /**
    * Retrieves a list of exchanges based on the provided filter.
    *
    * @param filter The filter criteria for retrieving exchanges. If null, returns all exchanges.
-   * @return A list of lists of [MessageKind] representing exchanges based on the filter, or null if none are found.
+   * @return A list of lists of [Message] representing exchanges based on the filter, or null if none are found.
    */
-  fun getExchanges(filter: GetExchangesFilter? = null): List<List<MessageKind>>?
+  fun getExchanges(filter: GetExchangesFilter? = null): List<List<Message>>?
 
   /**
    * Retrieves the Request for Quote (RFQ) associated with the specified exchange.

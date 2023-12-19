@@ -24,6 +24,7 @@ class Rfq private constructor(
   private: Map<String, Any>? = null,
   override var signature: String? = null
 ) : Message() {
+  override val validNext: Set<MessageKind> = setOf(MessageKind.quote, MessageKind.close)
 
   /**
    * Evaluates this Rfq against the provided [Offering].

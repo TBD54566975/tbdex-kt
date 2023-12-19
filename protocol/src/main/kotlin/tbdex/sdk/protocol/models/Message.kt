@@ -38,6 +38,7 @@ class MessageMetadata(
  * An abstract class representing the structure and common functionality available on all Messages.
  */
 sealed class Message {
+  abstract val validNext: Set<MessageKind>
   abstract val metadata: MessageMetadata
   abstract val data: MessageData
   abstract var signature: String?

@@ -13,10 +13,11 @@ import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
 
+
 @Suppress("TooGenericExceptionCaught")
 suspend fun submitClose(
   call: ApplicationCall,
-  exchangesApi: ExchangesApi
+  exchangesApi: ExchangesApi,
   callback: SubmitCallback?
 ) {
   val message: Close?
@@ -30,12 +31,7 @@ suspend fun submitClose(
     return
   }
 
-  val existingRfq = exchangesApi.getRfq(message.metadata.exchangeId.toString())
-  if (existingRfq != null) {
-    val errorDetail = ErrorDetail(detail = "RFQ already exists.")
-    call.respond(HttpStatusCode.Conflict, ErrorResponse(listOf(errorDetail)))
-    return
-  }
+  // TODO rest of validation
 
   if (callback == null) {
     call.respond(HttpStatusCode.Accepted)

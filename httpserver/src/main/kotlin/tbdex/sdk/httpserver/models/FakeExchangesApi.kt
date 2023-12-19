@@ -11,22 +11,22 @@ import tbdex.sdk.protocol.models.*
 class FakeExchangesApi : ExchangesApi {
 
   /**
-   * Returns a list of [MessageKind] representing exchanges with the specified ID(s).
+   * Returns a list of [Message] representing exchanges with the specified ID(s).
    *
    * @param id A list of exchange IDs to retrieve. If null, returns null.
-   * @return A list of [MessageKind] representing exchanges with the specified ID(s), or null if not found.
+   * @return A list of [Message] representing exchanges with the specified ID(s), or null if not found.
    */
-  override fun getExchange(id: List<String>?): List<MessageKind>? {
+  override fun getExchange(id: List<String>?): List<Message>? {
     TODO("Not yet implemented")
   }
 
   /**
-   * Returns a list of lists of [MessageKind] representing exchanges based on the provided filter.
+   * Returns a list of lists of [Message] representing exchanges based on the provided filter.
    *
    * @param filter The filter criteria for retrieving exchanges. If null, returns all exchanges.
-   * @return A list of lists of [MessageKind] representing exchanges based on the filter, or null if none are found.
+   * @return A list of lists of [Message] representing exchanges based on the filter, or null if none are found.
    */
-  override fun getExchanges(filter: GetExchangesFilter?): List<List<MessageKind>>? {
+  override fun getExchanges(filter: GetExchangesFilter?): List<List<Message>>? {
     TODO("Not yet implemented")
   }
 
