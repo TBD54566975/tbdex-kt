@@ -31,7 +31,20 @@ suspend fun submitClose(
     return
   }
 
-  // TODO rest of validation
+  val exchangeId = message.metadata.exchangeId.toString()
+  val exchange = exchangesApi.getExchange(exchangeId)
+  if (exchange == null) {
+    val errorDetail = ErrorDetail(detail = "Could not find exchange: $exchangeId")
+    call.respond(HttpStatusCode.NotFound, ErrorResponse(listOf(errorDetail)))
+    return
+  }
+
+  if (!exchange.last().validNext.contains(MessageKind.close)) {
+    val errorDetail =
+      ErrorDetail(detail = "cannot submit Order for an exchange where the last message is kind: ${exchange.last().metadata.kind}")
+    call.respond(HttpStatusCode.Conflict, ErrorResponse(listOf(errorDetail)))
+    return
+  }
 
   if (callback == null) {
     call.respond(HttpStatusCode.Accepted)

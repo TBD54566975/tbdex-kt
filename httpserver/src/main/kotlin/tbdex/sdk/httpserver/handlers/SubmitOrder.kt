@@ -14,7 +14,7 @@ import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Order
 
 
-@Suppress("TooGenericExceptionCaught")
+@Suppress("TooGenericExceptionCaught", "MaxLineLength")
 suspend fun submitOrder(
   call: ApplicationCall,
   exchangesApi: ExchangesApi,
@@ -31,7 +31,7 @@ suspend fun submitOrder(
     return
   }
   val exchangeId = message.metadata.exchangeId.toString()
-  val exchange = exchangesApi.getExchange(listOf(exchangeId))
+  val exchange = exchangesApi.getExchange(exchangeId)
   if (exchange == null) {
     val errorDetail = ErrorDetail(detail = "Could not find exchange: $exchangeId")
     call.respond(HttpStatusCode.NotFound, ErrorResponse(listOf(errorDetail)))

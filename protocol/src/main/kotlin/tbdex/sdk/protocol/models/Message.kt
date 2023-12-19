@@ -1,6 +1,7 @@
 package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
 import de.fxlae.typeid.TypeId
@@ -37,6 +38,7 @@ class MessageMetadata(
 /**
  * An abstract class representing the structure and common functionality available on all Messages.
  */
+@JsonIgnoreProperties(value = ["validNext"])
 sealed class Message {
   abstract val validNext: Set<MessageKind>
   abstract val metadata: MessageMetadata

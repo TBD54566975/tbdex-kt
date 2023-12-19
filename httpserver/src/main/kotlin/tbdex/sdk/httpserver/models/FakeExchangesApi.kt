@@ -9,15 +9,16 @@ import tbdex.sdk.protocol.models.*
  */
 @Suppress("StringLiteralDuplication")
 class FakeExchangesApi : ExchangesApi {
+  var exchanges: MutableMap<String, List<Message>> = mutableMapOf()
 
   /**
-   * Returns a list of [Message] representing exchanges with the specified ID(s).
+   * Returns a list of [Message] representing the exchange with the specified ID.
    *
-   * @param id A list of exchange IDs to retrieve. If null, returns null.
+   * @param id The exchange ID to retrieve. If null, returns null.
    * @return A list of [Message] representing exchanges with the specified ID(s), or null if not found.
    */
-  override fun getExchange(id: List<String>?): List<Message>? {
-    TODO("Not yet implemented")
+  override fun getExchange(id: String): List<Message>? {
+    return exchanges[id]
   }
 
   /**
@@ -93,5 +94,15 @@ class FakeExchangesApi : ExchangesApi {
    */
   override fun getClose(exchangeId: String?): Close? {
     TODO("Not yet implemented")
+  }
+
+  fun addMessage(message: Message) {
+    val exchangeId = message.metadata.exchangeId.toString()
+    val messages = this.exchanges[exchangeId]?.plus(message) ?: listOf(message)
+    this.exchanges[exchangeId] = messages
+  }
+
+  fun resetExchanges() {
+    this.exchanges = mutableMapOf()
   }
 }

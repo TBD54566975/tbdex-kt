@@ -8,12 +8,12 @@ import tbdex.sdk.protocol.models.*
 interface ExchangesApi {
 
   /**
-   * Retrieves the exchange(s) with the specified ID(s).
+   * Retrieves the exchange with the specified ID.
    *
-   * @param id A list of exchange IDs to retrieve. If null, returns null.
-   * @return A list of [Message] representing exchanges with the specified ID(s), or null if not found.
+   * @param id The exchange IDs to retrieve.
+   * @return A list of [Message] representing exchange with the specified ID, or null if not found.
    */
-  fun getExchange(id: List<String>? = null): List<Message>?
+  fun getExchange(id: String): List<Message>?
 
   /**
    * Retrieves a list of exchanges based on the provided filter.

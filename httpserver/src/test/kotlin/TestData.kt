@@ -2,6 +2,7 @@ import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.*
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.methods.dht.DidDht
+import java.time.OffsetDateTime
 
 object TestData {
 
@@ -37,5 +38,29 @@ object TestData {
     from = aliceDid.uri,
     exchangeId = exchangeId,
     closeData = CloseData(reason = "test close reason")
+  )
+
+  fun createQuote(
+    exchangeId: TypeId = TypeId.generate(MessageKind.rfq.name),
+    expiresAt: OffsetDateTime = OffsetDateTime.now().plusDays(1)
+  ) = Quote.create(
+    to = aliceDid.uri,
+    from = pfiDid.uri,
+    exchangeId = exchangeId,
+    quoteData = QuoteData(
+      expiresAt = expiresAt,
+      payin = QuoteDetails("AUD", "1000", "1"),
+      payout = QuoteDetails("BTC", "12", "2"),
+      paymentInstructions = PaymentInstructions(
+        payin = PaymentInstruction(
+          link = "https://block.xyz",
+          instruction = "payin instruction"
+        ),
+        payout = PaymentInstruction(
+          link = "https://block.xyz",
+          instruction = "payout instruction"
+        )
+      )
+    )
   )
 }
