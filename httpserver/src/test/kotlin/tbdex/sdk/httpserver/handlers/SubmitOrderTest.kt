@@ -1,9 +1,11 @@
 package tbdex.sdk.httpserver.handlers
 
 import ServerTest
-import TestData
 import TestData.aliceDid
 import TestData.createOrder
+import TestData.createQuote
+import TestData.createRfq
+import TestData.pfiDid
 import de.fxlae.typeid.TypeId
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -12,7 +14,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.protocol.serialization.Json
-import kotlin.test.Ignore
+import java.time.OffsetDateTime
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
@@ -47,14 +49,14 @@ class SubmitOrderTest : ServerTest() {
 
   @Test
   fun `returns a 409 if order is not allowed based on the exchange's current state`() = runBlocking {
-    val rfq = TestData.createRfq()
+    val rfq = createRfq()
     rfq.sign(aliceDid)
     exchangesApi.addMessage(rfq)
 
     val order = createOrder(rfq.metadata.exchangeId)
     order.sign(aliceDid)
 
-    val response = client.post("/exchanges/123/order") {
+    val response = client.post("/exchanges/${rfq.metadata.exchangeId}/order") {
       contentType(ContentType.Application.Json)
       setBody(order)
     }
@@ -69,47 +71,43 @@ class SubmitOrderTest : ServerTest() {
   }
 
   @Test
-  fun `returns a 404 if quote is undefined`() = runBlocking {
-    val rfq = TestData.createRfq()
-    rfq.sign(aliceDid)
-    exchangesApi.addMessage(rfq)
-
-    val order = createOrder(rfq.metadata.exchangeId)
-    order.sign(aliceDid)
-
-    val response = client.post("/exchanges/123/order") {
-      contentType(ContentType.Application.Json)
-      setBody(order)
-    }
-
-    val errorResponse = Json.jsonMapper.readValue(response.bodyAsText(), ErrorResponse::class.java)
-
-    assertEquals(HttpStatusCode.NotFound, response.status)
-    assertContains(errorResponse.errors.first().detail, "quote is undefined")
-  }
-
-  @Test
   fun `returns a 400 if quote has expired`() = runBlocking {
-    val quote = TestData.createQuote()
+    val quote = createQuote(expiresAt = OffsetDateTime.now().minusDays(1))
     quote.sign(aliceDid)
     exchangesApi.addMessage(quote)
 
     val order = createOrder(quote.metadata.exchangeId)
     order.sign(aliceDid)
 
-    val response = client.post("/exchanges/123/order") {
+    val response = client.post("/exchanges/${quote.metadata.exchangeId}/order") {
       contentType(ContentType.Application.Json)
       setBody(order)
     }
 
     val errorResponse = Json.jsonMapper.readValue(response.bodyAsText(), ErrorResponse::class.java)
 
-    assertEquals(HttpStatusCode.NotFound, response.status)
-    assertContains(errorResponse.errors.first().detail, "quote is undefined")
+    assertEquals(HttpStatusCode.Forbidden, response.status)
+    assertContains(errorResponse.errors.first().detail, "quote is expired")
   }
 
   @Test
-  @Ignore
-  fun `returns a 202 if order is accepted`() = runBlocking {}
+  fun `returns a 202 if order is accepted`() = runBlocking {
+    val rfq = createRfq()
+    rfq.sign(aliceDid)
+    exchangesApi.addMessage(rfq)
 
+    val quote = createQuote(exchangeId = rfq.metadata.exchangeId)
+    quote.sign(pfiDid)
+    exchangesApi.addMessage(quote)
+
+    val order = createOrder(quote.metadata.exchangeId)
+    order.sign(aliceDid)
+
+    val response = client.post("/exchanges/${rfq.metadata.exchangeId}/order") {
+      contentType(ContentType.Application.Json)
+      setBody(order)
+    }
+
+    assertEquals(HttpStatusCode.Accepted, response.status)
+  }
 }

@@ -12,6 +12,7 @@ import tbdex.sdk.httpserver.models.SubmitCallback
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Order
+import tbdex.sdk.protocol.models.Quote
 
 
 @Suppress("TooGenericExceptionCaught", "MaxLineLength")
@@ -45,14 +46,14 @@ suspend fun submitOrder(
     return
   }
 
-  val quote = exchange.find { it.metadata.kind == MessageKind.quote }
+  val quote = exchange.find { it.metadata.kind == MessageKind.quote } as Quote
   if (quote == null) {
     val errorDetail = ErrorDetail(detail = "quote is undefined")
     call.respond(HttpStatusCode.NotFound, ErrorResponse(listOf(errorDetail)))
     return
   }
 
-  if (quote.metadata.createdAt.isBefore(message.metadata.createdAt)) {
+  if (message.metadata.createdAt.isAfter(quote.data.expiresAt)) {
     val errorDetail = ErrorDetail(detail = "quote is expired")
     call.respond(HttpStatusCode.Forbidden, ErrorResponse(listOf(errorDetail)))
     return
