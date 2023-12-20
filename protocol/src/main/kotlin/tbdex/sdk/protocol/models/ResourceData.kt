@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersion
-import web5.sdk.credentials.PresentationDefinitionV2
+import web5.sdk.credentials.model.PresentationDefinitionV2
 
 /**
  * An interface that represents the data content of any tbDEX object.
