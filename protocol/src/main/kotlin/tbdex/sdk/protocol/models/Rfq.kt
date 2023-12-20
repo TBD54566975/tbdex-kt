@@ -5,8 +5,7 @@ import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Rfq.Companion.create
 import tbdex.sdk.protocol.serialization.Json
-import web5.sdk.credentials.model.PresentationExchange
-import web5.sdk.credentials.model.VerifiableCredential
+import web5.sdk.credentials.PresentationExchange
 import web5.sdk.credentials.model.PresentationDefinitionV2
 import java.time.OffsetDateTime
 
@@ -20,7 +19,7 @@ import java.time.OffsetDateTime
  * val rfq = Rfq.create(metadata, data)
  * ```
  */
-@Suppress("TooGenericExceptionCaught")
+@Suppress("TooGenericExceptionCaught", "SwallowedException")
 
 class Rfq private constructor(
   override val metadata: MessageMetadata,
@@ -61,24 +60,13 @@ class Rfq private constructor(
   }
 
   private fun verifyClaims(requiredClaims: PresentationDefinitionV2) {
-    // check that all requirements are satisfied by one of the VC JWTs
-    // and that the VC satisfying it is crypto verified
+    // TODO check that VCs satisfying PD are crypto verified
 
-    val satisfyingClaims: MutableList<String> = mutableListOf()
-    this.data.claims.forEach {
-      try {
-        PresentationExchange.satisfiesPresentationDefinition(it, requiredClaims)
-        satisfyingClaims.add(it)
-      } catch (e: Exception) {
-        return@forEach
-      }
+    try {
+      PresentationExchange.satisfiesPresentationDefinition(this.data.claims, requiredClaims)
+    } catch (e: Exception) {
+      throw IllegalArgumentException("No matching claim for Offering requirements: ${requiredClaims.id}")
     }
-
-    if (satisfyingClaims.isEmpty()) {
-      throw IllegalStateException("No matching claim for Offering requirement: ${requiredClaims.id}")
-    }
-
-    satisfyingClaims.forEach { VerifiableCredential.verify(it) }
   }
 
   companion object {

@@ -80,12 +80,20 @@ class FakeExchangesApi : ExchangesApi {
     TODO("Not yet implemented")
   }
 
+  /**
+   * Adds a [Message] to the mock exchanges.
+   *
+   * @param message The [Message] to be added.
+   */
   fun addMessage(message: Message) {
     val exchangeId = message.metadata.exchangeId.toString()
     val messages = this.exchanges[exchangeId]?.plus(message) ?: listOf(message)
     this.exchanges[exchangeId] = messages
   }
 
+  /**
+   * Resets the mock exchanges, clearing all stored messages.
+   */
   fun resetExchanges() {
     this.exchanges = mutableMapOf()
   }

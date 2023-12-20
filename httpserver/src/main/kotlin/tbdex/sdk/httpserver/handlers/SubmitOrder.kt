@@ -14,7 +14,14 @@ import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.Quote
 
-
+/**
+ * Handles the submission of an order by parsing the incoming message, validating the submission,
+ * and executing the specified callback if provided.
+ *
+ * @param call The [ApplicationCall] instance representing the HTTP call.
+ * @param exchangesApi The [ExchangesApi] instance for interacting with TBDex exchanges.
+ * @param callback The optional callback function to be executed after successful order submission.
+ */
 @Suppress("TooGenericExceptionCaught", "MaxLineLength")
 suspend fun submitOrder(
   call: ApplicationCall,
@@ -46,7 +53,7 @@ suspend fun submitOrder(
     return
   }
 
-  val quote = exchange.find { it.metadata.kind == MessageKind.quote } as Quote
+  val quote = exchange.find { it.metadata.kind == MessageKind.quote } as? Quote
   if (quote == null) {
     val errorDetail = ErrorDetail(detail = "quote is undefined")
     call.respond(HttpStatusCode.NotFound, ErrorResponse(listOf(errorDetail)))

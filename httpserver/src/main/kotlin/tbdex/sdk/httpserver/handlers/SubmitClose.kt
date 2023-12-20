@@ -13,8 +13,15 @@ import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
 
-
-@Suppress("TooGenericExceptionCaught")
+/**
+ * Handles the submission of a close message by parsing the incoming message,
+ * validating the submission, and executing the specified callback if provided.
+ *
+ * @param call The [ApplicationCall] instance representing the HTTP call.
+ * @param exchangesApi The [ExchangesApi] instance for interacting with TBDex exchanges.
+ * @param callback The optional callback function to be executed after a successful close submission.
+ */
+@Suppress("TooGenericExceptionCaught", "MaxLineLength")
 suspend fun submitClose(
   call: ApplicationCall,
   exchangesApi: ExchangesApi,
