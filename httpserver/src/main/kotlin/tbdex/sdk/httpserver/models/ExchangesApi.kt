@@ -23,43 +23,13 @@ interface ExchangesApi {
    */
   fun getExchanges(filter: GetExchangesFilter? = null): List<List<Message>>?
 
-  /**
-   * Retrieves the Request for Quote (RFQ) associated with the specified exchange.
-   *
-   * @param exchangeId The ID of the exchange associated with the RFQ. If null, returns null.
-   * @return The [Rfq] associated with the specified exchange, or null if not found.
-   */
-  fun getRfq(exchangeId: String? = null): Rfq?
+  fun getRfq(exchangeId: String): Rfq?
 
-  /**
-   * Retrieves the Quote associated with the specified exchange.
-   *
-   * @param exchangeId The ID of the exchange associated with the Quote. If null, returns null.
-   * @return The [Quote] associated with the specified exchange, or null if not found.
-   */
-  fun getQuote(exchangeId: String? = null): Quote?
+  fun getQuote(exchangeId: String): Quote?
 
-  /**
-   * Retrieves the Order associated with the specified exchange.
-   *
-   * @param exchangeId The ID of the exchange associated with the Order. If null, returns null.
-   * @return The [Order] associated with the specified exchange, or null if not found.
-   */
-  fun getOrder(exchangeId: String? = null): Order?
+  fun getOrder(exchangeId: String): Order?
 
-  /**
-   * Retrieves the list of OrderStatus entities associated with the specified exchange.
-   *
-   * @param exchangeId The ID of the exchange associated with the OrderStatus entities. If null, returns null.
-   * @return A list of [OrderStatus] associated with the specified exchange, or null if none are found.
-   */
-  fun getOrderStatuses(exchangeId: String? = null): List<OrderStatus>?
+  fun getOrderStatuses(exchangeId: String): List<OrderStatus>?
 
-  /**
-   * Retrieves the Close entity associated with the specified exchange.
-   *
-   * @param exchangeId The ID of the exchange associated with the Close entity. If null, returns null.
-   * @return The [Close] associated with the specified exchange, or null if not found.
-   */
-  fun getClose(exchangeId: String? = null): Close?
+  fun getClose(exchangeId: String): Close?
 }

@@ -30,6 +30,7 @@ class SubmitRfqTest : ServerTest() {
   fun `returns 409 if rfq already exists for a given exchangeId`() = runBlocking {
     val rfq = createRfq()
     rfq.sign(aliceDid)
+    exchangesApi.addMessage(rfq)
 
     val response = client.post("/exchanges/123/rfq") {
       contentType(ContentType.Application.Json)
@@ -40,5 +41,34 @@ class SubmitRfqTest : ServerTest() {
 
     assertEquals(HttpStatusCode.Conflict, response.status)
     assertContains(errorResponse.errors.first().detail, "RFQ already exists.")
+  }
+
+  @Test
+  fun `returns 400 if rfq does not fit offering requirements`() = runBlocking {
+    val rfq = createRfq()
+    rfq.sign(aliceDid)
+
+    val response = client.post("/exchanges/123/rfq") {
+      contentType(ContentType.Application.Json)
+      setBody(rfq)
+    }
+
+    val errorResponse = Json.jsonMapper.readValue(response.bodyAsText(), ErrorResponse::class.java)
+
+    assertEquals(HttpStatusCode.BadRequest, response.status)
+    assertContains(errorResponse.errors.first().detail, "Failed to verify offering requirements")
+  }
+
+  @Test
+  fun `returns 202 if rfq is accepted`() = runBlocking {
+    val rfq = createRfq(offeringsApi.getOffering())
+    rfq.sign(aliceDid)
+
+    val response = client.post("/exchanges/123/rfq") {
+      contentType(ContentType.Application.Json)
+      setBody(rfq)
+    }
+
+    assertEquals(HttpStatusCode.Accepted, response.status)
   }
 }

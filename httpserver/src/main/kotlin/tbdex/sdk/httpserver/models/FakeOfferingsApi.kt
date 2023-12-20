@@ -4,9 +4,6 @@ import tbdex.sdk.protocol.models.CurrencyDetails
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.OfferingData
 import tbdex.sdk.protocol.models.PaymentMethod
-import web5.sdk.credentials.ConstraintsV2
-import web5.sdk.credentials.InputDescriptorV2
-import web5.sdk.credentials.PresentationDefinitionV2
 
 /**
  * A fake implementation of the [OfferingsApi] interface for testing purposes.
@@ -23,11 +20,7 @@ class FakeOfferingsApi : OfferingsApi {
       payoutUnitsPerPayinUnit = "0.000038",
       payinMethods = listOf(PaymentMethod(kind = "DEBIT_CARD")),
       payoutMethods = listOf(PaymentMethod(kind = "BTC_ADDRESS")),
-      requiredClaims = PresentationDefinitionV2(
-        id = "7ce4004c-3c38-4853-968b-e411bafcd945", inputDescriptors = listOf(
-          InputDescriptorV2(id = "test-input-descriptor", constraints = ConstraintsV2())
-        )
-      )
+      requiredClaims = null
     )
   )
 

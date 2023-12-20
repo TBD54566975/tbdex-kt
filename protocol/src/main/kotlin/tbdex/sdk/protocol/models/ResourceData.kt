@@ -15,7 +15,7 @@ sealed interface Data
 /**
  * An interface that represents the contents of a [Resource].
  */
-sealed interface ResourceData: Data
+sealed interface ResourceData : Data
 
 /**
  * A data class implementing [ResourceData], which represents the contents of an [Offering].
@@ -27,7 +27,7 @@ class OfferingData(
   val payinCurrency: CurrencyDetails,
   val payinMethods: List<PaymentMethod>,
   val payoutMethods: List<PaymentMethod>,
-  val requiredClaims: PresentationDefinitionV2
+  val requiredClaims: PresentationDefinitionV2?
 ) : ResourceData
 
 /**

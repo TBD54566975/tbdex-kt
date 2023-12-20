@@ -1,6 +1,5 @@
 package tbdex.sdk.httpserver.models
 
-import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.*
 
 /**
@@ -34,65 +33,50 @@ class FakeExchangesApi : ExchangesApi {
   /**
    * Returns an [Rfq] associated with the specified exchange ID.
    *
-   * @param exchangeId The ID of the exchange associated with the RFQ. If null, returns null.
+   * @param exchangeId The ID of the exchange associated with the RFQ.
    * @return An [Rfq] associated with the specified exchange, or null if not found.
    */
-  override fun getRfq(exchangeId: String?): Rfq? {
-    // todo: return null or an RFQ based on exchangeId somehow
-    return Rfq.create(
-      to = "did:ion:foo",
-      from = "did:dht:bar",
-      rfqData = RfqData(
-        offeringId = TypeId.generate("offering"),
-        payinSubunits = "100",
-        payinMethod = SelectedPaymentMethod(
-          kind = "USD"
-        ),
-        payoutMethod = SelectedPaymentMethod(
-          kind = "BTC"
-        ),
-        claims = listOf("foo")
-      )
-    )
+  override fun getRfq(exchangeId: String): Rfq? {
+    return exchanges[exchangeId]?.find { it.metadata.kind == MessageKind.rfq } as? Rfq
   }
 
   /**
    * Returns a [Quote] associated with the specified exchange ID.
    *
-   * @param exchangeId The ID of the exchange associated with the Quote. If null, returns null.
+   * @param exchangeId The ID of the exchange associated with the Quote.
    * @return A [Quote] associated with the specified exchange, or null if not found.
    */
-  override fun getQuote(exchangeId: String?): Quote? {
+  override fun getQuote(exchangeId: String): Quote? {
     TODO("Not yet implemented")
   }
 
   /**
    * Returns an [Order] associated with the specified exchange ID.
    *
-   * @param exchangeId The ID of the exchange associated with the Order. If null, returns null.
+   * @param exchangeId The ID of the exchange associated with the Order.
    * @return An [Order] associated with the specified exchange, or null if not found.
    */
-  override fun getOrder(exchangeId: String?): Order? {
+  override fun getOrder(exchangeId: String): Order? {
     TODO("Not yet implemented")
   }
 
   /**
    * Returns a list of [OrderStatus] associated with the specified exchange ID.
    *
-   * @param exchangeId The ID of the exchange associated with the OrderStatus entities. If null, returns null.
+   * @param exchangeId The ID of the exchange associated with the OrderStatus entities.
    * @return A list of [OrderStatus] associated with the specified exchange, or null if none are found.
    */
-  override fun getOrderStatuses(exchangeId: String?): List<OrderStatus>? {
+  override fun getOrderStatuses(exchangeId: String): List<OrderStatus>? {
     TODO("Not yet implemented")
   }
 
   /**
    * Returns a [Close] associated with the specified exchange ID.
    *
-   * @param exchangeId The ID of the exchange associated with the Close entity. If null, returns null.
+   * @param exchangeId The ID of the exchange associated with the Close entity.
    * @return A [Close] associated with the specified exchange, or null if not found.
    */
-  override fun getClose(exchangeId: String?): Close? {
+  override fun getClose(exchangeId: String): Close? {
     TODO("Not yet implemented")
   }
 

@@ -6,6 +6,8 @@ import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Rfq.Companion.create
 import tbdex.sdk.protocol.serialization.Json
 import web5.sdk.credentials.PresentationDefinitionV2
+import web5.sdk.credentials.PresentationExchange
+import web5.sdk.credentials.VerifiableCredential
 import java.time.OffsetDateTime
 
 /**
@@ -18,6 +20,8 @@ import java.time.OffsetDateTime
  * val rfq = Rfq.create(metadata, data)
  * ```
  */
+@Suppress("TooGenericExceptionCaught")
+
 class Rfq private constructor(
   override val metadata: MessageMetadata,
   override val data: RfqData,
@@ -44,7 +48,7 @@ class Rfq private constructor(
     validatePaymentMethod(data.payinMethod, offering.data.payinMethods)
     validatePaymentMethod(data.payoutMethod, offering.data.payoutMethods)
 
-    this.verifyClaims(offering.data.requiredClaims)
+    offering.data.requiredClaims?.let { this.verifyClaims(it) }
   }
 
   private fun validatePaymentMethod(selectedMethod: SelectedPaymentMethod, offeringMethods: List<PaymentMethod>) {
@@ -57,21 +61,24 @@ class Rfq private constructor(
   }
 
   private fun verifyClaims(requiredClaims: PresentationDefinitionV2) {
-    throw NotImplementedError()
-//    // check that all requirements are satisfied by one of the VC JWTs
-//    // and that the VC satisfying it is crypto verified
-//    requiredClaims.all { required ->
-//      // need to catch and swallow NotImplementedException inside find
-//      val satisfyingClaim =
-//        this.data.claims.find { vc -> satisfiesPresentationDefinition(VerifiableCredential.parseJwt(vc), required) }
-//
-//      require(satisfyingClaim != null) {
-//        "No matching claim for Offering requirement: ${required.id}"
-//      }
-//
-//      VerifiableCredential.verify(satisfyingClaim)
-//      true
-//    }
+    // check that all requirements are satisfied by one of the VC JWTs
+    // and that the VC satisfying it is crypto verified
+
+    val satisfyingClaims: MutableList<String> = mutableListOf()
+    this.data.claims.forEach {
+      try {
+        PresentationExchange.satisfiesPresentationDefinition(it, requiredClaims)
+        satisfyingClaims.add(it)
+      } catch (e: Exception) {
+        return@forEach
+      }
+    }
+
+    if (satisfyingClaims.isEmpty()) {
+      throw IllegalStateException("No matching claim for Offering requirement: ${requiredClaims.id}")
+    }
+
+    satisfyingClaims.forEach { VerifiableCredential.verify(it) }
   }
 
   companion object {
