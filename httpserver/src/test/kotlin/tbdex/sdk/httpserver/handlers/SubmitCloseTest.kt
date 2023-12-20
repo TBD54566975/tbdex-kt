@@ -3,6 +3,7 @@ package tbdex.sdk.httpserver.handlers
 import ServerTest
 import TestData.aliceDid
 import TestData.createClose
+import TestData.createRfq
 import de.fxlae.typeid.TypeId
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -52,8 +53,38 @@ class SubmitCloseTest : ServerTest() {
   fun `returns a 400 if request body is not a valid Close`() = runBlocking { }
 
   @Test
-  fun `returns a 404 if exchange doesn't exist`() = runBlocking { }
+  fun `returns a 404 if exchange doesn't exist`() = runBlocking {
+    val close = createClose(TypeId.generate(MessageKind.close.name))
+    close.sign(aliceDid)
+
+    val response = client.post("/exchanges/123/close") {
+      contentType(ContentType.Application.Json)
+      setBody(close)
+    }
+
+    val errorResponse = Json.jsonMapper.readValue(response.bodyAsText(), ErrorResponse::class.java)
+
+    assertEquals(HttpStatusCode.NotFound, response.status)
+    assertContains(
+      errorResponse.errors.first().detail,
+      "Could not find exchange"
+    )
+  }
 
   @Test
-  fun `returns a 202 if close is accepted`() = runBlocking { }
+  fun `returns a 202 if close is accepted`() = runBlocking {
+    val rfq = createRfq()
+    rfq.sign(aliceDid)
+    exchangesApi.addMessage(rfq)
+
+    val close = createClose(rfq.metadata.exchangeId)
+    close.sign(aliceDid)
+
+    val response = client.post("/exchanges/123/close") {
+      contentType(ContentType.Application.Json)
+      setBody(close)
+    }
+
+    assertEquals(HttpStatusCode.Accepted, response.status)
+  }
 }
