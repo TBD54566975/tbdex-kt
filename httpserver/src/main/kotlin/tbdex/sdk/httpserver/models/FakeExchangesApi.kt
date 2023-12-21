@@ -1,6 +1,12 @@
 package tbdex.sdk.httpserver.models
 
-import tbdex.sdk.protocol.models.*
+import tbdex.sdk.protocol.models.Close
+import tbdex.sdk.protocol.models.Message
+import tbdex.sdk.protocol.models.MessageKind
+import tbdex.sdk.protocol.models.Order
+import tbdex.sdk.protocol.models.OrderStatus
+import tbdex.sdk.protocol.models.Quote
+import tbdex.sdk.protocol.models.Rfq
 
 /**
  * A fake implementation of the [ExchangesApi] interface for testing purposes.
@@ -27,7 +33,7 @@ class FakeExchangesApi : ExchangesApi {
    * @return A list of lists of [Message] representing exchanges based on the filter, or null if none are found.
    */
   override fun getExchanges(filter: GetExchangesFilter?): List<List<Message>>? {
-    TODO("Not yet implemented")
+    return exchanges.values.toList()
   }
 
   /**

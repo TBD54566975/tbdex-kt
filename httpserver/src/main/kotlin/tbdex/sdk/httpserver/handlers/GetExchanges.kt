@@ -1,5 +1,6 @@
 package tbdex.sdk.httpserver.handlers
 
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond
@@ -18,7 +19,7 @@ suspend fun getExchanges(
   exchangesApi: ExchangesApi,
   callback: GetCallback?
 ) {
-  val authzHeader = call.request.headers["authorization"]
+  val authzHeader = call.request.headers[HttpHeaders.Authorization]
   if (authzHeader == null) {
     call.respond(
       HttpStatusCode.Unauthorized,
