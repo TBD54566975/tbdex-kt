@@ -2,12 +2,11 @@ package tbdex.sdk.httpserver.handlers
 
 import ServerTest
 import TestData
-import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.bearer
-import io.ktor.client.request.bearerAuth
-import io.ktor.client.request.get
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.HttpStatusCode
+import io.ktor.client.plugins.auth.*
+import io.ktor.client.plugins.auth.providers.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.protocol.models.Message
@@ -60,8 +59,10 @@ class GetExchangesTest : ServerTest() {
   @Test
   fun `returns 200 if exchanges are found`() = runBlocking {
     val rfq = TestData.createRfq()
-    val aliceDid = rfq.metadata.from
+    rfq.sign(TestData.aliceDid)
     val quote = TestData.createQuote()
+    quote.sign(TestData.pfiDid)
+
     exchangesApi.addMessage(rfq)
     exchangesApi.addMessage(quote)
 
@@ -78,10 +79,17 @@ class GetExchangesTest : ServerTest() {
 
     assertEquals(HttpStatusCode.OK, response.status)
 
-    // todo: currently failing to map value to GetExchangesResponse since Message is a sealed class with abstract fields
-    val exchangesResponse = Json.jsonMapper.readValue(response.bodyAsText(), GetExchangesResponse::class.java)
-    assertEquals(((exchangesResponse.data?.get(0) as List<Message>)[0] as Rfq).metadata.from, aliceDid)
+    val responseString = response.bodyAsText()
+    val jsonNode = Json.jsonMapper.readTree(responseString)
+    val exchanges = jsonNode.get("data").elements().asSequence()
+      .map { exchange ->
+        exchange.elements().asSequence().map {
+          val string = it.toString()
+          Message.parse(string)
+        }.toList()
+      }
+      .toList()
 
+    assertEquals((exchanges[0][0] as Rfq).metadata.from, TestData.aliceDid.uri)
   }
-
 }
