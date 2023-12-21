@@ -65,7 +65,3 @@ fun generateRequestToken(did: Did, assertionMethodId: String? = null): String {
 
   return "$base64UrlEncodedHeader.$base64UrlEncodedPayload.$base64UrlEncodedSignature"
 }
-
-fun verifyToken(requestToken: String): String {
-  CryptoUtils.verify(detachedPayload = ByteArray(1), signature = requestToken, did = "")
-}
