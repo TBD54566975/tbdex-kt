@@ -9,7 +9,6 @@ import tbdex.sdk.protocol.serialization.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-
 class GetOfferingsTest : ServerTest() {
 
   @Test

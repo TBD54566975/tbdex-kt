@@ -11,10 +11,22 @@ import tbdex.sdk.httpserver.models.GetOfferingsFilter
 import tbdex.sdk.httpserver.models.OfferingsApi
 import tbdex.sdk.protocol.models.Offering
 
+/**
+ * Get offerings response
+ *
+ * @property data list of Offerings
+ */
 class GetOfferingsResponse(
   val data: List<Offering>?
 )
 
+/**
+ * Get offerings request handler
+ *
+ * @param call Ktor server application call
+ * @param offeringsApi Offering API interface
+ * @param callback Callback function to be invoked
+ */
 suspend fun getOfferings(
   call: ApplicationCall,
   offeringsApi: OfferingsApi,

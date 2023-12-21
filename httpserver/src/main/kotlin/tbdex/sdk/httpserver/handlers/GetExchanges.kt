@@ -11,9 +11,22 @@ import tbdex.sdk.httpserver.models.GetCallback
 import tbdex.sdk.httpserver.models.GetExchangesFilter
 import tbdex.sdk.protocol.models.Message
 
+/**
+ * Get exchanges response
+ *
+ * @property data list of exchanges (list of tbdex messages)
+ */
 class GetExchangesResponse(
   val data: List<List<Message>>?
 )
+
+/**
+ * Get exchanges
+ *
+ * @param call Ktor server application call
+ * @param exchangesApi Exchanges API interface
+ * @param callback Callback function to be invoked
+ */
 suspend fun getExchanges(
   call: ApplicationCall,
   exchangesApi: ExchangesApi,
