@@ -40,7 +40,7 @@ suspend fun submitClose(
 
   val exchangeId = message.metadata.exchangeId.toString()
   val exchange = exchangesApi.getExchange(exchangeId)
-  if (exchange == null) {
+  if (exchange.isNullOrEmpty()) {
     val errorDetail = ErrorDetail(detail = "Could not find exchange: $exchangeId")
     call.respond(HttpStatusCode.NotFound, ErrorResponse(listOf(errorDetail)))
     return

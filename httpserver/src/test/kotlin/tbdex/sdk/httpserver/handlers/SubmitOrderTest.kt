@@ -20,7 +20,7 @@ import kotlin.test.assertEquals
 
 class SubmitOrderTest : ServerTest() {
   @Test
-  fun `returns 400 if no request body is provided`() = runBlocking {
+  fun `returns BadRequest if no request body is provided`() = runBlocking {
     val response = client.post("/exchanges/123/order") {
       contentType(ContentType.Application.Json)
     }
@@ -32,7 +32,7 @@ class SubmitOrderTest : ServerTest() {
   }
 
   @Test
-  fun `returns 404 if exchange doesn't exist `() = runBlocking {
+  fun `returns NotFound if exchange doesn't exist `() = runBlocking {
     val order = createOrder(TypeId.generate("rfq"))
     order.sign(aliceDid)
 
@@ -48,7 +48,7 @@ class SubmitOrderTest : ServerTest() {
   }
 
   @Test
-  fun `returns a 409 if order is not allowed based on the exchange's current state`() = runBlocking {
+  fun `returns Conflict if order is not allowed based on the exchange's current state`() = runBlocking {
     val rfq = createRfq()
     rfq.sign(aliceDid)
     exchangesApi.addMessage(rfq)
@@ -71,7 +71,7 @@ class SubmitOrderTest : ServerTest() {
   }
 
   @Test
-  fun `returns a 400 if quote has expired`() = runBlocking {
+  fun `returns Forbidden if quote has expired`() = runBlocking {
     val quote = createQuote(expiresAt = OffsetDateTime.now().minusDays(1))
     quote.sign(aliceDid)
     exchangesApi.addMessage(quote)
@@ -91,7 +91,7 @@ class SubmitOrderTest : ServerTest() {
   }
 
   @Test
-  fun `returns a 202 if order is accepted`() = runBlocking {
+  fun `returns Accepted if order is accepted`() = runBlocking {
     val rfq = createRfq()
     rfq.sign(aliceDid)
     exchangesApi.addMessage(rfq)

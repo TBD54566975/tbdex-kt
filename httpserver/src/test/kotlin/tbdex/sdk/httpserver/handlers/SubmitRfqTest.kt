@@ -15,7 +15,7 @@ import kotlin.test.assertEquals
 
 class SubmitRfqTest : ServerTest() {
   @Test
-  fun `returns 400 if no request body is provided`() = runBlocking {
+  fun `returns BadRequest if no request body is provided`() = runBlocking {
     val response = client.post("/exchanges/123/rfq") {
       contentType(ContentType.Application.Json)
     }
@@ -27,7 +27,7 @@ class SubmitRfqTest : ServerTest() {
   }
 
   @Test
-  fun `returns 409 if rfq already exists for a given exchangeId`() = runBlocking {
+  fun `returns Conflict if rfq already exists for a given exchangeId`() = runBlocking {
     val rfq = createRfq()
     rfq.sign(aliceDid)
     exchangesApi.addMessage(rfq)
@@ -44,7 +44,7 @@ class SubmitRfqTest : ServerTest() {
   }
 
   @Test
-  fun `returns 400 if rfq does not fit offering requirements`() = runBlocking {
+  fun `returns BadRequest if rfq does not fit offering requirements`() = runBlocking {
     val rfq = createRfq()
     rfq.sign(aliceDid)
 
@@ -60,7 +60,7 @@ class SubmitRfqTest : ServerTest() {
   }
 
   @Test
-  fun `returns 202 if rfq is accepted`() = runBlocking {
+  fun `returns Accepted if rfq is accepted`() = runBlocking {
     val rfq = createRfq(offeringsApi.getOffering())
     rfq.sign(aliceDid)
 

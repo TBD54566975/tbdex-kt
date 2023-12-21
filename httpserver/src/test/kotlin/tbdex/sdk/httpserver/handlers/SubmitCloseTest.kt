@@ -13,12 +13,13 @@ import org.junit.jupiter.api.Test
 import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.serialization.Json
+import kotlin.test.Ignore
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
 class SubmitCloseTest : ServerTest() {
   @Test
-  fun `returns 400 if no request body is provided`() = runBlocking {
+  fun `returns BadRequest if no request body is provided`() = runBlocking {
     val response = client.post("/exchanges/123/close") {
       contentType(ContentType.Application.Json)
     }
@@ -30,7 +31,7 @@ class SubmitCloseTest : ServerTest() {
   }
 
   @Test
-  fun `returns 409 if close is not allowed based on exchange state`() = runBlocking {
+  fun `returns Conflict if close is not allowed based on exchange state`() = runBlocking {
     val close = createClose(TypeId.generate(MessageKind.close.name))
     close.sign(aliceDid)
     exchangesApi.addMessage(close)
@@ -50,10 +51,7 @@ class SubmitCloseTest : ServerTest() {
   }
 
   @Test
-  fun `returns a 400 if request body is not a valid Close`() = runBlocking { }
-
-  @Test
-  fun `returns a 404 if exchange doesn't exist`() = runBlocking {
+  fun `returns NotFound if exchange doesn't exist`() = runBlocking {
     val close = createClose(TypeId.generate(MessageKind.close.name))
     close.sign(aliceDid)
 
@@ -72,7 +70,7 @@ class SubmitCloseTest : ServerTest() {
   }
 
   @Test
-  fun `returns a 202 if close is accepted`() = runBlocking {
+  fun `returns Accepted if close is accepted`() = runBlocking {
     val rfq = createRfq()
     rfq.sign(aliceDid)
     exchangesApi.addMessage(rfq)
@@ -87,4 +85,8 @@ class SubmitCloseTest : ServerTest() {
 
     assertEquals(HttpStatusCode.Accepted, response.status)
   }
+
+  @Test
+  @Ignore
+  fun `returns BadRequest if request body is not a valid Close`() = runBlocking { }
 }
