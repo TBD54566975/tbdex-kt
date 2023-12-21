@@ -14,12 +14,12 @@ import tbdex.sdk.protocol.models.Rfq
 interface ExchangesApi {
 
   /**
-   * Retrieves the exchange(s) with the specified ID(s).
+   * Retrieves the exchange with the specified ID.
    *
-   * @param id A list of exchange IDs to retrieve. If null, returns null.
-   * @return A list of [MessageKind] representing exchanges with the specified ID(s), or null if not found.
+   * @param id The ID of the exchange to retrieve.
+   * @return A list of [Message] representing the exchange with the specified ID, or null if not found.
    */
-  fun getExchange(id: List<String>? = null): List<MessageKind>?
+  fun getExchange(id: String): List<Message>?
 
   /**
    * Retrieves a list of exchanges based on the provided filter.
@@ -30,42 +30,42 @@ interface ExchangesApi {
   fun getExchanges(filter: GetExchangesFilter? = null): List<List<Message>>?
 
   /**
-   * Retrieves the Request for Quote (RFQ) associated with the specified exchange.
+   * Retrieves the Request for Quote (RFQ) for the specified exchange ID.
    *
-   * @param exchangeId The ID of the exchange associated with the RFQ. If null, returns null.
-   * @return The [Rfq] associated with the specified exchange, or null if not found.
+   * @param exchangeId The ID of the exchange to retrieve the RFQ for.
+   * @return The [Rfq] object representing the RFQ for the specified exchange, or null if not found.
    */
-  fun getRfq(exchangeId: String? = null): Rfq?
+  fun getRfq(exchangeId: String): Rfq?
 
   /**
-   * Retrieves the Quote associated with the specified exchange.
+   * Retrieves the Quote for the specified exchange ID.
    *
-   * @param exchangeId The ID of the exchange associated with the Quote. If null, returns null.
-   * @return The [Quote] associated with the specified exchange, or null if not found.
+   * @param exchangeId The ID of the exchange to retrieve the Quote for.
+   * @return The [Quote] object representing the Quote for the specified exchange, or null if not found.
    */
-  fun getQuote(exchangeId: String? = null): Quote?
+  fun getQuote(exchangeId: String): Quote?
 
   /**
-   * Retrieves the Order associated with the specified exchange.
+   * Retrieves the Order for the specified exchange ID.
    *
-   * @param exchangeId The ID of the exchange associated with the Order. If null, returns null.
-   * @return The [Order] associated with the specified exchange, or null if not found.
+   * @param exchangeId The ID of the exchange to retrieve the Order for.
+   * @return The [Order] object representing the Order for the specified exchange, or null if not found.
    */
-  fun getOrder(exchangeId: String? = null): Order?
+  fun getOrder(exchangeId: String): Order?
 
   /**
-   * Retrieves the list of OrderStatus entities associated with the specified exchange.
+   * Retrieves the list of Order Statuses for the specified exchange ID.
    *
-   * @param exchangeId The ID of the exchange associated with the OrderStatus entities. If null, returns null.
-   * @return A list of [OrderStatus] associated with the specified exchange, or null if none are found.
+   * @param exchangeId The ID of the exchange to retrieve Order Statuses for.
+   * @return A list of [OrderStatus] objects representing the Order Statuses for the specified exchange, or an empty list if none are found.
    */
-  fun getOrderStatuses(exchangeId: String? = null): List<OrderStatus>?
+  fun getOrderStatuses(exchangeId: String): List<OrderStatus>?
 
   /**
-   * Retrieves the Close entity associated with the specified exchange.
+   * Retrieves the Close information for the specified exchange ID.
    *
-   * @param exchangeId The ID of the exchange associated with the Close entity. If null, returns null.
-   * @return The [Close] associated with the specified exchange, or null if not found.
+   * @param exchangeId The ID of the exchange to retrieve the Close information for.
+   * @return The [Close] object representing the Close information for the specified exchange, or null if not found.
    */
-  fun getClose(exchangeId: String? = null): Close?
+  fun getClose(exchangeId: String): Close?
 }

@@ -17,6 +17,8 @@ import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import tbdex.sdk.httpserver.handlers.getExchanges
 import tbdex.sdk.httpserver.handlers.getOfferings
+import tbdex.sdk.httpserver.handlers.submitClose
+import tbdex.sdk.httpserver.handlers.submitOrder
 import tbdex.sdk.httpserver.handlers.submitRfq
 import tbdex.sdk.httpserver.models.ExchangesApi
 import tbdex.sdk.httpserver.models.FakeExchangesApi
@@ -63,15 +65,14 @@ class TbdexHttpServerConfig(
  * @property config The configuration for the server, including port and optional APIs.
  */
 class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
-
-  private val offeringsApi = config.offeringsApi ?: FakeOfferingsApi()
-  private val exchangesApi = config.exchangesApi ?: FakeExchangesApi()
-
   private val getCallbacks: MutableMap<String, GetCallback> = mutableMapOf()
   private val submitCallbacks: MutableMap<String, SubmitCallback> = mutableMapOf()
   private var embedded = embeddedServer(Netty, port = config.port) {
     configure(this)
   }
+
+  internal val offeringsApi = config.offeringsApi ?: FakeOfferingsApi()
+  internal val exchangesApi = config.exchangesApi ?: FakeExchangesApi()
 
   /**
    * Configures the Ktor application with necessary settings, including content negotiation.
@@ -107,19 +108,19 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
         }
 
         post("/{exchangeId}/order") {
-//          submitOrder(
-//            call = call,
-//            exchangesApi = exchangesApi,
-//            callback = submitCallbacks.getOrDefault("order", null)
-//          )
+          submitOrder(
+            call = call,
+            exchangesApi = exchangesApi,
+            callback = submitCallbacks.getOrDefault("order", null)
+          )
         }
 
         post("/{exchangeId}/close") {
-//          submitClose(
-//            call = call,
-//            exchangesApi = exchangesApi,
-//            callback = submitCallbacks.getOrDefault("close", null)
-//          )
+          submitClose(
+            call = call,
+            exchangesApi = exchangesApi,
+            callback = submitCallbacks.getOrDefault("close", null)
+          )
         }
 
         get {
