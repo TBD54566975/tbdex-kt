@@ -1,6 +1,12 @@
 package tbdex.sdk.httpserver.models
 
-import tbdex.sdk.protocol.models.*
+import tbdex.sdk.protocol.models.Close
+import tbdex.sdk.protocol.models.Message
+import tbdex.sdk.protocol.models.MessageKind
+import tbdex.sdk.protocol.models.Order
+import tbdex.sdk.protocol.models.OrderStatus
+import tbdex.sdk.protocol.models.Quote
+import tbdex.sdk.protocol.models.Rfq
 
 /**
  * Interface representing an API for interacting with TBDex exchanges and related entities.
@@ -19,9 +25,9 @@ interface ExchangesApi {
    * Retrieves a list of exchanges based on the provided filter.
    *
    * @param filter The filter criteria for retrieving exchanges. If null, returns all exchanges.
-   * @return A list of lists of [MessageKind] representing exchanges based on the filter, or null if none are found.
+   * @return A list of lists of [Message] representing exchanges based on the filter, or null if none are found.
    */
-  fun getExchanges(filter: GetExchangesFilter? = null): List<List<MessageKind>>?
+  fun getExchanges(filter: GetExchangesFilter? = null): List<List<Message>>?
 
   /**
    * Retrieves the Request for Quote (RFQ) associated with the specified exchange.

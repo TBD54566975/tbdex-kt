@@ -58,8 +58,10 @@ class GetOfferingsFilter(
  * @property from The source identifier for exchanges.
  */
 class GetExchangesFilter(
-  val exchangeIds: List<String>,
-  val from: String
+  val exchangeIds: List<String>? = null,
+  // todo: make non-nullable once we can pass in requesterDid
+  // from verifying JWT. see issue: https://github.com/TBD54566975/tbdex/issues/210
+  val from: String? = null
 ) : Filter
 
 /**
