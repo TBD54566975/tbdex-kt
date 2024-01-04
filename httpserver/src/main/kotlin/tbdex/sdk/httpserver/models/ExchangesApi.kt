@@ -2,7 +2,6 @@ package tbdex.sdk.httpserver.models
 
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
-import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.Quote

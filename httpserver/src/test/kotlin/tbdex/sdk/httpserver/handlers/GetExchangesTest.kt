@@ -2,11 +2,12 @@ package tbdex.sdk.httpserver.handlers
 
 import ServerTest
 import TestData
-import io.ktor.client.plugins.auth.*
-import io.ktor.client.plugins.auth.providers.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.bearer
+import io.ktor.client.request.bearerAuth
+import io.ktor.client.request.get
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
 import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.protocol.models.Message

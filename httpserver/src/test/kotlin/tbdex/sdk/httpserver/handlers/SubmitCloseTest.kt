@@ -5,9 +5,12 @@ import TestData.aliceDid
 import TestData.createClose
 import TestData.createRfq
 import de.fxlae.typeid.TypeId
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.contentType
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import tbdex.sdk.httpclient.models.ErrorResponse
