@@ -2,18 +2,32 @@ package tbdex.sdk.httpserver
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import io.ktor.http.*
-import io.ktor.serialization.jackson.*
-import io.ktor.server.application.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
-import io.ktor.server.plugins.contentnegotiation.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.jackson.jackson
+import io.ktor.server.application.Application
+import io.ktor.server.application.call
+import io.ktor.server.application.install
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.response.respond
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
+import io.ktor.server.routing.routing
+import tbdex.sdk.httpserver.handlers.getExchanges
+import tbdex.sdk.httpserver.handlers.getOfferings
 import tbdex.sdk.httpserver.handlers.submitClose
 import tbdex.sdk.httpserver.handlers.submitOrder
 import tbdex.sdk.httpserver.handlers.submitRfq
-import tbdex.sdk.httpserver.models.*
+import tbdex.sdk.httpserver.models.ExchangesApi
+import tbdex.sdk.httpserver.models.FakeExchangesApi
+import tbdex.sdk.httpserver.models.FakeOfferingsApi
+import tbdex.sdk.httpserver.models.GetCallback
+import tbdex.sdk.httpserver.models.GetKind
+import tbdex.sdk.httpserver.models.OfferingsApi
+import tbdex.sdk.httpserver.models.SubmitCallback
+import tbdex.sdk.httpserver.models.SubmitKind
 import tbdex.sdk.protocol.serialization.TypeIdModule
 import kotlin.collections.set
 
@@ -110,12 +124,12 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
         }
 
         get {
-//          getExchanges(call, exchangesApi, getCallbacks.getOrDefault("exchanges", null))
+          getExchanges(call, exchangesApi, getCallbacks.getOrDefault("exchanges", null))
         }
       }
 
       get("/offerings") {
-//        getOfferings(call, offeringsApi,  getCallbacks.getOrDefault("offerings", null))
+        getOfferings(call, offeringsApi,  getCallbacks.getOrDefault("offerings", null))
       }
     }
   }
