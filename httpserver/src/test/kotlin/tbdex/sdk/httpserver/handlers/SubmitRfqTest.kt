@@ -64,7 +64,7 @@ class SubmitRfqTest : ServerTest() {
 
   @Test
   fun `returns Accepted if rfq is accepted`() = runBlocking {
-    val rfq = createRfq(offeringsApi.getOffering())
+    val rfq = createRfq(offeringsApi.getOffering("123"))
     rfq.sign(aliceDid)
 
     val response = client.post("/exchanges/123/rfq") {

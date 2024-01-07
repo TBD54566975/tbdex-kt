@@ -16,41 +16,41 @@ interface ExchangesApi {
    * Retrieves the exchange with the specified ID.
    *
    * @param id The ID of the exchange to retrieve.
-   * @return A list of [Message] representing the exchange with the specified ID, or null if not found.
+   * @return A list of [Message] representing the exchange with the specified ID.
    */
-  fun getExchange(id: String): List<Message>?
+  fun getExchange(id: String): List<Message>
 
   /**
    * Retrieves a list of exchanges based on the provided filter.
    *
    * @param filter The filter criteria for retrieving exchanges. If null, returns all exchanges.
-   * @return A list of lists of [Message] representing exchanges based on the filter, or null if none are found.
+   * @return A list of lists of [Message] representing exchanges based on the filter.
    */
-  fun getExchanges(filter: GetExchangesFilter? = null): List<List<Message>>?
+  fun getExchanges(filter: GetExchangesFilter? = null): List<List<Message>>
 
   /**
    * Retrieves the Request for Quote (RFQ) for the specified exchange ID.
    *
    * @param exchangeId The ID of the exchange to retrieve the RFQ for.
-   * @return The [Rfq] object representing the RFQ for the specified exchange, or null if not found.
+   * @return The [Rfq] object representing the RFQ for the specified exchange.
    */
-  fun getRfq(exchangeId: String): Rfq?
+  fun getRfq(exchangeId: String): Rfq
 
   /**
    * Retrieves the Quote for the specified exchange ID.
    *
    * @param exchangeId The ID of the exchange to retrieve the Quote for.
-   * @return The [Quote] object representing the Quote for the specified exchange, or null if not found.
+   * @return The [Quote] object representing the Quote for the specified exchange.
    */
-  fun getQuote(exchangeId: String): Quote?
+  fun getQuote(exchangeId: String): Quote
 
   /**
    * Retrieves the Order for the specified exchange ID.
    *
    * @param exchangeId The ID of the exchange to retrieve the Order for.
-   * @return The [Order] object representing the Order for the specified exchange, or null if not found.
+   * @return The [Order] object representing the Order for the specified exchange.
    */
-  fun getOrder(exchangeId: String): Order?
+  fun getOrder(exchangeId: String): Order
 
   /**
    * Retrieves the list of Order Statuses for the specified exchange ID.
@@ -58,13 +58,13 @@ interface ExchangesApi {
    * @param exchangeId The ID of the exchange to retrieve Order Statuses for.
    * @return A list of [OrderStatus] objects representing the Order Statuses for the specified exchange, or an empty list if none are found.
    */
-  fun getOrderStatuses(exchangeId: String): List<OrderStatus>?
+  fun getOrderStatuses(exchangeId: String): List<OrderStatus>
 
   /**
    * Retrieves the Close information for the specified exchange ID.
    *
    * @param exchangeId The ID of the exchange to retrieve the Close information for.
-   * @return The [Close] object representing the Close information for the specified exchange, or null if not found.
+   * @return The [Close] object representing the Close information for the specified exchange.
    */
-  fun getClose(exchangeId: String): Close?
+  fun getClose(exchangeId: String): Close
 }

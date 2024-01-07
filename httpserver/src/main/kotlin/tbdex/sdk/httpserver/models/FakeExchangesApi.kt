@@ -22,8 +22,8 @@ class FakeExchangesApi : ExchangesApi {
    * @param id The exchange ID to retrieve. If null, returns null.
    * @return A list of [Message] representing exchanges with the specified ID(s), or null if not found.
    */
-  override fun getExchange(id: String): List<Message>? {
-    return exchanges[id]
+  override fun getExchange(id: String): List<Message> {
+    return exchanges[id] ?: throw NoSuchElementException()
   }
 
   /**
@@ -32,7 +32,7 @@ class FakeExchangesApi : ExchangesApi {
    * @param filter The filter criteria for retrieving exchanges. If null, returns all exchanges.
    * @return A list of lists of [Message] representing exchanges based on the filter, or null if none are found.
    */
-  override fun getExchanges(filter: GetExchangesFilter?): List<List<Message>>? {
+  override fun getExchanges(filter: GetExchangesFilter?): List<List<Message>> {
     return exchanges.values.toList()
   }
 
@@ -42,8 +42,8 @@ class FakeExchangesApi : ExchangesApi {
    * @param exchangeId The ID of the exchange associated with the RFQ.
    * @return An [Rfq] associated with the specified exchange, or null if not found.
    */
-  override fun getRfq(exchangeId: String): Rfq? {
-    return exchanges[exchangeId]?.find { it.metadata.kind == MessageKind.rfq } as? Rfq
+  override fun getRfq(exchangeId: String): Rfq {
+    return exchanges[exchangeId]?.find { it.metadata.kind == MessageKind.rfq } as Rfq
   }
 
   /**
@@ -52,7 +52,7 @@ class FakeExchangesApi : ExchangesApi {
    * @param exchangeId The ID of the exchange associated with the Quote.
    * @return A [Quote] associated with the specified exchange, or null if not found.
    */
-  override fun getQuote(exchangeId: String): Quote? {
+  override fun getQuote(exchangeId: String): Quote {
     TODO("Not yet implemented")
   }
 
@@ -62,7 +62,7 @@ class FakeExchangesApi : ExchangesApi {
    * @param exchangeId The ID of the exchange associated with the Order.
    * @return An [Order] associated with the specified exchange, or null if not found.
    */
-  override fun getOrder(exchangeId: String): Order? {
+  override fun getOrder(exchangeId: String): Order {
     TODO("Not yet implemented")
   }
 
@@ -72,7 +72,7 @@ class FakeExchangesApi : ExchangesApi {
    * @param exchangeId The ID of the exchange associated with the OrderStatus entities.
    * @return A list of [OrderStatus] associated with the specified exchange, or null if none are found.
    */
-  override fun getOrderStatuses(exchangeId: String): List<OrderStatus>? {
+  override fun getOrderStatuses(exchangeId: String): List<OrderStatus> {
     TODO("Not yet implemented")
   }
 
@@ -82,7 +82,7 @@ class FakeExchangesApi : ExchangesApi {
    * @param exchangeId The ID of the exchange associated with the Close entity.
    * @return A [Close] associated with the specified exchange, or null if not found.
    */
-  override fun getClose(exchangeId: String): Close? {
+  override fun getClose(exchangeId: String): Close {
     TODO("Not yet implemented")
   }
 

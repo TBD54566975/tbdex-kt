@@ -1,9 +1,9 @@
 package tbdex.sdk.httpserver.handlers
 
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.response.respond
+import io.ktor.server.request.receiveText
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpserver.models.CallbackError
 import tbdex.sdk.httpserver.models.ErrorResponse
@@ -39,8 +39,11 @@ suspend fun submitOrder(
     return
   }
   val exchangeId = message.metadata.exchangeId.toString()
-  val exchange = exchangesApi.getExchange(exchangeId)
-  if (exchange == null) {
+
+  val exchange: List<Message>
+  try {
+    exchange = exchangesApi.getExchange(exchangeId)
+  } catch (e: Exception) {
     val errorDetail = ErrorDetail(detail = "Could not find exchange: $exchangeId")
     call.respond(HttpStatusCode.NotFound, ErrorResponse(listOf(errorDetail)))
     return

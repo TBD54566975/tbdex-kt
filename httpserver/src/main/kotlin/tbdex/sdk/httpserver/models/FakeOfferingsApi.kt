@@ -14,14 +14,14 @@ class FakeOfferingsApi : OfferingsApi {
   // Sample offering data for testing purposes
   private val offering = Offering.create(
     from = "did:ex:pfi", data = OfferingData(
-      description = "",
-      payinCurrency = CurrencyDetails(currencyCode = "USD"),
-      payoutCurrency = CurrencyDetails(currencyCode = "BTC"),
-      payoutUnitsPerPayinUnit = "0.000038",
-      payinMethods = listOf(PaymentMethod(kind = "DEBIT_CARD")),
-      payoutMethods = listOf(PaymentMethod(kind = "BTC_ADDRESS")),
-      requiredClaims = null
-    )
+    description = "",
+    payinCurrency = CurrencyDetails(currencyCode = "USD"),
+    payoutCurrency = CurrencyDetails(currencyCode = "BTC"),
+    payoutUnitsPerPayinUnit = "0.000038",
+    payinMethods = listOf(PaymentMethod(kind = "DEBIT_CARD")),
+    payoutMethods = listOf(PaymentMethod(kind = "BTC_ADDRESS")),
+    requiredClaims = null
+  )
   )
 
   /**
@@ -30,7 +30,7 @@ class FakeOfferingsApi : OfferingsApi {
    * @param id The ID of the offering to retrieve. Ignored in this implementation.
    * @return The [Offering] instance for testing purposes.
    */
-  override fun getOffering(id: String?): Offering = offering
+  override fun getOffering(id: String): Offering = offering
 
   /**
    * Retrieves a list of offerings based on the provided filter.
