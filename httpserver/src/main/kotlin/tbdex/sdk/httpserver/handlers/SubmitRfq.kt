@@ -2,8 +2,8 @@ package tbdex.sdk.httpserver.handlers
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
-import io.ktor.server.response.respond
 import io.ktor.server.request.receiveText
+import io.ktor.server.response.respond
 import java.util.NoSuchElementException
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpserver.models.CallbackError
