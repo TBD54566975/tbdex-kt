@@ -1,7 +1,7 @@
 package tbdex.sdk.httpserver.models
 
-import io.ktor.http.*
-import io.ktor.server.application.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.ApplicationCall
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
@@ -58,8 +58,10 @@ class GetOfferingsFilter(
  * @property from The source identifier for exchanges.
  */
 class GetExchangesFilter(
-  val exchangeIds: List<String>,
-  val from: String
+  val exchangeIds: List<String>? = null,
+  // todo: make non-nullable once we can pass in requesterDid
+  // from verifying JWT. see issue: https://github.com/TBD54566975/tbdex/issues/210
+  val from: String? = null
 ) : Filter
 
 /**

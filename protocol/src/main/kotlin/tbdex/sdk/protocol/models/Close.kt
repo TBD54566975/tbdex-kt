@@ -20,6 +20,8 @@ class Close private constructor(
   override val data: CloseData,
   override var signature: String? = null
 ) : Message() {
+  override val validNext: Set<MessageKind> = emptySet()
+
   companion object {
     /**
      * Creates a new `Close` message, autopopulating the id, creation time, and message kind.

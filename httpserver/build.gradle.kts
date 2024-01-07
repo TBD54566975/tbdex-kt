@@ -37,6 +37,7 @@ dependencies {
   implementation("io.ktor:ktor-server-netty")
   implementation("io.ktor:ktor-server-content-negotiation")
   implementation("io.ktor:ktor-serialization-jackson")
+  implementation("io.ktor:ktor-client-auth:2.3.7")
 
   testImplementation(kotlin("test"))
   testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")

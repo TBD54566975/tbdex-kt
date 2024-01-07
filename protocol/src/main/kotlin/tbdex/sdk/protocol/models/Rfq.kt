@@ -5,6 +5,7 @@ import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Rfq.Companion.create
 import tbdex.sdk.protocol.serialization.Json
+import web5.sdk.credentials.PresentationExchange
 import web5.sdk.credentials.model.PresentationDefinitionV2
 import java.time.OffsetDateTime
 
@@ -18,12 +19,15 @@ import java.time.OffsetDateTime
  * val rfq = Rfq.create(metadata, data)
  * ```
  */
+@Suppress("TooGenericExceptionCaught", "SwallowedException")
+
 class Rfq private constructor(
   override val metadata: MessageMetadata,
   override val data: RfqData,
   private: Map<String, Any>? = null,
   override var signature: String? = null
 ) : Message() {
+  override val validNext: Set<MessageKind> = setOf(MessageKind.quote, MessageKind.close)
 
   /**
    * Evaluates this Rfq against the provided [Offering].
@@ -43,7 +47,7 @@ class Rfq private constructor(
     validatePaymentMethod(data.payinMethod, offering.data.payinMethods)
     validatePaymentMethod(data.payoutMethod, offering.data.payoutMethods)
 
-    this.verifyClaims(offering.data.requiredClaims)
+    offering.data.requiredClaims?.let { this.verifyClaims(it) }
   }
 
   private fun validatePaymentMethod(selectedMethod: SelectedPaymentMethod, offeringMethods: List<PaymentMethod>) {
@@ -56,21 +60,13 @@ class Rfq private constructor(
   }
 
   private fun verifyClaims(requiredClaims: PresentationDefinitionV2) {
-    throw NotImplementedError()
-//    // check that all requirements are satisfied by one of the VC JWTs
-//    // and that the VC satisfying it is crypto verified
-//    requiredClaims.all { required ->
-//      // need to catch and swallow NotImplementedException inside find
-//      val satisfyingClaim =
-//        this.data.claims.find { vc -> satisfiesPresentationDefinition(VerifiableCredential.parseJwt(vc), required) }
-//
-//      require(satisfyingClaim != null) {
-//        "No matching claim for Offering requirement: ${required.id}"
-//      }
-//
-//      VerifiableCredential.verify(satisfyingClaim)
-//      true
-//    }
+    // TODO check that VCs satisfying PD are crypto verified
+
+    try {
+      PresentationExchange.satisfiesPresentationDefinition(this.data.claims, requiredClaims)
+    } catch (e: Exception) {
+      throw IllegalArgumentException("No matching claim for Offering requirements: ${requiredClaims.id}")
+    }
   }
 
   companion object {

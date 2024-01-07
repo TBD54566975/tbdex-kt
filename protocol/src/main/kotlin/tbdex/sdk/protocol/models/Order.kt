@@ -20,6 +20,8 @@ class Order private constructor(
   override val data: OrderData,
   override var signature: String? = null
 ) : Message() {
+  override val validNext: Set<MessageKind> = setOf(MessageKind.orderstatus, MessageKind.close)
+
   companion object {
     /**
      * Creates a new `Order` message, autopopulating the id, creation time, and message kind.
