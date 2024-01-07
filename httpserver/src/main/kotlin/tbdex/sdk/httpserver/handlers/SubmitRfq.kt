@@ -4,6 +4,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond
 import io.ktor.server.request.receiveText
+import java.util.NoSuchElementException
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpserver.models.CallbackError
 import tbdex.sdk.httpserver.models.ErrorResponse
@@ -14,7 +15,6 @@ import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Rfq
-import java.util.NoSuchElementException
 
 /**
  * Handles the submission of a Request for Quote (RFQ) through the TBDex API.
