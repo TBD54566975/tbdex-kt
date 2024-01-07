@@ -2,8 +2,8 @@ package tbdex.sdk.httpserver.handlers
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
-import io.ktor.server.request.receiveText
 import io.ktor.server.response.respond
+import io.ktor.server.request.receiveText
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpserver.models.CallbackError
 import tbdex.sdk.httpserver.models.ErrorResponse
@@ -27,7 +27,7 @@ import java.util.NoSuchElementException
  * @param exchangesApi An instance of [ExchangesApi] for interacting with exchanges data.
  * @param callback An optional callback function to be invoked after processing the RFQ.
  */
-@Suppress("TooGenericExceptionCaught")
+@Suppress("TooGenericExceptionCaught", "SwallowedException")
 suspend fun submitRfq(
   call: ApplicationCall,
   offeringsApi: OfferingsApi,

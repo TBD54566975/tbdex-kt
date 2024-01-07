@@ -2,8 +2,8 @@ package tbdex.sdk.httpserver.handlers
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
-import io.ktor.server.response.respond
 import io.ktor.server.request.receiveText
+import io.ktor.server.response.respond
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpserver.models.CallbackError
 import tbdex.sdk.httpserver.models.ErrorResponse
@@ -22,7 +22,7 @@ import tbdex.sdk.protocol.models.Quote
  * @param exchangesApi The [ExchangesApi] instance for interacting with TBDex exchanges.
  * @param callback The optional callback function to be executed after successful order submission.
  */
-@Suppress("TooGenericExceptionCaught", "MaxLineLength")
+@Suppress("TooGenericExceptionCaught", "MaxLineLength", "SwallowedException")
 suspend fun submitOrder(
   call: ApplicationCall,
   exchangesApi: ExchangesApi,
