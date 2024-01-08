@@ -28,6 +28,7 @@ dependencies {
   implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8")
   implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
   implementation("decentralized-identity:did-common-java:1.9.0") // would like to grab this via web5 dids
+  implementation("com.github.f4b6a3:uuid-creator:5.3.3")
 
   testImplementation(kotlin("test"))
   testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
