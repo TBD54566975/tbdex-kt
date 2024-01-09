@@ -6,16 +6,25 @@ import tbdex.sdk.protocol.serialization.Json
 object TestVectors {
   val vectors = readVectors()
 
-  fun readVectors(): JsonNode {
+  fun readVectors(): MutableMap<String, JsonNode> {
     val loader = Thread.currentThread().contextClassLoader
-    val vectorsJson = loader.getResourceAsStream("testVectors.json")?.bufferedReader()?.readText()!!
-    return Json.jsonMapper.readTree(vectorsJson)
+    val vectors = mutableMapOf<String, JsonNode>();
+    val vectorFiles = arrayOf(
+      "parse-close.json",
+      "parse-offering.json",
+      "parse-order.json",
+      "parse-orderstatus.json",
+      "parse-quote.json",
+      "parse-rfq.json"
+    )
+    for (vectorFile in vectorFiles) {
+      val vectorJson = loader.getResourceAsStream("test-vectors/$vectorFile")?.bufferedReader()?.readText()!!
+      vectors[vectorFile] = Json.jsonMapper.readTree(vectorJson)
+    }
+    return vectors
   }
 
-  fun offering() = vectors["resources"]["offering"].toString()
-  fun rfq() = vectors["messages"]["rfq"].toString()
-  fun quote() = vectors["messages"]["quote"].toString()
-  fun order() = vectors["messages"]["order"].toString()
-  fun orderStatus() = vectors["messages"]["orderStatus"].toString()
-  fun close() = vectors["messages"]["close"].toString()
+  fun getVector(vectorFile: String): JsonNode? {
+    return vectors[vectorFile]
+  }
 }

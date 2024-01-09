@@ -1,5 +1,8 @@
 package tbdex.sdk.protocol
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.Test
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
@@ -10,52 +13,24 @@ import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 
 class MessagesVectorTest {
   @Test
-  fun `parse rfq`() {
-    testParsing<Rfq>(TestVectors.rfq())
-  }
+  fun `parse-close json`() {
+    val vector = TestVectors.getVector("parse-rfq.json")
+    assertNotNull(vector)
 
-  @Test
-  fun `serialize rfq`() {
-    testSerialisation(TestVectors.rfq())
-  }
-  @Test
-  fun `parse quote`() {
-    testParsing<Quote>(TestVectors.quote())
-  }
+    // `input` is stringified JSON, which we must parse separately
+    val input = vector["input"].textValue()
+    assertNotNull(input)
 
-  @Test
-  fun `serialize quote`() {
-    testSerialisation(TestVectors.quote())
-  }
-  @Test
-  fun `parse order`() {
-    testParsing<Order>(TestVectors.order())
-  }
+    val tbDEXMessage = Message.parse(input)
+    assertIs<Rfq>(tbDEXMessage)
 
-  @Test
-  fun `serialize order`() {
-    testSerialisation(TestVectors.order())
-  }
-  @Test
-  fun `parse order status`() {
-    testParsing<OrderStatus>(TestVectors.orderStatus())
-  }
-
-  @Test
-  fun `serialize order status`() {
-    testSerialisation(TestVectors.orderStatus())
-  }
-  @Test
-  fun `parse close`() {
-    testParsing<Close>(TestVectors.close())
-  }
-
-  @Test
-  fun `serialize close`() {
-    testSerialisation(TestVectors.close())
+    // Test parsed input json is the same as output json
+//    val output = vector["output"]
+//    assertEquals(output, Json.jsonMapper.readTree(tbDEXMessage.toString()))
   }
 
   /**

@@ -35,8 +35,13 @@ dependencies {
 
 tasks {
   register("syncSchemas", Sync::class) {
-    from("../tbdex/json-schemas")
+    from("../tbdex/hosted/json-schemas")
     into("./src/main/resources")
+  }
+
+  register("syncTestVectors", Sync::class) {
+    from("../tbdex/hosted/test-vectors/protocol/vectors")
+    into("./src/test/resources/test-vectors")
   }
 }
 

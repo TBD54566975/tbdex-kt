@@ -26,7 +26,8 @@ object Validator {
   init {
     val factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7)
 
-    val definitionsStream = object {}.javaClass.getResourceAsStream("/definitions.json")
+    val definitionsStream = object {}.javaClass.getResourceAsStream("definitions.json")
+    println("definitionsStream : $definitionsStream")
     factory.getSchema(definitionsStream)
 
     val schemaNames = listOf("message" to "message.schema.json", "resource" to "resource.schema.json") +
