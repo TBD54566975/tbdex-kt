@@ -1,13 +1,18 @@
 package tbdex.sdk.httpserver.handlers
 
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.request.receiveText
+import io.ktor.server.response.respond
 import tbdex.sdk.httpclient.models.ErrorDetail
-import tbdex.sdk.httpserver.models.*
+import tbdex.sdk.httpserver.models.CallbackError
+import tbdex.sdk.httpserver.models.ErrorResponse
+import tbdex.sdk.httpserver.models.ExchangesApi
+import tbdex.sdk.httpserver.models.OfferingsApi
+import tbdex.sdk.httpserver.models.SubmitCallback
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
+import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Rfq
 
 /**
@@ -21,7 +26,7 @@ import tbdex.sdk.protocol.models.Rfq
  * @param exchangesApi An instance of [ExchangesApi] for interacting with exchanges data.
  * @param callback An optional callback function to be invoked after processing the RFQ.
  */
-@Suppress("TooGenericExceptionCaught")
+@Suppress("TooGenericExceptionCaught", "SwallowedException")
 suspend fun submitRfq(
   call: ApplicationCall,
   offeringsApi: OfferingsApi,
@@ -39,22 +44,23 @@ suspend fun submitRfq(
     return
   }
 
-  val existingRfq = exchangesApi.getRfq(message.metadata.exchangeId.toString())
-  if (existingRfq != null) {
+  try {
+    exchangesApi.getExchange(message.metadata.exchangeId.toString())
     val errorDetail = ErrorDetail(detail = "RFQ already exists.")
     call.respond(HttpStatusCode.Conflict, ErrorResponse(listOf(errorDetail)))
     return
+  } catch (_: Exception) {
   }
 
-  val offering = offeringsApi.getOffering(message.data.offeringId.toString())
-  if (offering == null) {
+  val offering: Offering
+  try {
+    offering = offeringsApi.getOffering(message.data.offeringId.toString())
+
+    message.verifyOfferingRequirements(offering)
+  } catch (e: NoSuchElementException) {
     val errorDetail = ErrorDetail(detail = "Offering with id ${message.data.offeringId} does not exist.")
     call.respond(HttpStatusCode.BadRequest, ErrorResponse(listOf(errorDetail)))
     return
-  }
-
-  try {
-    message.verifyOfferingRequirements(offering)
   } catch (e: Exception) {
     val errorDetail = ErrorDetail(detail = "Failed to verify offering requirements: ${e.message}")
     call.respond(HttpStatusCode.BadRequest, ErrorResponse(listOf(errorDetail)))
