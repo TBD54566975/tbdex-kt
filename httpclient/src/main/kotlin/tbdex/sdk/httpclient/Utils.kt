@@ -4,6 +4,7 @@ import com.github.f4b6a3.uuid.UuidCreator
 import com.nimbusds.jose.JOSEObjectType
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JWSHeader
+import com.nimbusds.jose.JWSObject
 import com.nimbusds.jose.jwk.JWK
 import com.nimbusds.jose.util.Base64URL
 import com.nimbusds.jwt.JWTClaimsSet
@@ -40,7 +41,8 @@ fun getPfiServiceEndpoint(pfiDid: String): String {
  * @param did DID of the token creator
  * @param pfiDid DID of the PFI
  * @param assertionMethodId
- * @return
+ * @return signed request token to be included as Authorization header for sending to PFI endpoints
+ *
  */
 fun generateRequestToken(did: Did, pfiDid: String, assertionMethodId: String? = null): String {
 
@@ -84,4 +86,46 @@ fun generateRequestToken(did: Did, pfiDid: String, assertionMethodId: String? = 
   val base64UrlEncodedSignature = Base64URL(Convert(signatureBytes).toBase64Url(padding = false))
 
   return "$base64UrlEncodedHeader.$base64UrlEncodedPayload.$base64UrlEncodedSignature"
+}
+
+fun verifyRequestToken(token: String, pfiDid: String): String {
+  val jwsObject: JWSObject
+  val jwt: SignedJWT
+  try {
+    jwsObject = JWSObject.parse(token)
+    val payload = jwsObject.payload
+    jwt = SignedJWT.parse(payload.toString())
+    // todo: resolving header.kid against a didresolver
+    // todo: getting the verificationMethod and publicKeyJwk and algorithmId
+    // todo: checking if signature is valid `signer.verify({...})`
+  } catch (e: Exception) {
+    throw RequestTokenVerificationException(e, "Failed to parse request token")
+  }
+
+  val issuer = jwt.jwtClaimsSet.issuer
+  val audience = jwt.jwtClaimsSet.audience
+  val expirationTime = jwt.jwtClaimsSet.expirationTime
+  val notBeforeTime = jwt.jwtClaimsSet.notBeforeTime
+  val issueTime = jwt.jwtClaimsSet.issueTime
+  val jwtId = jwt.jwtClaimsSet.jwtid
+
+  if (issuer == null ||
+    audience == null ||
+    expirationTime == null ||
+    notBeforeTime == null ||
+    issueTime == null ||
+    jwtId == null) {
+    throw MissingRequiredClaimsException("Missing required claims")
+  }
+
+  if (expirationTime.before(Date.from(Instant.now()))) {
+    throw ExpiredRequestTokenException("Request token is expired.")
+  }
+
+  if (!audience.contains(pfiDid)) {
+    throw RequestTokenAudiencePfiMismatchException("Request token contains invalid audience. " +
+      "Expected aud property to be PFI DID.")
+  }
+
+  return issuer
 }
