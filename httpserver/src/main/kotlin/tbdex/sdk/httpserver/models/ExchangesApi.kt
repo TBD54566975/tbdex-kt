@@ -17,7 +17,11 @@ interface ExchangesApi {
    *
    * @param id The ID of the exchange to retrieve.
    * @return A list of [Message] representing the exchange with the specified ID.
+   *
+   * @throws NoSuchElementException if the exchange with the specified ID is not found.
+   * @throws Exception for general exceptions.
    */
+  @Throws(NoSuchElementException::class, Exception::class)
   fun getExchange(id: String): List<Message>
 
   /**
@@ -33,7 +37,10 @@ interface ExchangesApi {
    *
    * @param exchangeId The ID of the exchange to retrieve the RFQ for.
    * @return The [Rfq] object representing the RFQ for the specified exchange.
+   *
+   * @throws Exception if Rfq is not found or exchange does not exist.
    */
+  @Throws(Exception::class)
   fun getRfq(exchangeId: String): Rfq
 
   /**
@@ -41,7 +48,10 @@ interface ExchangesApi {
    *
    * @param exchangeId The ID of the exchange to retrieve the Quote for.
    * @return The [Quote] object representing the Quote for the specified exchange.
+   *
+   * @throws Exception if Quote is not found or exchange does not exist.
    */
+  @Throws(Exception::class)
   fun getQuote(exchangeId: String): Quote
 
   /**
@@ -49,15 +59,22 @@ interface ExchangesApi {
    *
    * @param exchangeId The ID of the exchange to retrieve the Order for.
    * @return The [Order] object representing the Order for the specified exchange.
+   *
+   * @throws Exception if Order is not found or exchange does not exist.
    */
+  @Throws(Exception::class)
   fun getOrder(exchangeId: String): Order
 
   /**
    * Retrieves the list of Order Statuses for the specified exchange ID.
    *
    * @param exchangeId The ID of the exchange to retrieve Order Statuses for.
-   * @return A list of [OrderStatus] objects representing the Order Statuses for the specified exchange, or an empty list if none are found.
+   * @return A list of [OrderStatus] objects representing the Order Statuses for the specified exchange,
+   * or an empty list if none are found.
+   *
+   * @throws Exception if OrderStatuses is not found or exchange does not exist.
    */
+  @Throws(Exception::class)
   fun getOrderStatuses(exchangeId: String): List<OrderStatus>
 
   /**
@@ -65,6 +82,9 @@ interface ExchangesApi {
    *
    * @param exchangeId The ID of the exchange to retrieve the Close information for.
    * @return The [Close] object representing the Close information for the specified exchange.
+   *
+   * @throws Exception if Close is not found or exchange does not exist.
    */
+  @Throws(Exception::class)
   fun getClose(exchangeId: String): Close
 }
