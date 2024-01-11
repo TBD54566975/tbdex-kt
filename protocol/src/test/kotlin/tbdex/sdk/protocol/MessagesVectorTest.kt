@@ -18,14 +18,54 @@ import kotlin.test.assertNotNull
 class MessagesVectorTest {
   @Test
   fun `parse-close json`() {
+    val vector = TestVectors.getVector("parse-close.json")
+    assertNotNull(vector)
+    testNonErrorTestVector<Close>(vector)
+  }
+
+  @Test
+  fun `parse-order json`() {
+    val vector = TestVectors.getVector("parse-order.json")
+    assertNotNull(vector)
+    testNonErrorTestVector<Order>(vector)
+  }
+
+  @Test
+  fun `parse-orderstatus json`() {
+    val vector = TestVectors.getVector("parse-orderstatus.json")
+    assertNotNull(vector)
+    testNonErrorTestVector<OrderStatus>(vector)
+  }
+
+
+  @Test
+  fun `parse-quote json`() {
+    val vector = TestVectors.getVector("parse-quote.json")
+    assertNotNull(vector)
+    testNonErrorTestVector<Quote>(vector)
+  }
+
+  @Test
+  fun `parse-rfq json`() {
     val vector = TestVectors.getVector("parse-rfq.json")
     assertNotNull(vector)
+    testNonErrorTestVector<Rfq>(vector)
+  }
 
-    // `input` is stringified JSON, which we must parse separately
+  private inline fun <reified T> testNonErrorTestVector(vector: JsonNode) {
     val input = vector["input"].textValue()
     assertNotNull(input)
 
     val tbDEXMessage = Message.parse(input)
-    assertIs<Rfq>(tbDEXMessage)
+    assertIs<T>(tbDEXMessage)
+
+    assertEquals(vector["output"], Json.jsonMapper.readTree(tbDEXMessage.toString()))
   }
+
+  // When we create test vectors with `error: true`
+  // private fun testErrorTestVector(vector: JsonNode) {
+  //   val input = vector["input"].textValue()
+  //   assertNotNull(input)
+  //   assertThrows(Message.parse(vector["input"])
+  // }
 }
