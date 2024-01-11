@@ -4,7 +4,6 @@ import com.github.f4b6a3.uuid.UuidCreator
 import com.nimbusds.jose.JOSEObjectType
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JWSHeader
-import com.nimbusds.jose.JWSObject
 import com.nimbusds.jose.jwk.JWK
 import com.nimbusds.jose.util.Base64URL
 import com.nimbusds.jwt.JWTClaimsSet
@@ -89,12 +88,9 @@ fun generateRequestToken(did: Did, pfiDid: String, assertionMethodId: String? = 
 }
 
 fun verifyRequestToken(token: String, pfiDid: String): String {
-  val jwsObject: JWSObject
   val jwt: SignedJWT
   try {
-    jwsObject = JWSObject.parse(token)
-    val payload = jwsObject.payload
-    jwt = SignedJWT.parse(payload.toString())
+    jwt = SignedJWT.parse(token)
     // todo: resolving header.kid against a didresolver
     // todo: getting the verificationMethod and publicKeyJwk and algorithmId
     // todo: checking if signature is valid `signer.verify({...})`
@@ -105,21 +101,19 @@ fun verifyRequestToken(token: String, pfiDid: String): String {
   val issuer = jwt.jwtClaimsSet.issuer
   val audience = jwt.jwtClaimsSet.audience
   val expirationTime = jwt.jwtClaimsSet.expirationTime
-  val notBeforeTime = jwt.jwtClaimsSet.notBeforeTime
   val issueTime = jwt.jwtClaimsSet.issueTime
   val jwtId = jwt.jwtClaimsSet.jwtid
 
   if (issuer == null ||
     audience == null ||
     expirationTime == null ||
-    notBeforeTime == null ||
     issueTime == null ||
     jwtId == null) {
     throw MissingRequiredClaimsException("Missing required claims")
   }
 
   if (expirationTime.before(Date.from(Instant.now()))) {
-    throw ExpiredRequestTokenException("Request token is expired.")
+    throw RequestTokenExpiredException("Request Token is expired.")
   }
 
   if (!audience.contains(pfiDid)) {

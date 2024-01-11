@@ -9,5 +9,5 @@ class RequestTokenAudiencePfiMismatchException(message: String? = null)
 class MissingRequiredClaimsException(message: String? = null)
   : RuntimeException(message)
 
-class ExpiredRequestTokenException(message: String? = null)
+class RequestTokenExpiredException(message: String? = null)
   : RuntimeException(message)
