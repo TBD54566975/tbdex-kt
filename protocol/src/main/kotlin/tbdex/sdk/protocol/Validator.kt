@@ -5,12 +5,9 @@ import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SchemaValidatorsConfig
 import com.networknt.schema.SpecVersion
-import com.networknt.schema.uri.URITranslator
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.ResourceKind
 import java.net.URI
-import java.net.URL
-
 
 /**
  * Thrown by [Validator.validate].
