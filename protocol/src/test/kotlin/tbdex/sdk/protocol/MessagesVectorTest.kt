@@ -27,25 +27,5 @@ class MessagesVectorTest {
 
     val tbDEXMessage = Message.parse(input)
     assertIs<Rfq>(tbDEXMessage)
-
-    // Test parsed input json is the same as output json
-//    val output = vector["output"]
-//    assertEquals(output, Json.jsonMapper.readTree(tbDEXMessage.toString()))
   }
-
-  /**
-   * Test parse, validate, and verify on the [vectorString].
-   */
-  private inline fun <reified T> testParsing(vectorString: String) {
-    val tbDEXMessage = Message.parse(vectorString)
-    assertIs<T>(tbDEXMessage)
-  }
-
-  private fun testSerialisation(original: String) {
-    val tbDEXMessage = Message.parse(original)
-    val serialized = Json.stringify(tbDEXMessage)
-
-    assertEquals(original, serialized)
-  }
-
 }
