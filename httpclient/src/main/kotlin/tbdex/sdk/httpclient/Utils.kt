@@ -87,6 +87,13 @@ fun generateRequestToken(did: Did, pfiDid: String, assertionMethodId: String? = 
   return "$base64UrlEncodedHeader.$base64UrlEncodedPayload.$base64UrlEncodedSignature"
 }
 
+/**
+ * Verify request token
+ *
+ * @param token JWT bearer token received from the requester
+ * @param pfiDid DID of the PFI
+ * @return DID of the requester/JWT token issuer
+ */
 fun verifyRequestToken(token: String, pfiDid: String): String {
   val jwt: SignedJWT
   try {
