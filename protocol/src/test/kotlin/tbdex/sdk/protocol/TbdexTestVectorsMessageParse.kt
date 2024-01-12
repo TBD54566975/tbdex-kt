@@ -11,7 +11,7 @@ import tbdex.sdk.protocol.serialization.Json
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
-class MessagesVectorTest {
+class TbdexTestVectorsMessageParse {
   @Test
   fun `parse rfq`() {
     testParsing<Rfq>(TestVectors.rfq())
