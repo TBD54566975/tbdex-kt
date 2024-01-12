@@ -7,7 +7,6 @@ insert_final_newline = false
 max_line_length = 120
 tab_width = 2
 ij_smart_tabs = false
-ij_visual_guides =
 ij_wrap_on_typing = false
 
 [*.feature]
@@ -86,7 +85,6 @@ ij_kotlin_method_parameters_right_paren_on_new_line = false
 ij_kotlin_method_parameters_wrap = off
 ij_kotlin_name_count_to_use_star_import = 2147483647
 ij_kotlin_name_count_to_use_star_import_for_members = 2147483647
-ij_kotlin_packages_to_use_import_on_demand =
 ij_kotlin_parameter_annotation_wrap = off
 ij_kotlin_space_after_comma = true
 ij_kotlin_space_after_extend_colon = true

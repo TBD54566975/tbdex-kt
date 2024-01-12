@@ -31,7 +31,7 @@ dependencies {
 
 ## JSON Schemas
 
-the [tbdex]() repo acts as the source of truth for all json schemas. For this reason, The `tbdex` repo is a git
+the [tbdex]() repo acts as the source of truth for all json schemas and test vectors. For this reason, the `tbdex` repo is a git
 submodule
 of this repo. By default, `git clone` does not actually check out the submodule's files. Using `--recurse-submodules`
 option when cloning automatically initializes, fetches, and does a checkout of the appropriate commit for the submodule.
@@ -41,7 +41,7 @@ If you've already cloned the repo without `--recurse-submodules`, you can do the
 git submodule update --init
 ```
 
-copying the schemas into the procotol package's `resources` directory can be done by running `./gradlew syncSchemas`
+copying the schemas and test vectors into the protocol package's `resources` directory can be done by running `./gradlew syncSchemas` and `./gradlew syncTestVectors` respectively.
 
 # Other Docs
 
