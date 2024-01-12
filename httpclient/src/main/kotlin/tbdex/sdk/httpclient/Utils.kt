@@ -1,6 +1,5 @@
 package tbdex.sdk.httpclient
 
-import com.github.f4b6a3.uuid.UuidCreator
 import com.nimbusds.jose.JOSEObjectType
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JWSHeader
@@ -15,6 +14,7 @@ import web5.sdk.dids.DidResolvers
 import web5.sdk.dids.findAssertionMethodById
 import java.time.Instant
 import java.util.Date
+import java.util.UUID
 
 /**
  * Get pfi service endpoint
@@ -73,7 +73,7 @@ fun generateRequestToken(did: Did, pfiDid: String, assertionMethodId: String? = 
     .issuer(did.uri)
     .expirationTime(Date.from(exp))
     .issueTime(Date.from(now))
-    .jwtID(UuidCreator.getTimeOrderedEpoch().toString())
+    .jwtID(UUID.randomUUID().toString())
     .build()
 
   val jwtObject = SignedJWT(jwtHeader, jwtPayload)
@@ -95,9 +95,9 @@ fun generateRequestToken(did: Did, pfiDid: String, assertionMethodId: String? = 
  * @return DID of the requester/JWT token issuer
  */
 fun verifyRequestToken(token: String, pfiDid: String): String {
-  val jwt: SignedJWT
+  val claimsSet: JWTClaimsSet
   try {
-    jwt = SignedJWT.parse(token)
+    claimsSet = SignedJWT.parse(token).jwtClaimsSet
     // todo: resolving header.kid against a didresolver
     // todo: getting the verificationMethod and publicKeyJwk and algorithmId
     // todo: checking if signature is valid `signer.verify({...})`
@@ -105,18 +105,15 @@ fun verifyRequestToken(token: String, pfiDid: String): String {
     throw RequestTokenVerificationException(e, "Failed to parse request token")
   }
 
-  val issuer = jwt.jwtClaimsSet.issuer
-  val audience = jwt.jwtClaimsSet.audience
-  val expirationTime = jwt.jwtClaimsSet.expirationTime
-  val issueTime = jwt.jwtClaimsSet.issueTime
-  val jwtId = jwt.jwtClaimsSet.jwtid
+  val issuer = claimsSet.issuer
+  val audience = claimsSet.audience
+  val expirationTime = claimsSet.expirationTime
 
-  if (issuer == null ||
-    audience == null ||
-    expirationTime == null ||
-    issueTime == null ||
-    jwtId == null) {
-    throw MissingRequiredClaimsException("Missing required claims")
+  val requiredKeys = listOf("aud", "iss", "exp", "jti", "iat")
+  requiredKeys.forEach { key ->
+    if (!claimsSet.claims.containsKey(key)) {
+      throw RequestTokenMissingClaimsException("Missing required claims.")
+    }
   }
 
   if (expirationTime.before(Date.from(Instant.now()))) {
@@ -124,7 +121,7 @@ fun verifyRequestToken(token: String, pfiDid: String): String {
   }
 
   if (!audience.contains(pfiDid)) {
-    throw RequestTokenAudiencePfiMismatchException("Request token contains invalid audience. " +
+    throw RequestTokenAudMismatchException("Request token contains invalid audience. " +
       "Expected aud property to be PFI DID.")
   }
 
