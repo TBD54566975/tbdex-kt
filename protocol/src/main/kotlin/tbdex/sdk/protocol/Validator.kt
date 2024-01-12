@@ -1,12 +1,16 @@
 package tbdex.sdk.protocol
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SchemaValidatorsConfig
 import com.networknt.schema.SpecVersion
+import tbdex.sdk.protocol.models.Data
+import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.ResourceKind
+import tbdex.sdk.protocol.serialization.Json
 import java.net.URI
 
 /**
@@ -69,5 +73,32 @@ object Validator {
     if (validationMessages.isNotEmpty()) {
       throw ValidatorException(message = "invalid payload", errors = validationMessages.map { it.message })
     }
+  }
+
+  /**
+   * Validate a message against a predefined schema
+   * @param message The message data to validate.
+   * @throws Exception if validation fails, including a list of validation errors.
+   */
+  fun validateMessage(message: Message) {
+    val mapper = ObjectMapper()
+    val messageJsonNode = mapper.readTree(message.toString())
+
+    validate(messageJsonNode, "message")
+    validateData(message.data, message.metadata.kind.toString())
+  }
+
+  /**
+   * Validate message data or resource data against a predefined schema
+   * @param data The message or resource data to validate.
+   * @param messageKind The message or resource kind of the data.
+   * @throws Exception if validation fails, including a list of validation errors.
+   */
+  fun validateData(data: Data, messageKind: String) {
+    val mapper = ObjectMapper()
+    val json = Json.stringify(data)
+    val jsonNode = mapper.readTree(json)
+
+    this.validate(jsonNode, messageKind)
   }
 }

@@ -1,6 +1,7 @@
 package tbdex.sdk.protocol.models
 
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.OrderStatus.Companion.create
 import java.time.OffsetDateTime
@@ -41,6 +42,8 @@ class OrderStatus private constructor(
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now()
       )
+      Validator.validateData(orderStatusData, "orderstatus")
+
       return OrderStatus(metadata, orderStatusData)
     }
   }

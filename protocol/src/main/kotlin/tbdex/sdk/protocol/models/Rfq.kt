@@ -2,6 +2,7 @@ package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.databind.JsonNode
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Rfq.Companion.create
 import tbdex.sdk.protocol.serialization.Json
@@ -38,11 +39,11 @@ class Rfq private constructor(
   fun verifyOfferingRequirements(offering: Offering) {
     require(data.offeringId == offering.metadata.id)
 
-    if (offering.data.payinCurrency.minSubunits != null)
-      check(offering.data.payinCurrency.minSubunits <= this.data.payinSubunits)
+    if (offering.data.payinCurrency.minAmount != null)
+      check(offering.data.payinCurrency.minAmount <= this.data.payinAmount)
 
-    if (offering.data.payinCurrency.maxSubunits != null)
-      check(this.data.payinSubunits <= offering.data.payinCurrency.maxSubunits)
+    if (offering.data.payinCurrency.maxAmount != null)
+      check(this.data.payinAmount <= offering.data.payinCurrency.maxAmount)
 
     validatePaymentMethod(data.payinMethod, offering.data.payinMethods)
     validatePaymentMethod(data.payoutMethod, offering.data.payoutMethods)
@@ -94,6 +95,7 @@ class Rfq private constructor(
         exchangeId = id,
         createdAt = OffsetDateTime.now()
       )
+      Validator.validateData(rfqData, "rfq")
 
       // TODO: hash `data.payinMethod.paymentDetails` and set `private`
       // TODO: hash `data.payoutMethod.paymentDetails` and set `private`

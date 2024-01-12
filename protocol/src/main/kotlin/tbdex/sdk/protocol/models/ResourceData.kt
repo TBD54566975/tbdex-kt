@@ -35,8 +35,8 @@ class OfferingData(
  */
 class CurrencyDetails(
   val currencyCode: String,
-  val minSubunits: String? = null,
-  val maxSubunits: String? = null
+  val minAmount: String? = null,
+  val maxAmount: String? = null
 )
 
 /**
@@ -45,7 +45,7 @@ class CurrencyDetails(
 class PaymentMethod(
   val kind: String,
   val requiredPaymentDetails: JsonNode? = null,
-  val feeSubunits: String? = null
+  val fee: String? = null
 ) {
   /**
    * Parse the contents of [requiredPaymentDetails] into a [JsonSchema] that can do validation.

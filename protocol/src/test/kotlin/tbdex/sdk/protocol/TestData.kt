@@ -74,7 +74,7 @@ object TestData {
       OfferingData(
         description = "A sample offering",
         payoutUnitsPerPayinUnit = "1",
-        payinCurrency = CurrencyDetails("AUD", "1", "10000"),
+        payinCurrency = CurrencyDetails("AUD", "0.01", "100.00"),
         payoutCurrency = CurrencyDetails("USDC"),
         payinMethods = listOf(
           PaymentMethod(
@@ -100,7 +100,7 @@ object TestData {
     from = ALICE_DID.uri,
     rfqData = RfqData(
       offeringId = offeringId,
-      payinSubunits = "1000",
+      payinAmount = "10.00",
       payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to "123456")),
       payoutMethod = SelectedPaymentMethod(
         "MOMO", mapOf(
@@ -116,8 +116,8 @@ object TestData {
     ALICE_DID.uri, PFI_DID.uri, TypeId.generate(MessageKind.rfq.name),
     QuoteData(
       expiresAt = OffsetDateTime.now().plusDays(1),
-      payin = QuoteDetails("AUD", "1000", "1"),
-      payout = QuoteDetails("BTC", "12", "2"),
+      payin = QuoteDetails("AUD", "10.00", "0.01"),
+      payout = QuoteDetails("BTC", "0.12", "0.02"),
       paymentInstructions = PaymentInstructions(
         payin = PaymentInstruction(
           link = "https://block.xyz",

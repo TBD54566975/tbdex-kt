@@ -1,6 +1,7 @@
 package tbdex.sdk.protocol.models
 
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Order.Companion.create
 import java.time.OffsetDateTime
