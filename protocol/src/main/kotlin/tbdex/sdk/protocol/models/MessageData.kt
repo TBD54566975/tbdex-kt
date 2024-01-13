@@ -37,7 +37,6 @@ class QuoteData(
   val expiresAt: OffsetDateTime,
   val payin: QuoteDetails,
   val payout: QuoteDetails,
-  val paymentInstructions: PaymentInstructions? = null
 ) : MessageData
 
 /**
@@ -46,15 +45,8 @@ class QuoteData(
 class QuoteDetails(
   val currencyCode: String,
   val amount: String,
-  val fee: String? = null
-)
-
-/**
- * A data class representing payment instructions for payin/payout.
- */
-class PaymentInstructions(
-  val payin: PaymentInstruction?,
-  val payout: PaymentInstruction?
+  val fee: String? = null,
+  val paymentInstruction: PaymentInstruction? = null
 )
 
 /**
