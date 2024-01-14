@@ -1,8 +1,6 @@
 package tbdex.sdk.protocol
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.Test
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
@@ -15,7 +13,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 
-class TbdexTestVectorsMessageParse {
+class TbdexTestVectorsMessageTest {
   @Test
   fun `parse-close json`() {
     val vector = TestVectors.getVector("parse-close.json")
