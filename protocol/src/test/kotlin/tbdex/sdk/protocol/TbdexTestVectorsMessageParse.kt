@@ -1,5 +1,8 @@
 package tbdex.sdk.protocol
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.junit.jupiter.api.Test
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
@@ -10,67 +13,59 @@ import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
+import kotlin.test.assertNotNull
 
 class TbdexTestVectorsMessageParse {
   @Test
-  fun `parse rfq`() {
-    testParsing<Rfq>(TestVectors.rfq())
+  fun `parse-close json`() {
+    val vector = TestVectors.getVector("parse-close.json")
+    assertNotNull(vector)
+    testNonErrorTestVector<Close>(vector)
   }
 
   @Test
-  fun `serialize rfq`() {
-    testSerialisation(TestVectors.rfq())
-  }
-  @Test
-  fun `parse quote`() {
-    testParsing<Quote>(TestVectors.quote())
+  fun `parse-order json`() {
+    val vector = TestVectors.getVector("parse-order.json")
+    assertNotNull(vector)
+    testNonErrorTestVector<Order>(vector)
   }
 
   @Test
-  fun `serialize quote`() {
-    testSerialisation(TestVectors.quote())
+  fun `parse-orderstatus json`() {
+    val vector = TestVectors.getVector("parse-orderstatus.json")
+    assertNotNull(vector)
+    testNonErrorTestVector<OrderStatus>(vector)
   }
+
+
   @Test
-  fun `parse order`() {
-    testParsing<Order>(TestVectors.order())
+  fun `parse-quote json`() {
+    val vector = TestVectors.getVector("parse-quote.json")
+    assertNotNull(vector)
+    testNonErrorTestVector<Quote>(vector)
   }
 
   @Test
-  fun `serialize order`() {
-    testSerialisation(TestVectors.order())
-  }
-  @Test
-  fun `parse order status`() {
-    testParsing<OrderStatus>(TestVectors.orderStatus())
+  fun `parse-rfq json`() {
+    val vector = TestVectors.getVector("parse-rfq.json")
+    assertNotNull(vector)
+    testNonErrorTestVector<Rfq>(vector)
   }
 
-  @Test
-  fun `serialize order status`() {
-    testSerialisation(TestVectors.orderStatus())
-  }
-  @Test
-  fun `parse close`() {
-    testParsing<Close>(TestVectors.close())
-  }
+  private inline fun <reified T> testNonErrorTestVector(vector: JsonNode) {
+    val input = vector["input"].textValue()
+    assertNotNull(input)
 
-  @Test
-  fun `serialize close`() {
-    testSerialisation(TestVectors.close())
-  }
-
-  /**
-   * Test parse, validate, and verify on the [vectorString].
-   */
-  private inline fun <reified T> testParsing(vectorString: String) {
-    val tbDEXMessage = Message.parse(vectorString)
+    val tbDEXMessage = Message.parse(input)
     assertIs<T>(tbDEXMessage)
+
+    assertEquals(vector["output"], Json.jsonMapper.readTree(tbDEXMessage.toString()))
   }
 
-  private fun testSerialisation(original: String) {
-    val tbDEXMessage = Message.parse(original)
-    val serialized = Json.stringify(tbDEXMessage)
-
-    assertEquals(original, serialized)
-  }
-
+  // When we create test vectors with `error: true`
+  // private fun testErrorTestVector(vector: JsonNode) {
+  //   val input = vector["input"].textValue()
+  //   assertNotNull(input)
+  //   assertThrows(Message.parse(vector["input"])
+  // }
 }
