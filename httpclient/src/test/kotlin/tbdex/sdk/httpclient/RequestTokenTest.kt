@@ -17,7 +17,7 @@ class RequestTokenTest {
     val did = DidDht.create(InMemoryKeyManager())
     val pfiDid = "did:ion:123"
 
-    val token = RequestToken.generateRequestToken(did, pfiDid)
+    val token = RequestToken.generate(did, pfiDid)
     assertNotNull(token)
   }
 
@@ -26,7 +26,7 @@ class RequestTokenTest {
     val did = DidDht.create(InMemoryKeyManager())
     val pfiDid = "did:ion:123"
 
-    val token = RequestToken.generateRequestToken(did, pfiDid)
+    val token = RequestToken.generate(did, pfiDid)
     val claimsSet = SignedJWT.parse(token).jwtClaimsSet
 
     assertThat(claimsSet.claims.keys)
@@ -38,7 +38,7 @@ class RequestTokenTest {
     val did = DidDht.create(InMemoryKeyManager())
     val pfiDid = "did:ion:123"
 
-    val token = RequestToken.generateRequestToken(did, pfiDid)
+    val token = RequestToken.generate(did, pfiDid)
     val claimsSet = SignedJWT.parse(token).jwtClaimsSet
 
     assertTrue(claimsSet.issuer.contains(did.uri))
@@ -51,9 +51,9 @@ class RequestTokenTest {
     val did = DidDht.create(InMemoryKeyManager())
     val pfiDid = "did:ion:123"
 
-    val token = RequestToken.generateRequestToken(did, pfiDid)
+    val token = RequestToken.generate(did, pfiDid)
 
-    val verificationResult = RequestToken.verifyRequestToken(token, pfiDid)
+    val verificationResult = RequestToken.verify(token, pfiDid)
 
     assertEquals(did.uri, verificationResult)
   }

@@ -65,7 +65,7 @@ suspend fun getExchanges(
 
   val token = arr[1]
   // TODO: how to access pfiDid here?
-  RequestToken.verifyRequestToken(token, "")
+  val requesterDid = RequestToken.verify(token, "")
   val exchanges = exchangesApi.getExchanges()
 
   if (callback != null) {

@@ -16,6 +16,11 @@ import java.time.Instant
 import java.util.Date
 import java.util.UUID
 
+/**
+ * Request token object
+ *
+ * Exposes methods for generating and verifying request tokens
+ */
 object RequestToken {
 
   /**
@@ -33,7 +38,7 @@ object RequestToken {
    * @return signed request token to be included as Authorization header for sending to PFI endpoints
    *
    */
-  fun generateRequestToken(did: Did, pfiDid: String, assertionMethodId: String? = null): String {
+  fun generate(did: Did, pfiDid: String, assertionMethodId: String? = null): String {
 
     val didResolutionResult = DidResolvers.resolve(did.uri)
     val assertionMethod: VerificationMethod = didResolutionResult.didDocument.findAssertionMethodById(assertionMethodId)
@@ -84,7 +89,7 @@ object RequestToken {
    * @param pfiDid DID of the PFI
    * @return DID of the requester/JWT token issuer
    */
-  fun verifyRequestToken(token: String, pfiDid: String): String {
+  fun verify(token: String, pfiDid: String): String {
     val claimsSet: JWTClaimsSet
     try {
       claimsSet = SignedJWT.parse(token).jwtClaimsSet
