@@ -120,7 +120,7 @@ fun verifyRequestToken(token: String, pfiDid: String): String {
     throw RequestTokenExpiredException("Request Token is expired.")
   }
 
-  if (!audience.contains(pfiDid)) {
+    require(audience.contains(pfiDid)) {
     throw RequestTokenAudMismatchException("Request token contains invalid audience. " +
       "Expected aud property to be PFI DID.")
   }

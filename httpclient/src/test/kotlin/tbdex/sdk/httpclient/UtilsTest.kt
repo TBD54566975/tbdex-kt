@@ -56,7 +56,5 @@ class UtilsTest {
     val verificationResult = verifyRequestToken(token, pfiDid)
 
     assertEquals(did.uri, verificationResult)
-
   }
-
 }
