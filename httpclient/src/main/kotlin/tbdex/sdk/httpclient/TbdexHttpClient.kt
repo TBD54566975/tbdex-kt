@@ -108,7 +108,7 @@ object TbdexHttpClient {
   fun getExchange(pfiDid: String, requesterDid: Did, exchangeId: String): Exchange {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/exchanges/$exchangeId"
-    val requestToken = generateRequestToken(requesterDid, pfiDid)
+    val requestToken = RequestToken.generate(requesterDid, pfiDid)
 
     val request = Request.Builder()
       .url(baseUrl)
@@ -146,7 +146,7 @@ object TbdexHttpClient {
   fun getExchanges(pfiDid: String, requesterDid: Did, filter: GetExchangesFilter? = null): List<Exchange> {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/exchanges/"
-    val requestToken = generateRequestToken(requesterDid, pfiDid)
+    val requestToken = RequestToken.generate(requesterDid, pfiDid)
 
     // compose query param
     val httpUrlBuilder = baseUrl.toHttpUrl().newBuilder()

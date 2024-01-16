@@ -1,8 +1,10 @@
 package tbdex.sdk.httpclient
 
 import assertk.assertThat
+import assertk.assertions.containsAll
 import assertk.assertions.containsExactlyInAnyOrder
 import com.nimbusds.jwt.SignedJWT
+import org.junit.jupiter.api.assertThrows
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.methods.dht.DidDht
 import kotlin.test.Test
@@ -30,11 +32,11 @@ class RequestTokenTest {
     val claimsSet = SignedJWT.parse(token).jwtClaimsSet
 
     assertThat(claimsSet.claims.keys)
-      .containsExactlyInAnyOrder(RequestToken.requiredClaimKeys)
+      .containsExactlyInAnyOrder(*RequestToken.requiredClaimKeys.toTypedArray())
   }
 
   @Test
-  fun `generateRequestToken() generates JWT with fields containing correct values`() {
+  fun `generate() generates JWT with fields containing correct values`() {
     val did = DidDht.create(InMemoryKeyManager())
     val pfiDid = "did:ion:123"
 
@@ -47,7 +49,7 @@ class RequestTokenTest {
   }
 
   @Test
-  fun `verifyRequestToken() validates given JWT token`() {
+  fun `verify() validates given JWT token`() {
     val did = DidDht.create(InMemoryKeyManager())
     val pfiDid = "did:ion:123"
 
@@ -57,4 +59,14 @@ class RequestTokenTest {
 
     assertEquals(did.uri, verificationResult)
   }
+
+  @Test
+  fun `verify() throws exception for invalid JWT token`() {
+
+    assertThrows<RequestTokenVerificationException> {
+      RequestToken.verify("abc", "did:ion:123")
+    }
+
+  }
+
 }
