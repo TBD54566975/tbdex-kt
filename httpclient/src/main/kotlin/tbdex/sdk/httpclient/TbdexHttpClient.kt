@@ -18,14 +18,17 @@ import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.serialization.Json.jsonMapper
 import web5.sdk.dids.Did
+import java.time.Duration
 
 /**
  * A client of the tbDEX HTTP interface for communicating with a PFI.
  */
-object TbdexHttpClient {
-  private val client = OkHttpClient()
+class TbdexHttpClient(timeout: Duration) {
+  private val client = OkHttpClient.Builder().callTimeout(timeout).build()
   private val jsonMediaType = "application/json; charset=utf-8".toMediaType()
-  private const val JSON_HEADER = "application/json"
+  private val JSON_HEADER = "application/json"
+
+  constructor() : this(Duration.ZERO)
 
   /**
    * Fetches offerings from a PFI.

@@ -34,7 +34,7 @@ class E2ETest {
   @Test
   @Disabled("Must be run alongside tbdex-mock-pfi. See README for details")
   fun `tests e2e flow`() {
-    val client = TbdexHttpClient
+    val client = TbdexHttpClient()
 
     val keyManager = InMemoryKeyManager()
     val pfiDid = DidDht.create(
