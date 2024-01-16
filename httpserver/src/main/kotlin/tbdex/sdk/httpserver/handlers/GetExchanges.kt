@@ -4,7 +4,6 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond
-import tbdex.sdk.httpclient.RequestToken
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpserver.models.ErrorResponse
 import tbdex.sdk.httpserver.models.ExchangesApi
@@ -65,7 +64,7 @@ suspend fun getExchanges(
 
   val token = arr[1]
   // TODO: how to access pfiDid here?
-  val requesterDid = RequestToken.verify(token, "")
+//  val requesterDid = RequestToken.verify(token, "")
   val exchanges = exchangesApi.getExchanges()
 
   if (callback != null) {
