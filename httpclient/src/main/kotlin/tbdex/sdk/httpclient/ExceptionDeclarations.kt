@@ -10,7 +10,7 @@ class RequestTokenVerificationException(cause: Throwable, message: String? = nul
   : RuntimeException(message, cause)
 
 /**
- * Request token aud mismatch exception
+ * Request token audience mismatch exception
  *
  * @param message the exception message detailing the error
  */
