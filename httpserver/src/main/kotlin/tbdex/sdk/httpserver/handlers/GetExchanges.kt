@@ -4,6 +4,7 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond
+import tbdex.sdk.httpclient.RequestToken
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpserver.models.ErrorResponse
 import tbdex.sdk.httpserver.models.ExchangesApi
@@ -27,10 +28,12 @@ class GetExchangesResponse(
  * @param exchangesApi Exchanges API interface
  * @param callback Callback function to be invoked
  */
+@Suppress("SwallowedException")
 suspend fun getExchanges(
   call: ApplicationCall,
   exchangesApi: ExchangesApi,
-  callback: GetCallback?
+  callback: GetCallback?,
+  pfiDid: String
 ) {
   val authzHeader = call.request.headers[HttpHeaders.Authorization]
   if (authzHeader == null) {
@@ -63,8 +66,23 @@ suspend fun getExchanges(
   }
 
   val token = arr[1]
-  // TODO: how to access pfiDid here?
-//  val requesterDid = RequestToken.verify(token, "")
+  val requesterDid: String
+  try {
+    requesterDid = RequestToken.verify(token, pfiDid)
+  } catch (e: Exception) {
+    call.respond(
+      HttpStatusCode.Unauthorized,
+      ErrorResponse(
+        errors = listOf(
+          ErrorDetail(
+            detail = "Could not verify Authorization header."
+          )
+        )
+      )
+    )
+    return
+  }
+
   val exchanges = exchangesApi.getExchanges()
 
   if (callback != null) {

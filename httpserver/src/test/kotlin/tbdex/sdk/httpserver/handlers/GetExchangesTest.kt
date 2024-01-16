@@ -9,6 +9,7 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
+import tbdex.sdk.httpclient.RequestToken
 import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Rfq
@@ -75,7 +76,7 @@ class GetExchangesTest : ServerTest() {
       }
     }
     val response = client.get("/exchanges") {
-      bearerAuth("abc123")
+      bearerAuth(RequestToken.generate(TestData.aliceDid, TestData.pfiDid.uri))
     }
 
     assertEquals(HttpStatusCode.OK, response.status)
