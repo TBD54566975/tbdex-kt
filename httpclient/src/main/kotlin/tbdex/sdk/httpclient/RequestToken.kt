@@ -89,7 +89,7 @@ object RequestToken {
    * @param pfiDid DID of the PFI
    * @return DID of the requester/JWT token issuer
    */
-  fun verify(token: String, pfiDid: String?): String {
+  fun verify(token: String, pfiDid: String): String {
     val claimsSet: JWTClaimsSet
     try {
       claimsSet = SignedJWT.parse(token).jwtClaimsSet
