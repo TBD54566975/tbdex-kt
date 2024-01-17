@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
 
-class ResourceVectorTest {
+class TbdexTestVectorsResourceTest {
   @Test
   fun `parse-offering json`() {
     val vector = TestVectors.getVector("parse-offering.json")

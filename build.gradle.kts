@@ -1,4 +1,5 @@
 import io.gitlab.arturbosch.detekt.Detekt
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.dokka.DokkaConfiguration
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import java.net.URL
@@ -34,8 +35,6 @@ subprojects {
     plugin("org.jetbrains.dokka")
     plugin("org.jetbrains.kotlinx.kover")
   }
-
-
 
   tasks.withType<Detekt>().configureEach {
     jvmTarget = "1.8"
@@ -87,6 +86,20 @@ subprojects {
         remoteUrl.set(URL(exampleDir))
         remoteLineSuffix.set("#L")
       }
+    }
+  }
+
+  tasks.test {
+    useJUnitPlatform()
+    reports {
+      junitXml
+    }
+    testLogging {
+      events("passed", "skipped", "failed", "standardOut", "standardError")
+      exceptionFormat = TestExceptionFormat.FULL
+      showExceptions = true
+      showCauses = true
+      showStackTraces = true
     }
   }
 }
