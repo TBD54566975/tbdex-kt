@@ -1,6 +1,7 @@
 package tbdex.sdk.protocol.models
 
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Quote.Companion.create
 import java.time.OffsetDateTime
@@ -46,6 +47,7 @@ class Quote private constructor(
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now()
       )
+      Validator.validateData(quoteData, "quote")
 
       return Quote(metadata, quoteData)
     }

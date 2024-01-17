@@ -12,6 +12,7 @@ import tbdex.sdk.httpclient.models.Exchange
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
 import tbdex.sdk.httpclient.models.TbdexResponseException
+import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.serialization.Json
@@ -73,6 +74,9 @@ object TbdexHttpClient {
    * @throws TbdexResponseException for request or response errors.
    */
   fun sendMessage(message: Message) {
+    Validator.validateMessage(message)
+    message.verify()
+
     val pfiDid = message.metadata.to
     val exchangeId = message.metadata.exchangeId
     val kind = message.metadata.kind

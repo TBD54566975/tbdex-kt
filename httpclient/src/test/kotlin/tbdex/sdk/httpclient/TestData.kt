@@ -57,8 +57,8 @@ object TestData {
     return VerifiableCredential.create("test type", ALICE_DID.uri, ALICE_DID.uri, vc)
   }
 
-  fun getOffering(requiredClaims: PresentationDefinitionV2 = getPresentationDefinition()) =
-    Offering.create(
+  fun getOffering(requiredClaims: PresentationDefinitionV2 = getPresentationDefinition()): Offering {
+    val offering = Offering.create(
       from = PFI_DID.uri,
       OfferingData(
         description = "my fake offering",
@@ -70,31 +70,40 @@ object TestData {
         requiredClaims = requiredClaims
       )
     )
-
+    offering.sign(PFI_DID)
+    return offering
+  }
   fun getRfq(
     to: String = PFI_DID.uri,
     offeringId: TypeId = TypeId.generate(ResourceKind.offering.name),
     claims: List<String> = emptyList()
-  ) = Rfq.create(
-    to = to,
-    from = ALICE_DID.uri,
-    rfqData = RfqData(
-      offeringId = offeringId,
-      payinSubunits = "1000",
-      payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
-      payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
-      claims = claims
+  ): Rfq {
+    val rfq = Rfq.create(
+      to = to,
+      from = ALICE_DID.uri,
+      rfqData = RfqData(
+        offeringId = offeringId,
+        payinAmount = "10.00",
+        payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
+        payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
+        claims = claims
+      )
     )
-  )
-
-  fun getQuote() = Quote.create(
-    ALICE_DID.uri, PFI_DID.uri, TypeId.generate(MessageKind.rfq.name),
-    QuoteData(
-      expiresAt = OffsetDateTime.now().plusDays(1),
-      payin = QuoteDetails("AUD", "1000", "0"),
-      payout = QuoteDetails("BTC", "12", "0")
+    rfq.sign(ALICE_DID)
+    return rfq
+  }
+  fun getQuote(): Quote {
+    val quote = Quote.create(
+      ALICE_DID.uri, PFI_DID.uri, TypeId.generate(MessageKind.rfq.name),
+      QuoteData(
+        expiresAt = OffsetDateTime.now().plusDays(1),
+        payin = QuoteDetails("AUD", "10.00", "0.0"),
+        payout = QuoteDetails("BTC", "0.12", "0.0")
+      )
     )
-  )
+    quote.sign(PFI_DID)
+    return quote
+  }
 
   private fun buildField(id: String? = null, vararg paths: String): FieldV2 {
     return FieldV2(id = id, path = paths.toList())

@@ -15,7 +15,7 @@ sealed interface MessageData : Data
  */
 class RfqData(
   val offeringId: TypeId,
-  val payinSubunits: String,
+  val payinAmount: String,
   val payinMethod: SelectedPaymentMethod,
   val payoutMethod: SelectedPaymentMethod,
   val claims: List<String>
@@ -45,8 +45,8 @@ class QuoteData(
  */
 class QuoteDetails(
   val currencyCode: String,
-  val amountSubunits: String,
-  val feeSubunits: String? = null
+  val amount: String,
+  val fee: String? = null
 )
 
 /**

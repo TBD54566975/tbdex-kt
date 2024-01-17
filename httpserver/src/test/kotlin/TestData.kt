@@ -28,7 +28,7 @@ object TestData {
       from = aliceDid.uri,
       rfqData = RfqData(
         offeringId = offering?.metadata?.id ?: TypeId.generate("offering"),
-        payinSubunits = "100",
+        payinAmount = "1.00",
         payinMethod = SelectedPaymentMethod(
           kind = offering?.data?.payinMethods?.first()?.kind ?: "USD",
           paymentDetails = mapOf("foo" to "bar")
@@ -64,8 +64,8 @@ object TestData {
     exchangeId = exchangeId,
     quoteData = QuoteData(
       expiresAt = expiresAt,
-      payin = QuoteDetails("AUD", "1000", "1"),
-      payout = QuoteDetails("BTC", "12", "2"),
+      payin = QuoteDetails("AUD", "10.00", "0.1"),
+      payout = QuoteDetails("BTC", "0.12", "0.02"),
       paymentInstructions = PaymentInstructions(
         payin = PaymentInstruction(
           link = "https://block.xyz",

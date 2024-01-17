@@ -256,7 +256,7 @@ class E2ETest {
     vcJwt: String
   ) = RfqData(
     offeringId = firstOfferingId,
-    payinSubunits = "100",
+    payinAmount = "1.00",
     payinMethod = SelectedPaymentMethod(
       kind = "NGN_ADDRESS",
       paymentDetails = mapOf("walletAddress" to "ngn-wallet-address")
