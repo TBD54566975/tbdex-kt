@@ -22,6 +22,9 @@ import java.time.Duration
 
 /**
  * A client of the tbDEX HTTP interface for communicating with a PFI.
+ *
+ * An optional request timeout may be specified. Even if set to Duration.ZERO (default), the default OkHttp timeouts
+ * will be enforced: 10 seconds to connect, 10 seconds to write the request and 10 seconds to read the response.
  */
 class TbdexHttpClient(timeout: Duration) {
   private val client = OkHttpClient.Builder().callTimeout(timeout).build()
