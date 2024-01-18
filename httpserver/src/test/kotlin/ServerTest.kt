@@ -14,6 +14,8 @@ import tbdex.sdk.httpserver.TbdexHttpServerConfig
 import tbdex.sdk.httpserver.models.FakeExchangesApi
 import tbdex.sdk.httpserver.models.FakeOfferingsApi
 import tbdex.sdk.protocol.serialization.TypeIdModule
+import web5.sdk.crypto.InMemoryKeyManager
+import web5.sdk.dids.methods.dht.DidDht
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 open class ServerTest {
@@ -25,6 +27,7 @@ open class ServerTest {
     application {
       val serverConfig = TbdexHttpServerConfig(
         port = 8080,
+        pfiDid = TestData.pfiDid.uri
       )
       val tbdexServer = TbdexHttpServer(serverConfig)
       tbdexServer.configure(this)
