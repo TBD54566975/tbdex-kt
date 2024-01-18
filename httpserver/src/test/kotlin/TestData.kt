@@ -6,7 +6,6 @@ import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.PaymentInstruction
-import tbdex.sdk.protocol.models.PaymentInstructions
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.QuoteData
 import tbdex.sdk.protocol.models.QuoteDetails
@@ -64,18 +63,14 @@ object TestData {
     exchangeId = exchangeId,
     quoteData = QuoteData(
       expiresAt = expiresAt,
-      payin = QuoteDetails("AUD", "10.00", "0.1"),
-      payout = QuoteDetails("BTC", "0.12", "0.02"),
-      paymentInstructions = PaymentInstructions(
-        payin = PaymentInstruction(
-          link = "https://block.xyz",
-          instruction = "payin instruction"
-        ),
-        payout = PaymentInstruction(
-          link = "https://block.xyz",
-          instruction = "payout instruction"
-        )
-      )
+      payin = QuoteDetails("AUD", "10.00", "0.1", PaymentInstruction(
+        link = "https://block.xyz",
+        instruction = "payin instruction"
+      )),
+      payout = QuoteDetails("BTC", "0.12", "0.02", PaymentInstruction(
+        link = "https://block.xyz",
+        instruction = "payout instruction"
+      ))
     )
   )
 }
