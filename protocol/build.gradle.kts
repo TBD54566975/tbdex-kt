@@ -45,6 +45,18 @@ tasks {
   }
 }
 
+sourceSets {
+  val test by getting {
+    val resourceDirs = listOf(
+      "../tbdex/hosted/test-vectors/protocol/vectors",
+      "../tbdex/hosted/json-schemas"
+    )
+    resources.setSrcDirs(resourceDirs)
+//    resources.srcDir("../tbdex/hosted/test-vectors/protocol/vectors")
+    // Add other resource directories if needed
+  }
+}
+
 tasks.test {
   useJUnitPlatform()
   testLogging {
