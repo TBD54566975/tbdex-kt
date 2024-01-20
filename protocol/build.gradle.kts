@@ -34,16 +34,18 @@ dependencies {
 }
 
 sourceSets {
-
-  val main by getting {
-    resources.srcDir("../tbdex/hosted/json-schemas")
-  }
   val test by getting {
-    // Add other resource directories if needed
     val resourceDirs = listOf(
       "../tbdex/hosted/test-vectors/protocol/vectors",
+    )
+    resources.setSrcDirs(resourceDirs)
+  }
+
+  main {
+    val resourceDirs = listOf(
       "../tbdex/hosted/json-schemas"
     )
+
     resources.setSrcDirs(resourceDirs)
   }
 }
