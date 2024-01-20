@@ -15,11 +15,11 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import tbdex.sdk.httpserver.handlers.createExchange
 import tbdex.sdk.httpserver.handlers.getExchanges
 import tbdex.sdk.httpserver.handlers.getOfferings
 import tbdex.sdk.httpserver.handlers.submitClose
 import tbdex.sdk.httpserver.handlers.submitOrder
-import tbdex.sdk.httpserver.handlers.submitRfq
 import tbdex.sdk.httpserver.models.ExchangesApi
 import tbdex.sdk.httpserver.models.FakeExchangesApi
 import tbdex.sdk.httpserver.models.FakeOfferingsApi
@@ -99,7 +99,7 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
 
       route("/exchanges") {
         post("/{exchangeId}/rfq") {
-          submitRfq(
+          createExchange(
             call = call,
             offeringsApi = offeringsApi,
             exchangesApi = exchangesApi,

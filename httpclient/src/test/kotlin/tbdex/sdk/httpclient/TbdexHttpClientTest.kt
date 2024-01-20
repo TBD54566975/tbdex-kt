@@ -1,5 +1,7 @@
 package tbdex.sdk.httpclient
 
+import assertk.assertThat
+import assertk.assertions.contains
 import de.fxlae.typeid.TypeId
 import junit.framework.TestCase.assertEquals
 import okhttp3.mockwebserver.MockResponse
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import tbdex.sdk.httpclient.models.ErrorDetail
+import tbdex.sdk.httpclient.models.SendMessageRequest
 import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.Rfq
@@ -89,7 +92,7 @@ class TbdexHttpClientTest {
     server.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_ACCEPTED))
 
     val rfq = TestData.getRfq(pfiDid.uri, TypeId.generate("offering"))
-    assertDoesNotThrow { TbdexHttpClient.sendMessage(rfq) }
+    assertDoesNotThrow { TbdexHttpClient.sendMessage(SendMessageRequest(rfq, "https://tbdex.io/callback")) }
   }
 
   @Test
@@ -109,12 +112,36 @@ class TbdexHttpClientTest {
     )
 
     val mockResponseString = Json.jsonMapper.writeValueAsString(errorDetails)
-    server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
+    server
+      .enqueue(
+        MockResponse()
+          .setBody(mockResponseString)
+          .setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST)
+      )
 
     val rfq = TestData.getRfq(pfiDid.uri, TypeId.generate("offering"))
-    val exception = assertThrows<TbdexResponseException> { TbdexHttpClient.sendMessage(rfq) }
+    val exception = assertThrows<TbdexResponseException> {
+      TbdexHttpClient.sendMessage(
+        SendMessageRequest(rfq, "https://tbdex.io/callback")
+      )
+    }
     assertEquals(1, exception.errors?.size)
     assertEquals("400", exception.errors?.get(0)?.status)
+  }
+
+  @Test
+  fun `send Order fail if sendMessageRequest includes replyTo field`() {
+
+    val quote = TestData.getOrder(pfiDid.uri)
+    val exception = assertThrows<IllegalArgumentException> {
+      TbdexHttpClient.sendMessage(
+        SendMessageRequest(
+          quote,
+          "https://tbdex.io/callback"
+        )
+      )
+    }
+    assertThat(exception.message!!).contains("replyTo")
   }
 
   @Test
@@ -149,7 +176,9 @@ class TbdexHttpClientTest {
     val mockResponseString = Json.jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
 
-    assertThrows<TbdexResponseException> { TbdexHttpClient.getExchange(pfiDid.uri, alice, "exchange_1234") }
+    assertThrows<TbdexResponseException> {
+      TbdexHttpClient.getExchange(pfiDid.uri, alice, "exchange_1234")
+    }
   }
 
   @Test

@@ -6,6 +6,7 @@ import foundation.identity.did.Service
 import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
+import tbdex.sdk.httpclient.models.SendMessageRequest
 import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Order
@@ -94,13 +95,15 @@ class E2ETest {
 
     val rfqData = buildRfqData(firstOfferingId, vcJwt)
     val rfq = Rfq.create(to = pfiDid, from = myDid.uri, rfqData)
+
     rfq.sign(myDid)
+    val sendRfqRequest = SendMessageRequest(rfq, "https://tbdex.io/callback")
 
     println("Sending RFQ against first offering id: ${offerings[0].metadata.id}.")
     println("ExchangeId for the rest of this exchange is ${rfq.metadata.exchangeId}")
 
     try {
-      client.sendMessage(rfq)
+      client.sendMessage(sendRfqRequest)
     } catch (e: TbdexResponseException) {
       throw AssertionError(
         "Error in sending RFQ. " +
@@ -122,8 +125,10 @@ class E2ETest {
     order.sign(myDid)
 
     println("Sending order against Quote with exchangeId of ${order.metadata.exchangeId}")
+    val sendOrderRequest = SendMessageRequest(order)
+
     try {
-      client.sendMessage(order)
+      client.sendMessage(sendOrderRequest)
     } catch (e: TbdexResponseException) {
       throw AssertionError(
         "Error returned from sending Order. " +

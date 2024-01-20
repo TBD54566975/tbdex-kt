@@ -5,16 +5,21 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpclient.models.Exchange
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
+import tbdex.sdk.httpclient.models.SendMessageRequest
+import tbdex.sdk.httpclient.models.SendRfqRequest
 import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Message
+import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
+import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.serialization.Json.jsonMapper
 import web5.sdk.dids.Did
@@ -70,10 +75,11 @@ object TbdexHttpClient {
   /**
    * Sends a message to the PFI.
    *
-   * @param message The [Message] object containing the message details to be sent.
+   * @param sendMessageRequest The [SendMessageRequest] object containing the message, and optionally, a `replyTo` string for callback URL.
    * @throws TbdexResponseException for request or response errors.
    */
-  fun sendMessage(message: Message) {
+  fun sendMessage(sendMessageRequest: SendMessageRequest) {
+    val message = sendMessageRequest.message
     Validator.validateMessage(message)
     message.verify()
 
@@ -84,7 +90,17 @@ object TbdexHttpClient {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val url = "$pfiServiceEndpoint/exchanges/$exchangeId/$kind"
 
-    val body = Json.stringify(message).toRequestBody(jsonMediaType)
+    if (kind != MessageKind.rfq && sendMessageRequest.replyTo != null) {
+      throw IllegalArgumentException("replyTo field should not be present when sending a $kind message")
+    }
+
+    val body: RequestBody =
+      if (kind == MessageKind.rfq && sendMessageRequest.replyTo != null) {
+        Json.stringify(SendRfqRequest(message as Rfq, sendMessageRequest.replyTo))
+          .toRequestBody(jsonMediaType)
+      } else {
+        Json.stringify(message).toRequestBody(jsonMediaType)
+      }
 
     val request = Request.Builder()
       .url(url)

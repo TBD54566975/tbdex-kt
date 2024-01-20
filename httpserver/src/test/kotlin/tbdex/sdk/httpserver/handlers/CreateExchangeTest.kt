@@ -12,11 +12,12 @@ import io.ktor.http.contentType
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import tbdex.sdk.httpclient.models.ErrorResponse
+import tbdex.sdk.httpserver.models.CreateExchangeRequest
 import tbdex.sdk.protocol.serialization.Json
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
-class SubmitRfqTest : ServerTest() {
+class CreateExchangeTest : ServerTest() {
   @Test
   fun `returns BadRequest if no request body is provided`() = runBlocking {
     val response = client.post("/exchanges/123/rfq") {
@@ -37,7 +38,7 @@ class SubmitRfqTest : ServerTest() {
 
     val response = client.post("/exchanges/123/rfq") {
       contentType(ContentType.Application.Json)
-      setBody(rfq)
+      setBody(CreateExchangeRequest(rfq))
     }
 
     val errorResponse = Json.jsonMapper.readValue(response.bodyAsText(), ErrorResponse::class.java)
@@ -53,7 +54,7 @@ class SubmitRfqTest : ServerTest() {
 
     val response = client.post("/exchanges/123/rfq") {
       contentType(ContentType.Application.Json)
-      setBody(rfq)
+      setBody(CreateExchangeRequest(rfq))
     }
 
     val errorResponse = Json.jsonMapper.readValue(response.bodyAsText(), ErrorResponse::class.java)
@@ -63,13 +64,29 @@ class SubmitRfqTest : ServerTest() {
   }
 
   @Test
+  fun `returns BadRequest if replyTo is an invalid URL`() = runBlocking {
+    val rfq = createRfq()
+    rfq.sign(aliceDid)
+
+    val response = client.post("/exchanges/123/rfq") {
+      contentType(ContentType.Application.Json)
+      setBody(CreateExchangeRequest(rfq, "foo"))
+    }
+
+    val errorResponse = Json.jsonMapper.readValue(response.bodyAsText(), ErrorResponse::class.java)
+
+    assertEquals(HttpStatusCode.BadRequest, response.status)
+    assertContains(errorResponse.errors.first().detail, "replyTo must be a valid URL")
+  }
+
+  @Test
   fun `returns Accepted if rfq is accepted`() = runBlocking {
     val rfq = createRfq(offeringsApi.getOffering("123"))
     rfq.sign(aliceDid)
 
     val response = client.post("/exchanges/123/rfq") {
       contentType(ContentType.Application.Json)
-      setBody(rfq)
+      setBody(CreateExchangeRequest(rfq, "http://localhost:9000/callback"))
     }
 
     assertEquals(HttpStatusCode.Accepted, response.status)
