@@ -44,7 +44,7 @@ suspend fun createExchange(
     val rfqJsonString = jsonNode["rfq"].toString()
 
     message = Message.parse(rfqJsonString) as Rfq
-    replyTo = jsonNode["replyTo"]?.takeIf { !it.isNull }?.asText()
+    replyTo = jsonNode["replyTo"]?.asText()
 
   } catch (e: Exception) {
     val errorDetail = ErrorDetail(detail = "Parsing of TBDex message failed: ${e.message}")
