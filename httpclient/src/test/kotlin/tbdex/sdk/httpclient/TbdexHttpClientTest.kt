@@ -1,7 +1,5 @@
 package tbdex.sdk.httpclient
 
-import assertk.assertThat
-import assertk.assertions.contains
 import de.fxlae.typeid.TypeId
 import junit.framework.TestCase.assertEquals
 import okhttp3.mockwebserver.MockResponse
@@ -120,22 +118,10 @@ class TbdexHttpClientTest {
 
     val rfq = TestData.getRfq(pfiDid.uri, TypeId.generate("offering"))
     val exception = assertThrows<TbdexResponseException> {
-      TbdexHttpClient.sendMessage(
-        rfq, "https://tbdex.io/callback"
-      )
+      TbdexHttpClient.sendMessage(rfq)
     }
     assertEquals(1, exception.errors?.size)
     assertEquals("400", exception.errors?.get(0)?.status)
-  }
-
-  @Test
-  fun `send Order fail if sendMessageRequest includes replyTo field`() {
-
-    val quote = TestData.getOrder(pfiDid.uri)
-    val exception = assertThrows<IllegalArgumentException> {
-      TbdexHttpClient.sendMessage(quote, "https://tbdex.io/callback")
-    }
-    assertThat(exception.message!!).contains("replyTo")
   }
 
   @Test

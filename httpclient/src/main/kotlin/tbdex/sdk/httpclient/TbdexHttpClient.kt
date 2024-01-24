@@ -12,12 +12,10 @@ import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpclient.models.Exchange
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
-import tbdex.sdk.httpclient.models.SendMessageRequest
 import tbdex.sdk.httpclient.models.SendRfqRequest
 import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Message
-import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
@@ -75,12 +73,12 @@ object TbdexHttpClient {
   /**
    * Sends a message to the PFI.
    *
-   * @param sendMessageRequest The [SendMessageRequest] object containing the message, and optionally, a `replyTo` string for callback URL.
-   * @throws TbdexResponseException for request or response errors.
+   * @param message The message to send.
+   *
+   * @throws TbdexResponseException for response errors.
    */
-  fun sendMessage(message: Message, replyTo: String? = null) {
-    Validator.validateMessage(message)
-    message.verify()
+  fun sendMessage(message: Message) {
+    validateMessage(message)
 
     val pfiDid = message.metadata.to
     val exchangeId = message.metadata.exchangeId
@@ -89,30 +87,41 @@ object TbdexHttpClient {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val url = "$pfiServiceEndpoint/exchanges/$exchangeId/$kind"
 
-    if (kind != MessageKind.rfq && replyTo != null) {
-      throw IllegalArgumentException("replyTo field should not be present when sending a $kind message")
-    }
+    val body: RequestBody = Json.stringify(message).toRequestBody(jsonMediaType)
 
-    val body: RequestBody =
-      if (kind == MessageKind.rfq && replyTo != null) {
-        Json.stringify(SendRfqRequest(message as Rfq, replyTo))
+    val request = buildRequest(url, body)
+
+    println("Attempting to send $kind message to: ${request.url}")
+
+    executeRequest(request)
+  }
+
+  /**
+   * Send message and include a replyTo URL for the PFI to send a callback to.
+   *
+   * @param message The message to send (is of type RFQ)
+   * @param replyTo The callback URL for PFI to send messages to.
+   *
+   * @throws TbdexResponseException for response errors.
+   *
+   */
+  fun sendMessage(message: Rfq, replyTo: String) {
+    validateMessage(message)
+
+    val pfiDid = message.metadata.to
+    val exchangeId = message.metadata.exchangeId
+
+    val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
+    val url = "$pfiServiceEndpoint/exchanges/$exchangeId"
+
+    val body: RequestBody = Json.stringify(SendRfqRequest(message, replyTo))
           .toRequestBody(jsonMediaType)
-      } else {
-        Json.stringify(message).toRequestBody(jsonMediaType)
-      }
 
-    val request = Request.Builder()
-      .url(url)
-      .addHeader("Content-Type", JSON_HEADER)
-      .post(body)
-      .build()
+    val request = buildRequest(url, body)
 
-    println("attempting to send message to: ${request.url}")
+    println("Attempting to send Rfq message to: ${request.url}")
 
-    val response: Response = client.newCall(request).execute()
-    if (!response.isSuccessful) {
-      throw buildResponseException(response)
-    }
+    executeRequest(request)
   }
 
   /**
@@ -222,5 +231,26 @@ object TbdexHttpClient {
       "response status: ${response.code}",
       errors = errors
     )
+  }
+
+  private fun validateMessage(message: Message) {
+    Validator.validateMessage(message)
+    message.verify()
+  }
+
+  private fun buildRequest(url: String, body: RequestBody): Request {
+    val request = Request.Builder()
+      .url(url)
+      .addHeader("Content-Type", JSON_HEADER)
+      .post(body)
+      .build()
+    return request
+  }
+
+  private fun executeRequest(request: Request) {
+    val response: Response = client.newCall(request).execute()
+    if (!response.isSuccessful) {
+      throw buildResponseException(response)
+    }
   }
 }
