@@ -6,7 +6,6 @@ import foundation.identity.did.Service
 import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
-import tbdex.sdk.httpclient.models.SendMessageRequest
 import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Order
