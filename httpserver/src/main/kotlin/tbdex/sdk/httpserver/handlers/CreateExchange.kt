@@ -65,7 +65,8 @@ suspend fun createExchange(
     val errorDetail = ErrorDetail(detail = "RFQ already exists.")
     call.respond(HttpStatusCode.Conflict, ErrorResponse(listOf(errorDetail)))
     return
-  } catch (_: Exception) {
+  } catch (_: NoSuchElementException) {
+    // exchangesApi.getExchange throws if no existing exchange is found
   }
 
   val offering: Offering
