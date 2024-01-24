@@ -47,7 +47,7 @@ suspend fun createExchange(
     replyTo = jsonNode["replyTo"]?.asText()
 
   } catch (e: Exception) {
-    val errorDetail = ErrorDetail(detail = "Parsing of TBDex message failed: ${e.message}")
+    val errorDetail = ErrorDetail(detail = "Parsing of TBDex createExchange request failed: ${e.message}")
     val errorResponse = ErrorResponse(listOf(errorDetail))
     call.respond(HttpStatusCode.BadRequest, errorResponse)
     return
