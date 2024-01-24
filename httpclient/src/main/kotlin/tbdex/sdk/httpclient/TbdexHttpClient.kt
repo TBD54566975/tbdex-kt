@@ -78,8 +78,7 @@ object TbdexHttpClient {
    * @param sendMessageRequest The [SendMessageRequest] object containing the message, and optionally, a `replyTo` string for callback URL.
    * @throws TbdexResponseException for request or response errors.
    */
-  fun sendMessage(sendMessageRequest: SendMessageRequest) {
-    val message = sendMessageRequest.message
+  fun sendMessage(message: Message, replyTo: String? = null) {
     Validator.validateMessage(message)
     message.verify()
 
@@ -90,13 +89,13 @@ object TbdexHttpClient {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val url = "$pfiServiceEndpoint/exchanges/$exchangeId/$kind"
 
-    if (kind != MessageKind.rfq && sendMessageRequest.replyTo != null) {
+    if (kind != MessageKind.rfq && replyTo != null) {
       throw IllegalArgumentException("replyTo field should not be present when sending a $kind message")
     }
 
     val body: RequestBody =
-      if (kind == MessageKind.rfq && sendMessageRequest.replyTo != null) {
-        Json.stringify(SendRfqRequest(message as Rfq, sendMessageRequest.replyTo))
+      if (kind == MessageKind.rfq && replyTo != null) {
+        Json.stringify(SendRfqRequest(message as Rfq, replyTo))
           .toRequestBody(jsonMediaType)
       } else {
         Json.stringify(message).toRequestBody(jsonMediaType)

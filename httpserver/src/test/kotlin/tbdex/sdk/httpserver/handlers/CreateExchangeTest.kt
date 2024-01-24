@@ -20,7 +20,7 @@ import kotlin.test.assertEquals
 class CreateExchangeTest : ServerTest() {
   @Test
   fun `returns BadRequest if no request body is provided`() = runBlocking {
-    val response = client.post("/exchanges/123/rfq") {
+    val response = client.post("/exchanges/123") {
       contentType(ContentType.Application.Json)
     }
 
@@ -36,7 +36,7 @@ class CreateExchangeTest : ServerTest() {
     rfq.sign(aliceDid)
     exchangesApi.addMessage(rfq)
 
-    val response = client.post("/exchanges/123/rfq") {
+    val response = client.post("/exchanges/123") {
       contentType(ContentType.Application.Json)
       setBody(CreateExchangeRequest(rfq))
     }
@@ -52,7 +52,7 @@ class CreateExchangeTest : ServerTest() {
     val rfq = createRfq()
     rfq.sign(aliceDid)
 
-    val response = client.post("/exchanges/123/rfq") {
+    val response = client.post("/exchanges/123") {
       contentType(ContentType.Application.Json)
       setBody(CreateExchangeRequest(rfq))
     }
@@ -68,7 +68,7 @@ class CreateExchangeTest : ServerTest() {
     val rfq = createRfq()
     rfq.sign(aliceDid)
 
-    val response = client.post("/exchanges/123/rfq") {
+    val response = client.post("/exchanges/123") {
       contentType(ContentType.Application.Json)
       setBody(CreateExchangeRequest(rfq, "foo"))
     }
@@ -84,7 +84,7 @@ class CreateExchangeTest : ServerTest() {
     val rfq = createRfq(offeringsApi.getOffering("123"))
     rfq.sign(aliceDid)
 
-    val response = client.post("/exchanges/123/rfq") {
+    val response = client.post("/exchanges/123") {
       contentType(ContentType.Application.Json)
       setBody(CreateExchangeRequest(rfq, "http://localhost:9000/callback"))
     }

@@ -98,7 +98,7 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
       }
 
       route("/exchanges") {
-        post("/{exchangeId}/rfq") {
+        post("/{exchangeId}") {
           createExchange(
             call = call,
             offeringsApi = offeringsApi,
