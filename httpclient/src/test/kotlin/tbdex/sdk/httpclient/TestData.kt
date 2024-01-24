@@ -6,7 +6,6 @@ import tbdex.sdk.protocol.models.CurrencyDetails
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.OfferingData
-import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.QuoteData
 import tbdex.sdk.protocol.models.QuoteDetails
@@ -104,16 +103,6 @@ object TestData {
     )
     quote.sign(PFI_DID)
     return quote
-  }
-
-  fun getOrder(to: String = PFI_DID.uri,) : Order {
-    val order = Order.create(
-      to = to,
-      from = ALICE_DID.uri,
-      exchangeId = TypeId.generate(MessageKind.rfq.name)
-    )
-    order.sign(ALICE_DID)
-    return order
   }
 
   private fun buildField(id: String? = null, vararg paths: String): FieldV2 {
