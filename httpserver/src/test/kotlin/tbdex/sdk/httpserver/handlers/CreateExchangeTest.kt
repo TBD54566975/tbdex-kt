@@ -27,7 +27,7 @@ class CreateExchangeTest : ServerTest() {
     val errorResponse = Json.jsonMapper.readValue(response.bodyAsText(), ErrorResponse::class.java)
 
     assertEquals(HttpStatusCode.BadRequest, response.status)
-    assertContains(errorResponse.errors.first().detail, "Parsing of TBDex message failed")
+    assertContains(errorResponse.errors.first().detail, "Parsing of TBDex createExchange request failed")
   }
 
   @Test

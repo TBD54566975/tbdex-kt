@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import tbdex.sdk.httpclient.models.ErrorDetail
-import tbdex.sdk.httpclient.models.SendMessageRequest
 import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.Rfq
@@ -92,7 +91,7 @@ class TbdexHttpClientTest {
     server.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_ACCEPTED))
 
     val rfq = TestData.getRfq(pfiDid.uri, TypeId.generate("offering"))
-    assertDoesNotThrow { TbdexHttpClient.sendMessage(SendMessageRequest(rfq, "https://tbdex.io/callback")) }
+    assertDoesNotThrow { TbdexHttpClient.sendMessage(rfq, "https://tbdex.io/callback") }
   }
 
   @Test
@@ -122,7 +121,7 @@ class TbdexHttpClientTest {
     val rfq = TestData.getRfq(pfiDid.uri, TypeId.generate("offering"))
     val exception = assertThrows<TbdexResponseException> {
       TbdexHttpClient.sendMessage(
-        SendMessageRequest(rfq, "https://tbdex.io/callback")
+        rfq, "https://tbdex.io/callback"
       )
     }
     assertEquals(1, exception.errors?.size)
@@ -134,12 +133,7 @@ class TbdexHttpClientTest {
 
     val quote = TestData.getOrder(pfiDid.uri)
     val exception = assertThrows<IllegalArgumentException> {
-      TbdexHttpClient.sendMessage(
-        SendMessageRequest(
-          quote,
-          "https://tbdex.io/callback"
-        )
-      )
+      TbdexHttpClient.sendMessage(quote, "https://tbdex.io/callback")
     }
     assertThat(exception.message!!).contains("replyTo")
   }
