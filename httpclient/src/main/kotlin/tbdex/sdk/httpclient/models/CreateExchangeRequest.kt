@@ -1,4 +1,4 @@
-package tbdex.sdk.httpserver.models
+package tbdex.sdk.httpclient.models
 
 import tbdex.sdk.protocol.models.Rfq
 
@@ -7,7 +7,6 @@ import tbdex.sdk.protocol.models.Rfq
  *
  * @property rfq Rfq tbdex message received.
  * @property replyTo Optional URL to be included in the request to create exchange.
- * @constructor Create empty Create exchange request
  */
 class CreateExchangeRequest(
   val rfq: Rfq,

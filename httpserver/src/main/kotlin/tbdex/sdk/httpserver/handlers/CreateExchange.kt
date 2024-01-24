@@ -44,7 +44,9 @@ suspend fun createExchange(
     val rfqJsonString = jsonNode["rfq"].toString()
 
     message = Message.parse(rfqJsonString) as Rfq
-    replyTo = jsonNode["replyTo"]?.takeIf { !it.isNull }?.asText()
+    // sets replyTo field to null if it's not present in the jsonNode.
+    // without .takeIf { !it.isNull }, jsonNode["replyTo"].asText() will set replyTo as "null" string.
+    replyTo = jsonNode["replyTo"].takeIf { !it.isNull }?.asText()
 
   } catch (e: Exception) {
     val errorDetail = ErrorDetail(detail = "Parsing of TBDex createExchange request failed: ${e.message}")

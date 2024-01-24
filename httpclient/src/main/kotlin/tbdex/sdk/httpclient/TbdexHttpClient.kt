@@ -8,11 +8,11 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import tbdex.sdk.httpclient.models.CreateExchangeRequest
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpclient.models.Exchange
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
-import tbdex.sdk.httpclient.models.SendRfqRequest
 import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Message
@@ -97,7 +97,7 @@ object TbdexHttpClient {
   }
 
   /**
-   * Send message and include a replyTo URL for the PFI to send a callback to.
+   * Send RFQ message and include a replyTo URL for the PFI to send a callback to.
    *
    * @param message The message to send (is of type RFQ)
    * @param replyTo The callback URL for PFI to send messages to.
@@ -114,7 +114,7 @@ object TbdexHttpClient {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val url = "$pfiServiceEndpoint/exchanges/$exchangeId"
 
-    val body: RequestBody = Json.stringify(SendRfqRequest(message, replyTo))
+    val body: RequestBody = Json.stringify(CreateExchangeRequest(message, replyTo))
           .toRequestBody(jsonMediaType)
 
     val request = buildRequest(url, body)

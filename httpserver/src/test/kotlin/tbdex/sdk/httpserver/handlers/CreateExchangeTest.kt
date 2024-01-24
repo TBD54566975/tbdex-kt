@@ -11,8 +11,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
+import tbdex.sdk.httpclient.models.CreateExchangeRequest
 import tbdex.sdk.httpclient.models.ErrorResponse
-import tbdex.sdk.httpserver.models.CreateExchangeRequest
 import tbdex.sdk.protocol.serialization.Json
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
