@@ -16,6 +16,7 @@ import tbdex.sdk.httpclient.models.GetOfferingsFilter
 import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Message
+import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
@@ -85,7 +86,11 @@ object TbdexHttpClient {
     val kind = message.metadata.kind
 
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
-    val url = "$pfiServiceEndpoint/exchanges/$exchangeId/$kind"
+    val url: String = if (kind == MessageKind.rfq) {
+      "$pfiServiceEndpoint/exchanges/$exchangeId"
+    } else {
+      "$pfiServiceEndpoint/exchanges/$exchangeId/$kind"
+    }
 
     val body: RequestBody = Json.stringify(message).toRequestBody(jsonMediaType)
 
@@ -115,7 +120,7 @@ object TbdexHttpClient {
     val url = "$pfiServiceEndpoint/exchanges/$exchangeId"
 
     val body: RequestBody = Json.stringify(CreateExchangeRequest(message, replyTo))
-          .toRequestBody(jsonMediaType)
+      .toRequestBody(jsonMediaType)
 
     val request = buildRequest(url, body)
 
