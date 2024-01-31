@@ -1,7 +1,6 @@
 package tbdex.sdk.protocol
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SchemaValidatorsConfig
@@ -32,13 +31,15 @@ object Validator {
    * Initializes the validator by loading schemas for messages and resources.
    */
   init {
+    val loader = Thread.currentThread().contextClassLoader
+
     // Translate external URIs into internal resource URIs
     config.addUriTranslator { uri: URI ->
       val uriStr = uri.toString()
       val prefix = "https://tbdex.dev/"
       if (uriStr.startsWith(prefix)) {
         val resourceName = uriStr.substring(prefix.length)
-        val resourceUri = object {}.javaClass.getResource("/$resourceName")?.toURI()
+        val resourceUri = loader.getResource(resourceName)?.toURI()
         return@addUriTranslator resourceUri
       }
       return@addUriTranslator uri
@@ -46,7 +47,7 @@ object Validator {
 
     val factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7)
 
-    val definitionsStream = object {}.javaClass.getResourceAsStream("/definitions.json")
+    val definitionsStream = loader.getResourceAsStream("definitions.json")
     factory.getSchema(definitionsStream, config)
 
     val schemaNames = listOf("message" to "message.schema.json", "resource" to "resource.schema.json") +
@@ -55,7 +56,7 @@ object Validator {
 
     for (schemaName in schemaNames) {
       val (name, fileName) = schemaName
-      val schemaStream = object {}.javaClass.getResourceAsStream("/$fileName")
+      val schemaStream = loader.getResourceAsStream(fileName)
       schemaMap[name] = factory.getSchema(schemaStream, config)
     }
   }
