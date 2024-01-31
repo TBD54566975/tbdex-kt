@@ -3,7 +3,7 @@ package tbdex.sdk.httpserver.models
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import tbdex.sdk.httpclient.models.ErrorDetail
-import tbdex.sdk.protocol.models.MessageKind
+import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
 
 /**
@@ -22,7 +22,7 @@ typealias GetCallback = (ApplicationCall, Filter) -> Any
  * @param messageKind The kind of message being submitted (RFQ, order, close, etc.).
  * @param offering The offering associated with the submitted message.
  */
-typealias SubmitCallback = (ApplicationCall, MessageKind, Offering?) -> Unit
+typealias SubmitCallback = (ApplicationCall, Message, Offering?) -> Unit
 
 /**
  * Enum representing the kinds of messages that can be submitted.
