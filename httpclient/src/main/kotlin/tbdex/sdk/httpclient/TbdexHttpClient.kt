@@ -72,7 +72,7 @@ object TbdexHttpClient {
   }
 
   /**
-   * Sends a message to the PFI.
+   * Sends a message to the PFI. You can also use this message to create an exchange without a replyTo URL.
    *
    * @param message The message to send.
    *
