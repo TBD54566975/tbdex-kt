@@ -101,7 +101,7 @@ class E2ETest {
     println("ExchangeId for the rest of this exchange is ${rfq.metadata.exchangeId}")
 
     try {
-      client.sendMessage(rfq, "https://tbdex.io/callback")
+      client.createExchange(rfq, "https://tbdex.io/callback")
     } catch (e: TbdexResponseException) {
       throw AssertionError(
         "Error in sending RFQ. " +

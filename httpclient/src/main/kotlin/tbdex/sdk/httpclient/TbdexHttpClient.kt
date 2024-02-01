@@ -130,6 +130,16 @@ object TbdexHttpClient {
   }
 
   /**
+   * Aliased method for sendMessage(Rfq, String) to create an exchange by sending an RFQ with a replyTo URL.
+   *
+   * @param message The message to send (is of type RFQ)
+   * @param replyTo The callback URL for PFI to send messages to.
+   */
+  fun createExchange(message: Rfq, replyTo: String) {
+    sendMessage(message, replyTo)
+  }
+
+  /**
    * Fetches a specific exchange identified by its ID from the PFI.
    *
    * @param pfiDid The decentralized identifier of the PFI.
