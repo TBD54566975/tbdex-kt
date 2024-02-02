@@ -168,7 +168,8 @@ class TbdexHttpClient(timeout: Duration) {
    * @return A list of matching [Exchange].
    * @throws TbdexResponseException for request or response errors.
    */
-  fun getExchanges(pfiDid: String, requesterDid: Did, filter: GetExchangesFilter? = null, timeout: Duration? = null): List<Exchange> {
+  fun getExchanges(pfiDid: String, requesterDid: Did, filter: GetExchangesFilter? = null,
+                   timeout: Duration? = null): List<Exchange> {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/exchanges/"
     val requestToken = generateRequestToken(requesterDid)
