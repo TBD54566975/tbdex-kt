@@ -42,7 +42,7 @@ class TbdexHttpClient(timeout: Duration) {
    * @return A list of [Offering] matching the request.
    * @throws TbdexResponseException for request or response errors.
    */
-  fun getOfferings(pfiDid: String, filter: GetOfferingsFilter? = null): List<Offering> {
+  fun getOfferings(pfiDid: String, filter: GetOfferingsFilter? = null, timeout: Duration? = null): List<Offering> {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/offerings/"
 
@@ -57,7 +57,12 @@ class TbdexHttpClient(timeout: Duration) {
       .get()
       .build()
 
-    val response: Response = client.newCall(request).execute()
+    var c = client;
+    if(timeout != null) {
+      c = OkHttpClient().newBuilder().callTimeout(timeout).build();
+    }
+
+    val response: Response = c.newCall(request).execute()
     when {
       response.isSuccessful -> {
         val responseString = response.body?.string()
@@ -79,7 +84,7 @@ class TbdexHttpClient(timeout: Duration) {
    * @param message The [Message] object containing the message details to be sent.
    * @throws TbdexResponseException for request or response errors.
    */
-  fun sendMessage(message: Message) {
+  fun sendMessage(message: Message, timeout: Duration? = null) {
     Validator.validateMessage(message)
     message.verify()
 
@@ -100,7 +105,12 @@ class TbdexHttpClient(timeout: Duration) {
 
     println("attempting to send message to: ${request.url}")
 
-    val response: Response = client.newCall(request).execute()
+    var c = client;
+    if(timeout != null) {
+      c = OkHttpClient().newBuilder().callTimeout(timeout).build();
+    }
+
+    val response: Response = c.newCall(request).execute()
     if (!response.isSuccessful) {
       throw buildResponseException(response)
     }
@@ -115,7 +125,7 @@ class TbdexHttpClient(timeout: Duration) {
    * @return An [Exchange] containing the requested exchange.
    * @throws TbdexResponseException for request or response errors.
    */
-  fun getExchange(pfiDid: String, requesterDid: Did, exchangeId: String): Exchange {
+  fun getExchange(pfiDid: String, requesterDid: Did, exchangeId: String, timeout: Duration? = null): Exchange {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/exchanges/$exchangeId"
     val requestToken = generateRequestToken(requesterDid)
@@ -127,7 +137,12 @@ class TbdexHttpClient(timeout: Duration) {
       .get()
       .build()
 
-    val response: Response = client.newCall(request).execute()
+    var c = client;
+    if(timeout != null) {
+      c = OkHttpClient().newBuilder().callTimeout(timeout).build();
+    }
+
+    val response: Response = c.newCall(request).execute()
     println("attempting to get exchange: ${request.url}")
 
     when {
@@ -153,7 +168,7 @@ class TbdexHttpClient(timeout: Duration) {
    * @return A list of matching [Exchange].
    * @throws TbdexResponseException for request or response errors.
    */
-  fun getExchanges(pfiDid: String, requesterDid: Did, filter: GetExchangesFilter? = null): List<Exchange> {
+  fun getExchanges(pfiDid: String, requesterDid: Did, filter: GetExchangesFilter? = null, timeout: Duration? = null): List<Exchange> {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/exchanges/"
     val requestToken = generateRequestToken(requesterDid)
@@ -171,7 +186,12 @@ class TbdexHttpClient(timeout: Duration) {
 
     println("attempting to get exchanges: ${request.url}")
 
-    val response: Response = client.newCall(request).execute()
+    var c = client;
+    if(timeout != null) {
+      c = OkHttpClient().newBuilder().callTimeout(timeout).build();
+    }
+
+    val response: Response = c.newCall(request).execute()
     when {
       response.isSuccessful -> {
         val jsonNode = jsonMapper.readTree(response.body?.string())
