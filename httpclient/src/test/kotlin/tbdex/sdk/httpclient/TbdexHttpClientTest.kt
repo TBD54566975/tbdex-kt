@@ -56,7 +56,7 @@ class TbdexHttpClientTest {
     val mockResponseString = Json.jsonMapper.writeValueAsString(mapOf("data" to mockOfferings))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
 
-    val response = TbdexHttpClient.getOfferings(pfiDid.uri, null)
+    val response = TbdexHttpClient().getOfferings(pfiDid.uri, null)
 
     assertEquals(1, response.size)
   }
@@ -80,7 +80,7 @@ class TbdexHttpClientTest {
     val mockResponseString = Json.jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
 
-    assertThrows<TbdexResponseException> { TbdexHttpClient.getOfferings(pfiDid.uri, null) }
+    assertThrows<TbdexResponseException> { TbdexHttpClient().getOfferings(pfiDid.uri, null) }
   }
 
   @Test
@@ -89,7 +89,7 @@ class TbdexHttpClientTest {
     server.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_ACCEPTED))
 
     val rfq = TestData.getRfq(pfiDid.uri, TypeId.generate("offering"))
-    assertDoesNotThrow { TbdexHttpClient.sendMessage(rfq) }
+    assertDoesNotThrow { TbdexHttpClient().sendMessage(rfq) }
   }
 
   @Test
@@ -112,7 +112,7 @@ class TbdexHttpClientTest {
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
 
     val rfq = TestData.getRfq(pfiDid.uri, TypeId.generate("offering"))
-    val exception = assertThrows<TbdexResponseException> { TbdexHttpClient.sendMessage(rfq) }
+    val exception = assertThrows<TbdexResponseException> { TbdexHttpClient().sendMessage(rfq) }
     assertEquals(1, exception.errors?.size)
     assertEquals("400", exception.errors?.get(0)?.status)
   }
@@ -124,7 +124,7 @@ class TbdexHttpClientTest {
     val mockResponseString = Json.jsonMapper.writeValueAsString(mapOf("data" to exchange))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
 
-    val response = TbdexHttpClient.getExchange(pfiDid.uri, alice, "exchange_1234")
+    val response = TbdexHttpClient().getExchange(pfiDid.uri, alice, "exchange_1234")
 
     assertEquals(offeringId, (response[0] as Rfq).data.offeringId)
   }
@@ -149,7 +149,7 @@ class TbdexHttpClientTest {
     val mockResponseString = Json.jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
 
-    assertThrows<TbdexResponseException> { TbdexHttpClient.getExchange(pfiDid.uri, alice, "exchange_1234") }
+    assertThrows<TbdexResponseException> { TbdexHttpClient().getExchange(pfiDid.uri, alice, "exchange_1234") }
   }
 
   @Test
@@ -159,7 +159,7 @@ class TbdexHttpClientTest {
     val mockResponseString = Json.jsonMapper.writeValueAsString(mapOf("data" to exchanges))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
 
-    val response = TbdexHttpClient.getExchanges(pfiDid.uri, alice)
+    val response = TbdexHttpClient().getExchanges(pfiDid.uri, alice)
 
     assertEquals(offeringId, (response[0][0] as Rfq).data.offeringId)
   }
@@ -196,7 +196,7 @@ class TbdexHttpClientTest {
     val mockResponseString = Json.jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
 
-    assertThrows<TbdexResponseException> { TbdexHttpClient.getExchanges(pfiDid.uri, alice) }
+    assertThrows<TbdexResponseException> { TbdexHttpClient().getExchanges(pfiDid.uri, alice) }
   }
 
   @AfterEach
