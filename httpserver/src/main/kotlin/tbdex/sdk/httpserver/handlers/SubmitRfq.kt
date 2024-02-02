@@ -73,7 +73,7 @@ suspend fun submitRfq(
   }
 
   try {
-    callback.invoke(call, MessageKind.rfq, offering)
+    callback.invoke(call, message, offering)
   } catch (e: CallbackError) {
     call.respond(e.statusCode, ErrorResponse(e.details))
     return

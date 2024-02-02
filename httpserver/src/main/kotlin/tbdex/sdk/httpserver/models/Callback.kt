@@ -3,26 +3,26 @@ package tbdex.sdk.httpserver.models
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import tbdex.sdk.httpclient.models.ErrorDetail
-import tbdex.sdk.protocol.models.MessageKind
+import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
 
 /**
  * Represents a callback function for handling GET requests with specified filters.
  *
- * @param call The Ktor application call object representing the incoming HTTP request.
- * @param filter The filter used in the GET request.
+ * @param ApplicationCall The Ktor application call object representing the incoming HTTP request.
+ * @param Filter The filter used in the GET request.
  * @return Any result returned from the callback.
  */
-typealias GetCallback = (ApplicationCall, Filter) -> Any
+typealias GetCallback = suspend (ApplicationCall, Filter) -> Any
 
 /**
- * Represents a callback function for handling submit requests with specified message kind and offering.
+ * Represents a callback function for handling submit requests with received message and associated offering.
  *
- * @param call The Ktor application call object representing the incoming HTTP request.
- * @param messageKind The kind of message being submitted (RFQ, order, close, etc.).
- * @param offering The offering associated with the submitted message.
+ * @param ApplicationCall The Ktor application call object representing the incoming HTTP request.
+ * @param Message the message received in the request to be processed further by the callback function
+ * @param Offering The offering associated with the submitted message.
  */
-typealias SubmitCallback = (ApplicationCall, MessageKind, Offering?) -> Unit
+typealias SubmitCallback = suspend (ApplicationCall, Message, Offering?) -> Unit
 
 /**
  * Enum representing the kinds of messages that can be submitted.
