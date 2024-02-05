@@ -32,6 +32,7 @@ dependencies {
   testImplementation(kotlin("test"))
   testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
   testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
+  testImplementation("io.mockk:mockk:1.13.9")
 
 }
 
