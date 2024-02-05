@@ -12,7 +12,6 @@ import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.OrderStatusData
 import tbdex.sdk.protocol.models.PaymentInstruction
-import tbdex.sdk.protocol.models.PaymentInstructions
 import tbdex.sdk.protocol.models.PaymentMethod
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.QuoteData
@@ -116,18 +115,14 @@ object TestData {
     ALICE_DID.uri, PFI_DID.uri, TypeId.generate(MessageKind.rfq.name),
     QuoteData(
       expiresAt = OffsetDateTime.now().plusDays(1),
-      payin = QuoteDetails("AUD", "10.00", "0.01"),
-      payout = QuoteDetails("BTC", "0.12", "0.02"),
-      paymentInstructions = PaymentInstructions(
-        payin = PaymentInstruction(
-          link = "https://block.xyz",
-          instruction = "payin instruction"
-        ),
-        payout = PaymentInstruction(
-          link = "https://block.xyz",
-          instruction = "payout instruction"
-        )
-      )
+      payin = QuoteDetails("AUD", "10.00", "0.01", PaymentInstruction(
+        link = "https://block.xyz",
+        instruction = "payin instruction"
+      )),
+      payout = QuoteDetails("BTC", "0.12", "0.02", PaymentInstruction(
+        link = "https://block.xyz",
+        instruction = "payout instruction"
+      )),
     )
   )
 

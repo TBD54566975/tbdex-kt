@@ -18,7 +18,7 @@ object TestVectors {
       "parse-rfq.json"
     )
     for (vectorFile in vectorFiles) {
-      val vectorJson = loader.getResourceAsStream("test-vectors/$vectorFile")?.bufferedReader()?.readText()!!
+      val vectorJson = loader.getResourceAsStream(vectorFile)?.bufferedReader()?.readText()!!
       vectors[vectorFile] = Json.jsonMapper.readTree(vectorJson)
     }
     return vectors

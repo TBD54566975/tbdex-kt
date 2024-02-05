@@ -33,15 +33,20 @@ dependencies {
   testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
 }
 
-tasks {
-  register("syncSchemas", Sync::class) {
-    from("../tbdex/hosted/json-schemas")
-    into("./src/main/resources")
+sourceSets {
+  val test by getting {
+    val resourceDirs = listOf(
+      "../tbdex/hosted/test-vectors/protocol/vectors",
+    )
+    resources.setSrcDirs(resourceDirs)
   }
 
-  register("syncTestVectors", Sync::class) {
-    from("../tbdex/hosted/test-vectors/protocol/vectors")
-    into("./src/test/resources/test-vectors")
+  main {
+    val resourceDirs = listOf(
+      "../tbdex/hosted/json-schemas"
+    )
+
+    resources.setSrcDirs(resourceDirs)
   }
 }
 

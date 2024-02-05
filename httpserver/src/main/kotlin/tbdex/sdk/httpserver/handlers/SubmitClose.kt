@@ -66,7 +66,7 @@ suspend fun submitClose(
   }
 
   try {
-    callback.invoke(call, MessageKind.close, null)
+    callback.invoke(call, message, null)
   } catch (e: CallbackError) {
     call.respond(e.statusCode, ErrorResponse(e.details))
     return

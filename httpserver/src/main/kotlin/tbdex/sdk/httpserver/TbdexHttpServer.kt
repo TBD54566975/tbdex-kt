@@ -54,6 +54,7 @@ fun main() {
  */
 class TbdexHttpServerConfig(
   val port: Int,
+  val pfiDid: String? = null,
   val offeringsApi: OfferingsApi? = null,
   val exchangesApi: ExchangesApi? = null
 )
@@ -71,6 +72,7 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
     configure(this)
   }
 
+  private val pfiDid = config.pfiDid ?: "did:ex:pfi"
   internal val offeringsApi = config.offeringsApi ?: FakeOfferingsApi()
   internal val exchangesApi = config.exchangesApi ?: FakeExchangesApi()
 
@@ -124,7 +126,11 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
         }
 
         get {
-          getExchanges(call, exchangesApi, getCallbacks.getOrDefault("exchanges", null))
+          getExchanges(
+            call,
+            exchangesApi,
+            getCallbacks.getOrDefault("exchanges", null),
+            pfiDid)
         }
       }
 
