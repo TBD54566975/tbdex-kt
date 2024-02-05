@@ -15,7 +15,7 @@ sealed interface MessageData : Data
  */
 class RfqData(
   val offeringId: TypeId,
-  val payinSubunits: String,
+  val payinAmount: String,
   val payinMethod: SelectedPaymentMethod,
   val payoutMethod: SelectedPaymentMethod,
   val claims: List<String>
@@ -37,7 +37,6 @@ class QuoteData(
   val expiresAt: OffsetDateTime,
   val payin: QuoteDetails,
   val payout: QuoteDetails,
-  val paymentInstructions: PaymentInstructions? = null
 ) : MessageData
 
 /**
@@ -45,16 +44,9 @@ class QuoteData(
  */
 class QuoteDetails(
   val currencyCode: String,
-  val amountSubunits: String,
-  val feeSubunits: String? = null
-)
-
-/**
- * A data class representing payment instructions for payin/payout.
- */
-class PaymentInstructions(
-  val payin: PaymentInstruction?,
-  val payout: PaymentInstruction?
+  val amount: String,
+  val fee: String? = null,
+  val paymentInstruction: PaymentInstruction? = null
 )
 
 /**

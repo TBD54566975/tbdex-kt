@@ -12,7 +12,6 @@ import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.OrderStatusData
 import tbdex.sdk.protocol.models.PaymentInstruction
-import tbdex.sdk.protocol.models.PaymentInstructions
 import tbdex.sdk.protocol.models.PaymentMethod
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.QuoteData
@@ -22,15 +21,15 @@ import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.models.RfqData
 import tbdex.sdk.protocol.models.SelectedPaymentMethod
 import tbdex.sdk.protocol.serialization.Json
-import web5.sdk.credentials.ConstraintsV2
-import web5.sdk.credentials.FieldV2
-import web5.sdk.credentials.InputDescriptorV2
-import web5.sdk.credentials.PresentationDefinitionV2
 import web5.sdk.credentials.VcDataModel
 import web5.sdk.credentials.VerifiableCredential
+import web5.sdk.credentials.model.ConstraintsV2
+import web5.sdk.credentials.model.FieldV2
+import web5.sdk.credentials.model.InputDescriptorV2
+import web5.sdk.credentials.model.PresentationDefinitionV2
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.Did
-import web5.sdk.dids.DidKey
+import web5.sdk.dids.methods.key.DidKey
 import java.net.URI
 import java.time.OffsetDateTime
 import java.util.Date
@@ -74,7 +73,7 @@ object TestData {
       OfferingData(
         description = "A sample offering",
         payoutUnitsPerPayinUnit = "1",
-        payinCurrency = CurrencyDetails("AUD", "1", "10000"),
+        payinCurrency = CurrencyDetails("AUD", "0.01", "100.00"),
         payoutCurrency = CurrencyDetails("USDC"),
         payinMethods = listOf(
           PaymentMethod(
@@ -100,7 +99,7 @@ object TestData {
     from = ALICE_DID.uri,
     rfqData = RfqData(
       offeringId = offeringId,
-      payinSubunits = "1000",
+      payinAmount = "10.00",
       payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to "123456")),
       payoutMethod = SelectedPaymentMethod(
         "MOMO", mapOf(
@@ -116,18 +115,14 @@ object TestData {
     ALICE_DID.uri, PFI_DID.uri, TypeId.generate(MessageKind.rfq.name),
     QuoteData(
       expiresAt = OffsetDateTime.now().plusDays(1),
-      payin = QuoteDetails("AUD", "1000", "1"),
-      payout = QuoteDetails("BTC", "12", "2"),
-      paymentInstructions = PaymentInstructions(
-        payin = PaymentInstruction(
-          link = "https://block.xyz",
-          instruction = "payin instruction"
-        ),
-        payout = PaymentInstruction(
-          link = "https://block.xyz",
-          instruction = "payout instruction"
-        )
-      )
+      payin = QuoteDetails("AUD", "10.00", "0.01", PaymentInstruction(
+        link = "https://block.xyz",
+        instruction = "payin instruction"
+      )),
+      payout = QuoteDetails("BTC", "0.12", "0.02", PaymentInstruction(
+        link = "https://block.xyz",
+        instruction = "payout instruction"
+      )),
     )
   )
 

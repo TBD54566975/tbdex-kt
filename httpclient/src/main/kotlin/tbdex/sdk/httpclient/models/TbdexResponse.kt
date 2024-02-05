@@ -15,6 +15,15 @@ class TbdexResponseException(
   val errors: List<ErrorDetail>?
 ) : Exception(message, cause)
 
+
+/**
+ * Error response
+ *
+ * @property errors list of errors
+ * @constructor
+ */
+class ErrorResponse(val errors: List<ErrorDetail>)
+
 /**
  * Error detail.
  *
@@ -27,13 +36,13 @@ class TbdexResponseException(
  * @property meta Additional error metadata.
  */
 class ErrorDetail(
-  val id: String?,
-  val status: String?,
-  val code: String?,
-  val title: String?,
+  val id: String? = null,
+  val status: String? = null,
+  val code: String? = null,
+  val title: String? = null,
   val detail: String,
-  val source: Source?,
-  val meta: Map<String, Any?>?
+  val source: Source? = null,
+  val meta: Map<String, Any?>? = null
 )
 
 /**

@@ -14,6 +14,7 @@ import tbdex.sdk.httpclient.models.Exchange
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
 import tbdex.sdk.httpclient.models.TbdexResponseException
+import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.serialization.Json
@@ -86,6 +87,9 @@ object TbdexHttpClient {
    * @throws TbdexResponseException for request or response errors.
    */
   fun sendMessage(message: Message) {
+    Validator.validateMessage(message)
+    message.verify()
+
     val pfiDid = message.metadata.to
     val exchangeId = message.metadata.exchangeId
     val kind = message.metadata.kind
@@ -121,7 +125,7 @@ object TbdexHttpClient {
   fun getExchange(pfiDid: String, requesterDid: Did, exchangeId: String): Exchange {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/exchanges/$exchangeId"
-    val requestToken = generateRequestToken(requesterDid)
+    val requestToken = RequestToken.generate(requesterDid, pfiDid)
 
     val request = Request.Builder()
       .url(baseUrl)
@@ -159,7 +163,7 @@ object TbdexHttpClient {
   fun getExchanges(pfiDid: String, requesterDid: Did, filter: GetExchangesFilter? = null): List<Exchange> {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/exchanges/"
-    val requestToken = generateRequestToken(requesterDid)
+    val requestToken = RequestToken.generate(requesterDid, pfiDid)
 
     // compose query param
     val httpUrlBuilder = baseUrl.toHttpUrl().newBuilder()

@@ -1,6 +1,7 @@
 package tbdex.sdk.protocol.models
 
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.OrderStatus.Companion.create
 import java.time.OffsetDateTime
@@ -20,6 +21,8 @@ class OrderStatus private constructor(
   override val data: OrderStatusData,
   override var signature: String? = null
 ) : Message() {
+  override val validNext: Set<MessageKind> = setOf(MessageKind.orderstatus, MessageKind.close)
+
   companion object {
     /**
      * Creates a new `OrderStatus` message, autopopulating the id, creation time, and message kind.
@@ -39,6 +42,8 @@ class OrderStatus private constructor(
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now()
       )
+      Validator.validateData(orderStatusData, "orderstatus")
+
       return OrderStatus(metadata, orderStatusData)
     }
   }

@@ -14,8 +14,10 @@ import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
 import web5.sdk.crypto.InMemoryKeyManager
-import web5.sdk.dids.DidIonManager
-import web5.sdk.dids.DidKey
+import web5.sdk.dids.methods.ion.CreateDidIonOptions
+import web5.sdk.dids.methods.ion.DidIon
+import web5.sdk.dids.methods.ion.models.Service
+import web5.sdk.dids.methods.key.DidKey
 import java.net.HttpURLConnection
 import kotlin.test.Test
 
@@ -26,17 +28,19 @@ import kotlin.test.Test
  */
 class TbdexHttpClientTest {
   private lateinit var server: MockWebServer
-  private val pfi = DidIonManager.create(InMemoryKeyManager())
   private val alice = DidKey.create(InMemoryKeyManager())
 
-  @Suppress("MaximumLineLength")
-  private val ionDid =
-    "did:ion:EiBwNQC_lRp1cAOZJC3XmtCXzSIL_rr0JOVYG82ORwVE_g:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoiaTZjbnN1SDRKVEJNWEtic2VnMjhIaTN3NFhwMTNFODVVd25TVzNaZ1lrOCJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHA6Ly9sb2NhbGhvc3Q6OTAwMCIsInR5cGUiOiJQRkkifV19fV0sInVwZGF0ZUNvbW1pdG1lbnQiOiJFaUNSNlB0MGY3SkRORVdqaFlsazBOdWtJSVFOMGVyc3ZfdHJLeERKdTlmZHZRIn0sInN1ZmZpeERhdGEiOnsiZGVsdGFIYXNoIjoiRWlBLTEzYUNoMmRrcW9oOWIxWDZudnppSXI2VS1JYUpJTFd3UU5sZjJNczBkZyIsInJlY292ZXJ5Q29tbWl0bWVudCI6IkVpQlhoX2dsN1pCd2JUOGNHOU5LT0FSV0xSUzZWUjRRVm44OWEyWldtdzhHOXcifX0"
+  private val pfiDid = DidIon.create(
+    InMemoryKeyManager(),
+    CreateDidIonOptions(
+      servicesToAdd = listOf(Service("123", "PFI", "http://localhost:9000"))
+    )
+  )
 
   @BeforeEach
   fun setup() {
     server = MockWebServer()
-    server.start(9000) // doing this because ^ iondid resolves to localhost:9000
+    server.start(9000) // doing this because ^ pfiDid resolves to http://localhost:9000
   }
 
   @AfterEach
@@ -52,7 +56,7 @@ class TbdexHttpClientTest {
     val mockResponseString = Json.jsonMapper.writeValueAsString(mapOf("data" to mockOfferings))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
 
-    val response = TbdexHttpClient.getOfferings(ionDid, null)
+    val response = TbdexHttpClient.getOfferings(pfiDid.uri, null)
 
     assertEquals(1, response.size)
   }
@@ -76,7 +80,7 @@ class TbdexHttpClientTest {
     val mockResponseString = Json.jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
 
-    assertThrows<TbdexResponseException> { TbdexHttpClient.getOfferings(ionDid, null) }
+    assertThrows<TbdexResponseException> { TbdexHttpClient.getOfferings(pfiDid.uri, null) }
   }
 
   @Test
@@ -84,7 +88,7 @@ class TbdexHttpClientTest {
 
     server.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_ACCEPTED))
 
-    val rfq = TestData.getRfq(ionDid, TypeId.generate("offering"))
+    val rfq = TestData.getRfq(pfiDid.uri, TypeId.generate("offering"))
     assertDoesNotThrow { TbdexHttpClient.sendMessage(rfq) }
   }
 
@@ -107,7 +111,7 @@ class TbdexHttpClientTest {
     val mockResponseString = Json.jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
 
-    val rfq = TestData.getRfq(ionDid, TypeId.generate("offering"))
+    val rfq = TestData.getRfq(pfiDid.uri, TypeId.generate("offering"))
     val exception = assertThrows<TbdexResponseException> { TbdexHttpClient.sendMessage(rfq) }
     assertEquals(1, exception.errors?.size)
     assertEquals("400", exception.errors?.get(0)?.status)
@@ -120,7 +124,7 @@ class TbdexHttpClientTest {
     val mockResponseString = Json.jsonMapper.writeValueAsString(mapOf("data" to exchange))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
 
-    val response = TbdexHttpClient.getExchange(ionDid, alice, "exchange_1234")
+    val response = TbdexHttpClient.getExchange(pfiDid.uri, alice, "exchange_1234")
 
     assertEquals(offeringId, (response[0] as Rfq).data.offeringId)
   }
@@ -145,7 +149,7 @@ class TbdexHttpClientTest {
     val mockResponseString = Json.jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
 
-    assertThrows<TbdexResponseException> { TbdexHttpClient.getExchange(ionDid, alice, "exchange_1234") }
+    assertThrows<TbdexResponseException> { TbdexHttpClient.getExchange(pfiDid.uri, alice, "exchange_1234") }
   }
 
   @Test
@@ -155,7 +159,7 @@ class TbdexHttpClientTest {
     val mockResponseString = Json.jsonMapper.writeValueAsString(mapOf("data" to exchanges))
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
 
-    val response = TbdexHttpClient.getExchanges(ionDid, alice)
+    val response = TbdexHttpClient.getExchanges(pfiDid.uri, alice)
 
     assertEquals(offeringId, (response[0][0] as Rfq).data.offeringId)
   }
@@ -167,7 +171,7 @@ class TbdexHttpClientTest {
   }
 
   private fun rfq(offeringId: TypeId): Rfq {
-    val rfq = TestData.getRfq(ionDid, offeringId)
+    val rfq = TestData.getRfq(pfiDid.uri, offeringId)
     rfq.sign(TestData.ALICE_DID)
     return rfq
   }
@@ -192,7 +196,7 @@ class TbdexHttpClientTest {
     val mockResponseString = Json.jsonMapper.writeValueAsString(errorDetails)
     server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
 
-    assertThrows<TbdexResponseException> { TbdexHttpClient.getExchanges(ionDid, alice) }
+    assertThrows<TbdexResponseException> { TbdexHttpClient.getExchanges(pfiDid.uri, alice) }
   }
 
   @AfterEach

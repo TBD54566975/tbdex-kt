@@ -20,14 +20,14 @@ class QuoteTest {
       exchangeId = TypeId.generate(MessageKind.rfq.name),
       quoteData = QuoteData(
         expiresAt = OffsetDateTime.now().plusDays(1),
-        payin = QuoteDetails("AUD", "1000", "0"),
-        payout = QuoteDetails("BTC", "12", "0")
+        payin = QuoteDetails("AUD", "10.00", "0.0"),
+        payout = QuoteDetails("BTC", "0.12", "0.0")
       )
     )
 
     assertAll {
       assertThat(quote.metadata.id.prefix).isEqualTo("quote")
-      assertThat(quote.data.payin.amountSubunits).isEqualTo("1000")
+      assertThat(quote.data.payin.amount).isEqualTo("10.00")
     }
   }
 

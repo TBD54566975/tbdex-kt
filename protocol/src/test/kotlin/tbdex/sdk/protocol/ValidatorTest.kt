@@ -69,43 +69,48 @@ class ValidatorTest {
 
   @Test
   fun validateFailsWithInvalidRfqData() {
-    val stringRfqWithoutPayinSubunits = """
+    val stringRfqWithoutPayinAmount = """
       {
         "metadata": {
+          "from": "did:key:z6MkpkvGVrxxTVbo56mvbSiF6iCKNev56wqoMcHHowqUqvKQ",
+          "to": "did:ex:pfi",
           "kind": "rfq",
-          "to": "did:ion:EiBFU3435y86IIthWg9OSMCpx-cjtBV0RTGHGPjs6TxQag:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoiOU5xN3BObG0xV1BFa2lwcDRpSXNsYTc5RVctNnc5b1NLWWhVZWVuX3lwcyJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHBzOi8vcGZpLnllbGxvd2NhcmQuZW5naW5lZXJpbmciLCJ0eXBlIjoiUEZJIn1dfX1dLCJ1cGRhdGVDb21taXRtZW50IjoiRWlBQ2cxRWFIaXFjZUQ1N1VBcXZ3bF9uaHplWjZ6MTBacVF0UWV2d0xDelB5dyJ9LCJzdWZmaXhEYXRhIjp7ImRlbHRhSGFzaCI6IkVpQ0tYTDZDRS1hZlNfUUdKbmxNaHdPV0dvNDR0VEtHZTlZQ041QjN1bzZ1M3ciLCJyZWNvdmVyeUNvbW1pdG1lbnQiOiJFaUNJSkFBME11a21Pb1Uxc3JLSjdiOTNDZGVJSy0zMk5GVnl6ZVRzektzYzNRIn19",
-          "from": "did:ion:EiBFU3435y86IIthWg9OSMCpx-cjtBV0RTGHGPjs6TxQag:eyJkZWx0YSI6eyJwYXRjaGVzIjpbeyJhY3Rpb24iOiJyZXBsYWNlIiwiZG9jdW1lbnQiOnsicHVibGljS2V5cyI6W3siaWQiOiJkd24tc2lnIiwicHVibGljS2V5SndrIjp7ImNydiI6IkVkMjU1MTkiLCJrdHkiOiJPS1AiLCJ4IjoiOU5xN3BObG0xV1BFa2lwcDRpSXNsYTc5RVctNnc5b1NLWWhVZWVuX3lwcyJ9LCJwdXJwb3NlcyI6WyJhdXRoZW50aWNhdGlvbiJdLCJ0eXBlIjoiSnNvbldlYktleTIwMjAifV0sInNlcnZpY2VzIjpbeyJpZCI6InBmaSIsInNlcnZpY2VFbmRwb2ludCI6Imh0dHBzOi8vcGZpLnllbGxvd2NhcmQuZW5naW5lZXJpbmciLCJ0eXBlIjoiUEZJIn1dfX1dLCJ1cGRhdGVDb21taXRtZW50IjoiRWlBQ2cxRWFIaXFjZUQ1N1VBcXZ3bF9uaHplWjZ6MTBacVF0UWV2d0xDelB5dyJ9LCJzdWZmaXhEYXRhIjp7ImRlbHRhSGFzaCI6IkVpQ0tYTDZDRS1hZlNfUUdKbmxNaHdPV0dvNDR0VEtHZTlZQ041QjN1bzZ1M3ciLCJyZWNvdmVyeUNvbW1pdG1lbnQiOiJFaUNJSkFBME11a21Pb1Uxc3JLSjdiOTNDZGVJSy0zMk5GVnl6ZVRzektzYzNRIn19",
-          "id": "rfq_7zzzzzzypzfwx8006f7800086j",
-          "exchangeId": "rfq_7zzzzzzypzfwx8006f7800086j",
-          "createdAt": "2023-10-11T22:22:00.904Z"
+          "id": "rfq_01hkx53kgafbmrg2xp87n5htfb",
+          "exchangeId": "rfq_01hkx53kgafbmrg2xp87n5htfb",
+          "createdAt": "2024-01-11T20:58:34.378Z"
         },
         "data": {
-          "offeringId": "offering_01hcgdawywedyr004kfm001sme",
+          "offeringId": "abcd123",
           "payinMethod": {
-            "kind": "BTC_ADDRESS",
+            "kind": "DEBIT_CARD",
             "paymentDetails": {
-              "address": 123456
+              "cardNumber": "1234567890123456",
+              "expiryDate": "12/22",
+              "cardHolderName": "Ephraim Bartholomew Winthrop",
+              "cvv": "123"
             }
           },
           "payoutMethod": {
-            "kind": "MOMO",
+            "kind": "BTC_ADDRESS",
             "paymentDetails": {
-              "phone_number": 123456
+              "btcAddress": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
             }
           },
-          "claims": []
+          "claims": [
+            ""
+          ]
         },
         "signature": "blah"
       }
     """.trimIndent()
 
-    val jsonRfq = Json.jsonMapper.readTree(stringRfqWithoutPayinSubunits)
+    val jsonRfq = Json.jsonMapper.readTree(stringRfqWithoutPayinAmount)
     val exception = assertFailsWith<ValidatorException> {
       Validator.validate(jsonRfq, "message")
       Validator.validate(jsonRfq.get("data"), "rfq")
     }
 
     assertEquals(1, exception.errors.size)
-    assertContains(exception.errors, "$.payinSubunits: is missing but it is required")
+    assertContains(exception.errors, "$.payinAmount: is missing but it is required")
   }
 }

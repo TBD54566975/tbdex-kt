@@ -1,6 +1,7 @@
 package tbdex.sdk.protocol.models
 
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
 import java.time.OffsetDateTime
 
@@ -20,6 +21,8 @@ class Close private constructor(
   override val data: CloseData,
   override var signature: String? = null
 ) : Message() {
+  override val validNext: Set<MessageKind> = emptySet()
+
   companion object {
     /**
      * Creates a new `Close` message, autopopulating the id, creation time, and message kind.
@@ -39,6 +42,7 @@ class Close private constructor(
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now()
       )
+      Validator.validateData(closeData, "close")
       return Close(metadata, closeData)
     }
   }

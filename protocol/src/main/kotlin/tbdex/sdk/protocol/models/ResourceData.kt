@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.networknt.schema.JsonSchema
 import com.networknt.schema.JsonSchemaFactory
 import com.networknt.schema.SpecVersion
-import web5.sdk.credentials.PresentationDefinitionV2
+import web5.sdk.credentials.model.PresentationDefinitionV2
 
 /**
  * An interface that represents the data content of any tbDEX object.
@@ -15,7 +15,7 @@ sealed interface Data
 /**
  * An interface that represents the contents of a [Resource].
  */
-sealed interface ResourceData: Data
+sealed interface ResourceData : Data
 
 /**
  * A data class implementing [ResourceData], which represents the contents of an [Offering].
@@ -27,7 +27,7 @@ class OfferingData(
   val payinCurrency: CurrencyDetails,
   val payinMethods: List<PaymentMethod>,
   val payoutMethods: List<PaymentMethod>,
-  val requiredClaims: PresentationDefinitionV2
+  val requiredClaims: PresentationDefinitionV2?
 ) : ResourceData
 
 /**
@@ -35,8 +35,8 @@ class OfferingData(
  */
 class CurrencyDetails(
   val currencyCode: String,
-  val minSubunits: String? = null,
-  val maxSubunits: String? = null
+  val minAmount: String? = null,
+  val maxAmount: String? = null
 )
 
 /**
@@ -45,7 +45,7 @@ class CurrencyDetails(
 class PaymentMethod(
   val kind: String,
   val requiredPaymentDetails: JsonNode? = null,
-  val feeSubunits: String? = null
+  val fee: String? = null
 ) {
   /**
    * Parse the contents of [requiredPaymentDetails] into a [JsonSchema] that can do validation.

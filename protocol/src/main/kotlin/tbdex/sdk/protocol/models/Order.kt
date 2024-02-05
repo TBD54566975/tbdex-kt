@@ -1,6 +1,7 @@
 package tbdex.sdk.protocol.models
 
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Order.Companion.create
 import java.time.OffsetDateTime
@@ -20,6 +21,8 @@ class Order private constructor(
   override val data: OrderData,
   override var signature: String? = null
 ) : Message() {
+  override val validNext: Set<MessageKind> = setOf(MessageKind.orderstatus, MessageKind.close)
+
   companion object {
     /**
      * Creates a new `Order` message, autopopulating the id, creation time, and message kind.

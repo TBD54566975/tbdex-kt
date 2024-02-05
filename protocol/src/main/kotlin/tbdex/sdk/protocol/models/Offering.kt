@@ -1,6 +1,7 @@
 package tbdex.sdk.protocol.models
 
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Offering.Companion.create
 import tbdex.sdk.protocol.models.Order.Companion.create
@@ -47,6 +48,7 @@ class Offering private constructor(
         createdAt = now,
         updatedAt = now
       )
+      Validator.validateData(data, "offering")
 
       return Offering(metadata, data)
     }

@@ -1,6 +1,6 @@
 # tbdex-kt
 
-[![License](https://img.shields.io/github/license/TBD54566975/tbdex-kt)](https://github.com/TBD54566975/tbdex-kt/blob/main/LICENSE) [![CI](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yaml/badge.svg)](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yaml) [![](https://jitpack.io/v/TBD54566975/tbdex-kt.svg)](https://jitpack.io/#TBD54566975/tbdex-kt) [![Coverage](https://img.shields.io/codecov/c/gh/tbd54566975/tbdex-kt/main?logo=codecov&logoColor=FFFFFF&style=flat-square&token=YI87CKF1LI)](https://codecov.io/github/TBD54566975/tbdex-kt)
+[![License](https://img.shields.io/github/license/TBD54566975/tbdex-kt)](https://github.com/TBD54566975/tbdex-kt/blob/main/LICENSE) [![CI](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yaml/badge.svg)](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yaml) [![](https://jitpack.io/v/TBD54566975/tbdex-kt.svg)](https://jitpack.io/#TBD54566975/tbdex-kt) [![Coverage](https://img.shields.io/codecov/c/gh/tbd54566975/tbdex-kt/main?logo=codecov&logoColor=FFFFFF&style=flat-square&token=YI87CKF1LI)](https://codecov.io/github/TBD54566975/tbdex-kt) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/TBD54566975/tbdex-kt/badge)](https://securityscorecards.dev/viewer/?uri=github.com/TBD54566975/tbdex-kt)
 
 This repo contains 2 jvm packages:
 
@@ -31,7 +31,7 @@ dependencies {
 
 ## JSON Schemas
 
-the [tbdex]() repo acts as the source of truth for all json schemas. For this reason, The `tbdex` repo is a git
+the [tbdex]() repo acts as the source of truth for all json schemas and test vectors. For this reason, the `tbdex` repo is a git
 submodule
 of this repo. By default, `git clone` does not actually check out the submodule's files. Using `--recurse-submodules`
 option when cloning automatically initializes, fetches, and does a checkout of the appropriate commit for the submodule.
@@ -41,7 +41,7 @@ If you've already cloned the repo without `--recurse-submodules`, you can do the
 git submodule update --init
 ```
 
-copying the schemas into the procotol package's `resources` directory can be done by running `./gradlew syncSchemas`
+copying the schemas and test vectors into the protocol package's `resources` directory can be done by running `./gradlew syncSchemas` and `./gradlew syncTestVectors` respectively.
 
 # Other Docs
 
