@@ -25,7 +25,7 @@ application {
 
 dependencies {
   api("de.fxlae:typeid-java-jdk8:0.2.0")
-  api("xyz.block:web5:0.0.9-delta")
+  api("xyz.block:web5:0.10.0")
 
   implementation(project(":protocol"))
   implementation(project(":httpclient"))

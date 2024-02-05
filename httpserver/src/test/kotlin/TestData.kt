@@ -21,7 +21,7 @@ object TestData {
   val aliceDid = DidDht.create(InMemoryKeyManager())
   val pfiDid = DidDht.create(InMemoryKeyManager())
 
-  fun createRfq(offering: Offering? = null): Rfq {
+  fun createRfq(offering: Offering? = null, claims: List<String>? = emptyList()): Rfq {
     return Rfq.create(
       to = pfiDid.uri,
       from = aliceDid.uri,
@@ -36,7 +36,7 @@ object TestData {
           kind = offering?.data?.payoutMethods?.first()?.kind ?: "BTC",
           paymentDetails = mapOf("foo" to "bar")
         ),
-        claims = listOf("foo")
+        claims = claims ?: emptyList()
       )
     )
   }
