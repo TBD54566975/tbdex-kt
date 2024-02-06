@@ -1,15 +1,6 @@
 name: Publish Tests Report
 
 on:
-  workflow_dispatch:
-    # allow to input a custom run_id
-    inputs:
-      run_id:
-        description: "The run_id of the workflow run to download artifacts from"
-        required: true
-  pull_request: # todo: remove
-    branches:
-      - "*"
   workflow_run:
     workflows: ["tbdex SDK Kotlin CI"]
     types:
