@@ -66,11 +66,11 @@ object CryptoUtils {
     }
 
     val didResolutionResult = DidResolvers.resolve(parsedDidUrl.did.didString)
-    if (didResolutionResult.didResolutionMetadata?.error != null) {
+    if (didResolutionResult.didResolutionMetadata.error != null) {
       throw SignatureException(
         "Signature verification failed: " +
           "Failed to resolve DID ${parsedDidUrl.did.didString}. " +
-          "Error: ${didResolutionResult.didResolutionMetadata?.error}"
+          "Error: ${didResolutionResult.didResolutionMetadata.error}"
       )
     }
 
@@ -78,7 +78,7 @@ object CryptoUtils {
     // or just `#fragment`. See: https://www.w3.org/TR/did-core/#relative-did-urls.
     // Using a set for fast string comparison. DIDs can be long.
     val verificationMethodIds = setOf(parsedDidUrl.didUrlString, "#${parsedDidUrl.fragment}")
-    val assertionMethods = didResolutionResult.didDocument.assertionMethodVerificationMethodsDereferenced
+    val assertionMethods = didResolutionResult.didDocument?.assertionMethodVerificationMethodsDereferenced
     val assertionMethod = assertionMethods?.firstOrNull {
       val id = it.id.toString()
       verificationMethodIds.contains(id)
@@ -91,7 +91,10 @@ object CryptoUtils {
       )
     }
 
-    require(assertionMethod.isType("JsonWebKey2020") && assertionMethod.publicKeyJwk != null) {
+    require(
+      (assertionMethod.isType("JsonWebKey2020") || assertionMethod.isType("JsonWebKey"))
+        && assertionMethod.publicKeyJwk != null
+    ) {
       throw SignatureException(
         "Signature verification failed: Expected kid in JWS header to dereference " +
           "a DID Document Verification Method of type JsonWebKey2020 with a publicKeyJwk"
@@ -166,11 +169,11 @@ object CryptoUtils {
    */
   fun getAssertionMethod(did: Did, assertionMethodId: String?): VerificationMethod {
     val didResolutionResult = DidResolvers.resolve(did.uri)
-    val assertionMethods = didResolutionResult.didDocument.assertionMethodVerificationMethodsDereferenced
+    val assertionMethods = didResolutionResult.didDocument?.assertionMethodVerificationMethodsDereferenced
 
     val assertionMethod: VerificationMethod = when {
-      assertionMethodId != null -> assertionMethods.find { it.id.toString() == assertionMethodId }
-      else -> assertionMethods.firstOrNull()
+      assertionMethodId != null -> assertionMethods?.find { it.id.toString() == assertionMethodId }
+      else -> assertionMethods?.firstOrNull()
     } ?: throw SignatureException("assertion method $assertionMethodId not found")
 
     return assertionMethod

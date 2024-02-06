@@ -41,7 +41,11 @@ object RequestToken {
   fun generate(did: Did, pfiDid: String, assertionMethodId: String? = null): String {
 
     val didResolutionResult = DidResolvers.resolve(did.uri)
-    val assertionMethod: VerificationMethod = didResolutionResult.didDocument.findAssertionMethodById(assertionMethodId)
+    val assertionMethod: VerificationMethod =
+      didResolutionResult
+        .didDocument?.findAssertionMethodById(assertionMethodId)
+        ?: throw RequestTokenCreateException("Assertion method not found")
+
 
     // TODO: ensure that publicKeyJwk is not null
     val publicKeyJwk = JWK.parse(assertionMethod.publicKeyJwk)

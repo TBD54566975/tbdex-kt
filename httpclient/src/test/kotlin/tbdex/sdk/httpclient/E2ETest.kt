@@ -22,6 +22,7 @@ import web5.sdk.dids.methods.dht.CreateDidDhtOptions
 import web5.sdk.dids.methods.dht.DidDht
 import web5.sdk.dids.methods.key.DidKey
 import java.net.URI
+import java.util.UUID
 import kotlin.test.Test
 
 private const val POLL_INTERVAL = 1000L
@@ -41,7 +42,7 @@ class E2ETest {
       keyManager,
       CreateDidDhtOptions(
         verificationMethods = listOf(
-          Pair(
+          Triple(
             JWK.parse(
               """{
         "crv": "Ed25519",
@@ -49,7 +50,8 @@ class E2ETest {
         "x": "i6cnsuH4JTBMXKbseg28Hi3w4Xp13E85UwnSW3ZgYk8"
       }"""
             ),
-            arrayOf(PublicKeyPurpose.AUTHENTICATION)
+            arrayOf(PublicKeyPurpose.AUTHENTICATION),
+            UUID.randomUUID().toString()
           )
         ),
         services = listOf(
