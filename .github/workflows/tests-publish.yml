@@ -15,9 +15,7 @@ jobs:
       - name: Download TBDocs Report
         uses: dawidd6/action-download-artifact@v2
         with:
-          # manual input or from the workflow_run event
-          run_id: ${{ github.event.inputs.run_id || github.event.workflow_run.id }}
-          # run_id: ${{ github.event.workflow_run.id }}
+          run_id: ${{ github.event.workflow_run.id }}
           name: tests-report-junit
           path: ./
 
