@@ -1,6 +1,12 @@
 name: Publish Tests Report
 
 on:
+  workflow_dispatch:
+    # allow to input a custom run_id
+    inputs:
+      run_id:
+        description: "The run_id of the workflow run to download artifacts from"
+        required: true
   workflow_run:
     workflows: ["tbdex SDK Kotlin CI"]
     types:
@@ -15,7 +21,9 @@ jobs:
       - name: Download TBDocs Report
         uses: dawidd6/action-download-artifact@v2
         with:
-          run_id: ${{ github.event.workflow_run.id }}
+          # manual input or from the workflow_run event
+          run_id: ${{ github.event.inputs.run_id || github.event.workflow_run.id }}
+          # run_id: ${{ github.event.workflow_run.id }}
           name: tests-report-junit
           path: ./
 
