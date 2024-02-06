@@ -1,11 +1,14 @@
 package tbdex.sdk.httpclient
 
 import assertk.assertThat
-import assertk.assertions.containsAll
 import assertk.assertions.containsExactlyInAnyOrder
 import com.nimbusds.jwt.SignedJWT
+import io.mockk.every
+import io.mockk.mockkObject
 import org.junit.jupiter.api.assertThrows
 import web5.sdk.crypto.InMemoryKeyManager
+import web5.sdk.dids.DidResolutionResult
+import web5.sdk.dids.DidResolvers
 import web5.sdk.dids.methods.dht.DidDht
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -15,7 +18,7 @@ import kotlin.test.assertTrue
 class RequestTokenTest {
 
   @Test
-  fun `generateRequestToken() generates a JWT`() {
+  fun `generate() generates a JWT`() {
     val did = DidDht.create(InMemoryKeyManager())
     val pfiDid = "did:ion:123"
 
@@ -24,7 +27,19 @@ class RequestTokenTest {
   }
 
   @Test
-  fun `generateRequestToken() generates JWT with all required fields`() {
+  fun `generate throws RequestTokenCreateException when assertion method not found`() {
+    mockkObject(DidResolvers)
+
+    val did = DidDht.create(InMemoryKeyManager())
+    every { DidResolvers.resolve(did.uri) } returns DidResolutionResult(null)
+
+    assertThrows<RequestTokenCreateException> {
+      RequestToken.generate(did, "pfiDid", "assertionMethodId")
+    }
+  }
+
+  @Test
+  fun `generate() generates JWT with all required fields`() {
     val did = DidDht.create(InMemoryKeyManager())
     val pfiDid = "did:ion:123"
 

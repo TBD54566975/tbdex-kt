@@ -48,7 +48,7 @@ class SubmitRfqTest : ServerTest() {
 
   @Test
   fun `returns BadRequest if rfq does not fit offering requirements`() = runBlocking {
-    val rfq = createRfq()
+    val rfq = createRfq(null, listOf("foo"))
     rfq.sign(aliceDid)
 
     val response = client.post("/exchanges/123/rfq") {

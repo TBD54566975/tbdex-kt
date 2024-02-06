@@ -30,7 +30,7 @@ class FakeOfferingsApi : OfferingsApi {
     id: String = "test-pd-id",
     name: String = "simple PD",
     purpose: String = "pd for testing",
-    inputDescriptors: List<InputDescriptorV2> = listOf()
+    inputDescriptors: List<InputDescriptorV2> = emptyList()
   ): PresentationDefinitionV2 {
     return PresentationDefinitionV2(
       id = id,
