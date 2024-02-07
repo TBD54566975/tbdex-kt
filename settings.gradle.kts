@@ -1,2 +1,2 @@
-rootProject.name = "tbdex"
+rootProject.name = "tbdex-kt"
 include("httpclient", "protocol", "httpserver")
