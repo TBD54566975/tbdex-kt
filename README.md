@@ -10,11 +10,11 @@ This repo contains 2 jvm packages:
 
 # Usage
 
-tbdex sdk is consumable through [JitPack](https://jitpack.io):
+tbdex sdk is consumable through Maven Central:
 
 ```kotlin
 repositories {
-  maven("https://jitpack.io")
+  mavenCentral()
   maven("https://repo.danubetech.com/repository/maven-public/")
 }
 
