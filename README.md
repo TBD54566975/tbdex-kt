@@ -34,6 +34,30 @@ dependencies {
 
 ## Maven
 
+```xml
+...
+    <repositories>
+        <repository>
+            <id>jitpack</id>
+            <name>jitpack</name>
+            <url>https://jitpack.io</url>
+        </repository>
+        <repository>
+            <id>danubetech</id>
+            <name>danubetech</name>
+            <url>https://repo.danubetech.com/repository/maven-public/</url>
+        </repository>
+    </repositories>
+
+    <depedencies>
+      <dependency>
+          <groupId>xyz.block</groupId>
+          <artifactId>tbdex-httpclient</artifactId>
+          <version>0.9.0-beta</version>
+      </dependency>
+    </dependencies>
+...
+```
 
 <details>
   <summary>Expand for complete mvn pom.xml example using kotlin</summary>
