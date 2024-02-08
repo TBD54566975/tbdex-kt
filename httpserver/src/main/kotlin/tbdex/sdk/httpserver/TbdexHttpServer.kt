@@ -1,5 +1,6 @@
 package tbdex.sdk.httpserver
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.http.HttpStatusCode
@@ -87,6 +88,7 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
         registerModule(JavaTimeModule())
         registerModule(TypeIdModule())
         registerKotlinModule()
+        setSerializationInclusion(JsonInclude.Include.NON_NULL)
         findAndRegisterModules()
       }
     }

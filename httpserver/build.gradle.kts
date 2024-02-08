@@ -22,16 +22,17 @@ repositories {
 application {
   mainClass.set("tbdex.sdk.httpserver.TbdexHttpServerKt")
 }
+val jackson_version = "2.14.2"
 
 dependencies {
   api("de.fxlae:typeid-java-jdk8:0.2.0")
-  api("xyz.block:web5:0.10.0")
+  api("xyz.block:web5:0.0.11")
 
   implementation(project(":protocol"))
   implementation(project(":httpclient"))
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
-  implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
-  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.16.0")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version")
+  implementation("com.fasterxml.jackson.core:jackson-databind:$jackson_version")
+  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version")
   implementation("decentralized-identity:did-common-java:1.9.0") // would like to grab this via web5 dids
   implementation("io.ktor:ktor-server-core")
   implementation("io.ktor:ktor-server-netty")

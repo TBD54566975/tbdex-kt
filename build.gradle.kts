@@ -2,6 +2,7 @@ import io.gitlab.arturbosch.detekt.Detekt
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.dokka.DokkaConfiguration
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.net.URL
 
 plugins {
@@ -20,6 +21,9 @@ repositories {
 }
 
 dependencies {
+  api(project(":protocol"))
+  api(project(":httpclient"))
+  api(project(":httpserver"))
   detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
 }
 
@@ -28,6 +32,9 @@ allprojects {
 }
 
 subprojects {
+  repositories {
+    mavenCentral()
+  }
   apply {
     plugin("io.gitlab.arturbosch.detekt")
     plugin("org.jetbrains.kotlin.jvm")
@@ -51,12 +58,16 @@ subprojects {
 
   kotlin {
     jvmToolchain(11)
+    compilerOptions {
+      jvmTarget.set(JvmTarget.JVM_11)
+      apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9)
+      languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_1_9)
+    }
   }
 
   java {
     withJavadocJar()
     withSourcesJar()
-
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
   }
@@ -101,11 +112,13 @@ subprojects {
       }
     }
 
-    signing {
-      val signingKey: String? by project
-      val signingPassword: String? by project
-      useInMemoryPgpKeys(signingKey, signingPassword)
-      sign(publishing.publications[publicationName])
+    if (!project.hasProperty("skipSigning") || project.property("skipSigning") != "true") {
+      signing {
+        val signingKey: String? by project
+        val signingPassword: String? by project
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign(publishing.publications[publicationName])
+      }
     }
   }
 
@@ -151,7 +164,7 @@ tasks.dokkaHtmlMultiModule {
 
 publishing {
   publications {
-    create<MavenPublication>("tbdex") {
+    create<MavenPublication>(rootProject.name) {
       groupId = project.group.toString()
       artifactId = name
       description = "Kotlin SDK for tbdex functionality"
@@ -187,11 +200,13 @@ publishing {
   }
 }
 
-signing {
-  val signingKey: String? by project
-  val signingPassword: String? by project
-  useInMemoryPgpKeys(signingKey, signingPassword)
-  sign(publishing.publications["tbdex"])
+if (!project.hasProperty("skipSigning") || project.property("skipSigning") != "true") {
+  signing {
+    val signingKey: String? by project
+    val signingPassword: String? by project
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign(publishing.publications["tbdex"])
+  }
 }
 
 nexusPublishing {

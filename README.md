@@ -10,17 +10,19 @@ This repo contains 2 jvm packages:
 
 # Usage
 
-tbdex is published to maven central but some additional repositories are needed for transitive dependencies currently: 
+tbdex sdk is consumable through Maven Central but some additional repositories are needed for transitive dependencies currently: :
 
 ## Gradle
-
 ```kotlin
 repositories {
+  mavenCentral()
   maven("https://jitpack.io")
   maven("https://repo.danubetech.com/repository/maven-public/")
 }
 
 dependencies {
+  implementation("xyz.block:tbdex:0.9.0-beta")
+  // or if you want to import separate packages
   implementation("xyz.block:tbdex-httpclient:0.9.0-beta")
   implementation("xyz.block:tbdex-httpserver:0.9.0-beta")
   implementation("xyz.block:tbdex-protocol:0.9.0-beta")
