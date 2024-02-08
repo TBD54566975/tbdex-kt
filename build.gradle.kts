@@ -164,7 +164,7 @@ tasks.dokkaHtmlMultiModule {
 
 publishing {
   publications {
-    create<MavenPublication>(rootProject.name) {
+    create<MavenPublication>("tbdex") {
       groupId = project.group.toString()
       artifactId = name
       description = "Kotlin SDK for tbdex functionality"
