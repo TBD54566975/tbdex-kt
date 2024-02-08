@@ -38,6 +38,7 @@ class Quote private constructor(
       from: String,
       exchangeId: TypeId,
       quoteData: QuoteData,
+      externalId: String? = null
     ): Quote {
       val metadata = MessageMetadata(
         kind = MessageKind.quote,
@@ -45,7 +46,8 @@ class Quote private constructor(
         from = from,
         id = TypeId.generate(MessageKind.quote.name),
         exchangeId = exchangeId,
-        createdAt = OffsetDateTime.now()
+        createdAt = OffsetDateTime.now(),
+        externalId = externalId
       )
       Validator.validateData(quoteData, "quote")
 

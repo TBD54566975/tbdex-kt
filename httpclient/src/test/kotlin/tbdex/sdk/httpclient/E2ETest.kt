@@ -96,13 +96,14 @@ class E2ETest {
 
     val rfqData = buildRfqData(firstOfferingId, vcJwt)
     val rfq = Rfq.create(to = pfiDid, from = myDid.uri, rfqData)
+
     rfq.sign(myDid)
 
     println("Sending RFQ against first offering id: ${offerings[0].metadata.id}.")
     println("ExchangeId for the rest of this exchange is ${rfq.metadata.exchangeId}")
 
     try {
-      client.sendMessage(rfq)
+      client.createExchange(rfq, "https://tbdex.io/callback")
     } catch (e: TbdexResponseException) {
       throw AssertionError(
         "Error in sending RFQ. " +
@@ -124,6 +125,7 @@ class E2ETest {
     order.sign(myDid)
 
     println("Sending order against Quote with exchangeId of ${order.metadata.exchangeId}")
+
     try {
       client.sendMessage(order)
     } catch (e: TbdexResponseException) {

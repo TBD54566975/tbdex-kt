@@ -33,14 +33,15 @@ class Close private constructor(
      * @param closeData Specific parameters relevant to a Close.
      * @return Close instance.
      */
-    fun create(to: String, from: String, exchangeId: TypeId, closeData: CloseData): Close {
+    fun create(to: String, from: String, exchangeId: TypeId, closeData: CloseData, externalId: String? = null): Close {
       val metadata = MessageMetadata(
         kind = MessageKind.close,
         to = to,
         from = from,
         id = TypeId.generate(MessageKind.close.name),
         exchangeId = exchangeId,
-        createdAt = OffsetDateTime.now()
+        createdAt = OffsetDateTime.now(),
+        externalId = externalId
       )
       Validator.validateData(closeData, "close")
       return Close(metadata, closeData)

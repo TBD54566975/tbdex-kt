@@ -33,14 +33,21 @@ class OrderStatus private constructor(
      * @param orderStatusData Specific parameters relevant to an OrderStatus.
      * @return OrderStatus instance.
      */
-    fun create(to: String, from: String, exchangeId: TypeId, orderStatusData: OrderStatusData): OrderStatus {
+    fun create(
+      to: String,
+      from: String,
+      exchangeId: TypeId,
+      orderStatusData: OrderStatusData,
+      externalId: String? = null
+    ): OrderStatus {
       val metadata = MessageMetadata(
         kind = MessageKind.orderstatus,
         to = to,
         from = from,
         id = TypeId.generate(MessageKind.orderstatus.name),
         exchangeId = exchangeId,
-        createdAt = OffsetDateTime.now()
+        createdAt = OffsetDateTime.now(),
+        externalId = externalId
       )
       Validator.validateData(orderStatusData, "orderstatus")
 

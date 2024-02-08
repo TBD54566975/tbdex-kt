@@ -24,12 +24,14 @@ class RfqTest {
         payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
         payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
         claims = emptyList()
-      )
+      ),
+      externalId = "P_12345"
     )
 
     assertAll {
       assertThat(rfq.metadata.id.prefix).isEqualTo("rfq")
       assertThat(rfq.data.payinAmount).isEqualTo("10.00")
+      assertThat(rfq.metadata.externalId).isEqualTo("P_12345")
     }
   }
 

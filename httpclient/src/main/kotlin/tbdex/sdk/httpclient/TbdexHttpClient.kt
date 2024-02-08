@@ -5,8 +5,10 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import tbdex.sdk.httpclient.models.CreateExchangeRequest
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpclient.models.Exchange
 import tbdex.sdk.httpclient.models.GetExchangesFilter
@@ -14,7 +16,9 @@ import tbdex.sdk.httpclient.models.GetOfferingsFilter
 import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Message
+import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
+import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.serialization.Json.jsonMapper
 import web5.sdk.dids.Did
@@ -68,36 +72,71 @@ object TbdexHttpClient {
   }
 
   /**
-   * Sends a message to the PFI.
+   * Sends a message to the PFI. You can also use this message to create an exchange without a replyTo URL.
    *
-   * @param message The [Message] object containing the message details to be sent.
-   * @throws TbdexResponseException for request or response errors.
+   * @param message The message to send.
+   *
+   * @throws TbdexResponseException for response errors.
    */
   fun sendMessage(message: Message) {
-    Validator.validateMessage(message)
-    message.verify()
+    validateMessage(message)
 
     val pfiDid = message.metadata.to
     val exchangeId = message.metadata.exchangeId
     val kind = message.metadata.kind
 
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
-    val url = "$pfiServiceEndpoint/exchanges/$exchangeId/$kind"
-
-    val body = Json.stringify(message).toRequestBody(jsonMediaType)
-
-    val request = Request.Builder()
-      .url(url)
-      .addHeader("Content-Type", JSON_HEADER)
-      .post(body)
-      .build()
-
-    println("attempting to send message to: ${request.url}")
-
-    val response: Response = client.newCall(request).execute()
-    if (!response.isSuccessful) {
-      throw buildResponseException(response)
+    val url: String = if (kind == MessageKind.rfq) {
+      "$pfiServiceEndpoint/exchanges/$exchangeId"
+    } else {
+      "$pfiServiceEndpoint/exchanges/$exchangeId/$kind"
     }
+
+    val body: RequestBody = Json.stringify(message).toRequestBody(jsonMediaType)
+
+    val request = buildRequest(url, body)
+
+    println("Attempting to send $kind message to: ${request.url}")
+
+    executeRequest(request)
+  }
+
+  /**
+   * Send RFQ message and include a replyTo URL for the PFI to send a callback to.
+   *
+   * @param message The message to send (is of type RFQ)
+   * @param replyTo The callback URL for PFI to send messages to.
+   *
+   * @throws TbdexResponseException for response errors.
+   *
+   */
+  fun sendMessage(message: Rfq, replyTo: String) {
+    validateMessage(message)
+
+    val pfiDid = message.metadata.to
+    val exchangeId = message.metadata.exchangeId
+
+    val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
+    val url = "$pfiServiceEndpoint/exchanges/$exchangeId"
+
+    val body: RequestBody = Json.stringify(CreateExchangeRequest(message, replyTo))
+      .toRequestBody(jsonMediaType)
+
+    val request = buildRequest(url, body)
+
+    println("Attempting to send Rfq message to: ${request.url}")
+
+    executeRequest(request)
+  }
+
+  /**
+   * Aliased method for sendMessage(Rfq, String) to create an exchange by sending an RFQ with a replyTo URL.
+   *
+   * @param message The message to send (is of type RFQ)
+   * @param replyTo The callback URL for PFI to send messages to.
+   */
+  fun createExchange(message: Rfq, replyTo: String) {
+    sendMessage(message, replyTo)
   }
 
   /**
@@ -207,5 +246,26 @@ object TbdexHttpClient {
       "response status: ${response.code}",
       errors = errors
     )
+  }
+
+  private fun validateMessage(message: Message) {
+    Validator.validateMessage(message)
+    message.verify()
+  }
+
+  private fun buildRequest(url: String, body: RequestBody): Request {
+    val request = Request.Builder()
+      .url(url)
+      .addHeader("Content-Type", JSON_HEADER)
+      .post(body)
+      .build()
+    return request
+  }
+
+  private fun executeRequest(request: Request) {
+    val response: Response = client.newCall(request).execute()
+    if (!response.isSuccessful) {
+      throw buildResponseException(response)
+    }
   }
 }

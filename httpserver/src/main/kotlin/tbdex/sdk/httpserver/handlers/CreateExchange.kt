@@ -14,6 +14,8 @@ import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Rfq
+import tbdex.sdk.protocol.serialization.Json
+import java.net.URL
 
 /**
  * Handles the submission of a Request for Quote (RFQ) through the TBDex API.
@@ -27,18 +29,34 @@ import tbdex.sdk.protocol.models.Rfq
  * @param callback An optional callback function to be invoked after processing the RFQ.
  */
 @Suppress("TooGenericExceptionCaught", "SwallowedException")
-suspend fun submitRfq(
+suspend fun createExchange(
   call: ApplicationCall,
   offeringsApi: OfferingsApi,
   exchangesApi: ExchangesApi,
   callback: SubmitCallback?
 ) {
   val message: Rfq?
-
+  val replyTo: String?
   try {
-    message = Message.parse(call.receiveText()) as Rfq
+    val requestBody = call.receiveText()
+
+    val jsonNode = Json.jsonMapper.readTree(requestBody)
+    val rfqJsonString = jsonNode["rfq"].toString()
+
+    message = Message.parse(rfqJsonString) as Rfq
+    // sets replyTo field to null if it's not present in the jsonNode.
+    // without .takeIf { !it.isNull }, jsonNode["replyTo"].asText() will set replyTo as "null" string.
+    replyTo = jsonNode["replyTo"].takeIf { !it.isNull }?.asText()
+
   } catch (e: Exception) {
-    val errorDetail = ErrorDetail(detail = "Parsing of TBDex message failed: ${e.message}")
+    val errorDetail = ErrorDetail(detail = "Parsing of TBDex createExchange request failed: ${e.message}")
+    val errorResponse = ErrorResponse(listOf(errorDetail))
+    call.respond(HttpStatusCode.BadRequest, errorResponse)
+    return
+  }
+
+  if (replyTo != null && !isValidUrl(replyTo)) {
+    val errorDetail = ErrorDetail(detail = "replyTo must be a valid URL")
     val errorResponse = ErrorResponse(listOf(errorDetail))
     call.respond(HttpStatusCode.BadRequest, errorResponse)
     return
@@ -49,7 +67,8 @@ suspend fun submitRfq(
     val errorDetail = ErrorDetail(detail = "RFQ already exists.")
     call.respond(HttpStatusCode.Conflict, ErrorResponse(listOf(errorDetail)))
     return
-  } catch (_: Exception) {
+  } catch (_: NoSuchElementException) {
+    // exchangesApi.getExchange throws if no existing exchange is found
   }
 
   val offering: Offering
@@ -84,4 +103,20 @@ suspend fun submitRfq(
   }
 
   call.respond(HttpStatusCode.Accepted)
+}
+
+/**
+ * Checks if a string is a valid URL.
+ *
+ * @param replyToUrl The string to be checked.
+ * @return boolean indicating whether the string is a valid URL.
+ */
+@Suppress("SwallowedException")
+fun isValidUrl(replyToUrl: String): Boolean {
+  return try {
+    URL(replyToUrl)
+    true
+  } catch (e: Exception) {
+    false
+  }
 }

@@ -9,7 +9,7 @@
 # The format is described: https://github.blog/2017-07-06-introducing-code-owners/
 
 # These owners will be the default owners for everything in the repo.
-* @mistermoe @phoebe-lew @jiyoontbd @michaelneale @KendallWeihe @ethan-tbd @tomdaffurn @diehuxx
+* @mistermoe @phoebe-lew @jiyoontbd @michaelneale @KendallWeihe @ethan-tbd @tomdaffurn @diehuxx @kirahsapong
 
 # -----------------------------------------------
 # BELOW THIS LINE ARE TEMPLATES, UNUSED

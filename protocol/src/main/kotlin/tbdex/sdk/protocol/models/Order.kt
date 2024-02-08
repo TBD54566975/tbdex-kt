@@ -32,14 +32,15 @@ class Order private constructor(
      * @param exchangeId ID of the exchange.
      * @return Order instance.
      */
-    fun create(to: String, from: String, exchangeId: TypeId): Order {
+    fun create(to: String, from: String, exchangeId: TypeId, externalId: String? = null): Order {
       val metadata = MessageMetadata(
         kind = MessageKind.order,
         to = to,
         from = from,
         id = TypeId.generate(MessageKind.order.name),
         exchangeId = exchangeId,
-        createdAt = OffsetDateTime.now()
+        createdAt = OffsetDateTime.now(),
+        externalId = externalId
       )
       return Order(metadata, OrderData())
     }

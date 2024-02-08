@@ -25,6 +25,7 @@ enum class MessageKind {
 /**
  * A data class representing the metadata present on every [Message].
  */
+@Suppress("LongParameterList")
 class MessageMetadata(
   val kind: MessageKind,
   val to: String,
@@ -32,7 +33,8 @@ class MessageMetadata(
   val id: TypeId,
   val exchangeId: TypeId,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
-  val createdAt: OffsetDateTime
+  val createdAt: OffsetDateTime,
+  val externalId: String? = null
 ) : Metadata
 
 /**
