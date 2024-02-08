@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-  implementation("com.github.TBD54566975:tbdex:0.4.0-beta")
+  implementation("xyz.block:tbdex:0.9.0-beta")
   // or if you want to import separate packages
   implementation("xyz.block:tbdex-httpclient:0.9.0-beta")
   implementation("xyz.block:tbdex-httpserver:0.9.0-beta")
