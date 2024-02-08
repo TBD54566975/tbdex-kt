@@ -22,7 +22,7 @@ val jackson_version = "2.14.2"
 
 dependencies {
   api("de.fxlae:typeid-java-jdk8:0.2.0")
-  api("xyz.block:web5:0.10.0")
+  api("xyz.block:web5:0.0.11")
 
   implementation(project(":protocol"))
   implementation("com.squareup.okhttp3:okhttp:4.9.1")

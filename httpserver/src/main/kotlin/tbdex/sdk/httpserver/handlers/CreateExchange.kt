@@ -11,7 +11,6 @@ import tbdex.sdk.httpserver.models.ExchangesApi
 import tbdex.sdk.httpserver.models.OfferingsApi
 import tbdex.sdk.httpserver.models.SubmitCallback
 import tbdex.sdk.protocol.models.Message
-import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
@@ -36,7 +35,7 @@ suspend fun createExchange(
   callback: SubmitCallback?
 ) {
   val message: Rfq?
-  val replyTo: String?
+  var replyTo: String? = null
   try {
     val requestBody = call.receiveText()
 
@@ -44,10 +43,9 @@ suspend fun createExchange(
     val rfqJsonString = jsonNode["rfq"].toString()
 
     message = Message.parse(rfqJsonString) as Rfq
-    // sets replyTo field to null if it's not present in the jsonNode.
-    // without .takeIf { !it.isNull }, jsonNode["replyTo"].asText() will set replyTo as "null" string.
-    replyTo = jsonNode["replyTo"].takeIf { !it.isNull }?.asText()
-
+    if (jsonNode["replyTo"] != null) {
+      replyTo = jsonNode["replyTo"].asText()
+    }
   } catch (e: Exception) {
     val errorDetail = ErrorDetail(detail = "Parsing of TBDex createExchange request failed: ${e.message}")
     val errorResponse = ErrorResponse(listOf(errorDetail))

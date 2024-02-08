@@ -1,4 +1,4 @@
-
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.ktor.client.HttpClient
@@ -14,8 +14,6 @@ import tbdex.sdk.httpserver.TbdexHttpServerConfig
 import tbdex.sdk.httpserver.models.FakeExchangesApi
 import tbdex.sdk.httpserver.models.FakeOfferingsApi
 import tbdex.sdk.protocol.serialization.TypeIdModule
-import web5.sdk.crypto.InMemoryKeyManager
-import web5.sdk.dids.methods.dht.DidDht
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 open class ServerTest {
@@ -46,6 +44,7 @@ open class ServerTest {
           registerModule(JavaTimeModule())
           registerModules(TypeIdModule())
           registerKotlinModule()
+          setSerializationInclusion(JsonInclude.Include.NON_NULL)
           findAndRegisterModules()
         }
       }
