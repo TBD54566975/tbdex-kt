@@ -84,6 +84,7 @@ class Rfq private constructor(
       to: String,
       from: String,
       rfqData: RfqData,
+      externalId: String? = null,
       private: Map<String, Any>? = null
     ): Rfq {
       val id = TypeId.generate(MessageKind.rfq.name)
@@ -93,7 +94,8 @@ class Rfq private constructor(
         from = from,
         id = id,
         exchangeId = id,
-        createdAt = OffsetDateTime.now()
+        createdAt = OffsetDateTime.now(),
+        externalId = externalId
       )
       Validator.validateData(rfqData, "rfq")
 
