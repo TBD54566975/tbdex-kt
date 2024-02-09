@@ -21,11 +21,12 @@ repositories {
 }
 
 dependencies {
-  implementation("xyz.block:tbdex:0.9.0-beta")
-  // or if you want to import separate packages
-  implementation("xyz.block:tbdex-httpclient:0.9.0-beta")
-  implementation("xyz.block:tbdex-httpserver:0.9.0-beta")
-  implementation("xyz.block:tbdex-protocol:0.9.0-beta")
+  // bring in everything: 
+  implementation("xyz.block:tbdex:0.10.0-beta")
+  // OR if you want to import separate packages (eg may only want client and protocol):
+  implementation("xyz.block:tbdex-httpclient:0.10.0-beta")
+  implementation("xyz.block:tbdex-httpserver:0.10.0-beta")
+  implementation("xyz.block:tbdex-protocol:0.10.0-beta")
 }
 ```
 
@@ -55,7 +56,7 @@ dependencies {
       <dependency>
           <groupId>xyz.block</groupId>
           <artifactId>tbdex-httpclient</artifactId>
-          <version>0.9.0-beta</version>
+          <version>0.10.0-beta</version>
       </dependency>
     </dependencies>
 ...
@@ -88,11 +89,7 @@ dependencies {
         <version.junit-jupiter>5.10.1</version.junit-jupiter>
 
         <!-- TBD Dependencies -->
-        <!--
-        These need to be uniformly updated as part of the
-        single dependency script from Nick
-        -->
-        <version.tbdex>0.9.0-beta</version.tbdex>
+        <version.tbdex>0.10.0-beta</version.tbdex>
 
     </properties>
 
@@ -122,11 +119,6 @@ dependencies {
                 <version>${version.tbdex}</version>
             </dependency>
 
-            <!-- ALR Dark Arts to Make tbDEX and Web5 Play Nice -->
-            <!--
-            Will eventually go bye-bye once the
-            underlying dep trees are fixed up
-            -->
         </dependencies>
     </dependencyManagement>
 
@@ -211,6 +203,7 @@ dependencies {
     </build>
 
     <repositories>
+        <!-- currently needed for some transitive dependencies -->
         <repository>
             <id>jitpack</id>
             <name>jitpack</name>
