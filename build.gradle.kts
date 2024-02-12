@@ -6,14 +6,15 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.net.URL
 
 plugins {
-  id("org.jetbrains.kotlin.jvm") version "1.9.0"
-  id("java-library")
+  id("org.jetbrains.kotlin.jvm") version "1.9.22"
+  id("base")
   id("io.gitlab.arturbosch.detekt") version "1.23.1"
   `maven-publish`
   id("org.jetbrains.dokka") version "1.9.0"
   id("org.jetbrains.kotlinx.kover") version "0.7.3"
   signing
   id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
+  id("version-catalog")
 }
 
 repositories {
@@ -43,6 +44,7 @@ subprojects {
     plugin("org.jetbrains.dokka")
     plugin("org.jetbrains.kotlinx.kover")
     plugin("signing")
+    plugin("version-catalog")
   }
 
   tasks.withType<Detekt>().configureEach {
@@ -78,7 +80,7 @@ subprojects {
       create<MavenPublication>(publicationName) {
         groupId = project.group.toString()
         artifactId = name
-        description = "Kotlin SDK for tbdex functionality"
+        description = name
         version = project.property("version").toString()
         from(components["java"])
       }
@@ -87,7 +89,7 @@ subprojects {
         pom {
           name = publicationName
           packaging = "jar"
-          description.set("tbdex kotlin SDK")
+          description.set("tbDEX SDK for the JVM")
           url.set("https://github.com/TBD54566975/tbdex-kt")
           inceptionYear.set("2023")
           licenses {
@@ -167,14 +169,14 @@ publishing {
     create<MavenPublication>(rootProject.name) {
       groupId = project.group.toString()
       artifactId = name
-      description = "Kotlin SDK for tbdex functionality"
+      description = name
       version = project.property("version").toString()
       from(components["java"])
 
       pom {
-        packaging = "jar"
-        name = project.name
-        description.set("tbdex kotlin SDK")
+        packaging = "pom"
+        name = "tbDEX SDK for the JVM"
+        description.set("tbDEX SDK for the JVM")
         url.set("https://github.com/TBD54566975/tbdex-kt")
         inceptionYear.set("2023")
         licenses {
