@@ -16,6 +16,11 @@ repositories {
   maven {
     url = uri("https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/")
   }
+  // temp maven repo for danubetech
+  maven {
+    name = "tbd-danubetech-temp"
+    url = uri("https://blockxyz.jfrog.io/artifactory/danubetech-temp/")
+  }
 }
 
 val jackson_version = "2.14.2"
