@@ -7,6 +7,14 @@ plugins {
 
 repositories {
   mavenCentral()
+  // temp maven repo for danubetech
+  maven {
+    name = "tbd-danubetech-temp"
+    url = uri("https://blockxyz.jfrog.io/artifactory/danubetech-temp/")
+    mavenContent {
+      releasesOnly()
+    }
+  }
   maven {
     url = uri("https://repo.danubetech.com/repository/maven-public")
   }
@@ -15,11 +23,6 @@ repositories {
   }
   maven {
     url = uri("https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/")
-  }
-  // temp maven repo for danubetech
-  maven {
-    name = "tbd-danubetech-temp"
-    url = uri("https://blockxyz.jfrog.io/artifactory/danubetech-temp/")
   }
 }
 
