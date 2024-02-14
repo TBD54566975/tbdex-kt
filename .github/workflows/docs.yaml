@@ -32,7 +32,9 @@ jobs:
         os: [ ubuntu-latest ]
     steps:
       - uses: actions/checkout@v3
-      - uses: gradle/wrapper-validation-action@v1
+      # https://cashapp.github.io/hermit/usage/ci/
+      - name: Init Hermit
+        uses: cashapp/activate-hermit@v1
       - uses: actions/setup-java@v1
         with:
           java-version: 17
@@ -42,7 +44,7 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle.kts') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/versions.properties') }}
 
       - name: Build Docs
-        run: ./gradlew dokkaHtmlMultiModule
+        run: bin/gradle dokkaHtmlMultiModule
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
