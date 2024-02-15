@@ -72,6 +72,8 @@ allprojects {
       force("com.fasterxml.woodstox:woodstox-core:6.4.0")
       // Addresss https://github.com/TBD54566975/tbdex-kt/issues/168
       force("com.google.guava:guava:32.0.0-android")
+      // Addresss https://github.com/TBD54566975/tbdex-kt/issues/169
+      force("com.google.protobuf:protobuf-javalite:3.19.6")
     }
   }
 }
