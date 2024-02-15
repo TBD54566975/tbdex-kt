@@ -28,6 +28,19 @@ dependencies {
   detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
 }
 
+/**
+ * Dependency forcing for build dependencies; see docs below on this
+ * in the "allprojects" block for explanation why this is necessary.
+ */
+buildscript {
+  configurations.all {
+    resolutionStrategy {
+      // Addresss https://github.com/TBD54566975/tbdex-kt/issues/167
+      force("com.fasterxml.woodstox:woodstox-core:6.4.0")
+    }
+  }
+}
+
 allprojects {
 
   group = "xyz.block"
@@ -55,7 +68,8 @@ allprojects {
      * When in doubt, ask! :)
      */
     resolutionStrategy {
-
+      // Addresss https://github.com/TBD54566975/tbdex-kt/issues/167
+      force("com.fasterxml.woodstox:woodstox-core:6.4.0")
     }
   }
 }
