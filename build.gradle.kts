@@ -74,6 +74,8 @@ allprojects {
       force("com.google.guava:guava:32.0.0-android")
       // Addresss https://github.com/TBD54566975/tbdex-kt/issues/169
       force("com.google.protobuf:protobuf-javalite:3.19.6")
+      // Addresses https://github.com/TBD54566975/tbdex-kt/issues/170
+      force("com.squareup.okio:okio:3.6.0")
     }
   }
 }
