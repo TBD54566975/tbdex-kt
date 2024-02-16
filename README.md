@@ -12,6 +12,10 @@ This repo contains 2 jvm packages:
 
 tbdex sdk is consumable through Maven Central but some additional repositories are needed for transitive dependencies currently: :
 
+# Hermit
+This project uses hermit to manage tooling like gradle or openjdk. See [this page](https://cashapp.github.io/hermit/usage/get-started/) to set up Hermit on your machine.
+After installing hermit and activating it, you should be able to just run `gradle clean build` to build the project locally.
+
 ## Gradle
 ```kotlin
 repositories {
@@ -66,7 +70,7 @@ dependencies {
   <summary>Expand for complete mvn pom.xml example using kotlin</summary>
 
   pom.xml:
-  ```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -256,9 +260,6 @@ fun main() {
 }
 ```
 
-
-
-
 # Development
 
 ## JSON Schemas
@@ -272,8 +273,6 @@ If you've already cloned the repo without `--recurse-submodules`, you can do the
 ```bash
 git submodule update --init
 ```
-
-copying the schemas and test vectors into the protocol package's `resources` directory can be done by running `./gradlew syncSchemas` and `./gradlew syncTestVectors` respectively.
 
 # Other Docs
 
