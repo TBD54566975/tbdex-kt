@@ -29,18 +29,40 @@ repositories {
 val jackson_version = "2.14.2"
 
 dependencies {
-  api("de.fxlae:typeid-java-jdk8:0.2.0")
-  api("xyz.block:web5:0.0.11")
 
+  /**
+   * Maintainers - please do not declare versioning here at the module level;
+   * dependencies are either pulled in transitively via web5-kt, or
+   * centralized for the platform in $projectRoot/gradle/libs.versions.toml
+   *
+   * Deps are declared in alphabetical order.
+   */
+
+  // API
+  api(libs.xyzBlockWeb5)
+
+  /*
+   * API Leak: https://github.com/TBD54566975/tbdex-kt/issues/161
+   *
+   * Change and move to "implementation" when completed
+   */
+  api(libs.deFxlaeTypeId)
+
+  // Project
   implementation(project(":protocol"))
-  implementation("com.squareup.okhttp3:okhttp:4.9.1")
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version")
-  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jackson_version")
-  implementation("com.fasterxml.jackson.core:jackson-databind:$jackson_version")
-  implementation("decentralized-identity:did-common-java:1.9.0") // would like to grab this via web5 dids
 
+  // Implementation
+  implementation(libs.comSquareupOkhttpOkhttp)
+  implementation(libs.comFasterXmlJacksonModuleKotlin)
+
+  // Test
+  /**
+   * Test dependencies may declare direct versions; they are not exported
+   * and therefore are within the remit of this module to self-define
+   * if desired.
+   */
   testImplementation(kotlin("test"))
-  testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
+  testImplementation(libs.comSquareupOkhttpMockwebserver)
   testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
   testImplementation("io.mockk:mockk:1.13.9")
 
