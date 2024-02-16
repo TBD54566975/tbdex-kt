@@ -16,6 +16,13 @@ tbdex sdk is consumable through Maven Central but some additional repositories a
 This project uses hermit to manage tooling like gradle or openjdk. See [this page](https://cashapp.github.io/hermit/usage/get-started/) to set up Hermit on your machine.
 After installing hermit and activating it, you should be able to just run `gradle clean build` to build the project locally.
 
+Currently, we have these packages installed via Hermit (can also view by checking out `hermit status`:
+- gradle-8.2 
+- openjdk-11.0.10_9
+
+You can run `hermit upgrade {package}` to upgrade an existing package, or `hermit install {package}` to install a new package. 
+Please see [Hermit package management page](https://cashapp.github.io/hermit/usage/management/) for more details.
+
 ## Gradle
 ```kotlin
 repositories {
