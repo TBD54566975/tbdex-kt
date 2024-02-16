@@ -29,6 +29,7 @@ dependencies {
 
 allprojects {
   group = "xyz.block"
+  tasks.findByName("wrapper")?.enabled = false
 }
 
 subprojects {

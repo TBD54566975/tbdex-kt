@@ -31,9 +31,9 @@ jobs:
       - name: Sonatype Publish Close And Release
         run: |
           if [ -n "${{ github.event.inputs.version }}" ]; then
-            bin/gradle -Pversion=${{ github.event.inputs.version }} publishToSonatype closeAndReleaseSonatypeStagingRepository
+            gradle -Pversion=${{ github.event.inputs.version }} publishToSonatype closeAndReleaseSonatypeStagingRepository
           else
-            bin/gradle -Pversion=$(echo "${{ github.ref_name }}" | cut -c2-) publishToSonatype closeAndReleaseSonatypeStagingRepository
+            gradle -Pversion=$(echo "${{ github.ref_name }}" | cut -c2-) publishToSonatype closeAndReleaseSonatypeStagingRepository
           fi
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.ORG_GRADLE_PROJECT_SIGNINGKEY }}
