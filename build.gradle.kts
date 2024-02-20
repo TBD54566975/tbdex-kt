@@ -29,8 +29,12 @@ dependencies {
 }
 
 /**
- * Dependency forcing for build dependencies; see docs below on this
- * in the "allprojects" block for explanation why this is necessary.
+ * Dependency forcing for build dependencies; this is separate from the code
+ * dependencies below in the "allprojects" block because it concerns the
+ * build itself.
+ *
+ * "allprojects" block below has documentation detailing why forced resolution
+ * strategies are necessary.
  */
 buildscript {
   configurations.all {
