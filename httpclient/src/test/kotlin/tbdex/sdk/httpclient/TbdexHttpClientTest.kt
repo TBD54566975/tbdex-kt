@@ -2,12 +2,15 @@ package tbdex.sdk.httpclient
 
 import de.fxlae.typeid.TypeId
 import junit.framework.TestCase.assertEquals
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import tbdex.sdk.httpclient.models.CreateExchangeRequest
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.models.Quote
@@ -84,7 +87,23 @@ class TbdexHttpClientTest {
   }
 
   @Test
-  fun `send RFQ success via mockwebserver`() {
+  fun `send RFQ without replyTo success via mockwebserver`() {
+
+    server.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_ACCEPTED))
+
+    val rfq = TestData.getRfq(pfiDid.uri, TypeId.generate("offering"))
+    assertDoesNotThrow { TbdexHttpClient.sendMessage(rfq) }
+
+    val request1 = server.takeRequest()
+    assertEquals(request1.path, "/exchanges/${rfq.metadata.exchangeId}")
+    assertEquals(
+      Json.jsonMapper.readTree(request1.body.readUtf8()),
+      Json.jsonMapper.readTree(Json.stringify(mapOf("rfq" to rfq)))
+    )
+  }
+
+  @Test
+  fun `send RFQ with replyTo success via mockwebserver`() {
 
     server.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_ACCEPTED))
 

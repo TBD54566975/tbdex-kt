@@ -87,13 +87,16 @@ object TbdexHttpClient {
     val kind = message.metadata.kind
 
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
-    val url: String = if (kind == MessageKind.rfq) {
-      "$pfiServiceEndpoint/exchanges/$exchangeId"
-    } else {
-      "$pfiServiceEndpoint/exchanges/$exchangeId/$kind"
-    }
 
-    val body: RequestBody = Json.stringify(message).toRequestBody(jsonMediaType)
+    val body: RequestBody
+    val url: String
+    if (kind == MessageKind.rfq) {
+      body = Json.stringify(CreateExchangeRequest(message as Rfq)).toRequestBody(jsonMediaType)
+      url = "$pfiServiceEndpoint/exchanges/$exchangeId"
+    } else {
+      body = Json.stringify(message).toRequestBody(jsonMediaType)
+      url = "$pfiServiceEndpoint/exchanges/$exchangeId/$kind"
+    }
 
     val request = buildRequest(url, body)
 
