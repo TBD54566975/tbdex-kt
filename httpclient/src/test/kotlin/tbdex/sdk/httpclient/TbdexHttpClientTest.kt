@@ -96,7 +96,10 @@ class TbdexHttpClientTest {
 
     val request1 = server.takeRequest()
     assertEquals(request1.path, "/exchanges/${rfq.metadata.exchangeId}")
-    assertEquals(request1.body.readUtf8(), Json.stringify(mapOf("rfq" to rfq)))
+    assertEquals(
+      Json.jsonMapper.readTree(request1.body.readUtf8()),
+      Json.jsonMapper.readTree(Json.stringify(mapOf("rfq" to rfq)))
+    )
   }
 
   @Test
