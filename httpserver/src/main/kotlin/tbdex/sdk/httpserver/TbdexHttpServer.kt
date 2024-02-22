@@ -102,7 +102,7 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
       }
 
       route("/exchanges") {
-        post("/{exchangeId}") {
+        post("") {
           createExchange(
             call = call,
             offeringsApi = offeringsApi,
@@ -111,7 +111,7 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
           )
         }
 
-        post("/{exchangeId}/order") {
+        post("/order") {
           submitOrder(
             call = call,
             exchangesApi = exchangesApi,
@@ -119,7 +119,7 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
           )
         }
 
-        post("/{exchangeId}/close") {
+        post("/close") {
           submitClose(
             call = call,
             exchangesApi = exchangesApi,

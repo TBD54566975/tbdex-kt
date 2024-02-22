@@ -23,7 +23,7 @@ import kotlin.test.assertEquals
 class SubmitCloseTest : ServerTest() {
   @Test
   fun `returns BadRequest if no request body is provided`() = runBlocking {
-    val response = client.post("/exchanges/123/close") {
+    val response = client.post("/exchanges/close") {
       contentType(ContentType.Application.Json)
     }
 
@@ -39,7 +39,7 @@ class SubmitCloseTest : ServerTest() {
     close.sign(aliceDid)
     exchangesApi.addMessage(close)
 
-    val response = client.post("/exchanges/123/close") {
+    val response = client.post("/exchanges/close") {
       contentType(ContentType.Application.Json)
       setBody(close)
     }
@@ -58,7 +58,7 @@ class SubmitCloseTest : ServerTest() {
     val close = createClose(TypeId.generate(MessageKind.close.name))
     close.sign(aliceDid)
 
-    val response = client.post("/exchanges/123/close") {
+    val response = client.post("/exchanges/close") {
       contentType(ContentType.Application.Json)
       setBody(close)
     }
@@ -81,7 +81,7 @@ class SubmitCloseTest : ServerTest() {
     val close = createClose(rfq.metadata.exchangeId)
     close.sign(aliceDid)
 
-    val response = client.post("/exchanges/123/close") {
+    val response = client.post("/exchanges/close") {
       contentType(ContentType.Application.Json)
       setBody(close)
     }
