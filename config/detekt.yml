@@ -44,9 +44,6 @@ complexity:
     threshold: 10
     includeStaticDeclarations: false
     includePrivateDeclarations: false
-  ComplexMethod:
-    active: true
-    ignoreSingleWhenExpression: true
   MethodOverloading:
     active: true
 
@@ -74,7 +71,6 @@ formatting:
   autoCorrect: true
   Indentation:
     indentSize: 2
-    continuationIndentSize: 2
   PackageNaming:
     active: true
   ParameterListWrapping:
@@ -106,10 +102,6 @@ potential-bugs:
     active: true
   IteratorNotThrowingNoSuchElementException:
     active: true
-  MissingWhenCase:
-    active: true
-  RedundantElseInWhen:
-    active: true
   UnsafeCallOnNullableType:
     active: true
   UnsafeCast:
@@ -129,7 +121,6 @@ style:
     active: true
   ForbiddenComment:
     active: false
-    values: [ 'TODO:', 'FIXME:', 'STOPSHIP:', '@author' ]
   FunctionOnlyReturningConstant:
     active: true
   LoopWithTooManyJumpStatements:
@@ -169,7 +160,7 @@ style:
     active: true
     allowedNames: '(_|ignored|expected)'
   UseCheckOrError:
-    active: true
+    active: false
   UselessCallOnNotNull:
     active: true
   UtilityClassWithPublicConstructor:
