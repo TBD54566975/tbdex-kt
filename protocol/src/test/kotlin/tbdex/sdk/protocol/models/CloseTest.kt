@@ -3,6 +3,7 @@ package tbdex.sdk.protocol.models
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
+import assertk.assertions.startsWith
 import com.nimbusds.jose.JWSObject
 import de.fxlae.typeid.TypeId
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -17,12 +18,12 @@ class CloseTest {
     val close = Close.create(
       to = "pfi",
       from = "alice",
-      exchangeId = TypeId.generate(MessageKind.rfq.name),
+      exchangeId = TypeId.generate(MessageKind.rfq.name).toString(),
       closeData = CloseData("my reason")
     )
 
     assertk.assertAll {
-      assertThat(close.metadata.id.prefix).isEqualTo("close")
+      assertThat(close.metadata.id).startsWith("close")
       assertThat(close.data.reason).isEqualTo("my reason")
     }
   }

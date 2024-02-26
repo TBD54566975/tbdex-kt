@@ -3,6 +3,7 @@ package tbdex.sdk.protocol.models
 import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.startsWith
 import de.fxlae.typeid.TypeId
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -19,7 +20,7 @@ class RfqTest {
       to = TestData.PFI,
       from = TestData.ALICE,
       rfqData = RfqData(
-        offeringId = TypeId.generate(ResourceKind.offering.name),
+        offeringId = TypeId.generate(ResourceKind.offering.name).toString(),
         payinAmount = "10.00",
         payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
         payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
@@ -29,7 +30,7 @@ class RfqTest {
     )
 
     assertAll {
-      assertThat(rfq.metadata.id.prefix).isEqualTo("rfq")
+      assertThat(rfq.metadata.id).startsWith("rfq")
       assertThat(rfq.data.payinAmount).isEqualTo("10.00")
       assertThat(rfq.metadata.externalId).isEqualTo("P_12345")
     }

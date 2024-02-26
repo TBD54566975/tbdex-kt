@@ -36,7 +36,7 @@ class SubmitOrderTest : ServerTest() {
 
   @Test
   fun `returns NotFound if exchange doesn't exist `() = runBlocking {
-    val order = createOrder(TypeId.generate("rfq"))
+    val order = createOrder(TypeId.generate("rfq").toString())
     order.sign(aliceDid)
 
     val response = client.post("/exchanges/123/order") {

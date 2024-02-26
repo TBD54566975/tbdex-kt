@@ -26,7 +26,7 @@ object TestData {
       to = pfiDid.uri,
       from = aliceDid.uri,
       rfqData = RfqData(
-        offeringId = offering?.metadata?.id ?: TypeId.generate("offering"),
+        offeringId = offering?.metadata?.id ?: TypeId.generate("offering").toString(),
         payinAmount = "1.00",
         payinMethod = SelectedPaymentMethod(
           kind = offering?.data?.payinMethods?.first()?.kind ?: "USD",
@@ -41,13 +41,13 @@ object TestData {
     )
   }
 
-  fun createOrder(exchangeId: TypeId) = Order.create(
+  fun createOrder(exchangeId: String) = Order.create(
     to = pfiDid.uri,
     from = aliceDid.uri,
     exchangeId = exchangeId
   )
 
-  fun createClose(exchangeId: TypeId) = Close.create(
+  fun createClose(exchangeId: String) = Close.create(
     to = pfiDid.uri,
     from = aliceDid.uri,
     exchangeId = exchangeId,
@@ -55,7 +55,7 @@ object TestData {
   )
 
   fun createQuote(
-    exchangeId: TypeId = TypeId.generate(MessageKind.rfq.name),
+    exchangeId: String = TypeId.generate(MessageKind.rfq.name).toString(),
     expiresAt: OffsetDateTime = OffsetDateTime.now().plusDays(1)
   ) = Quote.create(
     to = aliceDid.uri,

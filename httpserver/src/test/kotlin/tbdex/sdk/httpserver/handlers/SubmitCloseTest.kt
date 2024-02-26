@@ -35,7 +35,7 @@ class SubmitCloseTest : ServerTest() {
 
   @Test
   fun `returns Conflict if close is not allowed based on exchange state`() = runBlocking {
-    val close = createClose(TypeId.generate(MessageKind.close.name))
+    val close = createClose(TypeId.generate(MessageKind.rfq.name).toString())
     close.sign(aliceDid)
     exchangesApi.addMessage(close)
 
@@ -55,7 +55,7 @@ class SubmitCloseTest : ServerTest() {
 
   @Test
   fun `returns NotFound if exchange doesn't exist`() = runBlocking {
-    val close = createClose(TypeId.generate(MessageKind.close.name))
+    val close = createClose(TypeId.generate(MessageKind.rfq.name).toString())
     close.sign(aliceDid)
 
     val response = client.post("/exchanges/123/close") {

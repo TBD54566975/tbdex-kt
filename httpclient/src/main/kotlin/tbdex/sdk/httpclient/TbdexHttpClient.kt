@@ -152,19 +152,6 @@ object TbdexHttpClient {
    * @return An [Exchange] containing the requested exchange.
    * @throws TbdexResponseException for request or response errors.
    */
-  fun getExchange(pfiDid: String, requesterDid: Did, exchangeId: TypeId): Exchange {
-    return this.getExchange(pfiDid, requesterDid, exchangeId.toString())
-  }
-
-  /**
-   * Fetches a specific exchange identified by its ID from the PFI.
-   *
-   * @param pfiDid The decentralized identifier of the PFI.
-   * @param requesterDid The decentralized identifier of the entity requesting the exchange.
-   * @param exchangeId The unique identifier of the exchange to be fetched.
-   * @return An [Exchange] containing the requested exchange.
-   * @throws TbdexResponseException for request or response errors.
-   */
   fun getExchange(pfiDid: String, requesterDid: Did, exchangeId: String): Exchange {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/exchanges/$exchangeId"

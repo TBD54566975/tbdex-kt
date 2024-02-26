@@ -87,7 +87,7 @@ class Rfq private constructor(
       externalId: String? = null,
       private: Map<String, Any>? = null
     ): Rfq {
-      val id = TypeId.generate(MessageKind.rfq.name)
+      val id = TypeId.generate(MessageKind.rfq.name).toString()
       val metadata = MessageMetadata(
         kind = MessageKind.rfq,
         to = to,

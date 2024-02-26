@@ -20,7 +20,6 @@ import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
-import tbdex.sdk.protocol.serialization.TypeIdModule
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
@@ -33,7 +32,6 @@ class GetExchangesTest : ServerTest() {
       install(ContentNegotiation) {
         jackson {
           registerModule(JavaTimeModule())
-          registerModules(TypeIdModule())
           registerKotlinModule()
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)
           findAndRegisterModules()
