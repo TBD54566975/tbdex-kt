@@ -2,15 +2,12 @@ package tbdex.sdk.httpclient
 
 import de.fxlae.typeid.TypeId
 import junit.framework.TestCase.assertEquals
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
-import tbdex.sdk.httpclient.models.CreateExchangeRequest
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.models.Quote

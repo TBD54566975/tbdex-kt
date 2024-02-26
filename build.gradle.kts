@@ -46,8 +46,8 @@ buildscript {
 }
 
 allprojects {
-
   group = "xyz.block"
+  tasks.findByName("wrapper")?.enabled = false
 
   configurations.all {
     /**
