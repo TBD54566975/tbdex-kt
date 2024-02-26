@@ -10,11 +10,9 @@ import de.fxlae.typeid.TypeId
  *
  * @param id The exchange ID string that needs to be validated. It is expected to follow the structure of a [TypeId].
  *
- * @throws IllegalArgumentException If the `id` cannot be parsed into a [TypeId], indicating that the `id`
- * does not conform to the expected structure or format.
+ * @throws IllegalArgumentException If the `id` cannot be parsed into a [TypeId].
  *
- * @throws IllegalStateException If the parsed [TypeId] does not have the "rfq" prefix, indicating that the `id`
- * does not meet the specific validation criteria required for exchange IDs.
+ * @throws IllegalStateException If the parsed [TypeId] does not have the "rfq" prefix.
  *
  * Usage example:
  * ```
