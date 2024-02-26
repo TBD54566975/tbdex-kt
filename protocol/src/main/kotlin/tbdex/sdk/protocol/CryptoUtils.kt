@@ -107,8 +107,7 @@ object CryptoUtils {
     Crypto.verify(
       publicKey = publicKeyJwk,
       signedPayload = jws.signingInput,
-      signature = jws.signature.decode(),
-      algorithm = jws.header.algorithm
+      signature = jws.signature.decode()
     )
   }
 
