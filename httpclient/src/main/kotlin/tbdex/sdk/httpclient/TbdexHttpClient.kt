@@ -1,6 +1,7 @@
 package tbdex.sdk.httpclient
 
 import com.fasterxml.jackson.module.kotlin.convertValue
+import de.fxlae.typeid.TypeId
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -86,13 +87,16 @@ object TbdexHttpClient {
     val kind = message.metadata.kind
 
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
-    val url: String = if (kind == MessageKind.rfq) {
-      "$pfiServiceEndpoint/exchanges/$exchangeId"
-    } else {
-      "$pfiServiceEndpoint/exchanges/$exchangeId/$kind"
-    }
 
-    val body: RequestBody = Json.stringify(message).toRequestBody(jsonMediaType)
+    val body: RequestBody
+    val url: String
+    if (kind == MessageKind.rfq) {
+      body = Json.stringify(CreateExchangeRequest(message as Rfq)).toRequestBody(jsonMediaType)
+      url = "$pfiServiceEndpoint/exchanges/$exchangeId"
+    } else {
+      body = Json.stringify(message).toRequestBody(jsonMediaType)
+      url = "$pfiServiceEndpoint/exchanges/$exchangeId/$kind"
+    }
 
     val request = buildRequest(url, body)
 
@@ -137,6 +141,19 @@ object TbdexHttpClient {
    */
   fun createExchange(message: Rfq, replyTo: String) {
     sendMessage(message, replyTo)
+  }
+
+  /**
+   * Fetches a specific exchange identified by its ID from the PFI.
+   *
+   * @param pfiDid The decentralized identifier of the PFI.
+   * @param requesterDid The decentralized identifier of the entity requesting the exchange.
+   * @param exchangeId The unique identifier of the exchange to be fetched.
+   * @return An [Exchange] containing the requested exchange.
+   * @throws TbdexResponseException for request or response errors.
+   */
+  fun getExchange(pfiDid: String, requesterDid: Did, exchangeId: TypeId): Exchange {
+    return this.getExchange(pfiDid, requesterDid, exchangeId.toString())
   }
 
   /**

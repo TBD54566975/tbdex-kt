@@ -6,14 +6,15 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.net.URL
 
 plugins {
-  id("org.jetbrains.kotlin.jvm") version "1.9.0"
-  id("java-library")
+  id("org.jetbrains.kotlin.jvm") version "1.9.22"
+  id("base")
   id("io.gitlab.arturbosch.detekt") version "1.23.1"
   `maven-publish`
   id("org.jetbrains.dokka") version "1.9.0"
   id("org.jetbrains.kotlinx.kover") version "0.7.3"
   signing
   id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
+  id("version-catalog")
 }
 
 repositories {
@@ -27,9 +28,60 @@ dependencies {
   detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
 }
 
+/**
+ * Dependency forcing for build dependencies; this is separate from the code
+ * dependencies below in the "allprojects" block because it concerns the
+ * build itself.
+ *
+ * "allprojects" block below has documentation detailing why forced resolution
+ * strategies are necessary.
+ */
+buildscript {
+  configurations.all {
+    resolutionStrategy {
+      // Addresss https://github.com/TBD54566975/tbdex-kt/issues/167
+      force("com.fasterxml.woodstox:woodstox-core:6.4.0")
+    }
+  }
+}
+
 allprojects {
   group = "xyz.block"
   tasks.findByName("wrapper")?.enabled = false
+
+  configurations.all {
+    /**
+     * In this section we address build issues including security vulnerabilities
+     * in transitive dependencies we don't explicitly declare in
+     * `gradle/libs.versions.toml`. Forced actions taken here will override any
+     * declarations we make, so use with care. Also note: these are in place for a
+     * point in time. As we maintain this software, the manual forced resolution we do
+     * here may:
+     *
+     * 1) No longer be necessary (if we have removed a dependency path leading to dep)
+     * 2) Break an upgrade (if we upgrade a dependency and this forces a lower version
+     *    of a transitive dependency it brings in)
+     *
+     * So we need to exercise care here, and, when upgrading our deps, check to see if
+     * these forces aren't breaking things.
+     *
+     * When adding forces here, please reference the issue which explains why we
+     * needed to do this; it will help future maintainers understand if the force
+     * is still valid, should be removed, or handled in another way.
+     *
+     * When in doubt, ask! :)
+     */
+    resolutionStrategy {
+      // Addresss https://github.com/TBD54566975/tbdex-kt/issues/167
+      force("com.fasterxml.woodstox:woodstox-core:6.4.0")
+      // Addresss https://github.com/TBD54566975/tbdex-kt/issues/168
+      force("com.google.guava:guava:32.0.0-android")
+      // Addresss https://github.com/TBD54566975/tbdex-kt/issues/169
+      force("com.google.protobuf:protobuf-javalite:3.19.6")
+      // Addresses https://github.com/TBD54566975/tbdex-kt/issues/170
+      force("com.squareup.okio:okio:3.6.0")
+    }
+  }
 }
 
 subprojects {
@@ -44,6 +96,7 @@ subprojects {
     plugin("org.jetbrains.dokka")
     plugin("org.jetbrains.kotlinx.kover")
     plugin("signing")
+    plugin("version-catalog")
   }
 
   tasks.withType<Detekt>().configureEach {
@@ -79,7 +132,7 @@ subprojects {
       create<MavenPublication>(publicationName) {
         groupId = project.group.toString()
         artifactId = name
-        description = "Kotlin SDK for tbdex functionality"
+        description = name
         version = project.property("version").toString()
         from(components["java"])
       }
@@ -88,7 +141,7 @@ subprojects {
         pom {
           name = publicationName
           packaging = "jar"
-          description.set("tbdex kotlin SDK")
+          description.set("tbDEX SDK for the JVM")
           url.set("https://github.com/TBD54566975/tbdex-kt")
           inceptionYear.set("2023")
           licenses {
@@ -168,14 +221,14 @@ publishing {
     create<MavenPublication>(rootProject.name) {
       groupId = project.group.toString()
       artifactId = name
-      description = "Kotlin SDK for tbdex functionality"
+      description = name
       version = project.property("version").toString()
       from(components["java"])
 
       pom {
-        packaging = "jar"
-        name = project.name
-        description.set("tbdex kotlin SDK")
+        packaging = "pom"
+        name = "tbDEX SDK for the JVM"
+        description.set("tbDEX SDK for the JVM")
         url.set("https://github.com/TBD54566975/tbdex-kt")
         inceptionYear.set("2023")
         licenses {
