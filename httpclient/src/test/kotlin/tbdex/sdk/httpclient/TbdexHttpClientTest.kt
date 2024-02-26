@@ -91,7 +91,7 @@ class TbdexHttpClientTest {
 
     server.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_ACCEPTED))
 
-    val rfq = TestData.getRfq(pfiDid.uri, TypeId.generate("offering").toString())
+    val rfq = TestData.getRfq(pfiDid.uri)
     assertDoesNotThrow { TbdexHttpClient.sendMessage(rfq) }
 
     val request1 = server.takeRequest()
