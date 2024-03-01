@@ -66,9 +66,9 @@ class TbdexHttpServerConfig(
  *
  * @property config The configuration for the server, including port and optional APIs.
  */
-class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
-  private val getCallbacks: MutableMap<String, GetCallback> = mutableMapOf()
-  private val submitCallbacks: MutableMap<String, SubmitCallback> = mutableMapOf()
+class TbdexHttpServer(val config: TbdexHttpServerConfig) {
+  val getCallbacks: MutableMap<String, GetCallback> = mutableMapOf()
+  val submitCallbacks: MutableMap<String, SubmitCallback> = mutableMapOf()
   private var embedded = embeddedServer(Netty, port = config.port) {
     configure(this)
   }
@@ -96,8 +96,9 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
     app.routing {
       get("/") {
         call.respond(
-          HttpStatusCode.OK, "Please use the tbdex protocol to communicate with this server " +
-                  "or a suitable library: https://github.com/TBD54566975/tbdex-protocol"
+          HttpStatusCode.OK, "Please use the tbdex protocol " +
+          "via a suitable library to communicate with this server: " +
+          "https://github.com/TBD54566975/tbdex-protocol"
         )
       }
 
