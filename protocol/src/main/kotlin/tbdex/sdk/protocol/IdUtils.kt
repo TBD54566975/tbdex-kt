@@ -23,6 +23,7 @@ import de.fxlae.typeid.TypeId
  * }
  * ```
  */
+@Suppress("SwallowedException")
 fun validateExchangeId(id: String) {
   try {
     val typeId = TypeId.parse(id)

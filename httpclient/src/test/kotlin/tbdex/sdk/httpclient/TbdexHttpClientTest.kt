@@ -107,7 +107,7 @@ class TbdexHttpClientTest {
 
     server.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_ACCEPTED))
 
-    val rfq = TestData.getRfq(pfiDid.uri, TypeId.generate("offering").toString())
+    val rfq = TestData.getRfq(pfiDid.uri)
     assertDoesNotThrow { TbdexHttpClient.sendMessage(rfq, "https://tbdex.io/callback") }
   }
 
@@ -116,7 +116,7 @@ class TbdexHttpClientTest {
 
     server.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_ACCEPTED))
 
-    val rfq = TestData.getRfq(pfiDid.uri, TypeId.generate("offering").toString())
+    val rfq = TestData.getRfq(pfiDid.uri)
     assertDoesNotThrow { TbdexHttpClient.createExchange(rfq, "https://tbdex.io/callback") }
   }
 
@@ -144,7 +144,7 @@ class TbdexHttpClientTest {
           .setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST)
       )
 
-    val rfq = TestData.getRfq(pfiDid.uri, TypeId.generate("offering").toString())
+    val rfq = TestData.getRfq(pfiDid.uri)
     val exception = assertThrows<TbdexResponseException> {
       TbdexHttpClient.sendMessage(rfq)
     }
@@ -176,7 +176,7 @@ class TbdexHttpClientTest {
           .setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST)
       )
 
-    val rfq = TestData.getRfq(pfiDid.uri, TypeId.generate("offering").toString())
+    val rfq = TestData.getRfq(pfiDid.uri)
     val exception = assertThrows<TbdexResponseException> {
       TbdexHttpClient.createExchange(rfq, "https://tbdex.io/callback")
     }
