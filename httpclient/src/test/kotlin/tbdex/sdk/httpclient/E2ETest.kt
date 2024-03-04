@@ -1,7 +1,6 @@
 package tbdex.sdk.httpclient
 
 import com.nimbusds.jose.jwk.JWK
-import de.fxlae.typeid.TypeId
 import foundation.identity.did.Service
 import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.GetExchangesFilter
@@ -127,7 +126,7 @@ class E2ETest {
     println("Sending order against Quote with exchangeId of ${order.metadata.exchangeId}")
 
     try {
-      client.sendMessage(order)
+      client.submitOrder(order)
     } catch (e: TbdexResponseException) {
       throw AssertionError(
         "Error returned from sending Order. " +

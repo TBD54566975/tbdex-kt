@@ -1,7 +1,6 @@
 package tbdex.sdk.httpclient
 
 import com.fasterxml.jackson.module.kotlin.convertValue
-import de.fxlae.typeid.TypeId
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -16,9 +15,11 @@ import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
 import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.Validator
+import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
+import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.serialization.Json.jsonMapper
@@ -72,75 +73,100 @@ object TbdexHttpClient {
     }
   }
 
+  private fun sendMessage(pfiDid: String, path: String, requestBody: RequestBody) {
+
+    val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
+    val url = pfiServiceEndpoint + path
+
+    val request = buildRequest(url, requestBody)
+
+    println("Attempting to send rfq message to: ${request.url}")
+
+    executeRequest(request)
+  }
+
   /**
-   * Sends a message to the PFI. You can also use this message to create an exchange without a replyTo URL.
+   * Send RFQ message to the PFI.
    *
-   * @param message The message to send.
+   * @param rfq The RFQ to send
+   * @param replyTo The callback URL for PFI to send messages to.
    *
    * @throws TbdexResponseException for response errors.
    */
-  fun sendMessage(message: Message) {
-    validateMessage(message)
+  fun createExchange(rfq: Rfq) {
+    validateMessage(rfq)
 
-    val pfiDid = message.metadata.to
-    val exchangeId = message.metadata.exchangeId
-    val kind = message.metadata.kind
+    val pfiDid = rfq.metadata.to
+    val exchangeId = rfq.metadata.exchangeId
 
-    val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
+    val path = "/exchanges/$exchangeId"
 
-    val body: RequestBody
-    val url: String
-    if (kind == MessageKind.rfq) {
-      body = Json.stringify(CreateExchangeRequest(message as Rfq)).toRequestBody(jsonMediaType)
-      url = "$pfiServiceEndpoint/exchanges/$exchangeId"
-    } else {
-      body = Json.stringify(message).toRequestBody(jsonMediaType)
-      url = "$pfiServiceEndpoint/exchanges/$exchangeId/$kind"
-    }
+    val body: RequestBody = Json.stringify(CreateExchangeRequest(rfq))
+      .toRequestBody(jsonMediaType)
 
-    val request = buildRequest(url, body)
-
-    println("Attempting to send $kind message to: ${request.url}")
-
-    executeRequest(request)
+    this.sendMessage(pfiDid, path, body)
   }
 
   /**
    * Send RFQ message and include a replyTo URL for the PFI to send a callback to.
    *
-   * @param message The message to send (is of type RFQ)
+   * @param rfq The RFQ to send
    * @param replyTo The callback URL for PFI to send messages to.
    *
    * @throws TbdexResponseException for response errors.
-   *
    */
-  fun sendMessage(message: Rfq, replyTo: String) {
-    validateMessage(message)
+  fun createExchange(rfq: Rfq, replyTo: String) {
+    validateMessage(rfq)
 
-    val pfiDid = message.metadata.to
-    val exchangeId = message.metadata.exchangeId
+    val pfiDid = rfq.metadata.to
+    val exchangeId = rfq.metadata.exchangeId
 
-    val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
-    val url = "$pfiServiceEndpoint/exchanges/$exchangeId"
+    val path = "/exchanges/$exchangeId"
 
-    val body: RequestBody = Json.stringify(CreateExchangeRequest(message, replyTo))
+    val body: RequestBody = Json.stringify(CreateExchangeRequest(rfq, replyTo))
       .toRequestBody(jsonMediaType)
 
-    val request = buildRequest(url, body)
-
-    println("Attempting to send Rfq message to: ${request.url}")
-
-    executeRequest(request)
+    this.sendMessage(pfiDid, path, body)
   }
 
   /**
-   * Aliased method for sendMessage(Rfq, String) to create an exchange by sending an RFQ with a replyTo URL.
+   * Send Order message to the PFI.
    *
-   * @param message The message to send (is of type RFQ)
-   * @param replyTo The callback URL for PFI to send messages to.
+   * @param order The Order to send
+   *
+   * @throws TbdexResponseException for response errors.
    */
-  fun createExchange(message: Rfq, replyTo: String) {
-    sendMessage(message, replyTo)
+  fun submitOrder(order: Order) {
+    validateMessage(order)
+
+    val pfiDid = order.metadata.to
+    val exchangeId = order.metadata.exchangeId
+    val path = "/exchanges/$exchangeId/order"
+
+    val body: RequestBody = Json.stringify(order)
+      .toRequestBody(jsonMediaType)
+
+    this.sendMessage(pfiDid, path, body)
+  }
+
+  /**
+   * Send Order message to the PFI.
+   *
+   * @param order The Order to send
+   *
+   * @throws TbdexResponseException for response errors.
+   */
+  fun submitClose(close: Close) {
+    validateMessage(close)
+
+    val pfiDid = close.metadata.to
+    val exchangeId = close.metadata.exchangeId
+    val path = "/exchanges/$exchangeId/close"
+
+    val body: RequestBody = Json.stringify(close)
+      .toRequestBody(jsonMediaType)
+
+    this.sendMessage(pfiDid, path, body)
   }
 
   /**
