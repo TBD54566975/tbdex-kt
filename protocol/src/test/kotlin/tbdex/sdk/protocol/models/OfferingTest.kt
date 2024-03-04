@@ -3,6 +3,7 @@ package tbdex.sdk.protocol.models
 import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.startsWith
 import org.junit.jupiter.api.assertDoesNotThrow
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.serialization.Json
@@ -27,7 +28,7 @@ class OfferingTest {
 
     assertAll {
       assertThat(offering.data.description).isEqualTo("my fake offering")
-      assertThat(offering.metadata.id.prefix).isEqualTo("offering")
+      assertThat(offering.metadata.id).startsWith("offering")
     }
   }
 

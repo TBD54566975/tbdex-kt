@@ -29,7 +29,6 @@ import tbdex.sdk.httpserver.models.GetKind
 import tbdex.sdk.httpserver.models.OfferingsApi
 import tbdex.sdk.httpserver.models.SubmitCallback
 import tbdex.sdk.httpserver.models.SubmitKind
-import tbdex.sdk.protocol.serialization.TypeIdModule
 import kotlin.collections.set
 
 /**
@@ -86,7 +85,6 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
     app.install(ContentNegotiation) {
       jackson {
         registerModule(JavaTimeModule())
-        registerModule(TypeIdModule())
         registerKotlinModule()
         setSerializationInclusion(JsonInclude.Include.NON_NULL)
         findAndRegisterModules()

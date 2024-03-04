@@ -4,6 +4,7 @@ import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Quote.Companion.create
+import tbdex.sdk.protocol.validateExchangeId
 import java.time.OffsetDateTime
 
 /**
@@ -36,15 +37,16 @@ class Quote private constructor(
     fun create(
       to: String,
       from: String,
-      exchangeId: TypeId,
+      exchangeId: String,
       quoteData: QuoteData,
       externalId: String? = null
     ): Quote {
+      validateExchangeId(exchangeId)
       val metadata = MessageMetadata(
         kind = MessageKind.quote,
         to = to,
         from = from,
-        id = TypeId.generate(MessageKind.quote.name),
+        id = TypeId.generate(MessageKind.quote.name).toString(),
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now(),
         externalId = externalId

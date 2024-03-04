@@ -3,6 +3,7 @@ package tbdex.sdk.protocol.models
 import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
+import tbdex.sdk.protocol.validateExchangeId
 import java.time.OffsetDateTime
 
 /**
@@ -33,12 +34,20 @@ class Close private constructor(
      * @param closeData Specific parameters relevant to a Close.
      * @return Close instance.
      */
-    fun create(to: String, from: String, exchangeId: TypeId, closeData: CloseData, externalId: String? = null): Close {
+    fun create(
+      to: String,
+      from: String,
+      exchangeId: String,
+      closeData: CloseData,
+      externalId: String? = null
+    ): Close {
+      validateExchangeId(exchangeId)
+
       val metadata = MessageMetadata(
         kind = MessageKind.close,
         to = to,
         from = from,
-        id = TypeId.generate(MessageKind.close.name),
+        id = TypeId.generate(MessageKind.close.name).toString(),
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now(),
         externalId = externalId

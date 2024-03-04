@@ -256,7 +256,7 @@ class E2ETest {
   }
 
   private fun buildRfqData(
-    firstOfferingId: TypeId,
+    firstOfferingId: String,
     vcJwt: String
   ) = RfqData(
     offeringId = firstOfferingId,

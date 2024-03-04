@@ -25,7 +25,7 @@ class IonSigningTest {
     val close = Close.create(
       to = "did:ex:pfi",
       from = did.uri,
-      exchangeId = TypeId.generate("offering"),
+      exchangeId = TypeId.generate("rfq").toString(),
       closeData = CloseData(reason = "hi")
     )
 

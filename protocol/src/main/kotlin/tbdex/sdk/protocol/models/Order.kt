@@ -4,6 +4,7 @@ import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Order.Companion.create
+import tbdex.sdk.protocol.validateExchangeId
 import java.time.OffsetDateTime
 
 /**
@@ -32,12 +33,14 @@ class Order private constructor(
      * @param exchangeId ID of the exchange.
      * @return Order instance.
      */
-    fun create(to: String, from: String, exchangeId: TypeId, externalId: String? = null): Order {
+    fun create(to: String, from: String, exchangeId: String, externalId: String? = null): Order {
+      validateExchangeId(exchangeId)
+
       val metadata = MessageMetadata(
         kind = MessageKind.order,
         to = to,
         from = from,
-        id = TypeId.generate(MessageKind.order.name),
+        id = TypeId.generate(MessageKind.order.name).toString(),
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now(),
         externalId = externalId

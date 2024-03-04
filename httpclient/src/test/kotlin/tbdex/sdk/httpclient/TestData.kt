@@ -75,7 +75,7 @@ object TestData {
   }
   fun getRfq(
     to: String = PFI_DID.uri,
-    offeringId: TypeId = TypeId.generate(ResourceKind.offering.name),
+    offeringId: String = TypeId.generate(ResourceKind.offering.name).toString(),
     claims: List<String> = emptyList()
   ): Rfq {
     val rfq = Rfq.create(
@@ -94,7 +94,7 @@ object TestData {
   }
   fun getQuote(): Quote {
     val quote = Quote.create(
-      ALICE_DID.uri, PFI_DID.uri, TypeId.generate(MessageKind.rfq.name),
+      ALICE_DID.uri, PFI_DID.uri, TypeId.generate(MessageKind.rfq.name).toString(),
       QuoteData(
         expiresAt = OffsetDateTime.now().plusDays(1),
         payin = QuoteDetails("AUD", "10.00", "0.0"),

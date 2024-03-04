@@ -32,7 +32,6 @@ object Json {
   val jsonMapper: ObjectMapper = ObjectMapper()
     .registerKotlinModule()
     .findAndRegisterModules()
-    .registerModule(TypeIdModule())
     .setSerializationInclusion(JsonInclude.Include.NON_NULL)
     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 

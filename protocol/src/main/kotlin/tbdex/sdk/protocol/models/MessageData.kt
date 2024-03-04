@@ -14,7 +14,7 @@ sealed interface MessageData : Data
  * A data class implementing [MessageData] that represents the contents of an [Rfq].
  */
 class RfqData(
-  val offeringId: TypeId,
+  val offeringId: String,
   val payinAmount: String,
   val payinMethod: SelectedPaymentMethod,
   val payoutMethod: SelectedPaymentMethod,

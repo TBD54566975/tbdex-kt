@@ -3,6 +3,7 @@ package tbdex.sdk.protocol.models
 import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.startsWith
 import de.fxlae.typeid.TypeId
 import org.junit.jupiter.api.assertDoesNotThrow
 import tbdex.sdk.protocol.TestData
@@ -17,7 +18,7 @@ class QuoteTest {
     val quote = Quote.create(
       to = "pfi",
       from = "alice",
-      exchangeId = TypeId.generate(MessageKind.rfq.name),
+      exchangeId = TypeId.generate(MessageKind.rfq.name).toString(),
       quoteData = QuoteData(
         expiresAt = OffsetDateTime.now().plusDays(1),
         payin = QuoteDetails("AUD", "10.00", "0.0"),
@@ -26,7 +27,7 @@ class QuoteTest {
     )
 
     assertAll {
-      assertThat(quote.metadata.id.prefix).isEqualTo("quote")
+      assertThat(quote.metadata.id).startsWith("quote")
       assertThat(quote.data.payin.amount).isEqualTo("10.00")
     }
   }

@@ -30,7 +30,7 @@ enum class ResourceKind {
 class ResourceMetadata(
   val kind: ResourceKind,
   val from: String,
-  val id: TypeId,
+  val id: String,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val createdAt: OffsetDateTime,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")

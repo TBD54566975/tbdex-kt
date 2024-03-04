@@ -2,6 +2,7 @@ package tbdex.sdk.protocol.models
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.startsWith
 import de.fxlae.typeid.TypeId
 import org.junit.jupiter.api.assertDoesNotThrow
 import tbdex.sdk.protocol.TestData
@@ -15,10 +16,10 @@ class OrderTest {
     val order = Order.create(
       to = "pfi",
       from = "alice",
-      exchangeId = TypeId.generate(MessageKind.rfq.name)
+      exchangeId = TypeId.generate(MessageKind.rfq.name).toString()
     )
 
-    assertThat(order.metadata.id.prefix).isEqualTo("order")
+    assertThat(order.metadata.id).startsWith("order")
   }
 
   @Test

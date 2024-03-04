@@ -4,6 +4,7 @@ import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.OrderStatus.Companion.create
+import tbdex.sdk.protocol.validateExchangeId
 import java.time.OffsetDateTime
 
 /**
@@ -36,15 +37,17 @@ class OrderStatus private constructor(
     fun create(
       to: String,
       from: String,
-      exchangeId: TypeId,
+      exchangeId: String,
       orderStatusData: OrderStatusData,
       externalId: String? = null
     ): OrderStatus {
+      validateExchangeId(exchangeId)
+
       val metadata = MessageMetadata(
         kind = MessageKind.orderstatus,
         to = to,
         from = from,
-        id = TypeId.generate(MessageKind.orderstatus.name),
+        id = TypeId.generate(MessageKind.orderstatus.name).toString(),
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now(),
         externalId = externalId

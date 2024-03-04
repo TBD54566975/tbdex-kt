@@ -92,7 +92,7 @@ object TestData {
     )
 
   fun getRfq(
-    offeringId: TypeId = TypeId.generate(ResourceKind.offering.name),
+    offeringId: String = TypeId.generate(ResourceKind.offering.name).toString(),
     claims: List<String> = emptyList()
   ) = Rfq.create(
     to = PFI_DID.uri,
@@ -112,7 +112,7 @@ object TestData {
   )
 
   fun getQuote() = Quote.create(
-    ALICE_DID.uri, PFI_DID.uri, TypeId.generate(MessageKind.rfq.name),
+    ALICE_DID.uri, PFI_DID.uri, TypeId.generate(MessageKind.rfq.name).toString(),
     QuoteData(
       expiresAt = OffsetDateTime.now().plusDays(1),
       payin = QuoteDetails("AUD", "10.00", "0.01", PaymentInstruction(
@@ -129,26 +129,26 @@ object TestData {
   fun getClose() = Close.create(
     to = ALICE_DID.uri,
     from = PFI_DID.uri,
-    exchangeId = TypeId.generate(MessageKind.rfq.name),
+    exchangeId = TypeId.generate(MessageKind.rfq.name).toString(),
     closeData = CloseData("test reason")
   )
 
   fun getOrder() = Order.create(
     to = PFI_DID.uri,
     from = ALICE_DID.uri,
-    exchangeId = TypeId.generate(MessageKind.rfq.name)
+    exchangeId = TypeId.generate(MessageKind.rfq.name).toString()
   )
 
   fun getOrderStatus() = OrderStatus.create(
     to = ALICE_DID.uri,
     from = PFI_DID.uri,
-    exchangeId = TypeId.generate(MessageKind.rfq.name),
+    exchangeId = TypeId.generate(MessageKind.rfq.name).toString(),
     orderStatusData = OrderStatusData("PENDING")
   )
 
   fun getOrderStatusWithInvalidDid(): OrderStatus {
     val os = OrderStatus.create(
-      "alice", "pfi", TypeId.generate(MessageKind.rfq.name), OrderStatusData("PENDING")
+      "alice", "pfi", TypeId.generate(MessageKind.rfq.name).toString(), OrderStatusData("PENDING")
     )
 
     os.sign(ALICE_DID)

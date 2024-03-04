@@ -13,7 +13,6 @@ import tbdex.sdk.httpserver.TbdexHttpServer
 import tbdex.sdk.httpserver.TbdexHttpServerConfig
 import tbdex.sdk.httpserver.models.FakeExchangesApi
 import tbdex.sdk.httpserver.models.FakeOfferingsApi
-import tbdex.sdk.protocol.serialization.TypeIdModule
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 open class ServerTest {
@@ -42,7 +41,6 @@ open class ServerTest {
       install(ContentNegotiation) {
         jackson {
           registerModule(JavaTimeModule())
-          registerModules(TypeIdModule())
           registerKotlinModule()
           setSerializationInclusion(JsonInclude.Include.NON_NULL)
           findAndRegisterModules()

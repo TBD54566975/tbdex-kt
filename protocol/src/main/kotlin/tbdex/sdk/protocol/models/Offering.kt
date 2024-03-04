@@ -44,7 +44,7 @@ class Offering private constructor(
       val metadata = ResourceMetadata(
         kind = ResourceKind.offering,
         from = from,
-        id = TypeId.generate(ResourceKind.offering.name),
+        id = TypeId.generate(ResourceKind.offering.name).toString(),
         createdAt = now,
         updatedAt = now
       )

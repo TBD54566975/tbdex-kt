@@ -2,6 +2,7 @@ package tbdex.sdk.protocol.models
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.startsWith
 import de.fxlae.typeid.TypeId
 import org.junit.jupiter.api.assertDoesNotThrow
 import tbdex.sdk.protocol.TestData
@@ -15,12 +16,12 @@ class OrderStatusTest {
     val orderStatus = OrderStatus.create(
       to = "pfi",
       from = "alice",
-      exchangeId = TypeId.generate(MessageKind.rfq.name),
+      exchangeId = TypeId.generate(MessageKind.rfq.name).toString(),
       orderStatusData = OrderStatusData("my status")
     )
 
     assertk.assertAll {
-      assertThat(orderStatus.metadata.id.prefix).isEqualTo("orderstatus")
+      assertThat(orderStatus.metadata.id).startsWith("orderstatus")
       assertThat(orderStatus.data.orderStatus).isEqualTo("my status")
     }
   }
