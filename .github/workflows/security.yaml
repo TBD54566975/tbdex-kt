@@ -44,6 +44,7 @@ jobs:
           path: fossa-test.json
 
   fossa-security-check:
+    needs: fossa-scan
     runs-on: ubuntu-latest
 
     steps:
