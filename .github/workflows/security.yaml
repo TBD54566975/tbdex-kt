@@ -39,8 +39,25 @@ jobs:
         env:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
         run: |
-          fossa test --format json | tee fossa-test.json 1>&2
-          echo "results=$(cat fossa-test.json)" >> $GITHUB_OUTPUT
+          MAIN_BRANCH="refs/heads/main"
+          CURRENT_BRANCH="${{ github.ref }}"
+          DIFF_OPTION=""
+      
+          if [ "$CURRENT_BRANCH" != "$MAIN_BRANCH" ]; then
+            git fetch origin main
+            MAIN_SHA=$(git rev-parse origin/main)
+            DIFF_OPTION="--diff $MAIN_SHA"
+          fi
+      
+          fossa test --format json $DIFF_OPTION | tee fossa-test.json 1>&2
+          
+          FOSSA_RESULTS=$(cat fossa-test.json)
+          if [ -z "$FOSSA_RESULTS" ]; then
+            echo "Failed to generate FOSSA Scanning Results"
+            exit 1
+          fi
+          
+          echo "results=$FOSSA_RESULTS" >> $GITHUB_OUTPUT
 
   fossa-security-check:
     name: FOSSA Security Check
