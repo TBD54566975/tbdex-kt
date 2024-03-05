@@ -19,6 +19,8 @@ on:
 jobs:
   fossa-scan:
     runs-on: ubuntu-latest
+    outputs:
+      fossaScanResults: ${{ steps.fossa_test.outputs.results }}
 
     steps:
       - name: Checkout
@@ -32,34 +34,41 @@ jobs:
           api-key: ${{ secrets.FOSSA_API_KEY }}
 
       - name: Run FOSSA Test
+        id: fossa_test
         env:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
         run: |
           fossa test --format json | tee fossa-test.json 1>&2
-
-      - name: Upload FOSSA Test Results
-        uses: actions/upload-artifact@v2
-        with:
-          name: fossa-test
-          path: fossa-test.json
+          echo "results=$(cat fossa-test.json)" >> $GITHUB_OUTPUT
 
   fossa-security-check:
     needs: fossa-scan
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download FOSSA Test Results
-        uses: actions/download-artifact@v2
-        with:
-          name: fossa-test
-          path: fossa-test.json
-
-      - name: Check Security Vulns
+      - name: Check Security Issues
         run: |
-          VULNS=$(cat fossa-test.json | jq '.issues | map(select(.type == "vulnerability")) | length')
-          if [ $VULNS -gt 0 ]; then
+          ISSUES=$(echo '${{ needs.fossa-scan.outputs.fossaScanResults }}' | jq '.issues | map(select(.type | IN("unlicensed_dependency", "policy_conflict", "policy_flag") | not))')
+          ISSUES_LEN=$(echo $ISSUES | jq length)
+          if [ $ISSUES_LEN -gt 0 ]; then
             echo "FOSSA Security Check failed"
-            echo "Vulnerabilities found: $VULNS"
+            echo "Issues found:\n$ISSUES"
+            cat fossa-test.json
+            exit 1
+          fi
+
+  fossa-license-check:
+    needs: fossa-scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check License Issues
+        run: |
+          ISSUES=$(echo '${{ needs.fossa-scan.outputs.fossaScanResults }}' | jq '.issues | map(select(.type | IN("unlicensed_dependency", "policy_conflict", "policy_flag")))')
+          ISSUES_LEN=$(echo $ISSUES | jq length)
+          if [ $ISSUES_LEN -gt 0 ]; then
+            echo "FOSSA License Check failed"
+            echo "Issues found: $ISSUES"
             cat fossa-test.json
             exit 1
           fi
