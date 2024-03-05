@@ -72,6 +72,7 @@ dependencies {
   testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
   testImplementation("io.ktor:ktor-server-test-host")
   testImplementation("io.ktor:ktor-client-content-negotiation")
+  testImplementation("org.mockito.kotlin:mockito-kotlin:5.11.0")
 }
 
 tasks.test {

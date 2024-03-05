@@ -3,8 +3,11 @@ package tbdex.sdk.httpserver.models
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import tbdex.sdk.httpclient.models.ErrorDetail
+import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
+import tbdex.sdk.protocol.models.Order
+import tbdex.sdk.protocol.models.Rfq
 
 /**
  * Represents a callback function for handling GET requests with specified filters.
@@ -13,7 +16,7 @@ import tbdex.sdk.protocol.models.Offering
  * @param Filter The filter used in the GET request.
  * @return Any result returned from the callback.
  */
-typealias GetCallback = suspend (ApplicationCall, Filter) -> Any
+//typealias GetCallback = suspend (ApplicationCall, Filter) -> Any
 
 /**
  * Represents a callback function for handling submit requests with received message and associated offering.
@@ -22,21 +25,25 @@ typealias GetCallback = suspend (ApplicationCall, Filter) -> Any
  * @param Message the message received in the request to be processed further by the callback function
  * @param Offering The offering associated with the submitted message.
  */
-typealias SubmitCallback = suspend (ApplicationCall, Message, Offering?) -> Unit
+//typealias SubmitCallback = suspend (ApplicationCall, Message, Offering?) -> Unit
+
+typealias CreateExchangeCallback = suspend (ApplicationCall, Rfq, Offering) -> Unit
+typealias SubmitOrderCallback = suspend (ApplicationCall, Order) -> Unit
+typealias SubmitCloseCallback = suspend (ApplicationCall, Close) -> Unit
+typealias GetExchangesCallback = suspend (ApplicationCall, GetExchangesFilter) -> Any
+typealias GetOfferingsCallback = suspend (ApplicationCall, GetOfferingsFilter) -> Any
 
 /**
- * Enum representing the kinds of messages that can be submitted.
+ * Set of callback functions that will be invoked when the respective endpoint is called
+ * with a valid request.
  */
-enum class SubmitKind {
-  rfq, order, close
-}
-
-/**
- * Enum representing the kinds of resources that can be retrieved.
- */
-enum class GetKind {
-  exchanges, offerings
-}
+data class TbdexHttpServerCallbacks(
+  var onCreateExchange: CreateExchangeCallback? = null,
+  var onSubmitOrder: SubmitOrderCallback? = null,
+  var onSubmitClose: SubmitCloseCallback? = null,
+  var onGetExchanges: GetExchangesCallback? = null,
+  var onGetOfferings: GetOfferingsCallback? = null,
+)
 
 /**
  * Represents a filter for retrieving offerings based on specific criteria.

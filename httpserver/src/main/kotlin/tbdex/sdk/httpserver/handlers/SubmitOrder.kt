@@ -8,7 +8,7 @@ import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpserver.models.CallbackError
 import tbdex.sdk.httpserver.models.ErrorResponse
 import tbdex.sdk.httpserver.models.ExchangesApi
-import tbdex.sdk.httpserver.models.SubmitCallback
+import tbdex.sdk.httpserver.models.SubmitOrderCallback
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Order
@@ -26,9 +26,9 @@ import tbdex.sdk.protocol.models.Quote
 suspend fun submitOrder(
   call: ApplicationCall,
   exchangesApi: ExchangesApi,
-  callback: SubmitCallback?
+  callback: SubmitOrderCallback?
 ) {
-  val message: Order?
+  val message: Order
 
   try {
     message = Message.parse(call.receiveText()) as Order
@@ -75,7 +75,7 @@ suspend fun submitOrder(
   }
 
   try {
-    callback.invoke(call, message, null)
+    callback.invoke(call, message)
   } catch (e: CallbackError) {
     call.respond(e.statusCode, ErrorResponse(e.details))
     return
