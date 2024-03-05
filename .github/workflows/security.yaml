@@ -56,10 +56,10 @@ jobs:
 
       - name: Check Security Vulns
         run: |
-          VULNS=$(cat test.json | jq '.issues | map(select(.type == "vulnerability")) | length')
+          VULNS=$(cat fossa-test.json | jq '.issues | map(select(.type == "vulnerability")) | length')
           if [ $VULNS -gt 0 ]; then
             echo "FOSSA Security Check failed"
             echo "Vulnerabilities found: $VULNS"
-            cat test.json
+            cat fossa-test.json
             exit 1
           fi
