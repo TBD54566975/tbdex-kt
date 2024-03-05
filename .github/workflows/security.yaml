@@ -1,7 +1,7 @@
 name: Security Scanning
 
 on:
-  pull_request_target:
+  pull_request: # TODO: _target:
     branches:
       - main
 
@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  fossa:
+  fossa-scan:
     runs-on: ubuntu-latest
 
     steps:
@@ -32,7 +32,33 @@ jobs:
           api-key: ${{ secrets.FOSSA_API_KEY }}
 
       - name: Run FOSSA Test
-        uses: fossas/fossa-action@main
+        env:
+          FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
+        run: |
+          fossa test --format json | tee fossa-test.json 1>&2
+
+      - name: Upload FOSSA Test Results
+        uses: actions/upload-artifact@v2
         with:
-          api-key: ${{ secrets.FOSSA_API_KEY }}
-          run-tests: true
+          name: fossa-test
+          path: fossa-test.json
+
+  fossa-security-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download FOSSA Test Results
+        uses: actions/download-artifact@v2
+        with:
+          name: fossa-test
+          path: fossa-test.json
+
+      - name: Check Security Vulns
+        run: |
+          VULNS=$(cat test.json | jq '.issues | map(select(.type == "vulnerability")) | length')
+          if [ $VULNS -gt 0 ]; then
+            echo "FOSSA Security Check failed"
+            echo "Vulnerabilities found: $VULNS"
+            cat test.json
+            exit 1
+          fi
