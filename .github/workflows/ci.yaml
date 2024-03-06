@@ -23,9 +23,8 @@ jobs:
       # https://cashapp.github.io/hermit/usage/ci/
       - name: Init Hermit
         uses: cashapp/activate-hermit@v1
-      - uses: actions/setup-java@v1
         with:
-          java-version: 17
+          cache: "true"
       - uses: actions/cache@v2
         with:
           path: ~/.gradle/caches
