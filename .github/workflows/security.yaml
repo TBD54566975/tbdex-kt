@@ -1,7 +1,7 @@
 name: Security and License Scans
 
 on:
-  pull_request_target:
+  pull_request: # TODO: _target:
     branches:
       - main
 
@@ -39,24 +39,25 @@ jobs:
         env:
           FOSSA_API_KEY: ${{ secrets.FOSSA_API_KEY }}
         run: |
-          MAIN_BRANCH="refs/heads/main"
-          CURRENT_BRANCH="${{ github.ref }}"
+          MAIN_BRANCH="main"
+          MAIN_BRANCH_REF="refs/heads/$MAIN_BRANCH"
+          CURRENT_BRANCH_REF="${{ github.ref }}"
           DIFF_OPTION=""
-      
-          if [ "$CURRENT_BRANCH" != "$MAIN_BRANCH" ]; then
-            git fetch origin main
-            MAIN_SHA=$(git rev-parse origin/main)
+
+          if [ "$CURRENT_BRANCH_REF" != "$MAIN_BRANCH_REF" ]; then
+            git fetch origin $MAIN_BRANCH
+            MAIN_SHA=$(git rev-parse origin/$MAIN_BRANCH)
             DIFF_OPTION="--diff $MAIN_SHA"
           fi
-      
-          fossa test --format json $DIFF_OPTION | tee fossa-test.json 1>&2
-          
+
+          fossa test --format json $DIFF_OPTION | tee fossa-test.json
+
           FOSSA_RESULTS=$(cat fossa-test.json)
           if [ -z "$FOSSA_RESULTS" ]; then
             echo "Failed to generate FOSSA Scanning Results"
             exit 1
           fi
-          
+
           echo "results=$FOSSA_RESULTS" >> $GITHUB_OUTPUT
 
   fossa-security-check:
