@@ -6,10 +6,10 @@ import io.ktor.server.request.receiveText
 import io.ktor.server.response.respond
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpserver.models.CallbackError
+import tbdex.sdk.httpserver.models.CreateExchangeCallback
 import tbdex.sdk.httpserver.models.ErrorResponse
 import tbdex.sdk.httpserver.models.ExchangesApi
 import tbdex.sdk.httpserver.models.OfferingsApi
-import tbdex.sdk.httpserver.models.SubmitCallback
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Rfq
@@ -32,7 +32,7 @@ suspend fun createExchange(
   call: ApplicationCall,
   offeringsApi: OfferingsApi,
   exchangesApi: ExchangesApi,
-  callback: SubmitCallback?
+  callback: CreateExchangeCallback?
 ) {
   val message: Rfq?
   var replyTo: String? = null

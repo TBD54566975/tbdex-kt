@@ -8,6 +8,7 @@ import io.ktor.server.testing.TestApplication
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import tbdex.sdk.httpserver.TbdexHttpServer
 import tbdex.sdk.httpserver.TbdexHttpServerConfig
@@ -17,23 +18,24 @@ import tbdex.sdk.httpserver.models.FakeOfferingsApi
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 open class ServerTest {
   lateinit var client: HttpClient
+  lateinit var tbdexServer: TbdexHttpServer
   lateinit var exchangesApi: FakeExchangesApi
   lateinit var offeringsApi: FakeOfferingsApi
 
-  private val tbdexApplication = TestApplication {
+  private var tbdexApplication = TestApplication {
     application {
       val serverConfig = TbdexHttpServerConfig(
         port = 8080,
         pfiDid = TestData.pfiDid.uri
       )
-      val tbdexServer = TbdexHttpServer(serverConfig)
-      tbdexServer.configure(this)
+      this@ServerTest.tbdexServer = TbdexHttpServer(serverConfig)
+      this@ServerTest.tbdexServer.configure(this)
       this@ServerTest.exchangesApi = tbdexServer.exchangesApi as FakeExchangesApi
       this@ServerTest.offeringsApi = tbdexServer.offeringsApi as FakeOfferingsApi
     }
   }
 
-  @BeforeAll
+  @BeforeEach
   fun setup() {
     tbdexApplication.start()
 
@@ -52,6 +54,8 @@ open class ServerTest {
   @AfterEach
   fun reset() {
     this.exchangesApi.resetExchanges()
+    this.client.close()
+    tbdexApplication.stop()
   }
 
   @AfterAll
