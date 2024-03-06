@@ -281,6 +281,40 @@ If you've already cloned the repo without `--recurse-submodules`, you can do the
 git submodule update --init
 ```
 
+# Release Guidelines
+
+## Pre-releases
+
+In Kotlin we use the SNAPSHOT convention to build and publish a pre-release package that can be consumed by customers.
+
+To kick that off:
+
+1. Open the [Publish workflow](https://github.com/TBD54566975/tbdex-kt/actions/workflows/publish.yaml), press the **Run workflow button** selecting the branch you want to generate the snapshot from.
+
+2. In the version field, insert the current version, a short meaningful identifier and the `-SNAPSHOT` prefix, ie:
+
+   - 0.11.0.pr123-SNAPSHOT
+   - 0.11.0.shortsha-SNAPSHOT
+   - 0.11.0.fixsomething-SNAPSHOT
+
+3. Run workflow!
+
+**DON'T FORGET THE `-SNAPSHOT` SUFFIX**, otherwise it will generate publish a new official release to maven registry.
+
+## Releasing New Versions
+
+To release a new version, just execute the following steps:
+
+1. Open the [Publish workflow](https://github.com/TBD54566975/tbdex-kt/actions/workflows/publish.yaml), press the **Run workflow button** and leave the main branch selected (unless its a rare case where you dont want to build the main branch for the release).
+
+2. In the version field, insert the new version to be releasedd, ie: 0.12.3-beta
+
+3. Run workflow! The package will be built and **published to maven central**, **docs will be published** (see below) and **the GitHub release will be automatically generated**!
+
+## Publishing Docs
+
+API reference documentation is automatically updated are available at [https://tbd54566975.github.io/tbdex-kt/](https://tbd54566975.github.io/tbdex-kt/) following each automatically generated release.
+
 # Other Docs
 
 * [Guidelines](./CONVENTIONS.md)
