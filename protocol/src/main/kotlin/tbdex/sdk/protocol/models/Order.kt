@@ -22,7 +22,7 @@ class Order private constructor(
   override val data: OrderData,
   override var signature: String? = null
 ) : Message() {
-  override val validNext: Set<MessageKind> = setOf(MessageKind.orderstatus, MessageKind.close)
+  override val validNext: Set<MessageKind> = setOf(MessageKind.orderstatus)
 
   companion object {
     /**
