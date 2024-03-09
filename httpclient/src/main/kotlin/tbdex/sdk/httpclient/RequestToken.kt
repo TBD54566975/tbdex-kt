@@ -3,15 +3,13 @@ package tbdex.sdk.httpclient
 import com.nimbusds.jose.JOSEObjectType
 import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JWSHeader
-import com.nimbusds.jose.jwk.JWK
 import com.nimbusds.jose.util.Base64URL
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
-import foundation.identity.did.VerificationMethod
 import web5.sdk.common.Convert
 import web5.sdk.dids.Did
 import web5.sdk.dids.DidResolvers
-import web5.sdk.dids.findAssertionMethodById
+import web5.sdk.dids.didcore.VerificationMethod
 import java.time.Instant
 import java.util.Date
 import java.util.UUID
@@ -46,18 +44,18 @@ object RequestToken {
         .didDocument?.findAssertionMethodById(assertionMethodId)
         ?: throw RequestTokenCreateException("Assertion method not found")
 
-
     // TODO: ensure that publicKeyJwk is not null
-    val publicKeyJwk = JWK.parse(assertionMethod.publicKeyJwk)
+    val publicKeyJwk = assertionMethod.publicKeyJwk
+    check(publicKeyJwk != null) { "publicKeyJwk is null" }
     val keyAlias = did.keyManager.getDeterministicAlias(publicKeyJwk)
 
     // TODO: figure out how to make more reliable since algorithm is technically not a required property of a JWK
     val algorithm = publicKeyJwk.algorithm
     val jwsAlgorithm = JWSAlgorithm.parse(algorithm.toString())
 
-    val kid = when (assertionMethod.id.isAbsolute) {
-      true -> assertionMethod.id.toString()
-      false -> "${did.uri}${assertionMethod.id}"
+    val kid = when (assertionMethod.id.startsWith("#")) {
+      true -> "${did.uri}${assertionMethod.id}"
+      false -> assertionMethod.id
     }
 
     val jwtHeader = JWSHeader.Builder(jwsAlgorithm)

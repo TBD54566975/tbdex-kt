@@ -12,16 +12,14 @@ import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.CloseData
-import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
 import web5.sdk.crypto.InMemoryKeyManager
-import web5.sdk.dids.methods.ion.CreateDidIonOptions
-import web5.sdk.dids.methods.ion.DidIon
-import web5.sdk.dids.methods.ion.models.Service
-import web5.sdk.dids.methods.jwk.DidJwk
+import web5.sdk.dids.didcore.Service
+import web5.sdk.dids.methods.dht.CreateDidDhtOptions
+import web5.sdk.dids.methods.dht.DidDht
 import web5.sdk.dids.methods.key.DidKey
 import java.net.HttpURLConnection
 import kotlin.test.Test
@@ -35,10 +33,10 @@ class TbdexHttpClientTest {
   private lateinit var server: MockWebServer
   private val aliceDid = DidKey.create(InMemoryKeyManager())
 
-  private val pfiDid = DidIon.create(
+  private val pfiDid = DidDht.create(
     InMemoryKeyManager(),
-    CreateDidIonOptions(
-      servicesToAdd = listOf(Service("123", "PFI", "http://localhost:9000"))
+    CreateDidDhtOptions(
+      services = listOf(Service("123", "PFI", listOf("http://localhost:9000")))
     )
   )
 
