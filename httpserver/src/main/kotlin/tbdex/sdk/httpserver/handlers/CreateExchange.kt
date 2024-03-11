@@ -71,7 +71,7 @@ suspend fun createExchange(
 
   val offering: Offering
   try {
-    offering = offeringsApi.getOffering(message.data.offeringId.toString())
+    offering = offeringsApi.getOffering(message.data.offeringId)
 
     message.verifyOfferingRequirements(offering)
   } catch (e: NoSuchElementException) {
@@ -90,7 +90,7 @@ suspend fun createExchange(
   }
 
   try {
-    callback.invoke(call, message, offering)
+    callback.invoke(call, message, offering, replyTo)
   } catch (e: CallbackError) {
     call.respond(e.statusCode, ErrorResponse(e.details))
     return
