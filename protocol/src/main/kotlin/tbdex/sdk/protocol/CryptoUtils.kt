@@ -4,9 +4,6 @@ import com.nimbusds.jose.JWSAlgorithm
 import com.nimbusds.jose.JWSHeader
 import com.nimbusds.jose.JWSObject
 import com.nimbusds.jose.Payload
-import com.nimbusds.jose.jwk.JWK
-import foundation.identity.did.DIDURL
-import foundation.identity.did.VerificationMethod
 import org.erdtman.jcs.JsonCanonicalizer
 import tbdex.sdk.protocol.models.Data
 import tbdex.sdk.protocol.models.Metadata
@@ -15,6 +12,7 @@ import web5.sdk.common.Convert
 import web5.sdk.crypto.Crypto
 import web5.sdk.dids.Did
 import web5.sdk.dids.DidResolvers
+import web5.sdk.dids.didcore.DidUri
 import java.security.MessageDigest
 import java.security.SignatureException
 
@@ -55,9 +53,9 @@ object CryptoUtils {
     }
 
     val verificationMethodId = jws.header.keyID
-    val parsedDidUrl = DIDURL.fromString(verificationMethodId) // validates vm id which is a DID URL
+    val parsedDidUrl = DidUri.parse(verificationMethodId) // validates vm id which is a DID URL
 
-    val signingDid = parsedDidUrl.uriWithoutFragment.toString()
+    val signingDid = parsedDidUrl.uri
     if (signingDid != did) {
       throw SignatureException(
         "Signature verification failed: Was not signed by the expected DID. " +
@@ -65,11 +63,11 @@ object CryptoUtils {
       )
     }
 
-    val didResolutionResult = DidResolvers.resolve(parsedDidUrl.did.didString)
+    val didResolutionResult = DidResolvers.resolve(parsedDidUrl.uri)
     if (didResolutionResult.didResolutionMetadata.error != null) {
       throw SignatureException(
         "Signature verification failed: " +
-          "Failed to resolve DID ${parsedDidUrl.did.didString}. " +
+          "Failed to resolve DID ${parsedDidUrl.url}. " +
           "Error: ${didResolutionResult.didResolutionMetadata.error}"
       )
     }
@@ -77,23 +75,25 @@ object CryptoUtils {
     // Create a set of possible id matches. The DID spec allows for an id to be the entire `did#fragment`
     // or just `#fragment`. See: https://www.w3.org/TR/did-core/#relative-did-urls.
     // Using a set for fast string comparison. DIDs can be long.
-    val verificationMethodIds = setOf(parsedDidUrl.didUrlString, "#${parsedDidUrl.fragment}")
-    val assertionMethods = didResolutionResult.didDocument?.assertionMethodVerificationMethodsDereferenced
-    val assertionMethod = assertionMethods?.firstOrNull {
-      val id = it.id.toString()
+    val verificationMethodIds = setOf(parsedDidUrl.url, "#${parsedDidUrl.fragment}")
+    val assertionMethodIds = didResolutionResult.didDocument?.assertionMethod
+    val assertionMethodId = assertionMethodIds?.firstOrNull { id ->
       verificationMethodIds.contains(id)
     }
 
-    require(assertionMethod != null) {
+    require(assertionMethodId != null) {
       throw SignatureException(
         "Signature verification failed: Expected kid in JWS header to dereference " +
           "a DID Document Verification Method with an Assertion verification relationship"
       )
     }
 
+    val assertionVerificationMethod = didResolutionResult.didDocument?.findAssertionMethodById(assertionMethodId)
+
     require(
-      (assertionMethod.isType("JsonWebKey2020") || assertionMethod.isType("JsonWebKey"))
-        && assertionMethod.publicKeyJwk != null
+      (assertionVerificationMethod != null &&
+        (assertionVerificationMethod.isType("JsonWebKey2020") || assertionVerificationMethod.isType("JsonWebKey")))
+        && assertionVerificationMethod.publicKeyJwk != null
     ) {
       throw SignatureException(
         "Signature verification failed: Expected kid in JWS header to dereference " +
@@ -101,11 +101,8 @@ object CryptoUtils {
       )
     }
 
-    val publicKeyMap = assertionMethod.publicKeyJwk
-    val publicKeyJwk = JWK.parse(publicKeyMap)
-
     Crypto.verify(
-      publicKey = publicKeyJwk,
+      publicKey = assertionVerificationMethod.publicKeyJwk!!,
       signedPayload = jws.signingInput,
       signature = jws.signature.decode()
     )
@@ -120,19 +117,21 @@ object CryptoUtils {
    * @return The signed payload as a detached payload JWT (JSON Web Token).
    */
   fun sign(did: Did, payload: ByteArray, assertionMethodId: String? = null): String {
-    val assertionMethod = getAssertionMethod(did, assertionMethodId)
+    val didResolutionResult = DidResolvers.resolve(did.uri)
 
-    // TODO: ensure that publicKeyJwk is not null
-    val publicKeyJwk = JWK.parse(assertionMethod.publicKeyJwk)
-    val keyAlias = did.keyManager.getDeterministicAlias(publicKeyJwk)
+    val assertionMethod = didResolutionResult.didDocument?.findAssertionMethodById(assertionMethodId)
+
+
+    check(assertionMethod?.publicKeyJwk != null) { "publicKeyJwk is null" }
+    val keyAlias = did.keyManager.getDeterministicAlias(assertionMethod?.publicKeyJwk!!)
 
     val publicKey = did.keyManager.getPublicKey(keyAlias)
     val algorithm = publicKey.algorithm
     val jwsAlgorithm = JWSAlgorithm.parse(algorithm.toString())
 
     val selectedAssertionMethodId = when {
-      assertionMethod.id.isAbsolute -> assertionMethod.id.toString()
-      else -> "${did.uri}${assertionMethod.id}"
+      assertionMethod.id.startsWith("#") -> "${did.uri}${assertionMethod.id}"
+      else -> assertionMethod.id
     }
 
     val jwsHeader = JWSHeader.Builder(jwsAlgorithm)
@@ -150,31 +149,5 @@ object CryptoUtils {
     val base64UrlEncodedHeader = jwsHeader.toBase64URL()
 
     return "$base64UrlEncodedHeader..$base64UrlEncodedSignature"
-  }
-
-  /**
-   * Retrieves the desired assertion verification method from a DID (Decentralized Identifier) based on the provided
-   * assertion method identifier.
-   *
-   * This function resolves the DID, extracts the assertion methods from the DID Document, and returns the specific
-   * assertion verification method associated with the provided `assertionMethodId`, if specified. If
-   * `assertionMethodId` is not provided, it returns the first assertion verification method found in the DID Document.
-   *
-   * @param did The Decentralized Identifier (DID) to retrieve the assertion method from.
-   * @param assertionMethodId The identifier of the specific assertion verification method to retrieve (optional).
-   * @return The assertion verification method corresponding to the provided `assertionMethodId` or the first assertion
-   *         verification method found in the DID Document.
-   * @throws SignatureException If the specified `assertionMethodId` is not found in the DID Document.
-   */
-  fun getAssertionMethod(did: Did, assertionMethodId: String?): VerificationMethod {
-    val didResolutionResult = DidResolvers.resolve(did.uri)
-    val assertionMethods = didResolutionResult.didDocument?.assertionMethodVerificationMethodsDereferenced
-
-    val assertionMethod: VerificationMethod = when {
-      assertionMethodId != null -> assertionMethods?.find { it.id.toString() == assertionMethodId }
-      else -> assertionMethods?.firstOrNull()
-    } ?: throw SignatureException("assertion method $assertionMethodId not found")
-
-    return assertionMethod
   }
 }

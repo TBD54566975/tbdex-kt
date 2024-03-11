@@ -21,8 +21,9 @@ typealias GetCallback = suspend (ApplicationCall, Filter) -> Any
  * @param ApplicationCall The Ktor application call object representing the incoming HTTP request.
  * @param Message the message received in the request to be processed further by the callback function
  * @param Offering The offering associated with the submitted message.
+ * @param ReplyTo The replyTo URL if provided in the CreateExchange request
  */
-typealias SubmitCallback = suspend (ApplicationCall, Message, Offering?) -> Unit
+typealias SubmitCallback = suspend (ApplicationCall, Message, Offering?, String?) -> Unit
 
 /**
  * Enum representing the kinds of messages that can be submitted.

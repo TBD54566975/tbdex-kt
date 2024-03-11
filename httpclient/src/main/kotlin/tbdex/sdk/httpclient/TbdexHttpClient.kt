@@ -17,7 +17,6 @@ import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
-import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.Rfq
@@ -89,7 +88,6 @@ object TbdexHttpClient {
    * Send RFQ message to the PFI.
    *
    * @param rfq The RFQ to send
-   * @param replyTo The callback URL for PFI to send messages to.
    *
    * @throws TbdexResponseException for response errors.
    */
@@ -150,9 +148,9 @@ object TbdexHttpClient {
   }
 
   /**
-   * Send Order message to the PFI.
+   * Send Close message to the PFI.
    *
-   * @param order The Order to send
+   * @param close The Close to send
    *
    * @throws TbdexResponseException for response errors.
    */

@@ -1,7 +1,6 @@
 package tbdex.sdk.httpclient
 
 import com.nimbusds.jose.jwk.JWK
-import foundation.identity.did.Service
 import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
@@ -16,11 +15,11 @@ import tbdex.sdk.protocol.models.SelectedPaymentMethod
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.Did
-import web5.sdk.dids.PublicKeyPurpose
+import web5.sdk.dids.didcore.Purpose
+import web5.sdk.dids.didcore.Service
 import web5.sdk.dids.methods.dht.CreateDidDhtOptions
 import web5.sdk.dids.methods.dht.DidDht
 import web5.sdk.dids.methods.key.DidKey
-import java.net.URI
 import java.util.UUID
 import kotlin.test.Test
 
@@ -49,15 +48,15 @@ class E2ETest {
         "x": "i6cnsuH4JTBMXKbseg28Hi3w4Xp13E85UwnSW3ZgYk8"
       }"""
             ),
-            arrayOf(PublicKeyPurpose.AUTHENTICATION),
+            listOf(Purpose.Authentication),
             UUID.randomUUID().toString()
           )
         ),
         services = listOf(
-          Service.builder()
-            .id(URI.create("#pfi"))
+          Service.Builder()
+            .id("#pfi")
             .type("PFI")
-            .serviceEndpoint("http://localhost:9000")
+            .serviceEndpoint(listOf("http://localhost:9000"))
             .build()
         ),
         publish = false,
