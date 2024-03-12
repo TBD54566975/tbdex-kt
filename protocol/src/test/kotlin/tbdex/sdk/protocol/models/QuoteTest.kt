@@ -28,6 +28,7 @@ class QuoteTest {
 
     assertAll {
       assertThat(quote.metadata.id).startsWith("quote")
+      assertThat(quote.metadata.protocol).isEqualTo("1.0")
       assertThat(quote.data.payin.amount).isEqualTo("10.00")
     }
   }

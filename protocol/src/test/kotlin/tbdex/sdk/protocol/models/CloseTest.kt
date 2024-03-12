@@ -1,5 +1,6 @@
 package tbdex.sdk.protocol.models
 
+import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
@@ -19,10 +20,12 @@ class CloseTest {
       to = "pfi",
       from = "alice",
       exchangeId = TypeId.generate(MessageKind.rfq.name).toString(),
+      protocol = "2.0",
       closeData = CloseData("my reason")
     )
 
-    assertk.assertAll {
+    assertAll {
+      assertThat(close.metadata.protocol).isEqualTo("2.0")
       assertThat(close.metadata.id).startsWith("close")
       assertThat(close.data.reason).isEqualTo("my reason")
     }

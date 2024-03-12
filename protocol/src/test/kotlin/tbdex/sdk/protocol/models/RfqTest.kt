@@ -31,6 +31,7 @@ class RfqTest {
 
     assertAll {
       assertThat(rfq.metadata.id).startsWith("rfq")
+      assertThat(rfq.metadata.protocol).isEqualTo("1.0")
       assertThat(rfq.data.payinAmount).isEqualTo("10.00")
       assertThat(rfq.metadata.externalId).isEqualTo("P_12345")
     }

@@ -41,16 +41,18 @@ object TestData {
     )
   }
 
-  fun createOrder(exchangeId: String) = Order.create(
-    to = pfiDid.uri,
-    from = aliceDid.uri,
-    exchangeId = exchangeId
-  )
-
-  fun createClose(exchangeId: String) = Close.create(
+  fun createOrder(exchangeId: String, protocol: String = "1.0") = Order.create(
     to = pfiDid.uri,
     from = aliceDid.uri,
     exchangeId = exchangeId,
+    protocol = protocol
+  )
+
+  fun createClose(exchangeId: String, protocol: String = "1.0") = Close.create(
+    to = pfiDid.uri,
+    from = aliceDid.uri,
+    exchangeId = exchangeId,
+    protocol = protocol,
     closeData = CloseData(reason = "test close reason")
   )
 

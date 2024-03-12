@@ -53,6 +53,12 @@ suspend fun submitClose(
     return
   }
 
+  if(message.metadata.protocol != exchange.first().metadata.protocol) {
+    val errorDetail = ErrorDetail(detail = "Protocol mismatch: ${message.metadata.protocol} != ${exchange.first().metadata.protocol}")
+    call.respond(HttpStatusCode.Conflict, ErrorResponse(listOf(errorDetail)))
+    return
+  }
+
   if (!exchange.last().validNext.contains(MessageKind.close)) {
     val errorDetail =
       ErrorDetail(detail = "cannot submit Order for an exchange where the last message is kind: ${exchange.last().metadata.kind}")

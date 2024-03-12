@@ -29,6 +29,7 @@ class OfferingTest {
     assertAll {
       assertThat(offering.data.description).isEqualTo("my fake offering")
       assertThat(offering.metadata.id).startsWith("offering")
+      assertThat(offering.metadata.protocol).isEqualTo("1.0")
     }
   }
 

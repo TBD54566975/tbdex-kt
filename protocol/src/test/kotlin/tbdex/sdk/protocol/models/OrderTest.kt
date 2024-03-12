@@ -1,9 +1,11 @@
 package tbdex.sdk.protocol.models
 
+import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.startsWith
 import de.fxlae.typeid.TypeId
+import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertDoesNotThrow
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.serialization.Json
@@ -19,7 +21,10 @@ class OrderTest {
       exchangeId = TypeId.generate(MessageKind.rfq.name).toString()
     )
 
-    assertThat(order.metadata.id).startsWith("order")
+    assertAll{
+      assertThat(order.metadata.id).startsWith("order")
+      assertThat(order.metadata.protocol).isEqualTo("1.0")
+    }
   }
 
   @Test
