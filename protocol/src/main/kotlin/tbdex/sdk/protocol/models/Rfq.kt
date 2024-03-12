@@ -77,6 +77,8 @@ class Rfq private constructor(
      * @param to DID that the message is being sent to.
      * @param from DID of the sender.
      * @param rfqData Specific parameters relevant to a Rfq.
+     * @param protocol version of the tbdex protocol.
+     * @param externalId external reference for the Rfq. Optional.
      * @param private Sensitive information that will be ephemeral.
      * @return Rfq instance.
      */
@@ -84,6 +86,7 @@ class Rfq private constructor(
       to: String,
       from: String,
       rfqData: RfqData,
+      protocol: String = "1.0",
       externalId: String? = null,
       private: Map<String, Any>? = null
     ): Rfq {
@@ -95,6 +98,7 @@ class Rfq private constructor(
         id = id,
         exchangeId = id,
         createdAt = OffsetDateTime.now(),
+        protocol = protocol,
         externalId = externalId
       )
       Validator.validateData(rfqData, "rfq")

@@ -37,14 +37,16 @@ class Offering private constructor(
      *
      * @param from DID of the PFI.
      * @param data Specific parameters relevant to an Offering.
+     * @param protocol version of the tbdex protocol.
      * @return Offering instance.
      */
-    fun create(from: String, data: OfferingData): Offering {
+    fun create(from: String, data: OfferingData, protocol: String = "1.0"): Offering {
       val now = OffsetDateTime.now()
       val metadata = ResourceMetadata(
         kind = ResourceKind.offering,
         from = from,
         id = TypeId.generate(ResourceKind.offering.name).toString(),
+        protocol = protocol,
         createdAt = now,
         updatedAt = now
       )

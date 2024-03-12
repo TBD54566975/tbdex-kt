@@ -32,6 +32,8 @@ class Quote private constructor(
      * @param from DID of the sender.
      * @param exchangeId ID of the exchange.
      * @param quoteData Specific parameters relevant to a Quote.
+     * @param protocol version of the tbdex protocol.
+     * @param externalId external reference for the Quote. Optional.
      * @return Quote instance.
      */
     fun create(
@@ -39,6 +41,7 @@ class Quote private constructor(
       from: String,
       exchangeId: String,
       quoteData: QuoteData,
+      protocol: String = "1.0",
       externalId: String? = null
     ): Quote {
       validateExchangeId(exchangeId)
@@ -49,6 +52,7 @@ class Quote private constructor(
         id = TypeId.generate(MessageKind.quote.name).toString(),
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now(),
+        protocol = protocol,
         externalId = externalId
       )
       Validator.validateData(quoteData, "quote")
