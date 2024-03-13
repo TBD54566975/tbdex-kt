@@ -38,7 +38,7 @@ suspend fun submitOrder(
     call.respond(HttpStatusCode.BadRequest, errorResponse)
     return
   }
-  val exchangeId = message.metadata.exchangeId.toString()
+  val exchangeId = message.metadata.exchangeId
 
   val exchange: List<Message>
   try {
@@ -46,6 +46,12 @@ suspend fun submitOrder(
   } catch (e: Exception) {
     val errorDetail = ErrorDetail(detail = "Could not find exchange: $exchangeId")
     call.respond(HttpStatusCode.NotFound, ErrorResponse(listOf(errorDetail)))
+    return
+  }
+
+  if(message.metadata.protocol != exchange.first().metadata.protocol) {
+    val errorDetail = ErrorDetail(detail = "Protocol mismatch: ${message.metadata.protocol} != ${exchange.first().metadata.protocol}")
+    call.respond(HttpStatusCode.Conflict, ErrorResponse(listOf(errorDetail)))
     return
   }
 

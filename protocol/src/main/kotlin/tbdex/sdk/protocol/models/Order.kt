@@ -31,9 +31,17 @@ class Order private constructor(
      * @param to DID that the message is being sent to.
      * @param from DID of the sender.
      * @param exchangeId ID of the exchange.
+     * @param protocol version of the tbdex protocol.
+     * @param externalId external reference for the order. Optional.
      * @return Order instance.
      */
-    fun create(to: String, from: String, exchangeId: String, externalId: String? = null): Order {
+    fun create(
+      to: String,
+      from: String,
+      exchangeId: String,
+      protocol: String = "1.0",
+      externalId: String? = null
+    ): Order {
       validateExchangeId(exchangeId)
 
       val metadata = MessageMetadata(
@@ -43,6 +51,7 @@ class Order private constructor(
         id = TypeId.generate(MessageKind.order.name).toString(),
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now(),
+        protocol = protocol,
         externalId = externalId
       )
       return Order(metadata, OrderData())

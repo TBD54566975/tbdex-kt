@@ -46,6 +46,8 @@ complexity:
     includePrivateDeclarations: false
   MethodOverloading:
     active: true
+  LongParameterList:
+    active: false
 
 exceptions:
   NotImplementedDeclaration:

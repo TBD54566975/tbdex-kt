@@ -31,6 +31,7 @@ class ResourceMetadata(
   val kind: ResourceKind,
   val from: String,
   val id: String,
+  val protocol: String,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val createdAt: OffsetDateTime,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")

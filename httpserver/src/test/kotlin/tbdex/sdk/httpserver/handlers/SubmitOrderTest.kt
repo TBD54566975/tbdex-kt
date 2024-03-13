@@ -6,6 +6,8 @@ import TestData.createOrder
 import TestData.createQuote
 import TestData.createRfq
 import TestData.pfiDid
+import assertk.assertThat
+import assertk.assertions.contains
 import de.fxlae.typeid.TypeId
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -71,6 +73,26 @@ class SubmitOrderTest : ServerTest() {
       errorResponse.errors.first().detail,
       "cannot submit Order for an exchange where the last message is kind"
     )
+  }
+
+  @Test
+  fun `returns Conflict if order has a different protocol version than the rest of the exchange`() = runBlocking {
+    val rfq = createRfq()
+    rfq.sign(aliceDid)
+    exchangesApi.addMessage(rfq)
+
+    val order = createOrder(exchangeId = rfq.metadata.exchangeId, protocol = "2.0")
+    order.sign(aliceDid)
+
+    val response = client.post("/exchanges/123/order") {
+      contentType(ContentType.Application.Json)
+      setBody(order)
+    }
+
+    val errorResponse = Json.jsonMapper.readValue(response.bodyAsText(), ErrorResponse::class.java)
+
+    assertEquals(HttpStatusCode.Conflict, response.status)
+    assertThat(errorResponse.errors.first().detail).contains("Protocol mismatch")
   }
 
   @Test

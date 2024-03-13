@@ -4,6 +4,8 @@ import ServerTest
 import TestData.aliceDid
 import TestData.createClose
 import TestData.createRfq
+import assertk.assertThat
+import assertk.assertions.contains
 import de.fxlae.typeid.TypeId
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -31,6 +33,26 @@ class SubmitCloseTest : ServerTest() {
 
     assertEquals(HttpStatusCode.BadRequest, response.status)
     assertContains(errorResponse.errors.first().detail, "Parsing of TBDex message failed")
+  }
+
+  @Test
+  fun `returns Conflict if close has a different protocol version than the rest of the exchange`() = runBlocking {
+    val rfq = createRfq()
+    rfq.sign(aliceDid)
+    exchangesApi.addMessage(rfq)
+
+    val close = createClose(exchangeId = rfq.metadata.exchangeId, protocol = "2.0")
+    close.sign(aliceDid)
+
+    val response = client.post("/exchanges/123/close") {
+      contentType(ContentType.Application.Json)
+      setBody(close)
+    }
+
+    val errorResponse = Json.jsonMapper.readValue(response.bodyAsText(), ErrorResponse::class.java)
+
+    assertEquals(HttpStatusCode.Conflict, response.status)
+    assertThat(errorResponse.errors.first().detail).contains("Protocol mismatch")
   }
 
   @Test

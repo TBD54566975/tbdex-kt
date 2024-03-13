@@ -1,5 +1,6 @@
 package tbdex.sdk.protocol.models
 
+import assertk.assertAll
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.startsWith
@@ -20,8 +21,9 @@ class OrderStatusTest {
       orderStatusData = OrderStatusData("my status")
     )
 
-    assertk.assertAll {
+    assertAll {
       assertThat(orderStatus.metadata.id).startsWith("orderstatus")
+      assertThat(orderStatus.metadata.protocol).isEqualTo("1.0")
       assertThat(orderStatus.data.orderStatus).isEqualTo("my status")
     }
   }

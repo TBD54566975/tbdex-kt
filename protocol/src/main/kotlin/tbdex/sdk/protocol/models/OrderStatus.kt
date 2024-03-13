@@ -32,6 +32,8 @@ class OrderStatus private constructor(
      * @param from DID of the sender.
      * @param exchangeId ID of the exchange.
      * @param orderStatusData Specific parameters relevant to an OrderStatus.
+     * @param protocol version of the tbdex protocol.
+     * @param externalId external reference for the order status. Optional.
      * @return OrderStatus instance.
      */
     fun create(
@@ -39,6 +41,7 @@ class OrderStatus private constructor(
       from: String,
       exchangeId: String,
       orderStatusData: OrderStatusData,
+      protocol: String = "1.0",
       externalId: String? = null
     ): OrderStatus {
       validateExchangeId(exchangeId)
@@ -50,6 +53,7 @@ class OrderStatus private constructor(
         id = TypeId.generate(MessageKind.orderstatus.name).toString(),
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now(),
+        protocol = protocol,
         externalId = externalId
       )
       Validator.validateData(orderStatusData, "orderstatus")

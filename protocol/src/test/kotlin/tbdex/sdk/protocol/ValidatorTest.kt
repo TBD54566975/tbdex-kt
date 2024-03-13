@@ -1,6 +1,7 @@
 package tbdex.sdk.protocol
 
 import assertk.assertThat
+import assertk.assertions.contains
 import assertk.assertions.support.appendName
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.convertValue
@@ -77,7 +78,8 @@ class ValidatorTest {
           "kind": "rfq",
           "id": "rfq_01hkx53kgafbmrg2xp87n5htfb",
           "exchangeId": "rfq_01hkx53kgafbmrg2xp87n5htfb",
-          "createdAt": "2024-01-11T20:58:34.378Z"
+          "createdAt": "2024-01-11T20:58:34.378Z",
+          "protocol": "1.0"
         },
         "data": {
           "offeringId": "abcd123",
@@ -111,6 +113,6 @@ class ValidatorTest {
     }
 
     assertEquals(1, exception.errors.size)
-    assertContains(exception.errors, "$.payinAmount: is missing but it is required")
+    assertThat(exception.errors).contains("$.payinAmount: is missing but it is required")
   }
 }

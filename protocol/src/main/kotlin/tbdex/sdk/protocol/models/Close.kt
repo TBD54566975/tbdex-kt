@@ -32,6 +32,8 @@ class Close private constructor(
      * @param from DID of the sender.
      * @param exchangeId ID of the exchange.
      * @param closeData Specific parameters relevant to a Close.
+     * @param protocol version of the tbdex protocol.
+     * @param externalId external reference for the Close. Optional.
      * @return Close instance.
      */
     fun create(
@@ -39,6 +41,7 @@ class Close private constructor(
       from: String,
       exchangeId: String,
       closeData: CloseData,
+      protocol: String = "1.0",
       externalId: String? = null
     ): Close {
       validateExchangeId(exchangeId)
@@ -50,6 +53,7 @@ class Close private constructor(
         id = TypeId.generate(MessageKind.close.name).toString(),
         exchangeId = exchangeId,
         createdAt = OffsetDateTime.now(),
+        protocol = protocol,
         externalId = externalId
       )
       Validator.validateData(closeData, "close")
