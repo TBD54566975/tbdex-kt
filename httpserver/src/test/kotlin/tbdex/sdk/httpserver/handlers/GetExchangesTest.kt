@@ -79,7 +79,7 @@ class GetExchangesTest : ServerTest() {
     exchangesApi.addMessage(rfq)
     exchangesApi.addMessage(quote)
 
-    val response = client.get("/exchanges") {
+    val response = client.get("/exchanges?id=${rfq.metadata.exchangeId}&id=${quote.metadata.exchangeId}") {
       bearerAuth(RequestToken.generate(TestData.aliceDid, TestData.pfiDid.uri))
     }
 
@@ -96,6 +96,10 @@ class GetExchangesTest : ServerTest() {
       }
       .toList()
 
-    assertEquals((exchanges[0][0] as Rfq).metadata.from, TestData.aliceDid.uri)
+    assertEquals(exchanges.size, 2)
+    assertEquals(exchanges[0].size, 1)
+
+    assertEquals(exchanges[0][0].metadata.id, rfq.metadata.id)
+    assertEquals(exchanges[1][0].metadata.id, quote.metadata.id)
   }
 }

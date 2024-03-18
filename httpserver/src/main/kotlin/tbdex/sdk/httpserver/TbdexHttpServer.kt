@@ -14,6 +14,7 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
+import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import tbdex.sdk.httpserver.handlers.createExchange
@@ -112,7 +113,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
           )
         }
 
-        post("/{exchangeId}") {
+        put("/{exchangeId}") {
           submitMessage(
             call = call,
             exchangesApi = exchangesApi,

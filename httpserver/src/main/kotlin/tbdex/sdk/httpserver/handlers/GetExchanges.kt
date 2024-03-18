@@ -83,8 +83,8 @@ suspend fun getExchanges(
     return
   }
 
-  // TODO: Pass filter to exchangesApi.getExchanges()
-  val exchanges = exchangesApi.getExchanges()
+  val ids = call.request.queryParameters.getAll("id") ?: emptyList()
+  val exchanges = exchangesApi.getExchanges(GetExchangesFilter(ids, requesterDid))
 
   if (callback != null) {
     // TODO: figure out what to do with callback result. should we pass through the exchanges we've fetched
