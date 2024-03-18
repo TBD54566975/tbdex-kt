@@ -83,6 +83,7 @@ suspend fun getExchanges(
     return
   }
 
+  // TODO: Pass filter to exchangesApi.getExchanges()
   val exchanges = exchangesApi.getExchanges()
 
   if (callback != null) {

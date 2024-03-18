@@ -26,7 +26,7 @@ import kotlin.test.assertEquals
 class SubmitOrderTest : ServerTest() {
   @Test
   fun `returns BadRequest if no request body is provided`() = runBlocking {
-    val response = client.post("/exchanges/123/order") {
+    val response = client.post("/exchanges/123") {
       contentType(ContentType.Application.Json)
     }
 
@@ -41,7 +41,7 @@ class SubmitOrderTest : ServerTest() {
     val order = createOrder(TypeId.generate("rfq").toString())
     order.sign(aliceDid)
 
-    val response = client.post("/exchanges/123/order") {
+    val response = client.post("/exchanges/${order.metadata.exchangeId}") {
       contentType(ContentType.Application.Json)
       setBody(order)
     }
@@ -61,7 +61,7 @@ class SubmitOrderTest : ServerTest() {
     val order = createOrder(rfq.metadata.exchangeId)
     order.sign(aliceDid)
 
-    val response = client.post("/exchanges/${rfq.metadata.exchangeId}/order") {
+    val response = client.post("/exchanges/${rfq.metadata.exchangeId}") {
       contentType(ContentType.Application.Json)
       setBody(order)
     }
@@ -84,7 +84,7 @@ class SubmitOrderTest : ServerTest() {
     val order = createOrder(exchangeId = rfq.metadata.exchangeId, protocol = "2.0")
     order.sign(aliceDid)
 
-    val response = client.post("/exchanges/123/order") {
+    val response = client.post("/exchanges/${order.metadata.exchangeId}") {
       contentType(ContentType.Application.Json)
       setBody(order)
     }
@@ -104,7 +104,7 @@ class SubmitOrderTest : ServerTest() {
     val order = createOrder(quote.metadata.exchangeId)
     order.sign(aliceDid)
 
-    val response = client.post("/exchanges/${quote.metadata.exchangeId}/order") {
+    val response = client.post("/exchanges/${quote.metadata.exchangeId}") {
       contentType(ContentType.Application.Json)
       setBody(order)
     }
@@ -128,7 +128,7 @@ class SubmitOrderTest : ServerTest() {
     val order = createOrder(quote.metadata.exchangeId)
     order.sign(aliceDid)
 
-    val response = client.post("/exchanges/${rfq.metadata.exchangeId}/order") {
+    val response = client.post("/exchanges/${rfq.metadata.exchangeId}") {
       contentType(ContentType.Application.Json)
       setBody(order)
     }

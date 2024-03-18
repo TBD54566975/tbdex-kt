@@ -26,18 +26,9 @@ import tbdex.sdk.protocol.models.Quote
 suspend fun submitOrder(
   call: ApplicationCall,
   exchangesApi: ExchangesApi,
-  callback: SubmitCallback?
+  callback: SubmitCallback?,
+  message: Order,
 ) {
-  val message: Order?
-
-  try {
-    message = Message.parse(call.receiveText()) as Order
-  } catch (e: Exception) {
-    val errorDetail = ErrorDetail(detail = "Parsing of TBDex message failed: ${e.message}")
-    val errorResponse = ErrorResponse(listOf(errorDetail))
-    call.respond(HttpStatusCode.BadRequest, errorResponse)
-    return
-  }
   val exchangeId = message.metadata.exchangeId
 
   val exchange: List<Message>

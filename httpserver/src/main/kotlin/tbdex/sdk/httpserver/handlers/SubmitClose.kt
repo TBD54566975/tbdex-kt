@@ -25,18 +25,9 @@ import tbdex.sdk.protocol.models.MessageKind
 suspend fun submitClose(
   call: ApplicationCall,
   exchangesApi: ExchangesApi,
-  callback: SubmitCallback?
+  callback: SubmitCallback?,
+  message: Close,
 ) {
-  val message: Close?
-
-  try {
-    message = Message.parse(call.receiveText()) as Close
-  } catch (e: Exception) {
-    val errorDetail = ErrorDetail(detail = "Parsing of TBDex message failed: ${e.message}")
-    val errorResponse = ErrorResponse(listOf(errorDetail))
-    call.respond(HttpStatusCode.BadRequest, errorResponse)
-    return
-  }
 
   val exchangeId = message.metadata.exchangeId.toString()
   val exchange: List<Message>
