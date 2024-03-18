@@ -17,6 +17,7 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import tbdex.sdk.httpserver.handlers.createExchange
+import tbdex.sdk.httpserver.handlers.getExchange
 import tbdex.sdk.httpserver.handlers.getExchanges
 import tbdex.sdk.httpserver.handlers.getOfferings
 import tbdex.sdk.httpserver.handlers.submitClose
@@ -128,14 +129,14 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
           )
         }
 
-//        get("/{exchangeId}") {
-//          getExchange(
-//            call,
-//            exchangesApi,
-//            getCallbacks.getOrDefault("exchange", null),
-//            pfiDid
-//          )
-//        }
+        get("/{exchangeId}") {
+          getExchange(
+            call,
+            exchangesApi,
+            getCallbacks.getOrDefault("exchange", null),
+            pfiDid
+          )
+        }
       }
 
       get("/offerings") {
