@@ -117,9 +117,7 @@ object TbdexHttpClient {
     validateMessage(rfq)
 
     val pfiDid = rfq.metadata.to
-    val exchangeId = rfq.metadata.exchangeId
-
-    val path = "/exchanges/$exchangeId"
+    val path = "/exchanges"
 
     val body: RequestBody = Json.stringify(CreateExchangeRequest(rfq, replyTo))
       .toRequestBody(jsonMediaType)
@@ -139,7 +137,7 @@ object TbdexHttpClient {
 
     val pfiDid = order.metadata.to
     val exchangeId = order.metadata.exchangeId
-    val path = "/exchanges/$exchangeId/order"
+    val path = "/exchanges/$exchangeId"
 
     val body: RequestBody = Json.stringify(order)
       .toRequestBody(jsonMediaType)
@@ -159,7 +157,7 @@ object TbdexHttpClient {
 
     val pfiDid = close.metadata.to
     val exchangeId = close.metadata.exchangeId
-    val path = "/exchanges/$exchangeId/close"
+    val path = "/exchanges/$exchangeId"
 
     val body: RequestBody = Json.stringify(close)
       .toRequestBody(jsonMediaType)
