@@ -83,25 +83,10 @@ object TbdexHttpClient {
     validateMessage(rfq)
 
     val pfiDid = rfq.metadata.to
-    val exchangeId = rfq.metadata.exchangeId
-
-    val path = "/exchanges/$exchangeId"
-
     val body: RequestBody = Json.stringify(CreateExchangeRequest(rfq))
       .toRequestBody(jsonMediaType)
 
-    val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
-    val url = pfiServiceEndpoint + path
-
-    val request = Request.Builder()
-      .url(url)
-      .addHeader("Content-Type", JSON_HEADER)
-      .post(body)
-      .build()
-
-    println("Attempting to send rfq message to: ${request.url}")
-
-    executeRequest(request)
+    this.createExchange(pfiDid, body)
   }
 
   /**
@@ -116,10 +101,14 @@ object TbdexHttpClient {
     validateMessage(rfq)
 
     val pfiDid = rfq.metadata.to
-    val path = "/exchanges"
-
     val body: RequestBody = Json.stringify(CreateExchangeRequest(rfq, replyTo))
       .toRequestBody(jsonMediaType)
+
+    this.createExchange(pfiDid, body)
+  }
+
+  private fun createExchange(pfiDid: String, requestBody: RequestBody) {
+    val path = "/exchanges"
 
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val url = pfiServiceEndpoint + path
@@ -127,14 +116,13 @@ object TbdexHttpClient {
     val request = Request.Builder()
       .url(url)
       .addHeader("Content-Type", JSON_HEADER)
-      .post(body)
+      .post(requestBody)
       .build()
 
     println("Attempting to send rfq message to: ${request.url}")
 
     executeRequest(request)
   }
-
   /**
    * Send Order message to the PFI.
    *
