@@ -72,18 +72,6 @@ object TbdexHttpClient {
     }
   }
 
-  private fun sendMessage(pfiDid: String, path: String, requestBody: RequestBody) {
-
-    val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
-    val url = pfiServiceEndpoint + path
-
-    val request = buildRequest(url, requestBody)
-
-    println("Attempting to send rfq message to: ${request.url}")
-
-    executeRequest(request)
-  }
-
   /**
    * Send RFQ message to the PFI.
    *
@@ -102,7 +90,18 @@ object TbdexHttpClient {
     val body: RequestBody = Json.stringify(CreateExchangeRequest(rfq))
       .toRequestBody(jsonMediaType)
 
-    this.sendMessage(pfiDid, path, body)
+    val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
+    val url = pfiServiceEndpoint + path
+
+    val request = Request.Builder()
+      .url(url)
+      .addHeader("Content-Type", JSON_HEADER)
+      .post(body)
+      .build()
+
+    println("Attempting to send rfq message to: ${request.url}")
+
+    executeRequest(request)
   }
 
   /**
@@ -122,7 +121,18 @@ object TbdexHttpClient {
     val body: RequestBody = Json.stringify(CreateExchangeRequest(rfq, replyTo))
       .toRequestBody(jsonMediaType)
 
-    this.sendMessage(pfiDid, path, body)
+    val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
+    val url = pfiServiceEndpoint + path
+
+    val request = Request.Builder()
+      .url(url)
+      .addHeader("Content-Type", JSON_HEADER)
+      .post(body)
+      .build()
+
+    println("Attempting to send rfq message to: ${request.url}")
+
+    executeRequest(request)
   }
 
   /**
@@ -142,7 +152,18 @@ object TbdexHttpClient {
     val body: RequestBody = Json.stringify(order)
       .toRequestBody(jsonMediaType)
 
-    this.sendMessage(pfiDid, path, body)
+    val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
+    val url = pfiServiceEndpoint + path
+
+    val request = Request.Builder()
+      .url(url)
+      .addHeader("Content-Type", JSON_HEADER)
+      .put(body)
+      .build()
+
+    println("Attempting to send order message to: ${request.url}")
+
+    executeRequest(request)
   }
 
   /**
@@ -162,7 +183,17 @@ object TbdexHttpClient {
     val body: RequestBody = Json.stringify(close)
       .toRequestBody(jsonMediaType)
 
-    this.sendMessage(pfiDid, path, body)
+    val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
+    val url = pfiServiceEndpoint + path
+
+    val request = Request.Builder()
+      .url(url)
+      .addHeader("Content-Type", JSON_HEADER)
+      .put(body).build()
+
+    println("Attempting to send close message to: ${request.url}")
+
+    executeRequest(request)
   }
 
   /**
@@ -277,15 +308,6 @@ object TbdexHttpClient {
   private fun validateMessage(message: Message) {
     Validator.validateMessage(message)
     message.verify()
-  }
-
-  private fun buildRequest(url: String, body: RequestBody): Request {
-    val request = Request.Builder()
-      .url(url)
-      .addHeader("Content-Type", JSON_HEADER)
-      .post(body)
-      .build()
-    return request
   }
 
   private fun executeRequest(request: Request) {
