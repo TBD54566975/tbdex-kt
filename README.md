@@ -1,259 +1,296 @@
 # tbdex-kt
 
-[![License](https://img.shields.io/github/license/TBD54566975/tbdex-kt)](https://github.com/TBD54566975/tbdex-kt/blob/main/LICENSE) [![CI](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yaml/badge.svg)](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yaml) [![](https://jitpack.io/v/TBD54566975/tbdex-kt.svg)](https://jitpack.io/#TBD54566975/tbdex-kt) [![Coverage](https://img.shields.io/codecov/c/gh/tbd54566975/tbdex-kt/main?logo=codecov&logoColor=FFFFFF&style=flat-square&token=YI87CKF1LI)](https://codecov.io/github/TBD54566975/tbdex-kt) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/TBD54566975/tbdex-kt/badge)](https://securityscorecards.dev/viewer/?uri=github.com/TBD54566975/tbdex-kt)
+[![License](https://img.shields.io/github/license/TBD54566975/tbdex-kt)](https://github.com/TBD54566975/tbdex-kt/blob/main/LICENSE) [![CI](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yaml/badge.svg)](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yaml) [![Coverage](https://img.shields.io/codecov/c/gh/tbd54566975/tbdex-kt/main?logo=codecov&logoColor=FFFFFF&style=flat-square&token=YI87CKF1LI)](https://codecov.io/github/TBD54566975/tbdex-kt) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/TBD54566975/tbdex-kt/badge)](https://securityscorecards.dev/viewer/?uri=github.com/TBD54566975/tbdex-kt)
 
-This repo contains 2 jvm packages:
+This repo contains packages:
 
 * [`/protocol`](./protocol/) - create, parse, verify, and validate the tbdex messages and resources defined in
   the [protocol draft specification](https://github.com/TBD54566975/tbdex/blob/main/specs/protocol/README.md)
 * [`/httpclient`](./httpclient) - An HTTP client that can be used to send tbdex messages to PFIs
+* [`/httpserver`](./httpserver) - Base implementation of a tbDEX HTTP server responsible for handling RFQs, orders, and other interactions
+* [`/distribution`](./distribution) - The full tbDEX Platform
 
 # Usage
 
-tbdex sdk is consumable through Maven Central but some additional repositories are needed for transitive dependencies currently: :
-
-# Hermit
-This project uses hermit to manage tooling like gradle or openjdk. See [this page](https://cashapp.github.io/hermit/usage/get-started/) to set up Hermit on your machine.
-After installing hermit and activating it, you should be able to just run `gradle clean build` to build the project locally.
-
-Currently, we have these packages installed via Hermit (can also view by checking out `hermit status`:
-- gradle-8.2 
-- openjdk-11.0.10_9
-
-You can run `hermit upgrade {package}` to upgrade an existing package, or `hermit install {package}` to install a new package. 
-Please see [Hermit package management page](https://cashapp.github.io/hermit/usage/management/) for more details.
-
-## Gradle
-```kotlin
-repositories {
-  mavenCentral()
-  maven("https://jitpack.io")
-  maven("https://repo.danubetech.com/repository/maven-public/")
-}
-
-dependencies {
-  // bring in everything: 
-  implementation("xyz.block:tbdex:0.10.0-beta")
-  // OR if you want to import separate packages (eg may only want client and protocol):
-  implementation("xyz.block:tbdex-httpclient:0.10.0-beta")
-  implementation("xyz.block:tbdex-httpserver:0.10.0-beta")
-  implementation("xyz.block:tbdex-protocol:0.10.0-beta")
-}
-```
+tbDEX is available
+[from Maven Central](https://central.sonatype.com/artifact/xyz.block/tbdex). Instructions for
+adding the dependency in a variety of build tools including Maven and Gradle are linked there.
 
 > [!IMPORTANT]
-> The repository at `https://repo.danubetech.com/repository/maven-public/` and `https://jitpack.io` are required for resolving transitive
-> dependencies for now, but this should be temporary.
+> tbDEX contains transitive dependencies not
+> found in Maven Central. To resolve these, add the
+> [TBD thirdparty repository](https://blockxyz.jfrog.io/artifactory/tbd-oss-thirdparty-maven2/)
+> to your Maven or Gradle config.
 >
+> For instance, in your Maven `pom.xml`:
+>
+> ```shell
+> <repositories>
+>   <repository>
+>     <id>tbd-oss-thirdparty</id>
+>     <name>tbd-oss-thirdparty</name>
+>     <releases>
+>       <enabled>true</enabled>
+>     </releases>
+>     <snapshots>
+>       <enabled>false</enabled>
+>     </snapshots>
+>     <url>https://blockxyz.jfrog.io/artifactory/tbd-oss-thirdparty-maven2/</url>
+>   </repository>
+> </repositories>
+> ```
+>
+> ...or in your `gradle.settings.kts`:
+>
+> ```shell
+> dependencyResolutionManagement {
+>   repositories {
+>       mavenCentral()
+>       // Thirdparty dependencies of TBD projects not in Maven Central
+>       maven("https://blockxyz.jfrog.io/artifactory/tbd-oss-thirdparty-maven2/")
+> }
+> ```
 
-## Maven
+# Development
 
-```xml
-...
-    <repositories>
-        <repository>
-            <id>jitpack</id>
-            <name>jitpack</name>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
-            <id>danubetech</id>
-            <name>danubetech</name>
-            <url>https://repo.danubetech.com/repository/maven-public/</url>
-        </repository>
-    </repositories>
+## Prerequisites
 
-    <depedencies>
-      <dependency>
-          <groupId>xyz.block</groupId>
-          <artifactId>tbdex-httpclient</artifactId>
-          <version>0.10.0-beta</version>
-      </dependency>
-    </dependencies>
-...
+### Cloning
+
+This repository uses git submodules. To clone this repo with submodules
+
+```sh
+git clone --recurse-submodules git@github.com:TBD54566975/tbdex-kt.git
 ```
 
-<details>
-  <summary>Expand for complete mvn pom.xml example using kotlin</summary>
+Or to add submodules after cloning
 
-  pom.xml:
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-   
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>website.tbd.developer.site</groupId>
-    <artifactId>kotlin-testsuite</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
-
-    <name>kotlin-testsuite</name>
-    <url>http://developer.tbd.website</url>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kotlin.jvm.target>17</kotlin.jvm.target>
-        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-        <version.assertj>3.25.2</version.assertj>
-        <version.kotlin>1.9.22</version.kotlin>
-        <version.kotlin.compiler.incremental>true</version.kotlin.compiler.incremental>
-        <version.junit-jupiter>5.10.1</version.junit-jupiter>
-
-        <!-- TBD Dependencies -->
-        <version.tbdex>0.10.0-beta</version.tbdex>
-
-    </properties>
-
-    <dependencyManagement>
-        <dependencies>
-            <!-- External Dependencies -->
-            <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-stdlib</artifactId>
-                <version>${version.kotlin}</version>
-            </dependency>
-
-            <!-- TBD Dependencies -->
-            <dependency>
-                <groupId>xyz.block</groupId>
-                <artifactId>tbdex-httpclient</artifactId>
-                <version>${version.tbdex}</version>
-            </dependency>
-            <dependency>
-                <groupId>xyz.block</groupId>
-                <artifactId>tbdex-httpserver</artifactId>
-                <version>${version.tbdex}</version>
-            </dependency>
-            <dependency>
-                <groupId>xyz.block</groupId>
-                <artifactId>tbdex-protocol</artifactId>
-                <version>${version.tbdex}</version>
-            </dependency>
-
-        </dependencies>
-    </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-        </dependency>
-
-        <!-- TBD Dependencies -->
-        <dependency>
-            <groupId>xyz.block</groupId>
-            <artifactId>tbdex-httpclient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>xyz.block</groupId>
-            <artifactId>tbdex-protocol</artifactId>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
-        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
-        <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-            <plugins>
-                <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
-                <plugin>
-                    <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.1.0</version>
-                </plugin>
-                <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
-                <plugin>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.0.2</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.0</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.22.1</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.0.2</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-install-plugin</artifactId>
-                    <version>2.5.2</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.8.2</version>
-                </plugin>
-                <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
-                <plugin>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>3.7.1</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-project-info-reports-plugin</artifactId>
-                    <version>3.0.0</version>
-                </plugin>
-                <plugin>
-                    <artifactId>kotlin-maven-plugin</artifactId>
-                    <groupId>org.jetbrains.kotlin</groupId>
-                    <version>${version.kotlin}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-        <plugins>
-            <plugin>
-                <artifactId>kotlin-maven-plugin</artifactId>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <extensions>true</extensions>
-                <configuration>
-                    <jvmTarget>${kotlin.jvm.target}</jvmTarget>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-    <repositories>
-        <!-- currently needed for some transitive dependencies -->
-        <repository>
-            <id>jitpack</id>
-            <name>jitpack</name>
-            <url>https://jitpack.io</url>
-        </repository>
-        <repository>
-            <id>danubetech</id>
-            <name>danubetech</name>
-            <url>https://repo.danubetech.com/repository/maven-public/</url>
-        </repository>
-    </repositories>
-</project>
+```sh
+git submodule update --init
 ```
 
-```xml
-...
+### Hermit
 
-  <repository>
-      <id>jitpack</id>
-      <name>jitpack</name>
-      <url>https://jitpack.io</url>
-  </repository>
-  <repository>
-      <id>danubetech</id>
-      <name>danubetech</name>
-      <url>https://repo.danubetech.com/repository/maven-public/</url>
-  </repository>
+This project uses hermit to manage tooling like Maven and Java versions.
+See [this page](https://cashapp.github.io/hermit/usage/get-started/) to set up Hermit on your machine - make sure to
+download the open source build and activate it for the project.
 
-...
+Once you've installed Hermit and before running builds on this repo,
+run from the root:
 
-<dependency>
-    <groupId>xyz.block</groupId>
-    <artifactId>tbdex-httpclient</artifactId>
-    <version>${version.tbdex}</version>
-</dependency>
-...
+```shell
+source ./bin/activate-hermit
 ```
 
-</details>
+This will set your environment up correctly in the
+terminal emulator you're on.
+
+## Building with Maven
+
+This project is built with the
+[Maven Project Management](https://maven.apache.org/) tool.
+It is installed via Hermit above.
+
+If you want to build an artifact on your local filesystem, you can do so by running the
+following command - either at the top level or in
+any of the subprojects:
+
+```shell
+mvn clean verify
+```
+
+This will first clean all previous builds and compiled code, then:
+compile, test, and build the artifacts in each of the submodules
+of this project in the `$moduleName/target` directory, for example:
+
+```shell
+ls -l httpserver/target
+```
+
+You should see similar to:
+
+```shell
+total 240
+drwxr-xr-x@  4 alr  staff    128 Apr  4 00:29 classes
+drwxr-xr-x@  4 alr  staff    128 Apr  4 00:29 generated-sources
+drwxr-xr-x@  4 alr  staff    128 Apr  4 00:29 kaptStubs
+drwxr-xr-x@  4 alr  staff    128 Apr  4 00:29 kotlin-ic
+drwxr-xr-x@  3 alr  staff     96 Apr  4 00:30 kover
+drwxr-xr-x@  3 alr  staff     96 Apr  4 00:30 maven-archiver
+drwxr-xr-x@  3 alr  staff     96 Apr  4 00:29 maven-status
+drwxr-xr-x@  3 alr  staff     96 Apr  4 00:30 site
+drwxr-xr-x@ 18 alr  staff    576 Apr  4 00:30 surefire-reports
+-rw-r--r--@  1 alr  staff  17889 Apr  4 00:30 tbdex-httpserver-0.0.0-main-SNAPSHOT-sources.jar
+-rw-r--r--@  1 alr  staff  99334 Apr  4 00:30 tbdex-httpserver-0.0.0-main-SNAPSHOT.jar
+drwxr-xr-x@ 11 alr  staff    352 Apr  4 00:29 test-classes
+drwxr-xr-x@  4 alr  staff    128 Apr  4 00:30 tmp
+```
+
+If you'd like to skip packaging and test only, run:
+
+```shell
+mvn test
+```
+
+You may also run a single test; `cd` into the submodule of choice,
+then use the `-Dtest=` parameter to denote which test to run, for example:
+
+```shell
+cd httpclient; \
+mvn test -Dtest=TestClassName
+```
+
+To install builds into your local Maven repository, run from the root:
+
+```shell
+mvn install
+```
+
+For more, see the documentation on [Maven Lifecycle](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html).
+
+## Generating API Docs Locally
+
+We use [Dokka](https://kotlinlang.org/docs/dokka-cli.html) to create the
+HTML API Documentation for this project. This is done using the Dokka CLI
+because the [Dokka Maven Plugin](https://kotlinlang.org/docs/dokka-maven.html)
+does not yet support multimodule builds. To run locally, obtain the Dokka CLI.
+Run from the root of this repo:
+
+```shell
+# it will download the jars into the `target/dokka-cli` folder and generate the docs
+./scripts/dokka.sh
+```
+
+These will be available in `target/apidocs`.
+
+This step is handled during releases and published via GitHub Actions.
+
+## Publishing Docs
+
+API reference documentation is automatically updated are available
+at [https://tbd54566975.github.io/tbdex-kt/docs/](https://tbd54566975.github.io/tbdex-kt/docs/)
+following each automatically generated release.
+
+## Dependency Management
+
+As tbDEX is a platform intended to run alongside Web5 in a single `ClassLoader`,
+versions and dependencies must be aligned among the subprojects
+(sometimes called modules) of this project. To address, we declare
+versions in `pom.xml`'s `<dependencyManagement>` section and
+import references defined there in the subproject `pom.xml`s' `<dependencies>`
+sections. Versions themselves are defined as properties in the root `pom.xml`.
+See further documentation on versioning and dependency management there.
+
+The root `pom.xml` may also be imported in projects building atop
+tbDEX in `import` scope to respect these dependency declarations.
+
+### Updating the Web5 Dependency
+
+This build extends from the Web5 build. Therefore, updates to Web5 must be 
+done in 2 places in the root `pom.xml`:
+
+1. In `<properties>`, where `<version.xyz.block.web5>` is defined.
+2. In the `<parent>`, where the `tbdex-parent` has a 
+   parent of `web5-parent`. This version number cannot be referenced from
+   the version property defined by 1., so it must be updated in tandem.
+
+## Release Guidelines
+
+### Pre-releases
+
+In Kotlin we use the SNAPSHOT convention to build and publish a pre-release package that can be consumed for preview/testing/development purposes.
+
+These SNAPSHOTs are generated and published whenever there's a new push to `main`. If you want to manually kick that off to preview some changes introduced in a PR branch:
+
+1. Open the [SDK Kotlin CI Workflow](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yml), press the **Run workflow button** selecting the branch you want to generate the snapshot from.
+
+2. In the version field, insert the current version, a short meaningful identifier and the `-SNAPSHOT` suffix, ie:
+
+  - 0.11.0.pr123-SNAPSHOT
+  - 0.11.0.shortsha-SNAPSHOT
+  - 0.11.0.fixsomething-SNAPSHOT
+
+3. Run workflow!
+
+You **MUST** use the `-SNAPSHOT` suffix, otherwise it's not a valid preview `SNAPSHOT` and it will be rejected.
+
+`SNAPSHOT`s will be available in [TBD's Artifactory `tbd-oss-snapshots-maven2` Repository](https://blockxyz.jfrog.io/artifactory/tbd-oss-snapshots-maven2).
+
+### Releasing New Versions
+
+To release a new version, execute the following steps:
+
+1. Open the [Release and Publish](https://github.com/TBD54566975/tbdex-kt/actions/workflows/release.yml), press the **Run workflow button** selecting the branch you want to generate the snapshot from.
+
+2. In the version field, declare the version to be released. ie:
+
+  - 0.15.2
+  - 0.17.0-alpha-3
+  - 1.6.3
+
+  - **Choose an appropriate version number based on semver rules. Remember that versions are immutable once published to Maven Central; they cannot be altered or removed.**
+
+3. Press the **Run workflow button** and leave the main branch selected (unless its a rare case where you don't want to build from the main branch for the release).
+
+4. Run workflow! This:
+
+- Builds
+- Tests
+- Creates artifacts for binaries and sources
+- Signs artifacts
+- Uploads artifacts to TBD Artifactory
+- Tags git with release number "v$version"
+- Keeps development version in the pom.xml to 0.0.0-main-SNAPSHOT
+- Pushes changes to git
+- Triggers job to:
+  - Build from tag and upload to Maven Central
+  - Create GitHub Release "v$version"built and **published to maven central**, **docs will be published** (see below) and **the GitHub release will be automatically generated**!
+  - Publish API Docs
+
+### Publishing a `SNAPSHOT` from a Local Dev Machine
+
+Please take care to only publish `-SNAPSHOT` builds (ie.
+when the `<version>` field of the `pom.xml` ends in
+`-SNAPSHOT`.) unless there's good reason
+to deploy a non-`SNAPSHOT` release. Releases are typically handled via automation
+in GitHub Actions s documented above.
+
+To deploy to TBD's Artifactory instance for sharing with others, you
+need your Artifactory username and password handy (available to TBD-employed engineers).
+Set environment variables:
+
+```shell
+export ARTIFACTORY_USERNAME=yourUsername; \
+export ARTIFACTORY_PASSWORD=yourPassword
+```
+
+...then run:
+
+```shell
+mvn deploy --settings .maven_settings.xml
+```
+## Working with the `web5-spec` submodule
+
+### Pulling
+
+You may need to update the `tbdex` submodule after pulling.
+
+```sh
+git pull
+git submodule update
+```
+
+### Pushing
+
+If you have made changes to the `tbdex` submodule, you should push your changes to the `tbdex` remote as well as
+pushing changes to `tbdex`.
+
+```sh
+cd tbdex
+git push
+cd ..
+git push
+```
 
 ## Sample `Main.kt`
 
@@ -267,24 +304,10 @@ fun main() {
 }
 ```
 
-# Development
-
-## JSON Schemas
-
-the [tbdex]() repo acts as the source of truth for all json schemas and test vectors. For this reason, the `tbdex` repo is a git
-submodule
-of this repo. By default, `git clone` does not actually check out the submodule's files. Using `--recurse-submodules`
-option when cloning automatically initializes, fetches, and does a checkout of the appropriate commit for the submodule.
-If you've already cloned the repo without `--recurse-submodules`, you can do the following:
-
-```bash
-git submodule update --init
-```
-
 # Other Docs
 
-* [API Reference Guide](https://tbd54566975.github.io/tbdex-kt/)
+* [API Reference Guide](https://tbd54566975.github.io/tbdex-kt/docs/)
 * [Developer Docs](https://developer.tbd.website/docs/tbdex/)
-* [Guidelines](./CONVENTIONS.md)
+* [Coding Guidelines](./CONVENTIONS.md)
 * [Code of Conduct](./CODE_OF_CONDUCT.md)
 * [Governance](./GOVERNANCE.md)

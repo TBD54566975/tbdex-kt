@@ -1,0 +1,33 @@
+{
+  "moduleName": "tbDEX SDK Documentation",
+  "failOnWarning": false,
+  "suppressObviousFunctions": true,
+  "suppressInheritedMembers": false,
+  "offlineMode": false,
+  "outputDir": "./target/apidocs",
+  "sourceSets": [
+    {
+      "documentedVisibilities": [
+        "PUBLIC",
+        "PROTECTED"
+      ],
+      "sourceSetID": {
+        "scopeId": "tbdex",
+        "sourceSetName": "main"
+      },
+      "sourceRoots": [
+        "httpclient/src/main/kotlin",
+        "httpserver/src/main/kotlin",
+        "protocol/src/main/kotlin"
+      ],
+      "includes": [
+      ]
+    }
+  ],
+  "pluginsClasspath": [
+    "./target/dokka-cli/dokka-base.jar",
+    "./target/dokka-cli/kotlinx-html-jvm.jar",
+    "./target/dokka-cli/analysis-kotlin-descriptors.jar",
+    "./target/dokka-cli/freemarker.jar"
+  ]
+}
