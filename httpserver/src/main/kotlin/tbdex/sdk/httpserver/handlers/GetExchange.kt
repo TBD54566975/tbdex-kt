@@ -17,8 +17,8 @@ import tbdex.sdk.protocol.models.Message
  *
  * @property data list of exchanges (list of tbdex messages)
  */
-class GetExchangesResponse(
-  val data: List<List<Message>>?
+class GetExchangeResponse(
+  val data: List<Message>?
 )
 
 /**
@@ -29,7 +29,7 @@ class GetExchangesResponse(
  * @param callback Callback function to be invoked
  */
 @Suppress("SwallowedException")
-suspend fun getExchanges(
+suspend fun getExchange(
   call: ApplicationCall,
   exchangesApi: ExchangesApi,
   callback: GetCallback?,
@@ -83,8 +83,7 @@ suspend fun getExchanges(
     return
   }
 
-  val ids = call.request.queryParameters.getAll("id") ?: emptyList()
-  val exchanges = exchangesApi.getExchanges(GetExchangesFilter(ids, requesterDid))
+  val exchanges = exchangesApi.getExchange(call.parameters["exchangeId"]!!)
 
   if (callback != null) {
     // TODO: figure out what to do with callback result. should we pass through the exchanges we've fetched
@@ -92,5 +91,5 @@ suspend fun getExchanges(
     val result = callback.invoke(call, GetExchangesFilter())
   }
 
-  call.respond(HttpStatusCode.OK, GetExchangesResponse(data = exchanges))
+  call.respond(HttpStatusCode.OK, GetExchangeResponse(data = exchanges))
 }

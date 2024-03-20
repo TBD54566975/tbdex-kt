@@ -14,12 +14,15 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
+import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import tbdex.sdk.httpserver.handlers.createExchange
+import tbdex.sdk.httpserver.handlers.getExchange
 import tbdex.sdk.httpserver.handlers.getExchanges
 import tbdex.sdk.httpserver.handlers.getOfferings
 import tbdex.sdk.httpserver.handlers.submitClose
+import tbdex.sdk.httpserver.handlers.submitMessage
 import tbdex.sdk.httpserver.handlers.submitOrder
 import tbdex.sdk.httpserver.models.ExchangesApi
 import tbdex.sdk.httpserver.models.FakeExchangesApi
@@ -101,7 +104,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
       }
 
       route("/exchanges") {
-        post("/{exchangeId}") {
+        post {
           createExchange(
             call = call,
             offeringsApi = offeringsApi,
@@ -110,19 +113,11 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
           )
         }
 
-        post("/{exchangeId}/order") {
-          submitOrder(
+        put("/{exchangeId}") {
+          submitMessage(
             call = call,
             exchangesApi = exchangesApi,
             callback = submitCallbacks.getOrDefault("order", null)
-          )
-        }
-
-        post("/{exchangeId}/close") {
-          submitClose(
-            call = call,
-            exchangesApi = exchangesApi,
-            callback = submitCallbacks.getOrDefault("close", null)
           )
         }
 
@@ -131,7 +126,17 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
             call,
             exchangesApi,
             getCallbacks.getOrDefault("exchanges", null),
-            pfiDid)
+            pfiDid
+          )
+        }
+
+        get("/{exchangeId}") {
+          getExchange(
+            call,
+            exchangesApi,
+            getCallbacks.getOrDefault("exchange", null),
+            pfiDid
+          )
         }
       }
 

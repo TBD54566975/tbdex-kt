@@ -7,7 +7,7 @@ import TestData.createRfq
 import assertk.assertThat
 import assertk.assertions.contains
 import de.fxlae.typeid.TypeId
-import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
@@ -25,7 +25,7 @@ import kotlin.test.assertEquals
 class SubmitCloseTest : ServerTest() {
   @Test
   fun `returns BadRequest if no request body is provided`() = runBlocking {
-    val response = client.post("/exchanges/123/close") {
+    val response = client.put("/exchanges/123") {
       contentType(ContentType.Application.Json)
     }
 
@@ -44,7 +44,7 @@ class SubmitCloseTest : ServerTest() {
     val close = createClose(exchangeId = rfq.metadata.exchangeId, protocol = "2.0")
     close.sign(aliceDid)
 
-    val response = client.post("/exchanges/123/close") {
+    val response = client.put("/exchanges/${close.metadata.exchangeId}") {
       contentType(ContentType.Application.Json)
       setBody(close)
     }
@@ -61,7 +61,7 @@ class SubmitCloseTest : ServerTest() {
     close.sign(aliceDid)
     exchangesApi.addMessage(close)
 
-    val response = client.post("/exchanges/123/close") {
+    val response = client.put("/exchanges/${close.metadata.exchangeId}") {
       contentType(ContentType.Application.Json)
       setBody(close)
     }
@@ -80,7 +80,7 @@ class SubmitCloseTest : ServerTest() {
     val close = createClose(TypeId.generate(MessageKind.rfq.name).toString())
     close.sign(aliceDid)
 
-    val response = client.post("/exchanges/123/close") {
+    val response = client.put("/exchanges/${close.metadata.exchangeId}") {
       contentType(ContentType.Application.Json)
       setBody(close)
     }
@@ -103,7 +103,7 @@ class SubmitCloseTest : ServerTest() {
     val close = createClose(rfq.metadata.exchangeId)
     close.sign(aliceDid)
 
-    val response = client.post("/exchanges/123/close") {
+    val response = client.put("/exchanges/${close.metadata.exchangeId}") {
       contentType(ContentType.Application.Json)
       setBody(close)
     }

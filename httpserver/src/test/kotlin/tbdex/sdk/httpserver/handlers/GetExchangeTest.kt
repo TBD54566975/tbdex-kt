@@ -24,7 +24,7 @@ import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
-class GetExchangesTest : ServerTest() {
+class GetExchangeTest : ServerTest() {
 
   @BeforeEach
   fun `setup client`() {
@@ -48,7 +48,7 @@ class GetExchangesTest : ServerTest() {
   @Test
   fun `returns 401 if no Bearer token is present`() = runBlocking {
 
-    val response = client.get("/exchanges")
+    val response = client.get("/exchanges/123")
 
     assertEquals(HttpStatusCode.Unauthorized, response.status)
 
@@ -59,7 +59,7 @@ class GetExchangesTest : ServerTest() {
   @Test
   fun `returns 401 if malformed Bearer token is present`() = runBlocking {
 
-    val response = client.get("/exchanges") {
+    val response = client.get("/exchanges/123") {
       bearerAuth("Bearer abc123")
     }
 
@@ -73,13 +73,10 @@ class GetExchangesTest : ServerTest() {
   fun `returns 200 if exchanges are found`() = runBlocking {
     val rfq = TestData.createRfq()
     rfq.sign(TestData.aliceDid)
-    val quote = TestData.createQuote()
-    quote.sign(TestData.pfiDid)
 
     exchangesApi.addMessage(rfq)
-    exchangesApi.addMessage(quote)
 
-    val response = client.get("/exchanges?id=${rfq.metadata.exchangeId}&id=${quote.metadata.exchangeId}") {
+    val response = client.get("/exchanges/${rfq.metadata.exchangeId}") {
       bearerAuth(RequestToken.generate(TestData.aliceDid, TestData.pfiDid.uri))
     }
 
@@ -87,19 +84,12 @@ class GetExchangesTest : ServerTest() {
 
     val responseString = response.bodyAsText()
     val jsonNode = Json.jsonMapper.readTree(responseString)
-    val exchanges = jsonNode.get("data").elements().asSequence()
-      .map { exchange ->
-        exchange.elements().asSequence().map {
-          val string = it.toString()
-          Message.parse(string)
-        }.toList()
-      }
-      .toList()
+    val exchange = jsonNode.get("data").elements().asSequence()
+      .map {
+        val string = it.toString()
+        Message.parse(string)
+      }.toList()
 
-    assertEquals(exchanges.size, 2)
-    assertEquals(exchanges[0].size, 1)
-
-    assertEquals(exchanges[0][0].metadata.id, rfq.metadata.id)
-    assertEquals(exchanges[1][0].metadata.id, quote.metadata.id)
+    assertEquals((exchange[0] as Rfq).metadata.from, TestData.aliceDid.uri)
   }
 }
