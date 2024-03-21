@@ -13,7 +13,7 @@
   <parent>
     <groupId>xyz.block</groupId>
     <artifactId>web5-parent</artifactId>
-    <version>0.15.0-issue217-alpha-1</version>
+    <version>0.15.0-issue217-alpha-2</version>
   </parent>
   <name>tbDEX SDK for the JVM</name>
   <url>https://developer.tbd.website</url>
@@ -92,7 +92,7 @@
     -->
 
     <!-- Versioning for Platform -->
-    <version.xyz.block.web5>0.15.0-issue217-alpha-1</version.xyz.block.web5>
+    <version.xyz.block.web5>0.15.0-issue217-alpha-2</version.xyz.block.web5>
 
     <!-- Versioning for Dependencies -->
     <version.de.fxlae>0.2.0</version.de.fxlae>
@@ -192,7 +192,7 @@
         <groupId>com.fasterxml.jackson.datatype</groupId>
         <artifactId>jackson-datatype-jsr310</artifactId>
         <!-- Version property for fasterxml is defined by web5-parent -->
-        <version>${version.com.fasterxml.jackson.module}</version>
+        <version>${version.com.fasterxml.jackson}</version>
       </dependency>
       <dependency>
         <groupId>io.ktor</groupId>
