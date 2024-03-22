@@ -15,7 +15,7 @@
     <artifactId>web5-parent</artifactId>
     <version>0.15.0-issue217-alpha-2</version>
   </parent>
-  <name>tbDEX SDK for the JVM</name>
+  <name>tbDEX SDK for the JVM Build Parent</name>
   <url>https://developer.tbd.website</url>
   <description>Build Aggregator and Parent for tbDEX SDK for the JVM</description>
   <inceptionYear>2024</inceptionYear>
@@ -55,6 +55,7 @@
 
   <!-- Aggregate Modules -->
   <modules>
+    <module>distribution</module>
     <module>httpclient</module>
     <module>httpserver</module>
     <module>protocol</module>
