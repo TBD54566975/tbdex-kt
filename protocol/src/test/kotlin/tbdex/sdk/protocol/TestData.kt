@@ -130,7 +130,7 @@ object TestData {
     to = ALICE_DID.uri,
     from = PFI_DID.uri,
     exchangeId = TypeId.generate(MessageKind.rfq.name).toString(),
-    closeData = CloseData("test reason")
+    closeData = CloseData("test reason", true)
   )
 
   fun getOrder() = Order.create(

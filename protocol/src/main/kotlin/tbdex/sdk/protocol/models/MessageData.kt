@@ -60,8 +60,8 @@ class PaymentInstruction(
  * A data class implementing [MessageData] that represents the contents of a [Close].
  */
 class CloseData(
-  val reason: String?,
-  val success: Boolean?
+  val reason: String? = null,
+  val success: Boolean? = null
 ) : MessageData
 
 /**
