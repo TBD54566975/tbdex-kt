@@ -12,7 +12,7 @@ class Balance(
   companion object {
     fun parse(toString: String) = Resource.parse(toString) as Balance
 
-    fun create(from: String, data: BalanceData, protocol: String = "1.0"): Balance {
+    fun create(from: String, data: BalanceData, protocol: String): Balance {
       val now = OffsetDateTime.now()
       val metadata = ResourceMetadata(
         kind = ResourceKind.balance,

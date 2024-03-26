@@ -26,6 +26,16 @@ enum class ResourceKind {
 
 /**
  * A data class representing the metadata present on every [Resource].
+ *
+ * @property kind the data property's type. e.g. offering
+ * @property from The authors's DID
+ * @property id The resource's ID
+ * @property protocol Version of the protocol in use (x.x format).
+ *                    The protocol version must remain consistent across messages in a given exchange.
+ *                    Messages sharing the same exchangeId MUST also have the same protocol version.
+ *                    Protocol versions are tracked in https://github.com/TBD54566975/tbdex
+ * @property createdAt ISO 8601 timestamp
+ * @property updatedAt ISO 8601 timestamp
  */
 class ResourceMetadata(
   val kind: ResourceKind,

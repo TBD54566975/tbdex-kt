@@ -1,9 +1,11 @@
 package tbdex.sdk.httpserver.models
 
-import tbdex.sdk.protocol.models.PayinDetails
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.OfferingData
+import tbdex.sdk.protocol.models.PayinDetails
 import tbdex.sdk.protocol.models.PayinMethod
+import tbdex.sdk.protocol.models.PayoutDetails
+import tbdex.sdk.protocol.models.PayoutMethod
 import web5.sdk.credentials.model.InputDescriptorV2
 import web5.sdk.credentials.model.PresentationDefinitionV2
 
@@ -15,15 +17,22 @@ class FakeOfferingsApi : OfferingsApi {
 
   // Sample offering data for testing purposes
   private val offering = Offering.create(
-    from = "did:ex:pfi", data = OfferingData(
-    description = "",
-    payin = PayinDetails(currencyCode = "USD"),
-    payout = PayinDetails(currencyCode = "BTC"),
-    payoutUnitsPerPayinUnit = "0.000038",
-    payinMethods = listOf(PayinMethod(kind = "DEBIT_CARD")),
-    payoutMethods = listOf(PayinMethod(kind = "BTC_ADDRESS")),
-    requiredClaims = buildPresentationDefinition()
-  )
+    from = "did:ex:pfi",
+    data = OfferingData(
+      description = "",
+      payoutUnitsPerPayinUnit = "0.000038",
+      payin = PayinDetails(
+        currencyCode = "USD",
+        min = "10.00",
+        max = "100.00",
+        methods = listOf(PayinMethod(kind = "DEBIT_CARD"))
+      ),
+      payout = PayoutDetails(
+        currencyCode = "BTC",
+        methods = listOf(PayoutMethod(kind = "BTC_ADDRESS", estimatedSettlementTime = 3600))
+      ),
+      requiredClaims = buildPresentationDefinition()
+    )
   )
 
   private fun buildPresentationDefinition(

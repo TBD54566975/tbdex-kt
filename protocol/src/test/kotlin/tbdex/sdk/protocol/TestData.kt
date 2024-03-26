@@ -4,22 +4,23 @@ import com.danubetech.verifiablecredentials.CredentialSubject
 import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.CloseData
-import tbdex.sdk.protocol.models.PayinDetails
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.OfferingData
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.OrderStatusData
+import tbdex.sdk.protocol.models.PayinDetails
 import tbdex.sdk.protocol.models.PaymentInstruction
-import tbdex.sdk.protocol.models.PayinMethod
+import tbdex.sdk.protocol.models.PayoutDetails
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.QuoteData
 import tbdex.sdk.protocol.models.QuoteDetails
 import tbdex.sdk.protocol.models.ResourceKind
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.models.RfqData
-import tbdex.sdk.protocol.models.SelectedPaymentMethod
+import tbdex.sdk.protocol.models.SelectedPayinMethod
+import tbdex.sdk.protocol.models.SelectedPayoutMethod
 import tbdex.sdk.protocol.serialization.Json
 import web5.sdk.credentials.VcDataModel
 import web5.sdk.credentials.VerifiableCredential
@@ -73,20 +74,8 @@ object TestData {
       OfferingData(
         description = "A sample offering",
         payoutUnitsPerPayinUnit = "1",
-        payin = PayinDetails("AUD", "0.01", "100.00"),
-        payout = PayinDetails("USDC"),
-        payinMethods = listOf(
-          PayinMethod(
-            kind = "BTC_ADDRESS",
-            requiredPaymentDetails = requiredPaymentDetailsSchema()
-          )
-        ),
-        payoutMethods = listOf(
-          PayinMethod(
-            kind = "MOMO",
-            requiredPaymentDetails = requiredPaymentDetailsSchema()
-          )
-        ),
+        payin = PayinDetails("BTC", "0.01", "100.00", listOf()),
+        payout = PayoutDetails("USDC", "", "", listOf()),
         requiredClaims = requiredClaims
       )
     )
@@ -99,9 +88,8 @@ object TestData {
     from = ALICE_DID.uri,
     rfqData = RfqData(
       offeringId = offeringId,
-      payinAmount = "10.00",
-      payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to "123456")),
-      payoutMethod = SelectedPaymentMethod(
+      payin = SelectedPayinMethod("BTC_ADDRESS", mapOf("address" to "123456"), amount = "10.00"),
+      payout = SelectedPayoutMethod(
         "MOMO", mapOf(
         "phoneNumber" to "+254712345678",
         "accountHolderName" to "Alfred Holder"
