@@ -1,7 +1,6 @@
 package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.serialization.dateTimeFormat
 import java.time.OffsetDateTime
 
@@ -60,7 +59,10 @@ class PaymentInstruction(
 /**
  * A data class implementing [MessageData] that represents the contents of a [Close].
  */
-class CloseData(val reason: String) : MessageData
+class CloseData(
+  val reason: String? = null,
+  val success: Boolean? = null
+) : MessageData
 
 /**
  * A data class implementing [MessageData] that represents the contents of an [Order].
