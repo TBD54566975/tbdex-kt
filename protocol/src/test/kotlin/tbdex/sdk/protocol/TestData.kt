@@ -4,13 +4,13 @@ import com.danubetech.verifiablecredentials.CredentialSubject
 import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.CloseData
-import tbdex.sdk.protocol.models.CurrencyDetails
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.OfferingData
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.OrderStatusData
+import tbdex.sdk.protocol.models.PaymentDetails
 import tbdex.sdk.protocol.models.PaymentInstruction
 import tbdex.sdk.protocol.models.PaymentMethod
 import tbdex.sdk.protocol.models.Quote
@@ -19,7 +19,8 @@ import tbdex.sdk.protocol.models.QuoteDetails
 import tbdex.sdk.protocol.models.ResourceKind
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.models.RfqData
-import tbdex.sdk.protocol.models.SelectedPaymentMethod
+import tbdex.sdk.protocol.models.SelectedPayinMethod
+import tbdex.sdk.protocol.models.SelectedPayoutMethod
 import tbdex.sdk.protocol.serialization.Json
 import web5.sdk.credentials.VcDataModel
 import web5.sdk.credentials.VerifiableCredential
@@ -73,20 +74,22 @@ object TestData {
       OfferingData(
         description = "A sample offering",
         payoutUnitsPerPayinUnit = "1",
-        payinCurrency = CurrencyDetails("AUD", "0.01", "100.00"),
-        payoutCurrency = CurrencyDetails("USDC"),
-        payinMethods = listOf(
-          PaymentMethod(
-            kind = "BTC_ADDRESS",
-            requiredPaymentDetails = requiredPaymentDetailsSchema()
-          )
-        ),
-        payoutMethods = listOf(
+        payin = PaymentDetails(
+          "AUD",
+          listOf(
+            PaymentMethod(
+              kind = "BTC_ADDRESS",
+              requiredPaymentDetails = requiredPaymentDetailsSchema()
+            )
+          ),
+          "0.01",
+          "100.00"),
+        payout = PaymentDetails("USDC", listOf(
           PaymentMethod(
             kind = "MOMO",
             requiredPaymentDetails = requiredPaymentDetailsSchema()
           )
-        ),
+        )),
         requiredClaims = requiredClaims
       )
     )
@@ -99,9 +102,8 @@ object TestData {
     from = ALICE_DID.uri,
     rfqData = RfqData(
       offeringId = offeringId,
-      payinAmount = "10.00",
-      payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to "123456")),
-      payoutMethod = SelectedPaymentMethod(
+      payin = SelectedPayinMethod("BTC_ADDRESS", mapOf("address" to "123456"), "10.00"),
+      payout = SelectedPayoutMethod(
         "MOMO", mapOf(
         "phoneNumber" to "+254712345678",
         "accountHolderName" to "Alfred Holder"

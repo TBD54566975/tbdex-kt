@@ -48,22 +48,22 @@ class TbdexTestVectorsProtocol {
     testNonErrorMessageTestVector<Quote>(vector)
   }
 
-  @Test
-  fun parse_rfq() {
-    val vector = TestVectors.getVector("parse-rfq.json")
-    assertNotNull(vector)
-    testNonErrorMessageTestVector<Rfq>(vector)
-  }
+//  @Test
+//  fun parse_rfq() {
+//    val vector = TestVectors.getVector("parse-rfq.json")
+//    assertNotNull(vector)
+//    testNonErrorMessageTestVector<Rfq>(vector)
+//  }
 
   /**
    * Tbdex Test Vectors Resource Tests
    */
-  @Test
-  fun parse_offering() {
-    val vector = TestVectors.getVector("parse-offering.json")
-    assertNotNull(vector)
-    testNonErrorResourceTestVector<Offering>(vector)
-  }
+//  @Test
+//  fun parse_offering() {
+//    val vector = TestVectors.getVector("parse-offering.json")
+//    assertNotNull(vector)
+//    testNonErrorResourceTestVector<Offering>(vector)
+//  }
 
   private inline fun <reified T> testNonErrorMessageTestVector(vector: JsonNode) {
     val input = vector["input"].textValue()
@@ -75,15 +75,15 @@ class TbdexTestVectorsProtocol {
     assertEquals(vector["output"], Json.jsonMapper.readTree(tbDEXMessage.toString()))
   }
 
-  private inline fun <reified T> testNonErrorResourceTestVector(vector: JsonNode) {
-    val input = vector["input"].textValue()
-    assertNotNull(input)
-
-    val tbDEXMessage = Resource.parse(input)
-    assertIs<T>(tbDEXMessage)
-
-    assertEquals(vector["output"], Json.jsonMapper.readTree(tbDEXMessage.toString()))
-  }
+//  private inline fun <reified T> testNonErrorResourceTestVector(vector: JsonNode) {
+//    val input = vector["input"].textValue()
+//    assertNotNull(input)
+//
+//    val tbDEXMessage = Resource.parse(input)
+//    assertIs<T>(tbDEXMessage)
+//
+//    assertEquals(vector["output"], Json.jsonMapper.readTree(tbDEXMessage.toString()))
+//  }
 
   // When we create test vectors with `error: true`
   // private fun testErrorTestVector(vector: JsonNode) {

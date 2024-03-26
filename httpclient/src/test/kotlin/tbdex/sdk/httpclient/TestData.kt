@@ -2,17 +2,18 @@ package tbdex.sdk.httpclient
 
 import com.danubetech.verifiablecredentials.CredentialSubject
 import de.fxlae.typeid.TypeId
-import tbdex.sdk.protocol.models.CurrencyDetails
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.OfferingData
+import tbdex.sdk.protocol.models.PaymentDetails
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.QuoteData
 import tbdex.sdk.protocol.models.QuoteDetails
 import tbdex.sdk.protocol.models.ResourceKind
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.models.RfqData
-import tbdex.sdk.protocol.models.SelectedPaymentMethod
+import tbdex.sdk.protocol.models.SelectedPayinMethod
+import tbdex.sdk.protocol.models.SelectedPayoutMethod
 import web5.sdk.credentials.VcDataModel
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.credentials.model.ConstraintsV2
@@ -63,10 +64,8 @@ object TestData {
       OfferingData(
         description = "my fake offering",
         payoutUnitsPerPayinUnit = "1",
-        payinCurrency = CurrencyDetails("AUD"),
-        payoutCurrency = CurrencyDetails("USDC"),
-        payinMethods = listOf(),
-        payoutMethods = listOf(),
+        payin = PaymentDetails("AUD", listOf()),
+        payout = PaymentDetails("USDC", listOf()),
         requiredClaims = requiredClaims
       )
     )
@@ -83,9 +82,8 @@ object TestData {
       from = ALICE_DID.uri,
       rfqData = RfqData(
         offeringId = offeringId,
-        payinAmount = "10.00",
-        payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
-        payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
+        payin = SelectedPayinMethod("BTC_ADDRESS", mapOf("address" to 123456), "10.00"),
+        payout = SelectedPayoutMethod("MOMO", mapOf("phone_number" to 123456)),
         claims = claims
       )
     )

@@ -21,9 +21,8 @@ class RfqTest {
       from = TestData.ALICE,
       rfqData = RfqData(
         offeringId = TypeId.generate(ResourceKind.offering.name).toString(),
-        payinAmount = "10.00",
-        payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
-        payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
+        payin = SelectedPayinMethod("BTC_ADDRESS", mapOf("address" to 123456), "10.00"),
+        payout = SelectedPayoutMethod("MOMO", mapOf("phone_number" to 123456)),
         claims = emptyList()
       ),
       externalId = "P_12345"
@@ -32,7 +31,7 @@ class RfqTest {
     assertAll {
       assertThat(rfq.metadata.id).startsWith("rfq")
       assertThat(rfq.metadata.protocol).isEqualTo("1.0")
-      assertThat(rfq.data.payinAmount).isEqualTo("10.00")
+      assertThat(rfq.data.payin.amount).isEqualTo("10.00")
       assertThat(rfq.metadata.externalId).isEqualTo("P_12345")
     }
   }

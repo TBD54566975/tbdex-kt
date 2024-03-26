@@ -23,20 +23,19 @@ sealed interface ResourceData : Data
 class OfferingData(
   val description: String,
   val payoutUnitsPerPayinUnit: String,
-  val payoutCurrency: CurrencyDetails,
-  val payinCurrency: CurrencyDetails,
-  val payinMethods: List<PaymentMethod>,
-  val payoutMethods: List<PaymentMethod>,
+  val payout: PaymentDetails,
+  val payin: PaymentDetails,
   val requiredClaims: PresentationDefinitionV2?
 ) : ResourceData
 
 /**
  * A data class containing information pertaining to payin or payout.
  */
-class CurrencyDetails(
+class PaymentDetails(
   val currencyCode: String,
-  val minAmount: String? = null,
-  val maxAmount: String? = null
+  val methods: List<PaymentMethod>,
+  val min: String? = null,
+  val max: String? = null,
 )
 
 /**

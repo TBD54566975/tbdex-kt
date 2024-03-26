@@ -11,7 +11,8 @@ import tbdex.sdk.protocol.models.QuoteData
 import tbdex.sdk.protocol.models.QuoteDetails
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.models.RfqData
-import tbdex.sdk.protocol.models.SelectedPaymentMethod
+import tbdex.sdk.protocol.models.SelectedPayinMethod
+import tbdex.sdk.protocol.models.SelectedPayoutMethod
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.methods.dht.DidDht
 import java.time.OffsetDateTime
@@ -27,13 +28,13 @@ object TestData {
       from = aliceDid.uri,
       rfqData = RfqData(
         offeringId = offering?.metadata?.id ?: TypeId.generate("offering").toString(),
-        payinAmount = "1.00",
-        payinMethod = SelectedPaymentMethod(
-          kind = offering?.data?.payinMethods?.first()?.kind ?: "USD",
-          paymentDetails = mapOf("foo" to "bar")
+        payin = SelectedPayinMethod(
+          kind = offering?.data?.payin?.methods?.first()?.kind ?: "USD",
+          paymentDetails = mapOf("foo" to "bar"),
+          "1.00"
         ),
-        payoutMethod = SelectedPaymentMethod(
-          kind = offering?.data?.payoutMethods?.first()?.kind ?: "BTC",
+        payout = SelectedPayoutMethod(
+          kind = offering?.data?.payout?.methods?.first()?.kind ?: "BTC",
           paymentDetails = mapOf("foo" to "bar")
         ),
         claims = claims ?: emptyList()

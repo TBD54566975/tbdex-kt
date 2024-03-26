@@ -18,10 +18,8 @@ class OfferingTest {
       OfferingData(
         description = "my fake offering",
         payoutUnitsPerPayinUnit = "1",
-        payinCurrency = CurrencyDetails("AUD"),
-        payoutCurrency = CurrencyDetails("BTC"),
-        payinMethods = listOf(),
-        payoutMethods = listOf(),
+        payin = PaymentDetails("AUD", listOf()),
+        payout = PaymentDetails("BTC", listOf()),
         requiredClaims = TestData.getPresentationDefinition()
       )
     )

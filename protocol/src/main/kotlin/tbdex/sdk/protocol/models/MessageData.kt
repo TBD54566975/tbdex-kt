@@ -1,7 +1,6 @@
 package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.serialization.dateTimeFormat
 import java.time.OffsetDateTime
 
@@ -15,16 +14,25 @@ sealed interface MessageData : Data
  */
 class RfqData(
   val offeringId: String,
-  val payinAmount: String,
-  val payinMethod: SelectedPaymentMethod,
-  val payoutMethod: SelectedPaymentMethod,
+  val payin: SelectedPayinMethod,
+  val payout: SelectedPayoutMethod,
   val claims: List<String>
 ) : MessageData
 
+
 /**
- * A data class representing the payment method selected.
+ * A data class representing the payin method selected.
  */
-class SelectedPaymentMethod(
+class SelectedPayinMethod(
+  val kind: String,
+  val paymentDetails: Map<String, Any>? = null,
+  val amount: String,
+) : MessageData
+
+/**
+ * A data class representing the payout method selected.
+ */
+class SelectedPayoutMethod(
   val kind: String,
   val paymentDetails: Map<String, Any>? = null
 ) : MessageData
