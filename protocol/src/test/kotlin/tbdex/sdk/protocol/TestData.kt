@@ -10,9 +10,11 @@ import tbdex.sdk.protocol.models.OfferingData
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.OrderStatusData
-import tbdex.sdk.protocol.models.PaymentDetails
+import tbdex.sdk.protocol.models.PayinDetails
+import tbdex.sdk.protocol.models.PayinMethod
 import tbdex.sdk.protocol.models.PaymentInstruction
-import tbdex.sdk.protocol.models.PaymentMethod
+import tbdex.sdk.protocol.models.PayoutDetails
+import tbdex.sdk.protocol.models.PayoutMethod
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.QuoteData
 import tbdex.sdk.protocol.models.QuoteDetails
@@ -74,19 +76,20 @@ object TestData {
       OfferingData(
         description = "A sample offering",
         payoutUnitsPerPayinUnit = "1",
-        payin = PaymentDetails(
+        payin = PayinDetails(
           "AUD",
           listOf(
-            PaymentMethod(
+            PayinMethod(
               kind = "BTC_ADDRESS",
               requiredPaymentDetails = requiredPaymentDetailsSchema()
             )
           ),
           "0.01",
           "100.00"),
-        payout = PaymentDetails("USDC", listOf(
-          PaymentMethod(
+        payout = PayoutDetails("USDC", listOf(
+          PayoutMethod(
             kind = "MOMO",
+            estimatedSettlementTime = 10,
             requiredPaymentDetails = requiredPaymentDetailsSchema()
           )
         )),

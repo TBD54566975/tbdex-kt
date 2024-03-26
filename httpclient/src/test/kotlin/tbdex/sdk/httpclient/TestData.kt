@@ -5,7 +5,8 @@ import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.OfferingData
-import tbdex.sdk.protocol.models.PaymentDetails
+import tbdex.sdk.protocol.models.PayinDetails
+import tbdex.sdk.protocol.models.PayoutDetails
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.QuoteData
 import tbdex.sdk.protocol.models.QuoteDetails
@@ -64,8 +65,8 @@ object TestData {
       OfferingData(
         description = "my fake offering",
         payoutUnitsPerPayinUnit = "1",
-        payin = PaymentDetails("AUD", listOf()),
-        payout = PaymentDetails("USDC", listOf()),
+        payin = PayinDetails("AUD", listOf()),
+        payout = PayoutDetails("USDC", listOf()),
         requiredClaims = requiredClaims
       )
     )

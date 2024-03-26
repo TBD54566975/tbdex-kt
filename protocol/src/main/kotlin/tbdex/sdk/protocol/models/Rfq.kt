@@ -45,16 +45,29 @@ class Rfq private constructor(
     if (offering.data.payin.max != null)
       check(this.data.payin.amount <= offering.data.payin.max)
 
-    validatePaymentMethod(data.payin.kind, data.payin.paymentDetails, offering.data.payin.methods)
-    validatePaymentMethod(data.payout.kind, data.payout.paymentDetails, offering.data.payout.methods)
+    validatePayinMethod(data.payin.kind, data.payin.paymentDetails, offering.data.payin.methods)
+    validatePayoutMethod(data.payout.kind, data.payout.paymentDetails, offering.data.payout.methods)
 
     offering.data.requiredClaims?.let { this.verifyClaims(it) }
   }
 
-  private fun validatePaymentMethod(
+  private fun validatePayinMethod(
     selectedPaymentKind: String,
     paymentDetails: Map<String, Any>?,
-    offeringMethods: List<PaymentMethod>
+    offeringMethods: List<PayinMethod>
+  ) {
+    val matchedOfferingMethod = offeringMethods.first { it.kind == selectedPaymentKind }
+    matchedOfferingMethod.requiredPaymentDetails?.let {
+      val schema = matchedOfferingMethod.getRequiredPaymentDetailsSchema()
+      val jsonNodePaymentDetails = Json.jsonMapper.valueToTree<JsonNode>(paymentDetails)
+      schema?.validate(jsonNodePaymentDetails)
+    }
+  }
+
+  private fun validatePayoutMethod(
+    selectedPaymentKind: String,
+    paymentDetails: Map<String, Any>?,
+    offeringMethods: List<PayoutMethod>
   ) {
     val matchedOfferingMethod = offeringMethods.first { it.kind == selectedPaymentKind }
     matchedOfferingMethod.requiredPaymentDetails?.let {
