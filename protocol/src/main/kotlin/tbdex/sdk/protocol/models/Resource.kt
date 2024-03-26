@@ -3,7 +3,6 @@ package tbdex.sdk.protocol.models
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
-import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.CryptoUtils
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.serialization.Json
@@ -21,7 +20,8 @@ sealed interface Metadata
  * An enum representing all possible [Resource] kinds.
  */
 enum class ResourceKind {
-  offering
+  offering,
+  balance
 }
 
 /**
@@ -116,7 +116,7 @@ sealed class Resource {
 
       val resourceType = when (ResourceKind.valueOf(kind)) {
         ResourceKind.offering -> Offering::class.java
-        // ResourceKind.reputation -> TODO()
+        ResourceKind.balance -> Balance::class.java
       }
 
       val resource = jsonMapper.convertValue(jsonResource, resourceType)

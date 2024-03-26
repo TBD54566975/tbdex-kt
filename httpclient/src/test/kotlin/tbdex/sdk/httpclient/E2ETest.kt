@@ -79,8 +79,8 @@ class E2ETest {
     }
 
     println(
-      "Got offerings! payin ${offerings.first().data.payinCurrency.currencyCode}, " +
-        "payout ${offerings.first().data.payoutCurrency.currencyCode}"
+      "Got offerings! payin ${offerings.first().data.payin.currencyCode}, " +
+        "payout ${offerings.first().data.payout.currencyCode}"
     )
 
     if (offerings.isEmpty()) {

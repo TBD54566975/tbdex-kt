@@ -39,11 +39,11 @@ class Rfq private constructor(
   fun verifyOfferingRequirements(offering: Offering) {
     require(data.offeringId == offering.metadata.id)
 
-    if (offering.data.payinCurrency.minAmount != null)
-      check(offering.data.payinCurrency.minAmount <= this.data.payinAmount)
+    if (offering.data.payin.minAmount != null)
+      check(offering.data.payin.minAmount <= this.data.payinAmount)
 
-    if (offering.data.payinCurrency.maxAmount != null)
-      check(this.data.payinAmount <= offering.data.payinCurrency.maxAmount)
+    if (offering.data.payin.maxAmount != null)
+      check(this.data.payinAmount <= offering.data.payin.maxAmount)
 
     validatePaymentMethod(data.payinMethod, offering.data.payinMethods)
     validatePaymentMethod(data.payoutMethod, offering.data.payoutMethods)
@@ -51,7 +51,7 @@ class Rfq private constructor(
     offering.data.requiredClaims?.let { this.verifyClaims(it) }
   }
 
-  private fun validatePaymentMethod(selectedMethod: SelectedPaymentMethod, offeringMethods: List<PaymentMethod>) {
+  private fun validatePaymentMethod(selectedMethod: SelectedPaymentMethod, offeringMethods: List<PayinMethod>) {
     val matchedOfferingMethod = offeringMethods.first { it.kind == selectedMethod.kind }
     matchedOfferingMethod.requiredPaymentDetails?.let {
       val schema = matchedOfferingMethod.getRequiredPaymentDetailsSchema()

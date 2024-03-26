@@ -4,7 +4,7 @@ import com.danubetech.verifiablecredentials.CredentialSubject
 import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.CloseData
-import tbdex.sdk.protocol.models.CurrencyDetails
+import tbdex.sdk.protocol.models.PayinDetails
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.OfferingData
@@ -12,7 +12,7 @@ import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.OrderStatusData
 import tbdex.sdk.protocol.models.PaymentInstruction
-import tbdex.sdk.protocol.models.PaymentMethod
+import tbdex.sdk.protocol.models.PayinMethod
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.QuoteData
 import tbdex.sdk.protocol.models.QuoteDetails
@@ -73,16 +73,16 @@ object TestData {
       OfferingData(
         description = "A sample offering",
         payoutUnitsPerPayinUnit = "1",
-        payinCurrency = CurrencyDetails("AUD", "0.01", "100.00"),
-        payoutCurrency = CurrencyDetails("USDC"),
+        payin = PayinDetails("AUD", "0.01", "100.00"),
+        payout = PayinDetails("USDC"),
         payinMethods = listOf(
-          PaymentMethod(
+          PayinMethod(
             kind = "BTC_ADDRESS",
             requiredPaymentDetails = requiredPaymentDetailsSchema()
           )
         ),
         payoutMethods = listOf(
-          PaymentMethod(
+          PayinMethod(
             kind = "MOMO",
             requiredPaymentDetails = requiredPaymentDetailsSchema()
           )

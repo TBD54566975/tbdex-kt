@@ -2,7 +2,7 @@ package tbdex.sdk.httpclient
 
 import com.danubetech.verifiablecredentials.CredentialSubject
 import de.fxlae.typeid.TypeId
-import tbdex.sdk.protocol.models.CurrencyDetails
+import tbdex.sdk.protocol.models.PayinDetails
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.OfferingData
@@ -63,8 +63,8 @@ object TestData {
       OfferingData(
         description = "my fake offering",
         payoutUnitsPerPayinUnit = "1",
-        payinCurrency = CurrencyDetails("AUD"),
-        payoutCurrency = CurrencyDetails("USDC"),
+        payin = PayinDetails("AUD"),
+        payout = PayinDetails("USDC"),
         payinMethods = listOf(),
         payoutMethods = listOf(),
         requiredClaims = requiredClaims

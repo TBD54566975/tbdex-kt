@@ -1,9 +1,9 @@
 package tbdex.sdk.httpserver.models
 
-import tbdex.sdk.protocol.models.CurrencyDetails
+import tbdex.sdk.protocol.models.PayinDetails
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.OfferingData
-import tbdex.sdk.protocol.models.PaymentMethod
+import tbdex.sdk.protocol.models.PayinMethod
 import web5.sdk.credentials.model.InputDescriptorV2
 import web5.sdk.credentials.model.PresentationDefinitionV2
 
@@ -17,11 +17,11 @@ class FakeOfferingsApi : OfferingsApi {
   private val offering = Offering.create(
     from = "did:ex:pfi", data = OfferingData(
     description = "",
-    payinCurrency = CurrencyDetails(currencyCode = "USD"),
-    payoutCurrency = CurrencyDetails(currencyCode = "BTC"),
+    payin = PayinDetails(currencyCode = "USD"),
+    payout = PayinDetails(currencyCode = "BTC"),
     payoutUnitsPerPayinUnit = "0.000038",
-    payinMethods = listOf(PaymentMethod(kind = "DEBIT_CARD")),
-    payoutMethods = listOf(PaymentMethod(kind = "BTC_ADDRESS")),
+    payinMethods = listOf(PayinMethod(kind = "DEBIT_CARD")),
+    payoutMethods = listOf(PayinMethod(kind = "BTC_ADDRESS")),
     requiredClaims = buildPresentationDefinition()
   )
   )
