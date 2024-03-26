@@ -44,7 +44,8 @@ class PaymentDetails(
 class PaymentMethod(
   val kind: String,
   val requiredPaymentDetails: JsonNode? = null,
-  val fee: String? = null,
+  val min: String? = null,
+  val max: String? = null,
   val description: String? = null,
   val name: String? = null,
   val group: String? = null,
