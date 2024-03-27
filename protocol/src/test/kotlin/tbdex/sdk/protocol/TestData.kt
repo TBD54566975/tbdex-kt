@@ -21,7 +21,6 @@ import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.models.RfqData
 import tbdex.sdk.protocol.models.SelectedPayinMethod
 import tbdex.sdk.protocol.models.SelectedPayoutMethod
-import tbdex.sdk.protocol.serialization.Json
 import web5.sdk.credentials.VcDataModel
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.credentials.model.ConstraintsV2
@@ -74,8 +73,8 @@ object TestData {
       OfferingData(
         description = "A sample offering",
         payoutUnitsPerPayinUnit = "1",
-        payin = PayinDetails("BTC", "0.01", "100.00", listOf()),
-        payout = PayoutDetails("USDC", "", "", listOf()),
+        payin = PayinDetails("BTC", "0.00", "100.00", listOf()),
+        payout = PayoutDetails("USDC", "0.00", "100.00", listOf()),
         requiredClaims = requiredClaims
       )
     )
@@ -172,35 +171,4 @@ object TestData {
       constraints = ConstraintsV2(fields = fields)
     )
   }
-
-  private fun requiredPaymentDetailsSchema() = Json.jsonMapper.readTree(
-    """
-    {
-      "${'$'}schema": "http://json-schema.org/draft-07/schema",
-      "additionalProperties": false,
-      "type": "object",
-      "properties": {
-        "phoneNumber": {
-          "minLength": 12,
-          "pattern": "^+2547[0-9]{8}${'$'}",
-          "description": "Mobile Money account number of the Recipient",
-          "type": "string",
-          "title": "Phone Number",
-          "maxLength": 12
-        },
-        "accountHolderName": {
-          "pattern": "^[A-Za-zs'-]+${'$'}",
-          "description": "Name of the account holder as it appears on the Mobile Money account",
-          "type": "string",
-          "title": "Account Holder Name",
-          "maxLength": 32
-        }
-      },
-      "required": [
-        "accountNumber",
-        "accountHolderName"
-      ]
-    }
-  """.trimIndent()
-  )
 }

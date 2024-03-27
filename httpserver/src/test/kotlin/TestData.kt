@@ -29,12 +29,12 @@ object TestData {
       rfqData = RfqData(
         offeringId = offering?.metadata?.id ?: TypeId.generate("offering").toString(),
         payin = SelectedPayinMethod(
-          kind = offering?.data?.payin?.methods?.first()?.kind ?: "USD",
+          kind = offering?.data?.payin?.methods?.first()?.kind ?: "DEBIT_CARD",
           paymentDetails = mapOf("foo" to "bar"),
           amount = "1.00"
         ),
         payout = SelectedPayoutMethod(
-          kind = offering?.data?.payin?.methods?.first()?.kind ?: "BTC",
+          kind = offering?.data?.payout?.methods?.first()?.kind ?: "BTC_ADDRESS",
           paymentDetails = mapOf("foo" to "bar")
         ),
         claims = claims ?: emptyList()

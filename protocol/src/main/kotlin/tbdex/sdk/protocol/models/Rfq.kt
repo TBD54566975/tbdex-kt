@@ -40,10 +40,10 @@ class Rfq private constructor(
     require(data.offeringId == offering.metadata.id)
 
     if (offering.data.payin.min != null)
-      check(offering.data.payin.min <= data.payin.amount)
+      check(offering.data.payin.min.toDouble() <= data.payin.amount.toDouble())
 
     if (offering.data.payin.max != null)
-      check(data.payin.amount <= offering.data.payin.max)
+      check(offering.data.payin.max.toDouble() >= data.payin.amount.toDouble())
 
     validatePaymentMethod(data.payin, offering.data.payin.methods)
     validatePaymentMethod(data.payout, offering.data.payout.methods)

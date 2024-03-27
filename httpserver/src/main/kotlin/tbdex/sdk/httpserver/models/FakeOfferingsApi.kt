@@ -23,7 +23,7 @@ class FakeOfferingsApi : OfferingsApi {
       payoutUnitsPerPayinUnit = "0.000038",
       payin = PayinDetails(
         currencyCode = "USD",
-        min = "10.00",
+        min = "0.00",
         max = "100.00",
         methods = listOf(PayinMethod(kind = "DEBIT_CARD"))
       ),
