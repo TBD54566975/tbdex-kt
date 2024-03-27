@@ -3,13 +3,12 @@ package tbdex.sdk.protocol.models
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
-import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.CryptoUtils
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.serialization.Json.jsonMapper
 import tbdex.sdk.protocol.serialization.dateTimeFormat
-import web5.sdk.dids.Did
+import web5.sdk.dids.did.BearerDid
 import java.time.OffsetDateTime
 
 /**
@@ -53,7 +52,7 @@ sealed class Resource {
    * @param keyAlias The alias of the key to be used for signing (optional).
    * @throws Exception if the signing operation fails.
    */
-  fun sign(did: Did, keyAlias: String? = null) {
+  fun sign(did: BearerDid, keyAlias: String? = null) {
     this.signature = CryptoUtils.sign(did = did, payload = digest(), assertionMethodId = keyAlias)
   }
 

@@ -10,9 +10,9 @@ import tbdex.sdk.protocol.models.Metadata
 import tbdex.sdk.protocol.serialization.Json
 import web5.sdk.common.Convert
 import web5.sdk.crypto.Crypto
-import web5.sdk.dids.Did
 import web5.sdk.dids.DidResolvers
-import web5.sdk.dids.didcore.DidUri
+import web5.sdk.dids.did.BearerDid
+import web5.sdk.dids.didcore.Did
 import java.security.MessageDigest
 import java.security.SignatureException
 
@@ -53,7 +53,7 @@ object CryptoUtils {
     }
 
     val verificationMethodId = jws.header.keyID
-    val parsedDidUrl = DidUri.parse(verificationMethodId) // validates vm id which is a DID URL
+    val parsedDidUrl = Did.parse(verificationMethodId) // validates vm id which is a DID URL
 
     val signingDid = parsedDidUrl.uri
     if (signingDid != did) {
@@ -116,7 +116,7 @@ object CryptoUtils {
    * @param assertionMethodId The alias of the key to be used for signing (optional).
    * @return The signed payload as a detached payload JWT (JSON Web Token).
    */
-  fun sign(did: Did, payload: ByteArray, assertionMethodId: String? = null): String {
+  fun sign(did: BearerDid, payload: ByteArray, assertionMethodId: String? = null): String {
     val didResolutionResult = DidResolvers.resolve(did.uri)
 
     val assertionMethod = didResolutionResult.didDocument?.findAssertionMethodById(assertionMethodId)
@@ -126,7 +126,7 @@ object CryptoUtils {
     val keyAlias = did.keyManager.getDeterministicAlias(assertionMethod?.publicKeyJwk!!)
 
     val publicKey = did.keyManager.getPublicKey(keyAlias)
-    val algorithm = publicKey.algorithm
+    val algorithm = publicKey.alg
     val jwsAlgorithm = JWSAlgorithm.parse(algorithm.toString())
 
     val selectedAssertionMethodId = when {
