@@ -143,6 +143,7 @@ sealed class Resource {
   }
 }
 
+// todo remove this once parse-offering.json is fixed
 fun main() {
   val did = DidDht.create(InMemoryKeyManager())
   val offering = Offering.create(
