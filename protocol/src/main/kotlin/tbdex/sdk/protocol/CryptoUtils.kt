@@ -1,18 +1,14 @@
 package tbdex.sdk.protocol
 
-import com.nimbusds.jose.JWSAlgorithm
-import com.nimbusds.jose.JWSHeader
-import com.nimbusds.jose.JWSObject
-import com.nimbusds.jose.Payload
 import org.erdtman.jcs.JsonCanonicalizer
 import tbdex.sdk.protocol.models.Data
 import tbdex.sdk.protocol.models.Metadata
 import tbdex.sdk.protocol.serialization.Json
 import web5.sdk.common.Convert
-import web5.sdk.crypto.Crypto
-import web5.sdk.dids.Did
-import web5.sdk.dids.DidResolvers
-import web5.sdk.dids.didcore.DidUri
+import web5.sdk.common.EncodingFormat
+import web5.sdk.dids.didcore.Did
+import web5.sdk.jose.jws.DecodedJws
+import web5.sdk.jose.jws.JwsHeader
 import java.security.MessageDigest
 import java.security.SignatureException
 
@@ -47,15 +43,16 @@ object CryptoUtils {
       throw IllegalArgumentException("Signature verification failed: Expected signature property to exist")
     }
 
-    val jws = JWSObject.parse(signature, Payload(detachedPayload))
-    require(jws.header.algorithm != null && jws.header.keyID != null) {
+    val decodedJws = jwsDecode(signature, detachedPayload)
+
+    require(decodedJws.header.kid != null) {
       "Signature verification failed: Expected JWS header to contain alg and kid"
     }
 
-    val verificationMethodId = jws.header.keyID
-    val parsedDidUrl = DidUri.parse(verificationMethodId) // validates vm id which is a DID URL
+    val verificationMethodId = decodedJws.header.kid
+    val parsedDid = Did.parse(verificationMethodId!!)
 
-    val signingDid = parsedDidUrl.uri
+    val signingDid = parsedDid.uri
     if (signingDid != did) {
       throw SignatureException(
         "Signature verification failed: Was not signed by the expected DID. " +
@@ -63,91 +60,32 @@ object CryptoUtils {
       )
     }
 
-    val didResolutionResult = DidResolvers.resolve(parsedDidUrl.uri)
-    if (didResolutionResult.didResolutionMetadata.error != null) {
-      throw SignatureException(
-        "Signature verification failed: " +
-          "Failed to resolve DID ${parsedDidUrl.url}. " +
-          "Error: ${didResolutionResult.didResolutionMetadata.error}"
-      )
-    }
-
-    // Create a set of possible id matches. The DID spec allows for an id to be the entire `did#fragment`
-    // or just `#fragment`. See: https://www.w3.org/TR/did-core/#relative-did-urls.
-    // Using a set for fast string comparison. DIDs can be long.
-    val verificationMethodIds = setOf(parsedDidUrl.url, "#${parsedDidUrl.fragment}")
-    val assertionMethodIds = didResolutionResult.didDocument?.assertionMethod
-    val assertionMethodId = assertionMethodIds?.firstOrNull { id ->
-      verificationMethodIds.contains(id)
-    }
-
-    require(assertionMethodId != null) {
-      throw SignatureException(
-        "Signature verification failed: Expected kid in JWS header to dereference " +
-          "a DID Document Verification Method with an Assertion verification relationship"
-      )
-    }
-
-    val assertionVerificationMethod = didResolutionResult.didDocument?.findAssertionMethodById(assertionMethodId)
-
-    require(
-      (assertionVerificationMethod != null &&
-        (assertionVerificationMethod.isType("JsonWebKey2020") || assertionVerificationMethod.isType("JsonWebKey")))
-        && assertionVerificationMethod.publicKeyJwk != null
-    ) {
-      throw SignatureException(
-        "Signature verification failed: Expected kid in JWS header to dereference " +
-          "a DID Document Verification Method of type JsonWebKey2020 with a publicKeyJwk"
-      )
-    }
-
-    Crypto.verify(
-      publicKey = assertionVerificationMethod.publicKeyJwk!!,
-      signedPayload = jws.signingInput,
-      signature = jws.signature.decode()
-    )
+    decodedJws.verify()
   }
 
-  /**
-   * Signs the provided payload using the specified DID and key.
-   *
-   * @param did The DID to use for signing.
-   * @param payload The payload to sign.
-   * @param assertionMethodId The alias of the key to be used for signing (optional).
-   * @return The signed payload as a detached payload JWT (JSON Web Token).
-   */
-  fun sign(did: Did, payload: ByteArray, assertionMethodId: String? = null): String {
-    val didResolutionResult = DidResolvers.resolve(did.uri)
-
-    val assertionMethod = didResolutionResult.didDocument?.findAssertionMethodById(assertionMethodId)
-
-
-    check(assertionMethod?.publicKeyJwk != null) { "publicKeyJwk is null" }
-    val keyAlias = did.keyManager.getDeterministicAlias(assertionMethod?.publicKeyJwk!!)
-
-    val publicKey = did.keyManager.getPublicKey(keyAlias)
-    val algorithm = publicKey.algorithm
-    val jwsAlgorithm = JWSAlgorithm.parse(algorithm.toString())
-
-    val selectedAssertionMethodId = when {
-      assertionMethod.id.startsWith("#") -> "${did.uri}${assertionMethod.id}"
-      else -> assertionMethod.id
+  @Suppress("SwallowedException")
+  private fun jwsDecode(sigWithoutPayload: String, detachedPayload: ByteArray): DecodedJws {
+    val parts = sigWithoutPayload.split(".").toMutableList()
+    check(parts.size == 3) {
+      "Malformed JWT. Expected 3 parts, got ${parts.size}"
     }
 
-    val jwsHeader = JWSHeader.Builder(jwsAlgorithm)
-      .keyID(selectedAssertionMethodId)
-      .build()
+    val header: JwsHeader
+    try {
+      header = JwsHeader.fromBase64Url(parts[0])
+    } catch (e: Exception) {
+      throw SignatureException("Malformed JWT. Failed to decode header: ${e.message}")
+    }
 
-    // Create payload
-    val jwsPayload = Payload(payload)
-    val jwsObject = JWSObject(jwsHeader, jwsPayload)
+    val part1 = Convert(detachedPayload).toBase64Url()
+    parts[1] = part1
+    val signature: ByteArray
+    try {
+      signature = Convert(parts[2], EncodingFormat.Base64Url).toByteArray()
+    } catch (e: Exception) {
+      throw SignatureException("Malformed JWT. Failed to decode signature: ${e.message}")
+    }
 
-    val toSign = jwsObject.signingInput
-    val signatureBytes = did.keyManager.sign(keyAlias, toSign)
-
-    val base64UrlEncodedSignature = Convert(signatureBytes).toBase64Url(padding = false)
-    val base64UrlEncodedHeader = jwsHeader.toBase64URL()
-
-    return "$base64UrlEncodedHeader..$base64UrlEncodedSignature"
+    return DecodedJws(header, detachedPayload, signature, parts)
   }
 }

@@ -7,8 +7,8 @@ import com.nimbusds.jose.util.Base64URL
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import web5.sdk.common.Convert
-import web5.sdk.dids.Did
 import web5.sdk.dids.DidResolvers
+import web5.sdk.dids.did.BearerDid
 import web5.sdk.dids.didcore.VerificationMethod
 import java.time.Instant
 import java.util.Date
@@ -36,7 +36,7 @@ object RequestToken {
    * @return signed request token to be included as Authorization header for sending to PFI endpoints
    *
    */
-  fun generate(did: Did, pfiDid: String, assertionMethodId: String? = null): String {
+  fun generate(did: BearerDid, pfiDid: String, assertionMethodId: String? = null): String {
 
     val didResolutionResult = DidResolvers.resolve(did.uri)
     val assertionMethod: VerificationMethod =
@@ -50,7 +50,7 @@ object RequestToken {
     val keyAlias = did.keyManager.getDeterministicAlias(publicKeyJwk)
 
     // TODO: figure out how to make more reliable since algorithm is technically not a required property of a JWK
-    val algorithm = publicKeyJwk.algorithm
+    val algorithm = publicKeyJwk.alg
     val jwsAlgorithm = JWSAlgorithm.parse(algorithm.toString())
 
     val kid = when (assertionMethod.id.startsWith("#")) {

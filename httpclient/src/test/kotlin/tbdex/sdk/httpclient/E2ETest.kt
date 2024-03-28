@@ -1,6 +1,5 @@
 package tbdex.sdk.httpclient
 
-import com.nimbusds.jose.jwk.JWK
 import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
@@ -14,7 +13,9 @@ import tbdex.sdk.protocol.models.RfqData
 import tbdex.sdk.protocol.models.SelectedPaymentMethod
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.crypto.InMemoryKeyManager
-import web5.sdk.dids.Did
+import web5.sdk.crypto.JwaCurve
+import web5.sdk.crypto.jwk.Jwk
+import web5.sdk.dids.did.BearerDid
 import web5.sdk.dids.didcore.Purpose
 import web5.sdk.dids.didcore.Service
 import web5.sdk.dids.methods.dht.CreateDidDhtOptions
@@ -41,13 +42,9 @@ class E2ETest {
       CreateDidDhtOptions(
         verificationMethods = listOf(
           Triple(
-            JWK.parse(
-              """{
-        "crv": "Ed25519",
-        "kty": "OKP",
-        "x": "i6cnsuH4JTBMXKbseg28Hi3w4Xp13E85UwnSW3ZgYk8"
-      }"""
-            ),
+            Jwk.Builder("OKP", JwaCurve.Ed25519.name)
+              .x("i6cnsuH4JTBMXKbseg28Hi3w4Xp13E85UwnSW3ZgYk8")
+              .build(),
             listOf(Purpose.Authentication),
             UUID.randomUUID().toString()
           )
@@ -153,7 +150,7 @@ class E2ETest {
   private fun getExchangeWithOrderStatus(
     client: TbdexHttpClient,
     pfiDid: String,
-    myDid: DidKey,
+    myDid: BearerDid,
     rfq: Rfq,
   ): List<Message> {
     var attempt = 0
@@ -206,7 +203,7 @@ class E2ETest {
   private fun getCurrentExchange(
     client: TbdexHttpClient,
     pfiDid: String,
-    myDid: Did,
+    myDid: BearerDid,
     rfq: Rfq
   ): List<Message> {
     var listOfExchanges: List<List<Message>>
@@ -274,7 +271,7 @@ class E2ETest {
     claims = listOf(vcJwt)
   )
 
-  private fun buildVC(myDid: DidKey) = VerifiableCredential.create(
+  private fun buildVC(myDid: BearerDid) = VerifiableCredential.create(
     type = "SanctionCredential",
     issuer = myDid.uri,
     subject = myDid.uri,

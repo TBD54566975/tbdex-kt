@@ -30,7 +30,7 @@ com_networknt = "1.0.87"
 com_squareup_okhttp = "4.12.0"
 de_fxlae = "0.2.0"
 io_ktor = "2.3.7"
-xyz_block_web5 = "0.14.0"
+xyz_block_web5 = "0.15.0"
 
 [libraries]
 comFasterXmlJacksonModuleKotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "com_fasterxml_jackson" }
