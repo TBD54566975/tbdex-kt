@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
-import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.CryptoUtils
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.serialization.Json
@@ -23,18 +22,31 @@ enum class MessageKind {
 }
 
 /**
- * A data class representing the metadata present on every [Message].
+ * A data class representing the metadata present on every [Message]
+ *
+ * @property from The sender's DID
+ * @property to the recipient's DID
+ * @property kind e.g. rfq, quote etc. This defines the data property's type
+ * @property id The message's ID
+ * @property exchangeId ID for an "exchange" of messages between Alice <-> PFI. Set by the first message in an exchange
+ * @property externalId Arbitrary ID for the caller to associate with the message.
+ *                      Different messages in the same exchange can have different IDs
+ * @property createdAt ISO 8601 timestamp
+ * @property protocol Version of the protocol in use (x.x format).
+ *                    The protocol version must remain consistent across messages in a given exchange.
+ *                    Messages sharing the same exchangeId MUST also have the same protocol version.
+ *                    Protocol versions are tracked under https://github.com/TBD54566975/tbdex
  */
 class MessageMetadata(
-  val kind: MessageKind,
-  val to: String,
   val from: String,
+  val to: String,
+  val kind: MessageKind,
   val id: String,
   val exchangeId: String,
+  val externalId: String? = null,
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = dateTimeFormat, timezone = "UTC")
   val createdAt: OffsetDateTime,
-  val protocol: String,
-  val externalId: String? = null
+  val protocol: String
 ) : Metadata
 
 /**

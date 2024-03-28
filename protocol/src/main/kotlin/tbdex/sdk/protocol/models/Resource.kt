@@ -3,13 +3,18 @@ package tbdex.sdk.protocol.models
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
-import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.CryptoUtils
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.serialization.Json.jsonMapper
 import tbdex.sdk.protocol.serialization.dateTimeFormat
+import web5.sdk.credentials.model.ConstraintsV2
+import web5.sdk.credentials.model.FieldV2
+import web5.sdk.credentials.model.InputDescriptorV2
+import web5.sdk.credentials.model.PresentationDefinitionV2
+import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.Did
+import web5.sdk.dids.methods.dht.DidDht
 import java.time.OffsetDateTime
 
 /**
@@ -21,11 +26,22 @@ sealed interface Metadata
  * An enum representing all possible [Resource] kinds.
  */
 enum class ResourceKind {
-  offering
+  offering,
+  balance
 }
 
 /**
  * A data class representing the metadata present on every [Resource].
+ *
+ * @property kind the data property's type. e.g. offering
+ * @property from The authors's DID
+ * @property id The resource's ID
+ * @property protocol Version of the protocol in use (x.x format).
+ *                    The protocol version must remain consistent across messages in a given exchange.
+ *                    Messages sharing the same exchangeId MUST also have the same protocol version.
+ *                    Protocol versions are tracked in https://github.com/TBD54566975/tbdex
+ * @property createdAt ISO 8601 timestamp
+ * @property updatedAt ISO 8601 timestamp
  */
 class ResourceMetadata(
   val kind: ResourceKind,
@@ -116,7 +132,7 @@ sealed class Resource {
 
       val resourceType = when (ResourceKind.valueOf(kind)) {
         ResourceKind.offering -> Offering::class.java
-        // ResourceKind.reputation -> TODO()
+        ResourceKind.balance -> Balance::class.java
       }
 
       val resource = jsonMapper.convertValue(jsonResource, resourceType)
@@ -126,3 +142,111 @@ sealed class Resource {
     }
   }
 }
+
+// todo remove this once parse-offering.json is fixed
+fun main() {
+  val did = DidDht.create(InMemoryKeyManager())
+  val offering = Offering.create(
+    from = did.uri,
+    data = OfferingData(
+      description = "Selling BTC for USD",
+      payoutUnitsPerPayinUnit = "0.00003826",
+      payin = PayinDetails(
+        currencyCode = "USD",
+        min = "0.0",
+        max = "999999.99",
+        methods = listOf(
+          PayinMethod(
+            kind = "DEBIT_CARD",
+            group = "card",
+            min = "0.0",
+            max = "999999.99",
+            requiredPaymentDetails = jsonMapper.valueToTree(
+              mapOf(
+                "\$schema" to "http://json-schema.org/draft-07/schema",
+                "type" to "object",
+                "properties" to mapOf(
+                  "cardNumber" to mapOf(
+                    "type" to "string",
+                    "description" to "The 16-digit debit card number",
+                    "minLength" to 16,
+                    "maxLength" to 16
+                  ),
+                  "expiryDate" to mapOf(
+                    "type" to "string",
+                    "description" to "The expiry date of the card in MM/YY format",
+                    "pattern" to "^(0[1-9]|1[0-2])\\/([0-9]{2})$"
+                  ),
+                  "cardHolderName" to mapOf(
+                    "type" to "string",
+                    "description" to "Name of the cardholder as it appears on the card"
+                  ),
+                  "cvv" to mapOf(
+                    "type" to "string",
+                    "description" to "The 3-digit CVV code",
+                    "minLength" to 3,
+                    "maxLength" to 3
+                  )
+                ),
+                "required" to listOf("cardNumber", "expiryDate", "cardHolderName", "cvv"),
+                "additionalProperties" to false
+              )
+            )
+          )
+        )
+      ),
+      payout = PayoutDetails(
+        currencyCode = "BTC",
+        min = "999526.11",
+        max = "99952611.00",
+        methods = listOf(
+          PayoutMethod(
+            kind = "BTC_ADDRESS",
+            group = "crypto",
+            min = "999526.11",
+            max = "99952611.00",
+            estimatedSettlementTime = 3600,
+            requiredPaymentDetails = jsonMapper.valueToTree(
+              mapOf(
+                "\$schema" to "http://json-schema.org/draft-07/schema",
+                "type" to "object",
+                "properties" to mapOf(
+                  "btcAddress" to mapOf(
+                    "type" to "string",
+                    "description" to "your Bitcoin wallet address"
+                  )
+                ),
+                "required" to listOf("btcAddress"),
+                "additionalProperties" to false
+              )
+            )
+          )
+        )
+      ),
+      requiredClaims = PresentationDefinitionV2(
+        id = "7ce4004c-3c38-4853-968b-e411bafcd945",
+        inputDescriptors = listOf(
+          InputDescriptorV2(
+            id = "bbdb9b7c-5754-4f46-b63b-590bada959e0",
+            constraints = ConstraintsV2(
+              fields = listOf(
+                FieldV2(
+                  path = listOf("$.type"),
+                  filterJson = jsonMapper.valueToTree(mapOf("type" to "string", "const" to "YoloCredential"))
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+
+  offering.sign(did)
+  println(did.uri)
+  println(offering.metadata.id)
+  println(offering.signature)
+
+  // eyJraWQiOiJkaWQ6ZGh0OmNwZjVyNmhxaHBiZ3pyZ3l0M3V3aGRmdGdmNWo4OTd3cmlmZ3ljZGg0ejF6NGprYnN0d3kjMCIsImFsZyI6IkVkRFNBIn0..JQJ5xExteH9PbSkzwa9QBHIBfbQ0PIyFRWJlJW77rFPOn9dKaxQ8uJNkN7Hz_VFSD2v5-bwgF2NeSm_DGoF_Aw
+}
+

@@ -2,17 +2,19 @@ package tbdex.sdk.httpclient
 
 import com.danubetech.verifiablecredentials.CredentialSubject
 import de.fxlae.typeid.TypeId
-import tbdex.sdk.protocol.models.CurrencyDetails
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.OfferingData
+import tbdex.sdk.protocol.models.PayinDetails
+import tbdex.sdk.protocol.models.PayoutDetails
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.QuoteData
 import tbdex.sdk.protocol.models.QuoteDetails
 import tbdex.sdk.protocol.models.ResourceKind
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.models.RfqData
-import tbdex.sdk.protocol.models.SelectedPaymentMethod
+import tbdex.sdk.protocol.models.SelectedPayinMethod
+import tbdex.sdk.protocol.models.SelectedPayoutMethod
 import web5.sdk.credentials.VcDataModel
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.credentials.model.ConstraintsV2
@@ -63,16 +65,15 @@ object TestData {
       OfferingData(
         description = "my fake offering",
         payoutUnitsPerPayinUnit = "1",
-        payinCurrency = CurrencyDetails("AUD"),
-        payoutCurrency = CurrencyDetails("USDC"),
-        payinMethods = listOf(),
-        payoutMethods = listOf(),
+        payin = PayinDetails(currencyCode = "AUD", methods = listOf()),
+        payout = PayoutDetails(currencyCode = "USDC", methods = listOf()),
         requiredClaims = requiredClaims
       )
     )
     offering.sign(PFI_DID)
     return offering
   }
+
   fun getRfq(
     to: String = PFI_DID.uri,
     offeringId: String = TypeId.generate(ResourceKind.offering.name).toString(),
@@ -83,15 +84,15 @@ object TestData {
       from = ALICE_DID.uri,
       rfqData = RfqData(
         offeringId = offeringId,
-        payinAmount = "10.00",
-        payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to 123456)),
-        payoutMethod = SelectedPaymentMethod("MOMO", mapOf("phone_number" to 123456)),
+        payin = SelectedPayinMethod("BTC_ADDRESS", mapOf("address" to 123456), amount = "10.00"),
+        payout = SelectedPayoutMethod("MOMO", mapOf("phone_number" to 123456)),
         claims = claims
       )
     )
     rfq.sign(ALICE_DID)
     return rfq
   }
+
   fun getQuote(): Quote {
     val quote = Quote.create(
       ALICE_DID.uri, PFI_DID.uri, TypeId.generate(MessageKind.rfq.name).toString(),
