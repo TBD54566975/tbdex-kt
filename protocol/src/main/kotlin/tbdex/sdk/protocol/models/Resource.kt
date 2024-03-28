@@ -9,6 +9,7 @@ import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.serialization.Json.jsonMapper
 import tbdex.sdk.protocol.serialization.dateTimeFormat
 import web5.sdk.dids.did.BearerDid
+import web5.sdk.jose.jws.Jws
 import java.time.OffsetDateTime
 
 /**
@@ -46,14 +47,13 @@ sealed class Resource {
   abstract var signature: String?
 
   /**
-   * Signs the Resource using the specified [did] and optionally the given [keyAlias].
+   * Signs the Resource using the specified [BearerDid]
    *
    * @param did The DID (Decentralized Identifier) used for signing.
-   * @param keyAlias The alias of the key to be used for signing (optional).
    * @throws Exception if the signing operation fails.
    */
-  fun sign(did: BearerDid, keyAlias: String? = null) {
-    this.signature = CryptoUtils.sign(did = did, payload = digest(), assertionMethodId = keyAlias)
+  fun sign(did: BearerDid) {
+    this.signature = Jws.sign(bearerDid = did, payload = this.digest(), detached = true)
   }
 
   /**

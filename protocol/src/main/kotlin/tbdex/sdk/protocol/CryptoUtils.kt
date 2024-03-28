@@ -1,17 +1,13 @@
 package tbdex.sdk.protocol
 
-import com.nimbusds.jose.JWSAlgorithm
-import com.nimbusds.jose.JWSHeader
 import com.nimbusds.jose.JWSObject
 import com.nimbusds.jose.Payload
 import org.erdtman.jcs.JsonCanonicalizer
 import tbdex.sdk.protocol.models.Data
 import tbdex.sdk.protocol.models.Metadata
 import tbdex.sdk.protocol.serialization.Json
-import web5.sdk.common.Convert
 import web5.sdk.crypto.Crypto
 import web5.sdk.dids.DidResolvers
-import web5.sdk.dids.did.BearerDid
 import web5.sdk.dids.didcore.Did
 import java.security.MessageDigest
 import java.security.SignatureException
@@ -106,48 +102,5 @@ object CryptoUtils {
       signedPayload = jws.signingInput,
       signature = jws.signature.decode()
     )
-  }
-
-  /**
-   * Signs the provided payload using the specified DID and key.
-   *
-   * @param did The DID to use for signing.
-   * @param payload The payload to sign.
-   * @param assertionMethodId The alias of the key to be used for signing (optional).
-   * @return The signed payload as a detached payload JWT (JSON Web Token).
-   */
-  fun sign(did: BearerDid, payload: ByteArray, assertionMethodId: String? = null): String {
-    val didResolutionResult = DidResolvers.resolve(did.uri)
-
-    val assertionMethod = didResolutionResult.didDocument?.findAssertionMethodById(assertionMethodId)
-
-
-    check(assertionMethod?.publicKeyJwk != null) { "publicKeyJwk is null" }
-    val keyAlias = did.keyManager.getDeterministicAlias(assertionMethod?.publicKeyJwk!!)
-
-    val publicKey = did.keyManager.getPublicKey(keyAlias)
-    val algorithm = publicKey.alg
-    val jwsAlgorithm = JWSAlgorithm.parse(algorithm.toString())
-
-    val selectedAssertionMethodId = when {
-      assertionMethod.id.startsWith("#") -> "${did.uri}${assertionMethod.id}"
-      else -> assertionMethod.id
-    }
-
-    val jwsHeader = JWSHeader.Builder(jwsAlgorithm)
-      .keyID(selectedAssertionMethodId)
-      .build()
-
-    // Create payload
-    val jwsPayload = Payload(payload)
-    val jwsObject = JWSObject(jwsHeader, jwsPayload)
-
-    val toSign = jwsObject.signingInput
-    val signatureBytes = did.keyManager.sign(keyAlias, toSign)
-
-    val base64UrlEncodedSignature = Convert(signatureBytes).toBase64Url(padding = false)
-    val base64UrlEncodedHeader = jwsHeader.toBase64URL()
-
-    return "$base64UrlEncodedHeader..$base64UrlEncodedSignature"
   }
 }
