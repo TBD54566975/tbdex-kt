@@ -171,7 +171,7 @@ object TbdexHttpClient {
     val request = Request.Builder()
       .url(url)
       .addHeader("Content-Type", JSON_HEADER)
-      .post(requestBody)
+      .put(requestBody)
       .build()
 
     println("Attempting to send message to exchange ${exchangeId} to: ${request.url}")
