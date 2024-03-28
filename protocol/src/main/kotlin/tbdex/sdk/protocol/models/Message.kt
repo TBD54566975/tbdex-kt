@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
-import tbdex.sdk.protocol.CryptoUtils
+import tbdex.sdk.protocol.SignatureVerifier
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.serialization.Json.jsonMapper
@@ -66,7 +66,7 @@ sealed class Message {
    * @throws Exception if the verification fails or if the signature is missing.
    */
   fun verify() {
-    CryptoUtils.verify(detachedPayload = this.digest(), signature = this.signature, did = this.metadata.from)
+    SignatureVerifier.verify(detachedPayload = digest(), signature = signature, did = metadata.from)
   }
 
   /**
@@ -74,7 +74,7 @@ sealed class Message {
    *
    * @return The message digest as a byte array.
    */
-  private fun digest(): ByteArray = CryptoUtils.digestOf(this.metadata, this.data)
+  private fun digest(): ByteArray = SignatureVerifier.digestOf(this.metadata, this.data)
 
   /**
    * Uses [Json] to serialize the Message as a json string.
