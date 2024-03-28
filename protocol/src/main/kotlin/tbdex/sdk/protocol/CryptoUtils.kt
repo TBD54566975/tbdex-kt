@@ -38,7 +38,11 @@ object CryptoUtils {
    * @throws IllegalArgumentException if the signature is missing.
    * @throws SignatureException if the verification fails.
    */
-  fun verify(detachedPayload: ByteArray, signature: String, did: String) {
+  fun verify(detachedPayload: ByteArray, signature: String?, did: String) {
+    require(signature != null) {
+      throw IllegalArgumentException("Signature verification failed: Expected signature property to exist")
+    }
+
     val decodedJws = jwsDecode(signature, detachedPayload)
 
     require(decodedJws.header.kid != null) {
