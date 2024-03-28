@@ -45,5 +45,5 @@ jobs:
         with:
           tag_name: ${{ github.event.inputs.version }}
           draft: false
-          prerelease: true
+          prerelease: false
           generate_release_notes: true
