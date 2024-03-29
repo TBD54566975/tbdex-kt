@@ -18,7 +18,6 @@ import org.junit.jupiter.api.Test
 import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.serialization.Json
-import kotlin.test.Ignore
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
@@ -112,6 +111,23 @@ class SubmitCloseTest : ServerTest() {
   }
 
   @Test
-  @Ignore
-  fun `returns BadRequest if request body is not a valid Close`() = runBlocking { }
+  fun `returns BadRequest if request body is not a valid Close`() = runBlocking {
+    val rfq = createRfq()
+    rfq.sign(aliceDid)
+    exchangesApi.addMessage(rfq)
+
+    val close = createClose(rfq.metadata.exchangeId)
+    close.sign(aliceDid)
+
+    val response = client.put("/exchanges/${close.metadata.exchangeId}") {
+      contentType(ContentType.Application.Json)
+      setBody("hehe")
+    }
+
+    val errorResponse = Json.jsonMapper.readValue(response.bodyAsText(), ErrorResponse::class.java)
+
+    assertEquals(HttpStatusCode.BadRequest, response.status)
+    assertContains(errorResponse.errors.first().detail, "Parsing of TBDex message failed")
+
+  }
 }
