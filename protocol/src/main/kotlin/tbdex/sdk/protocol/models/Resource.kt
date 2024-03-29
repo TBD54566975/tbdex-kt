@@ -3,17 +3,18 @@ package tbdex.sdk.protocol.models
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
-import tbdex.sdk.protocol.CryptoUtils
+import tbdex.sdk.protocol.SignatureVerifier
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.serialization.Json.jsonMapper
 import tbdex.sdk.protocol.serialization.dateTimeFormat
+import web5.sdk.dids.did.BearerDid
+import web5.sdk.jose.jws.Jws
 import web5.sdk.credentials.model.ConstraintsV2
 import web5.sdk.credentials.model.FieldV2
 import web5.sdk.credentials.model.InputDescriptorV2
 import web5.sdk.credentials.model.PresentationDefinitionV2
 import web5.sdk.crypto.InMemoryKeyManager
-import web5.sdk.dids.Did
 import web5.sdk.dids.methods.dht.DidDht
 import java.time.OffsetDateTime
 
@@ -63,14 +64,13 @@ sealed class Resource {
   abstract var signature: String?
 
   /**
-   * Signs the Resource using the specified [did] and optionally the given [keyAlias].
+   * Signs the Resource using the specified [BearerDid]
    *
    * @param did The DID (Decentralized Identifier) used for signing.
-   * @param keyAlias The alias of the key to be used for signing (optional).
    * @throws Exception if the signing operation fails.
    */
-  fun sign(did: Did, keyAlias: String? = null) {
-    this.signature = CryptoUtils.sign(did = did, payload = digest(), assertionMethodId = keyAlias)
+  fun sign(did: BearerDid) {
+    this.signature = Jws.sign(bearerDid = did, payload = this.digest(), detached = true)
   }
 
   /**
@@ -82,7 +82,7 @@ sealed class Resource {
    * @throws Exception if the verification fails or if the signature is missing.
    */
   fun verify() {
-    CryptoUtils.verify(detachedPayload = digest(), signature = signature, did = metadata.from)
+    SignatureVerifier.verify(detachedPayload = digest(), signature = signature, did = metadata.from)
   }
 
   /**
@@ -90,7 +90,7 @@ sealed class Resource {
    *
    * @return The message digest as a byte array.
    */
-  private fun digest(): ByteArray = CryptoUtils.digestOf(metadata, data)
+  private fun digest(): ByteArray = SignatureVerifier.digestOf(metadata, data)
 
   /**
    * Uses [Json] to serialize the Resource as a json string.

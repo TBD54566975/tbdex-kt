@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.JsonNode
-import tbdex.sdk.protocol.CryptoUtils
+import tbdex.sdk.protocol.SignatureVerifier
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.serialization.Json.jsonMapper
 import tbdex.sdk.protocol.serialization.dateTimeFormat
-import web5.sdk.dids.Did
+import web5.sdk.dids.did.BearerDid
+import web5.sdk.jose.jws.Jws
 import java.time.OffsetDateTime
 
 /**
@@ -60,14 +61,13 @@ sealed class Message {
   abstract var signature: String?
 
   /**
-   * Signs the Message using the specified [did] and optionally the given [keyAlias].
+   * Signs the Message using the specified [BearerDid].
    *
    * @param did The DID (Decentralized Identifier) used for signing.
-   * @param keyAlias The alias of the key to be used for signing (optional).
    * @throws Exception if the signing operation fails.
    */
-  fun sign(did: Did, keyAlias: String? = null) {
-    this.signature = CryptoUtils.sign(did = did, payload = this.digest(), assertionMethodId = keyAlias)
+  fun sign(did: BearerDid) {
+    this.signature = Jws.sign(bearerDid = did, payload = this.digest(), detached = true)
   }
 
   /**
@@ -79,7 +79,7 @@ sealed class Message {
    * @throws Exception if the verification fails or if the signature is missing.
    */
   fun verify() {
-    CryptoUtils.verify(detachedPayload = this.digest(), signature = this.signature, did = this.metadata.from)
+    SignatureVerifier.verify(detachedPayload = digest(), signature = signature, did = metadata.from)
   }
 
   /**
@@ -87,7 +87,7 @@ sealed class Message {
    *
    * @return The message digest as a byte array.
    */
-  private fun digest(): ByteArray = CryptoUtils.digestOf(this.metadata, this.data)
+  private fun digest(): ByteArray = SignatureVerifier.digestOf(this.metadata, this.data)
 
   /**
    * Uses [Json] to serialize the Message as a json string.

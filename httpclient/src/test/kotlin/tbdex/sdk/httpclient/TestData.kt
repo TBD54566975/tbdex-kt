@@ -22,7 +22,7 @@ import web5.sdk.credentials.model.FieldV2
 import web5.sdk.credentials.model.InputDescriptorV2
 import web5.sdk.credentials.model.PresentationDefinitionV2
 import web5.sdk.crypto.InMemoryKeyManager
-import web5.sdk.dids.Did
+import web5.sdk.dids.did.BearerDid
 import web5.sdk.dids.methods.key.DidKey
 import java.net.URI
 import java.time.OffsetDateTime
@@ -32,8 +32,8 @@ import java.util.UUID
 object TestData {
   private val aliceKeyManager = InMemoryKeyManager()
   private val pfiKeyManager = InMemoryKeyManager()
-  val ALICE_DID: Did = DidKey.create(aliceKeyManager)
-  val PFI_DID: Did = DidKey.create(pfiKeyManager)
+  val ALICE_DID: BearerDid = DidKey.create(aliceKeyManager)
+  val PFI_DID: BearerDid = DidKey.create(pfiKeyManager)
 
   fun getPresentationDefinition(): PresentationDefinitionV2 {
     return buildPresentationDefinition(

@@ -95,6 +95,7 @@ class TbdexHttpClientTest {
     assertDoesNotThrow { TbdexHttpClient.createExchange(rfq) }
 
     val request = server.takeRequest()
+    assertEquals(request.method, "POST")
     assertEquals(request.path, "/exchanges")
     assertEquals(
       Json.jsonMapper.readTree(request.body.readUtf8()),
@@ -111,6 +112,7 @@ class TbdexHttpClientTest {
     assertDoesNotThrow { TbdexHttpClient.createExchange(rfq, replyTo) }
 
     val request = server.takeRequest()
+    assertEquals(request.method, "POST")
     assertEquals(request.path, "/exchanges")
     assertEquals(
       Json.jsonMapper.readTree(request.body.readUtf8()),
@@ -195,6 +197,7 @@ class TbdexHttpClientTest {
     assertDoesNotThrow { TbdexHttpClient.submitOrder(order) }
 
     val request = server.takeRequest()
+    assertEquals(request.method, "PUT")
     assertEquals(request.path, "/exchanges/${order.metadata.exchangeId}")
     assertEquals(
       Json.jsonMapper.readTree(request.body.readUtf8()),
@@ -253,6 +256,7 @@ class TbdexHttpClientTest {
     assertDoesNotThrow { TbdexHttpClient.submitClose(close) }
 
     val request = server.takeRequest()
+    assertEquals(request.method, "PUT")
     assertEquals(request.path, "/exchanges/${close.metadata.exchangeId}")
     assertEquals(
       Json.jsonMapper.readTree(request.body.readUtf8()),

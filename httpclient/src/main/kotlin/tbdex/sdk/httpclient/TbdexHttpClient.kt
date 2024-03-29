@@ -22,7 +22,7 @@ import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.serialization.Json.jsonMapper
-import web5.sdk.dids.Did
+import web5.sdk.dids.did.BearerDid
 
 /**
  * A client of the tbDEX HTTP interface for communicating with a PFI.
@@ -171,10 +171,10 @@ object TbdexHttpClient {
     val request = Request.Builder()
       .url(url)
       .addHeader("Content-Type", JSON_HEADER)
-      .post(requestBody)
+      .put(requestBody)
       .build()
 
-    println("Attempting to send message to exchange ${exchangeId} to: ${request.url}")
+    println("Attempting to send message to exchange $exchangeId to: ${request.url}")
 
     executeRequest(request)
   }
@@ -188,7 +188,7 @@ object TbdexHttpClient {
    * @return An [Exchange] containing the requested exchange.
    * @throws TbdexResponseException for request or response errors.
    */
-  fun getExchange(pfiDid: String, requesterDid: Did, exchangeId: String): Exchange {
+  fun getExchange(pfiDid: String, requesterDid: BearerDid, exchangeId: String): Exchange {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/exchanges/$exchangeId"
     val requestToken = RequestToken.generate(requesterDid, pfiDid)
@@ -226,7 +226,7 @@ object TbdexHttpClient {
    * @return A list of matching [Exchange].
    * @throws TbdexResponseException for request or response errors.
    */
-  fun getExchanges(pfiDid: String, requesterDid: Did, filter: GetExchangesFilter? = null): List<Exchange> {
+  fun getExchanges(pfiDid: String, requesterDid: BearerDid, filter: GetExchangesFilter? = null): List<Exchange> {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/exchanges/"
     val requestToken = RequestToken.generate(requesterDid, pfiDid)
