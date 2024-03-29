@@ -283,6 +283,8 @@ git submodule update --init
 
 # Other Docs
 
+* [API Reference Guide](https://tbd54566975.github.io/tbdex-kt/)
+* [Developer Docs](https://developer.tbd.website/docs/tbdex/)
 * [Guidelines](./CONVENTIONS.md)
 * [Code of Conduct](./CODE_OF_CONDUCT.md)
 * [Governance](./GOVERNANCE.md)

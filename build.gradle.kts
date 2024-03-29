@@ -19,6 +19,15 @@ plugins {
 
 repositories {
   mavenCentral()
+  // block's cache artifactory for tbd's oss third party dependencies
+  // that do not live in maven central
+  maven {
+    name = "tbd-oss-thirdparty"
+    url = uri("https://blockxyz.jfrog.io/artifactory/tbd-oss-thirdparty-maven2/")
+    mavenContent {
+      releasesOnly()
+    }
+  }
 }
 
 dependencies {

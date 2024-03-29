@@ -7,22 +7,14 @@ plugins {
 
 repositories {
   mavenCentral()
-  // temp maven repo for danubetech
+  // block's cache artifactory for tbd's oss third party dependencies
+  // that do not live in maven central
   maven {
-    name = "tbd-danubetech-temp"
-    url = uri("https://blockxyz.jfrog.io/artifactory/danubetech-temp/")
+    name = "tbd-oss-thirdparty"
+    url = uri("https://blockxyz.jfrog.io/artifactory/tbd-oss-thirdparty-maven2/")
     mavenContent {
       releasesOnly()
     }
-  }
-  maven {
-    url = uri("https://repo.danubetech.com/repository/maven-public")
-  }
-  maven {
-    url = uri("https://jitpack.io")
-  }
-  maven {
-    url = uri("https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/")
   }
 }
 
@@ -38,16 +30,12 @@ dependencies {
 
   // API
   api(libs.xyzBlockWeb5)
-  /*
-   * API Leak: https://github.com/TBD54566975/tbdex-kt/issues/161
-   *
-   * Change and move to "implementation" when completed
-   */
-  api(libs.deFxlaeTypeId)
+
 
   // Project
 
   // Implementation
+  implementation(libs.deFxlaeTypeId)
   implementation(libs.comFasterXmlJacksonModuleKotlin)
   implementation(libs.comFasterXmlJacksonDatatypeJsr310)
   implementation(libs.comNetworkntJsonSchemaValidator)
