@@ -12,6 +12,11 @@ import java.time.OffsetDateTime
  * @property data The actual resource content. This will always be a JSON object.
  *                The Resource Kinds section specifies the content for each individual resource type
  * @property signature A message or resource signature is a detached compact JWS as defined in RFC-7515
+ *
+ *  ### Example Usage:
+ *  ```kotlin
+ *  val balance = Balance.create(from, data)
+ *  ```
  */
 class Balance(
   override val metadata: ResourceMetadata,
@@ -37,7 +42,7 @@ class Balance(
      * @param protocol version of the tbdex protocol.
      * @return Balance instance.
      */
-    fun create(from: String, data: BalanceData, protocol: String): Balance {
+    fun create(from: String, data: BalanceData, protocol: String = "1.0"): Balance {
       val now = OffsetDateTime.now()
       val metadata = ResourceMetadata(
         kind = ResourceKind.balance,

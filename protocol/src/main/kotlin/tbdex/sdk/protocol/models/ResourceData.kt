@@ -179,10 +179,9 @@ class PayoutMethod(
  * A data class implementing [ResourceData], which represents the contents of a [Balance].
  *
  * @property currencyCode ISO 3166 currency code string
- * @property amount The amount available to be transacted with
- * @constructor Create empty Balance data
+ * @property available The amount available to be transacted with
  */
 class BalanceData(
   val currencyCode: String,
-  val amount: String
+  val available: String
 ) : ResourceData

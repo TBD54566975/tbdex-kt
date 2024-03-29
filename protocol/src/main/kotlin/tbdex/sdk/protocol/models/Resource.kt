@@ -29,7 +29,7 @@ enum class ResourceKind {
  * A data class representing the metadata present on every [Resource].
  *
  * @property kind the data property's type. e.g. offering
- * @property from The authors's DID
+ * @property from The author's DID
  * @property id The resource's ID
  * @property protocol Version of the protocol in use (x.x format).
  *                    The protocol version must remain consistent across messages in a given exchange.
