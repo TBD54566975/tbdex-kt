@@ -73,18 +73,29 @@ class ValidatorTest {
     val stringRfqWithoutPayinAmount = """
       {
         "metadata": {
-          "from": "did:key:z6MkpkvGVrxxTVbo56mvbSiF6iCKNev56wqoMcHHowqUqvKQ",
-          "to": "did:ex:pfi",
+          "from": "did:dht:9kkuh34q7nkd4tphbcg7py9h1g16iftbtskesi9courdwj96q3sy",
+          "to": "did:dht:8rqqxczxhdugndj5mykiahy7y4zg4zkk3jajr6qyo5owdrgqqx3y",
+          "protocol": "1.0",
           "kind": "rfq",
-          "id": "rfq_01hkx53kgafbmrg2xp87n5htfb",
-          "exchangeId": "rfq_01hkx53kgafbmrg2xp87n5htfb",
-          "createdAt": "2024-01-11T20:58:34.378Z",
-          "protocol": "1.0"
+          "id": "rfq_01ht6fh3fsf9z8ekh5tyjbsmwk",
+          "exchangeId": "rfq_01ht6fh3fsf9z8ekh5tyjbsmwk",
+          "createdAt": "2024-03-30T01:28:03.321Z"
         },
         "data": {
-          "offeringId": "abcd123",
+          "offeringId": "offering_01ht6fh3fre7t8zfc6j97t2pe1",
           "payin": {
             "kind": "DEBIT_CARD",
+            "paymentDetailsHash": "k8nU7MKYNb140u3pN8FO5ndAK3WDJ8lQDEsYA0H9fWA"
+          },
+          "payout": {
+            "kind": "BTC_ADDRESS",
+            "paymentDetailsHash": "xwyJqXOcLsYBBojNlVHZGZzlhZvswFPUh3xsLxus_EU"
+          },
+          "claimsHash": "o16anc251kJb3uyYKzPdlS5SdhGomylHZ8_YZ7CBbgU"
+        },
+        "privateData": {
+          "salt": "�>�����\u0014�]�NɈ",
+          "payin": {
             "paymentDetails": {
               "cardNumber": "1234567890123456",
               "expiryDate": "12/22",
@@ -93,13 +104,12 @@ class ValidatorTest {
             }
           },
           "payout": {
-            "kind": "BTC_ADDRESS",
             "paymentDetails": {
               "btcAddress": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
             }
           },
           "claims": [
-            ""
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJFZERTQSIsImtpZCI6ImRpZDpkaHQ6OWtrdWgzNHE3bmtkNHRwaGJjZzdweTloMWcxNmlmdGJ0c2tlc2k5Y291cmR3ajk2cTNzeSMwIn0.eyJ2YyI6eyJAY29udGV4dCI6WyJodHRwczovL3d3dy53My5vcmcvMjAxOC9jcmVkZW50aWFscy92MSJdLCJ0eXBlIjpbIlZlcmlmaWFibGVDcmVkZW50aWFsIiwiUHV1cHV1Q3JlZGVudGlhbCJdLCJpZCI6InVybjp1dWlkOmY5YWVlNjdjLTQ1NmUtNGU1Yy05NDg3LWM3MjM2ZmQyMWUxNiIsImlzc3VlciI6ImRpZDpkaHQ6OWtrdWgzNHE3bmtkNHRwaGJjZzdweTloMWcxNmlmdGJ0c2tlc2k5Y291cmR3ajk2cTNzeSIsImlzc3VhbmNlRGF0ZSI6IjIwMjQtMDMtMzBUMDE6Mjg6MDNaIiwiY3JlZGVudGlhbFN1YmplY3QiOnsiaWQiOiJkaWQ6ZGh0Ojlra3VoMzRxN25rZDR0cGhiY2c3cHk5aDFnMTZpZnRidHNrZXNpOWNvdXJkd2o5NnEzc3kiLCJiZWVwIjoiYm9vcCJ9fSwiaXNzIjoiZGlkOmRodDo5a2t1aDM0cTdua2Q0dHBoYmNnN3B5OWgxZzE2aWZ0YnRza2VzaTljb3VyZHdqOTZxM3N5Iiwic3ViIjoiZGlkOmRodDo5a2t1aDM0cTdua2Q0dHBoYmNnN3B5OWgxZzE2aWZ0YnRza2VzaTljb3VyZHdqOTZxM3N5In0.kxFwk-eCpCrO1m7lYAlqEioGjVZ1vlM-DctE52atVKa6Egn-DS0nqmqDcXo_yRmAUylU5E-7lOPsP7N90DbAAA"
           ]
         },
         "signature": "blah"

@@ -23,6 +23,9 @@ import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.models.RfqData
 import tbdex.sdk.protocol.models.SelectedPayinMethod
 import tbdex.sdk.protocol.models.SelectedPayoutMethod
+import tbdex.sdk.protocol.models.UnhashedRfqData
+import tbdex.sdk.protocol.models.UnhashedSelectedPayinMethod
+import tbdex.sdk.protocol.models.UnhashedSelectedPayoutMethod
 import web5.sdk.credentials.VcDataModel
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.credentials.model.ConstraintsV2
@@ -96,10 +99,10 @@ object TestData {
   ) = Rfq.create(
     to = PFI_DID.uri,
     from = ALICE_DID.uri,
-    rfqData = RfqData(
+    unhashedRfqData = UnhashedRfqData(
       offeringId = offeringId,
-      payin = SelectedPayinMethod("BTC_ADDRESS", mapOf("address" to "123456"), amount = "10.00"),
-      payout = SelectedPayoutMethod(
+      payin = UnhashedSelectedPayinMethod("BTC_ADDRESS", mapOf("address" to "123456"), amount = "10.00"),
+      payout = UnhashedSelectedPayoutMethod(
         "MOMO", mapOf(
         "phoneNumber" to "+254712345678",
         "accountHolderName" to "Alfred Holder"

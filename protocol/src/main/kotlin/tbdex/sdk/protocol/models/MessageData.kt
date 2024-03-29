@@ -15,14 +15,55 @@ sealed interface MessageData : Data
  * @property offeringId Offering which Alice would like to get a quote for
  * @property payin selected payin amount, method, and details
  * @property payout selected payout method, and details
- * @property claims an array of claims that fulfill the requirements declared in the referenced Offering
+ * @property claimsHash hash of claims that fulfill the requirements declared in the referenced Offering
  */
 class RfqData(
   val offeringId: String,
   val payin: SelectedPayinMethod,
   val payout: SelectedPayoutMethod,
-  val claims: List<String>
+  var claimsHash: String? = null
 ) : MessageData
+
+/**
+ * Private data contained in a RFQ message, including data which will be placed in {@link RfqPrivateData}
+ *
+ * @property salt Randomly generated cryptographic salt used to hash privateData fields
+ * @property payin A container for the unhashed `payin.paymentDetails`
+ * @property payout A container for the unhashed `payout.paymentDetails`
+ * @property claims claims that fulfill the requirements declared in an Offering
+ */
+class RfqPrivateData(
+  val salt: String,
+  val payin: PrivatePaymentDetails? = null,
+  val payout: PrivatePaymentDetails? = null,
+  val claims: List<String>? = null
+)
+
+/**
+ * Data contained in a RFQ message, including data which will be placed in Rfq.privateDAta.
+ * Used for creating an RFQ.
+ *
+ * @property offeringId Offering which Alice would like to get a quote for
+ * @property payin selected payin amount, method, and unhashed payment details
+ * @property payout selected payout method, and unhashed payment details
+ * @property claims an array of hashes claims that fulfill the requirements declared in the referenced Offering
+ */
+class UnhashedRfqData(
+  val offeringId: String,
+  val payin: UnhashedSelectedPayinMethod,
+  val payout: UnhashedSelectedPayoutMethod,
+  val claims: List<String>
+)
+
+/**
+ * A container for the unhashed `paymentDetails`
+ *
+ * @property paymentDetails An object containing the properties defined in the
+ *                          respective Offering's requiredPaymentDetails json schema.
+ */
+class PrivatePaymentDetails(
+  val paymentDetails: Map<String, Any>? = null
+)
 
 /**
  * A data class representing the payment method selected.
@@ -33,35 +74,70 @@ class RfqData(
  */
 sealed class SelectedPaymentMethod(
   val kind: String,
-  val paymentDetails: Map<String, Any>? = null
+  var paymentDetailsHash: String? = null
 ) : MessageData
+
+/**
+ * A data class representing the payment method selected, including the unhashed payment details.
+ * Used for creating an RFQ.
+ * @property kind type of payment method
+ * @property paymentDetails An object containing the properties
+ *                          defined in an Offering's requiredPaymentDetails json schema
+ */
+sealed class UnhashedSelectedPaymentMethod(
+  val kind: String,
+  val paymentDetails: Map<String, Any>? = null
+)
 
 /**
  * A data class representing the payin method selected.
  *
- * @property kind type of payin method
- * @property paymentDetails An object containing the properties
- *                          defined in an Offering's requiredPaymentDetails json schema
+ * @property kind type of payment method
+ * @property paymentDetailsHash A hash of the object containing the properties
+ *                              defined in an Offering's requiredPaymentDetails json schema
  * @property amount Amount of currency Alice wants to pay in exchange for payout currency
  */
 class SelectedPayinMethod(
   kind: String,
+  paymentDetailsHash: String? = null,
+  val amount: String
+) : SelectedPaymentMethod(kind, paymentDetailsHash)
+
+/**
+ * A data class representing the payin method selected, including the unhashed payin details.
+ * @property kind type of payment method
+ * @property paymentDetails An object containing the properties
+ *                              defined in an Offering's requiredPaymentDetails json schema
+ * @property amount Amount of currency Alice wants to pay in exchange for payout currency
+ */
+class UnhashedSelectedPayinMethod(
+  kind: String,
   paymentDetails: Map<String, Any>? = null,
   val amount: String
-) : SelectedPaymentMethod(kind, paymentDetails)
-
+) : UnhashedSelectedPaymentMethod(kind, paymentDetails)
 
 /**
  * A data class representing the payout method selected.
  *
- * @property kind type of payout method
- * @property paymentDetails An object containing the properties
+ * @property kind type of payment method
+ * @property paymentDetailsHash A hash of the object containing the properties
  *                          defined in an Offering's requiredPaymentDetails json schema
  */
 class SelectedPayoutMethod(
   kind: String,
-  paymentDetails: Map<String, Any>? = null
-) : SelectedPaymentMethod(kind, paymentDetails)
+  paymentDetailsHash: String? = null
+) : SelectedPaymentMethod(kind, paymentDetailsHash)
+
+/**
+ * A data class representing the payin method selected, including the unhashed payout details.
+ * @property kind type of payment method
+ * @property paymentDetails An object containing the properties
+ *                          defined in an Offering's requiredPaymentDetails json schema
+ */
+class UnhashedSelectedPayoutMethod(
+  kind: String,
+  paymentDetails: Map<String, Any>? = null,
+) : UnhashedSelectedPaymentMethod(kind, paymentDetails)
 
 /**
  * A data class implementing [MessageData] that represents the contents of a [Quote].

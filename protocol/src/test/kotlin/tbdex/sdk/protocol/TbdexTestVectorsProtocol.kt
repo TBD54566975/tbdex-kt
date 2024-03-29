@@ -56,6 +56,13 @@ class TbdexTestVectorsProtocol {
     testSuccessMessageTestVector<Rfq>(vector)
   }
 
+  @Test
+  fun parse_rfq_omit_private_data() {
+    val vector = TestVectors.getVector("parse-rfq-omit-private-data.json")
+    assertNotNull(vector)
+    testSuccessMessageTestVector<Rfq>(vector)
+  }
+
   /**
    * Tbdex Test Vectors Resource Tests
    */
