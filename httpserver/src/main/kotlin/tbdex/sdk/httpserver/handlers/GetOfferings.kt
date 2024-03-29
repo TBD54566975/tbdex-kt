@@ -40,7 +40,6 @@ suspend fun getOfferings(
   }
 
   try {
-    // copied from httpserver-js
     // TODO: figure out what to do with callback result. should we pass through the offerings we've fetched
     // and allow the callback to modify what's returned? (issue #11)
     callback.invoke(call)

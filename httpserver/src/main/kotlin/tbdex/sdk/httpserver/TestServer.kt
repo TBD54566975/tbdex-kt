@@ -5,8 +5,8 @@ import io.ktor.server.response.respond
 import tbdex.sdk.httpclient.models.Exchange
 import tbdex.sdk.httpserver.models.FakeExchangesApi
 import tbdex.sdk.httpserver.models.FakeOfferingsApi
+import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
-import tbdex.sdk.protocol.models.Offering
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.methods.dht.DidDht
 
@@ -24,8 +24,8 @@ fun main() {
 
   val tbdexServer = TbdexHttpServer(serverConfig)
 
-  tbdexServer.createExchange { call, rfq, offering, replyTo ->
-
+  tbdexServer.onCreateExchange { call, rfq, offering, replyTo ->
+    tbdexServer.pfiDid
     println("RFQ: $rfq")
     println("Offering: $offering")
     println("ReplyTo: $replyTo")
@@ -37,29 +37,33 @@ fun main() {
     call.respond(HttpStatusCode.Accepted)
   }
 
-  tbdexServer.getOfferings { call ->
+  tbdexServer.onGetOfferings { call ->
     println("Getting offerings...")
-    call.respond(HttpStatusCode.OK, listOf<Offering>())
+    val offerings = tbdexServer.offeringsApi.getOfferings()
+    call.respond(HttpStatusCode.OK, offerings)
   }
 
-  tbdexServer.getExchange { call ->
+  tbdexServer.onGetExchange { call ->
     println("Getting one exchange, no filter needed...")
     call.respond(HttpStatusCode.OK, listOf<Message>())
   }
 
-  tbdexServer.getExchanges { call, filter ->
+  tbdexServer.onGetExchanges { call, filter ->
     println("Getting ALL exchanges...")
     println("Filter: $filter")
     call.respond(HttpStatusCode.OK, listOf<Exchange>())
   }
 
-  tbdexServer.submitClose { call, close ->
+  tbdexServer.onSubmitClose { call, close ->
+    if (close is Close) {
+
+    }
     println("Submitting close...")
     println("Close: $close")
     call.respond(HttpStatusCode.Accepted)
   }
 
-  tbdexServer.submitOrder { call, order ->
+  tbdexServer.onSubmitOrder { call, order ->
     println("Submitting order...")
     println("Order: $order")
     call.respond(HttpStatusCode.Accepted)

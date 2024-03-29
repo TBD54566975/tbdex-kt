@@ -33,7 +33,6 @@ import tbdex.sdk.httpserver.models.GetOfferingsCallback
 import tbdex.sdk.httpserver.models.OfferingsApi
 import tbdex.sdk.httpserver.models.SubmitCloseCallback
 import tbdex.sdk.httpserver.models.SubmitOrderCallback
-import kotlin.collections.set
 
 /**
  * Main function to start the TBDex HTTP server.
@@ -69,13 +68,13 @@ class TbdexHttpServerConfig(
  *
  * @property config The configuration for the server, including port and optional APIs.
  */
-class TbdexHttpServer(val config: TbdexHttpServerConfig) {
+class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
   private val callbacks = Callbacks()
   private var embedded = embeddedServer(Netty, port = config.port) {
     configure(this)
   }
 
-  private val pfiDid = config.pfiDid ?: "did:ex:pfi"
+  internal val pfiDid = config.pfiDid ?: "did:ex:pfi"
   internal val offeringsApi = config.offeringsApi ?: FakeOfferingsApi()
   internal val exchangesApi = config.exchangesApi ?: FakeExchangesApi()
 
@@ -103,7 +102,6 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
         )
       }
 
-      // todo i don't want do unchecked cast here
       route("/exchanges") {
         post {
           createExchange(
@@ -118,7 +116,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
           submitMessage(
             call = call,
             exchangesApi = exchangesApi,
-            callback = callbacks.submitOrder
+            callbacks = callbacks
           )
         }
 
@@ -156,7 +154,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
    *
    * @param callback GetOfferingsCallback function to be registered
    */
-  fun getOfferings(callback: GetOfferingsCallback) {
+  fun onGetOfferings(callback: GetOfferingsCallback) {
     callbacks.getOfferings = callback
   }
 
@@ -165,7 +163,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
    *
    * @param callback GetExchangesCallback function to be registered
    */
-  fun getExchanges(callback: GetExchangesCallback) {
+  fun onGetExchanges(callback: GetExchangesCallback) {
     callbacks.getExchanges = callback
   }
 
@@ -174,7 +172,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
    *
    * @param callback GetExchangeCallback function to be registered
    */
-  fun getExchange(callback: GetExchangeCallback) {
+  fun onGetExchange(callback: GetExchangeCallback) {
     callbacks.getExchange = callback
   }
 
@@ -183,7 +181,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
    *
    * @param callback CreateExchangeCallback function to be registered
    */
-  fun createExchange(callback: CreateExchangeCallback) {
+  fun onCreateExchange(callback: CreateExchangeCallback) {
     callbacks.createExchange = callback
   }
 
@@ -192,7 +190,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
    *
    * @param callback SubmitOrderCallback function to be registered
    */
-  fun submitOrder(callback: SubmitOrderCallback) {
+  fun onSubmitOrder(callback: SubmitOrderCallback) {
     callbacks.submitOrder = callback
   }
 
@@ -201,7 +199,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
    *
    * @param callback SubmitOrderCallback function to be registered
    */
-  fun submitClose(callback: SubmitCloseCallback) {
+  fun onSubmitClose(callback: SubmitCloseCallback) {
     callbacks.submitClose = callback
   }
 
