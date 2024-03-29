@@ -51,8 +51,7 @@ class FakeOfferingsApi : OfferingsApi {
   /**
    * Retrieves a list of offerings based on the provided filter.
    *
-   * @param filter The filter criteria for retrieving offerings. Ignored in this implementation.
    * @return A list containing the single [Offering] instance for testing purposes.
    */
-  override fun getOfferings(filter: GetOfferingsFilter?): List<Offering> = listOf(offering)
+  override fun getOfferings(): List<Offering> = listOf(offering)
 }

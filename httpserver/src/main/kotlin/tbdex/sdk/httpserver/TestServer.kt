@@ -11,6 +11,9 @@ import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.methods.dht.DidDht
 
 // todo remove this before merging!!
+/**
+ * Main function to test the server.
+ */
 fun main() {
   val serverConfig = TbdexHttpServerConfig(
     port = 8080,

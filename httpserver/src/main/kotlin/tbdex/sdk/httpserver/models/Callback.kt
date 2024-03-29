@@ -8,7 +8,6 @@ import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.Rfq
 
-
 typealias GetOfferingsCallback = suspend (ApplicationCall) -> Any
 typealias GetExchangesCallback = suspend (ApplicationCall, GetExchangesFilter) -> Any
 typealias GetExchangeCallback = suspend (ApplicationCall) -> Any

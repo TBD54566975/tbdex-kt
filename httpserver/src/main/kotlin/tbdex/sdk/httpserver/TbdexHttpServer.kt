@@ -109,7 +109,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
             call = call,
             offeringsApi = offeringsApi,
             exchangesApi = exchangesApi,
-            callback = callbacks.getOrDefault("rfq", null) as CreateExchangeCallback
+            callback = callbacks.getOrDefault("rfq", null) as CreateExchangeCallback?
           )
         }
 
@@ -117,7 +117,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
           submitMessage(
             call = call,
             exchangesApi = exchangesApi,
-            callback = callbacks.getOrDefault("order", null) as SubmitOrderCallback
+            callback = callbacks.getOrDefault("order", null) as SubmitOrderCallback?
           )
         }
 
@@ -125,7 +125,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
           getExchanges(
             call,
             exchangesApi,
-            callbacks.getOrDefault("exchanges", null) as GetExchangesCallback,
+            callbacks.getOrDefault("exchanges", null) as GetExchangesCallback?,
             pfiDid
           )
         }
@@ -134,7 +134,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
           getExchange(
             call,
             exchangesApi,
-            callbacks.getOrDefault("exchange", null) as GetExchangeCallback,
+            callbacks.getOrDefault("exchange", null) as GetExchangeCallback?,
             pfiDid
           )
         }
@@ -144,36 +144,65 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
         getOfferings(
           call,
           offeringsApi,
-          callbacks.getOrDefault("offerings", null) as GetOfferingsCallback
+          callbacks.getOrDefault("offerings", null) as GetOfferingsCallback?
         )
       }
     }
   }
 
+  /**
+   * Adds a GetOfferingsCallback for handling requests for offerings.
+   *
+   * @param callback GetOfferingsCallback function to be registered
+   */
   fun getOfferings(callback: GetOfferingsCallback) {
     this.callbacks["offerings"] = callback
   }
 
+  /**
+   * Adds a GetExchangesCallback for handling requests for exchanges.
+   *
+   * @param callback GetExchangesCallback function to be registered
+   */
   fun getExchanges(callback: GetExchangesCallback) {
     this.callbacks["exchanges"] = callback
   }
 
+  /**
+   * Adds a GetExchangeCallback for handling requests for an exchange with a specific exchangeId.
+   *
+   * @param callback GetExchangeCallback function to be registered
+   */
   fun getExchange(callback: GetExchangeCallback) {
     this.callbacks["exchange"] = callback
   }
 
+  /**
+   * Adds a CreateExchangeCallback for handling requests to create an exchange.
+   *
+   * @param callback CreateExchangeCallback function to be registered
+   */
   fun createExchange(callback: CreateExchangeCallback) {
     this.callbacks["rfq"] = callback
   }
 
+  /**
+   * Adds a SubmitOrderCallback for handling requests to submit an order.
+   *
+   * @param callback SubmitOrderCallback function to be registered
+   */
   fun submitOrder(callback: SubmitOrderCallback) {
     this.callbacks["order"] = callback
   }
 
+  /**
+   * Adds a SubmitOrderCallback for handling requests to submit an order.
+   *
+   * @param callback SubmitOrderCallback function to be registered
+   */
   fun submitClose(callback: SubmitOrderCallback) {
     this.callbacks["close"] = callback
   }
-
 
   /**
    * Starts the embedded Netty server.

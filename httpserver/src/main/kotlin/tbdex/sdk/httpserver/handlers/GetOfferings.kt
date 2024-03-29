@@ -7,7 +7,6 @@ import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpserver.models.CallbackError
 import tbdex.sdk.httpserver.models.ErrorResponse
 import tbdex.sdk.httpserver.models.GetOfferingsCallback
-import tbdex.sdk.httpserver.models.GetOfferingsFilter
 import tbdex.sdk.httpserver.models.OfferingsApi
 import tbdex.sdk.protocol.models.Offering
 
@@ -32,12 +31,8 @@ suspend fun getOfferings(
   offeringsApi: OfferingsApi,
   callback: GetOfferingsCallback?
 ) {
-  val queryParams = GetOfferingsFilter(
-    id = call.parameters["id"],
-    payoutCurrency = call.parameters["payoutCurrency"],
-    payinCurrency = call.parameters["payinCurrency"]
-  )
-  val offerings = offeringsApi.getOfferings(queryParams)
+
+  val offerings = offeringsApi.getOfferings()
 
   if (callback == null) {
     call.respond(HttpStatusCode.OK, GetOfferingsResponse(data = offerings))

@@ -48,10 +48,10 @@ suspend fun submitMessage(
 
   when (message.metadata.kind) {
     MessageKind.close -> {
-      return submitClose(call, exchangesApi, callback as SubmitCloseCallback, message as Close)
+      return submitClose(call, exchangesApi, callback as SubmitCloseCallback?, message as Close)
     }
     MessageKind.order -> {
-      return submitOrder(call, exchangesApi, callback as SubmitOrderCallback, message as Order)
+      return submitOrder(call, exchangesApi, callback as SubmitOrderCallback?, message as Order)
     }
     else -> {
       val errorDetail = ErrorDetail(detail = "Message must be a valid Order or Close message")
