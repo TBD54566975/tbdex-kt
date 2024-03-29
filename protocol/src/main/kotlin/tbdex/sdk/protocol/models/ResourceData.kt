@@ -19,6 +19,12 @@ sealed interface ResourceData : Data
 
 /**
  * A data class implementing [ResourceData], which represents the contents of an [Offering].
+ *
+ * @property description Brief description of what is being offered
+ * @property payoutUnitsPerPayinUnit Number of payout units alice would get for 1 payin unit
+ * @property payin Details and options associated to the payin currency
+ * @property payout Details and options associated to the payout currency
+ * @property requiredClaims Claim(s) required when submitting an RFQ for this offering
  */
 class OfferingData(
   val description: String,
@@ -45,6 +51,11 @@ sealed class PaymentDetails(
 
 /**
  * A data class containing information pertaining to payin.
+ *
+ * @param currencyCode ISO 3166 currency code string
+ * @param min Minimum amount of currency that the offer is valid for
+ * @param max Maximum amount of currency that the offer is valid for
+ * @param methods A list of payin methods to select from
  */
 class PayinDetails(
   currencyCode: String,
@@ -55,6 +66,11 @@ class PayinDetails(
 
 /**
  * A data class containing information pertaining to payout.
+ *
+ * @param currencyCode ISO 3166 currency code string
+ * @param min Minimum amount of currency that the offer is valid for
+ * @param max Maximum amount of currency that the offer is valid for
+ * @param methods A list of payout methods to select from
  */
 class PayoutDetails(
   currencyCode: String,
@@ -91,6 +107,9 @@ sealed class PaymentMethod(
   val max: String? = null
 ) {
 
+  /**
+   * Parse the contents of [requiredPaymentDetails] into a [JsonSchema] that can do validation.
+   */
   @JsonIgnore
   fun getRequiredPaymentDetailsSchema(): JsonSchema? {
     if (requiredPaymentDetails == null) return null
@@ -156,17 +175,14 @@ class PayoutMethod(
 ) : PaymentMethod(kind, name, description, group, requiredPaymentDetails, fee, min, max)
 
 
-class BalanceData(
-  val balances: List<BalanceDetails>
-) : ResourceData
-
 /**
- * Balance details
+ * A data class implementing [ResourceData], which represents the contents of a [Balance].
  *
- * @property currencyCode ISO 3166 currency code string.
- * @property amount The amount available to be transacted with.
+ * @property currencyCode ISO 3166 currency code string
+ * @property amount The amount available to be transacted with
+ * @constructor Create empty Balance data
  */
-class BalanceDetails(
+class BalanceData(
   val currencyCode: String,
   val amount: String
-) : Data
+) : ResourceData

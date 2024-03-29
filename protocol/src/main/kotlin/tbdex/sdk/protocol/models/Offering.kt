@@ -30,7 +30,7 @@ class Offering private constructor(
      * @param payload The offering as a json string.
      * @return The json string parsed into a concrete Offering implementation.
      */
-    fun parse(toString: String) = Resource.parse(toString) as Offering
+    fun parse(payload: String) = Resource.parse(payload) as Offering
 
     /**
      * Creates a new `Offering` resource, autopopulating the id, creation/updated time, and resource kind.
