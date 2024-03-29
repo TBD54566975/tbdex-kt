@@ -30,16 +30,12 @@ dependencies {
 
   // API
   api(libs.xyzBlockWeb5)
-  /*
-   * API Leak: https://github.com/TBD54566975/tbdex-kt/issues/161
-   *
-   * Change and move to "implementation" when completed
-   */
-  api(libs.deFxlaeTypeId)
+
 
   // Project
 
   // Implementation
+  implementation(libs.deFxlaeTypeId)
   implementation(libs.comFasterXmlJacksonModuleKotlin)
   implementation(libs.comFasterXmlJacksonDatatypeJsr310)
   implementation(libs.comNetworkntJsonSchemaValidator)
