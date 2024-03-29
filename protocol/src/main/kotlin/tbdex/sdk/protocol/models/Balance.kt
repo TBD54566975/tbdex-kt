@@ -6,7 +6,7 @@ import java.time.OffsetDateTime
 
 /**
  * Balance is a protected resource used to communicate
- * the amounts of each currency held by the PFI on behalf of its customer.
+ * the available amount of each currency held by the PFI on behalf of its customer.
  *
  * @property metadata An object containing fields about the resource
  * @property data The actual resource content. This will always be a JSON object.

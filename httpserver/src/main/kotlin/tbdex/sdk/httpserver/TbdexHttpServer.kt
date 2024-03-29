@@ -18,13 +18,14 @@ import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import tbdex.sdk.httpserver.handlers.createExchange
+import tbdex.sdk.httpserver.handlers.getBalances
 import tbdex.sdk.httpserver.handlers.getExchange
 import tbdex.sdk.httpserver.handlers.getExchanges
 import tbdex.sdk.httpserver.handlers.getOfferings
-import tbdex.sdk.httpserver.handlers.submitClose
 import tbdex.sdk.httpserver.handlers.submitMessage
-import tbdex.sdk.httpserver.handlers.submitOrder
+import tbdex.sdk.httpserver.models.BalancesApi
 import tbdex.sdk.httpserver.models.ExchangesApi
+import tbdex.sdk.httpserver.models.FakeBalancesApi
 import tbdex.sdk.httpserver.models.FakeExchangesApi
 import tbdex.sdk.httpserver.models.FakeOfferingsApi
 import tbdex.sdk.httpserver.models.GetCallback
@@ -59,7 +60,8 @@ class TbdexHttpServerConfig(
   val port: Int,
   val pfiDid: String? = null,
   val offeringsApi: OfferingsApi? = null,
-  val exchangesApi: ExchangesApi? = null
+  val exchangesApi: ExchangesApi? = null,
+  val balancesApi: BalancesApi? = null
 )
 
 
@@ -78,6 +80,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
   private val pfiDid = config.pfiDid ?: "did:ex:pfi"
   internal val offeringsApi = config.offeringsApi ?: FakeOfferingsApi()
   internal val exchangesApi = config.exchangesApi ?: FakeExchangesApi()
+  internal val balancesApi = config.balancesApi ?: FakeBalancesApi()
 
   /**
    * Configures the Ktor application with necessary settings, including content negotiation.
@@ -101,6 +104,14 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
           "via a suitable library to communicate with this server: " +
           "https://github.com/TBD54566975/tbdex-protocol"
         )
+      }
+
+      get("/offerings") {
+        getOfferings(call, offeringsApi,  getCallbacks.getOrDefault("offerings", null))
+      }
+
+      get("/balances") {
+        getBalances(call, balancesApi, getCallbacks.getOrDefault("balances", null))
       }
 
       route("/exchanges") {
@@ -138,10 +149,6 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
             pfiDid
           )
         }
-      }
-
-      get("/offerings") {
-        getOfferings(call, offeringsApi,  getCallbacks.getOrDefault("offerings", null))
       }
     }
   }

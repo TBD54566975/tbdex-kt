@@ -13,7 +13,7 @@ import tbdex.sdk.protocol.models.Offering
  * @param Filter The filter used in the GET request.
  * @return Any result returned from the callback.
  */
-typealias GetCallback = suspend (ApplicationCall, Filter) -> Any
+typealias GetCallback = suspend (ApplicationCall, Filter?) -> Any
 
 /**
  * Represents a callback function for handling submit requests with received message and associated offering.
