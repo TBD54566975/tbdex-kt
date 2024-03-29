@@ -87,6 +87,42 @@ class TbdexHttpClientTest {
   }
 
   @Test
+  fun `get balances success via mockwebserver`() {
+    val balance = TestData.getBalance()
+    balance.sign(TestData.PFI_DID)
+    val mockBalance = listOf(balance)
+    val mockResponseString = Json.jsonMapper.writeValueAsString(mapOf("data" to mockBalance))
+    server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_OK))
+
+    val requesterDid = DidDht.create(InMemoryKeyManager())
+    val response = TbdexHttpClient.getBalances(pfiDid.uri, requesterDid)
+
+    assertEquals(1, response.size)
+  }
+
+  @Test
+  fun `get balances fail via mockwebserver`() {
+    val errorDetails = mapOf(
+      "errors" to listOf(
+        ErrorDetail(
+          id = "1",
+          status = "401",
+          code = "Unauthorized",
+          title = "Unauthorized",
+          detail = "The request is unauthorized.",
+          source = null,
+          meta = null
+        )
+      )
+    )
+
+    val mockResponseString = Json.jsonMapper.writeValueAsString(errorDetails)
+    server.enqueue(MockResponse().setBody(mockResponseString).setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST))
+    val requesterDid = DidDht.create(InMemoryKeyManager())
+    assertThrows<TbdexResponseException> { TbdexHttpClient.getBalances(pfiDid.uri, requesterDid) }
+  }
+
+  @Test
   fun `createExchange(Rfq) submits RFQ`() {
 
     server.enqueue(MockResponse().setResponseCode(HttpURLConnection.HTTP_ACCEPTED))

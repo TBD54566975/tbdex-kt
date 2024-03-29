@@ -2,6 +2,8 @@ package tbdex.sdk.httpclient
 
 import com.danubetech.verifiablecredentials.CredentialSubject
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.models.Balance
+import tbdex.sdk.protocol.models.BalanceData
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.OfferingData
@@ -73,6 +75,16 @@ object TestData {
     offering.sign(PFI_DID)
     return offering
   }
+
+  fun getBalance() =
+    Balance.create(
+      from = PFI_DID.uri,
+      data = BalanceData(
+        currencyCode = "BTC",
+        available = "0.001",
+      )
+    )
+
 
   fun getRfq(
     to: String = PFI_DID.uri,
