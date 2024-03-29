@@ -2,6 +2,8 @@ package tbdex.sdk.protocol
 
 import com.danubetech.verifiablecredentials.CredentialSubject
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.models.Balance
+import tbdex.sdk.protocol.models.BalanceData
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.CloseData
 import tbdex.sdk.protocol.models.MessageKind
@@ -79,6 +81,15 @@ object TestData {
       )
     )
 
+  fun getBalance() =
+    Balance.create(
+      from = PFI_DID.uri,
+      data = BalanceData(
+        currencyCode = "BTC",
+        available = "0.001",
+      )
+    )
+
   fun getRfq(
     offeringId: String = TypeId.generate(ResourceKind.offering.name).toString(),
     claims: List<String> = emptyList()
@@ -102,14 +113,18 @@ object TestData {
     ALICE_DID.uri, PFI_DID.uri, TypeId.generate(MessageKind.rfq.name).toString(),
     QuoteData(
       expiresAt = OffsetDateTime.now().plusDays(1),
-      payin = QuoteDetails("AUD", "10.00", "0.01", PaymentInstruction(
+      payin = QuoteDetails(
+        "AUD", "10.00", "0.01", PaymentInstruction(
         link = "https://block.xyz",
         instruction = "payin instruction"
-      )),
-      payout = QuoteDetails("BTC", "0.12", "0.02", PaymentInstruction(
+      )
+      ),
+      payout = QuoteDetails(
+        "BTC", "0.12", "0.02", PaymentInstruction(
         link = "https://block.xyz",
         instruction = "payout instruction"
-      )),
+      )
+      ),
     )
   )
 

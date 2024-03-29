@@ -2,6 +2,7 @@ package tbdex.sdk.protocol
 
 import com.fasterxml.jackson.databind.JsonNode
 import org.junit.jupiter.api.Test
+import tbdex.sdk.protocol.models.Balance
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
@@ -62,7 +63,14 @@ class TbdexTestVectorsProtocol {
   fun parse_offering() {
     val vector = TestVectors.getVector("parse-offering.json")
     assertNotNull(vector)
-    testNonErrorResourceTestVector<Offering>(vector)
+    testSuccessResourceTestVector<Offering>(vector)
+  }
+
+  @Test
+  fun parse_balance() {
+    val vector = TestVectors.getVector("parse-balance.json")
+    assertNotNull(vector)
+    testSuccessResourceTestVector<Balance>(vector)
   }
 
   private inline fun <reified T> testSuccessMessageTestVector(vector: JsonNode) {
@@ -75,7 +83,7 @@ class TbdexTestVectorsProtocol {
     assertEquals(vector["output"], Json.jsonMapper.readTree(tbDEXMessage.toString()))
   }
 
-  private inline fun <reified T> testNonErrorResourceTestVector(vector: JsonNode) {
+  private inline fun <reified T> testSuccessResourceTestVector(vector: JsonNode) {
     val input = vector["input"].textValue()
     assertNotNull(input)
 
