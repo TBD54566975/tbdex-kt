@@ -35,7 +35,7 @@ class BalanceTest {
     val balance = TestData.getBalance()
     balance.sign(TestData.PFI_DID)
     val jsonResource = balance.toString()
-    val parsedBalance = Resource.parse(jsonResource)
+    val parsedBalance = Balance.parse(jsonResource)
 
     assertIs<Balance>(parsedBalance)
     assertThat(parsedBalance.toString()).isEqualTo(jsonResource)
@@ -46,7 +46,7 @@ class BalanceTest {
     val balance = TestData.getBalance()
     balance.sign(TestData.PFI_DID)
 
-    val parsedBalance = assertDoesNotThrow { Resource.parse(Json.stringify(balance)) }
+    val parsedBalance = assertDoesNotThrow { Balance.parse(Json.stringify(balance)) }
     assertIs<Balance>(parsedBalance)
   }
 

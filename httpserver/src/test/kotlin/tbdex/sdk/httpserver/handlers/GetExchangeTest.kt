@@ -26,6 +26,7 @@ import tbdex.sdk.httpclient.RequestToken
 import tbdex.sdk.httpserver.models.ErrorResponse
 import tbdex.sdk.httpserver.models.ExchangesApi
 import tbdex.sdk.httpserver.models.GetExchangeCallback
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.serialization.Json
@@ -101,7 +102,7 @@ class GetExchangeTest {
       val exchange = jsonNode.get("data").elements().asSequence()
         .map {
           val string = it.toString()
-          Message.parse(string)
+          Parser.parseMessage(string)
         }.toList()
 
       assertEquals((exchange[0] as Rfq).metadata.from, TestData.aliceDid.uri)

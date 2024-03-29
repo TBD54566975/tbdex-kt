@@ -106,7 +106,7 @@ class GetBalancesTest {
       val jsonNode = Json.jsonMapper.readTree(responseString)
       val balances = jsonNode.get("data").elements().asSequence()
         .map { balance ->
-          Resource.parse(balance.toString())
+          Balance.parse(balance.toString())
         }
         .toList()
 

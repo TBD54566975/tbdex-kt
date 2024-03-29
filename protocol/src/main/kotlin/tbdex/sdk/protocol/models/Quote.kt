@@ -1,9 +1,11 @@
 package tbdex.sdk.protocol.models
 
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Quote.Companion.create
+import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.validateExchangeId
 import java.time.OffsetDateTime
 
@@ -63,6 +65,31 @@ class Quote private constructor(
       Validator.validateData(quoteData, "quote")
 
       return Quote(metadata, quoteData)
+    }
+
+    /**
+     * Takes an existing Quote in the form of a json string and parses it into a Quote object.
+     * Validates object structure and performs an integrity check using the message signature.
+     *
+     * @param payload The Quote as a json string.
+     * @return The json string parsed into a Quote
+     * @throws IllegalArgumentException if the payload is not valid json.
+     * @throws IllegalArgumentException if the payload does not conform to the expected json schema.
+     * @throws IllegalArgumentException if the payload signature verification fails.
+     * @throws IllegalArgumentException if the payload is not a Quote
+     */
+    fun parse(payload: String): Quote {
+      val jsonMessage = Parser.parseMessageToJsonNode(payload)
+
+      val kind = jsonMessage.get("metadata").get("kind").asText()
+      if (kind != "quote") {
+        throw IllegalArgumentException("Message must be a Quote but message kind was $kind")
+      }
+
+      val message = Json.jsonMapper.convertValue(jsonMessage, Quote::class.java)
+      message.verify()
+
+      return message
     }
   }
 }

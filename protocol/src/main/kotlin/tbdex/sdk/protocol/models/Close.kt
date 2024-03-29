@@ -1,8 +1,10 @@
 package tbdex.sdk.protocol.models
 
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
+import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.validateExchangeId
 import java.time.OffsetDateTime
 
@@ -63,6 +65,31 @@ class Close private constructor(
       )
       Validator.validateData(closeData, "close")
       return Close(metadata, closeData)
+    }
+
+    /**
+     * Takes an existing Close in the form of a json string and parses it into a Close object.
+     * Validates object structure and performs an integrity check using the message signature.
+     *
+     * @param payload The Close as a json string.
+     * @return The json string parsed into a Close
+     * @throws IllegalArgumentException if the payload is not valid json.
+     * @throws IllegalArgumentException if the payload does not conform to the expected json schema.
+     * @throws IllegalArgumentException if the payload signature verification fails.
+     * @throws IllegalArgumentException if the payload is not a Close
+     */
+    fun parse(payload: String): Close {
+      val jsonMessage = Parser.parseMessageToJsonNode(payload)
+
+      val kind = jsonMessage.get("metadata").get("kind").asText()
+      if (kind != "close") {
+        throw IllegalArgumentException("Message must be a Close but message kind was $kind")
+      }
+
+      val message = Json.jsonMapper.convertValue(jsonMessage, Close::class.java)
+      message.verify()
+
+      return message
     }
   }
 }

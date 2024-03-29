@@ -7,6 +7,7 @@ import assertk.assertions.isNotNull
 import com.nimbusds.jose.JWSObject
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.ValidatorException
 import tbdex.sdk.protocol.serialization.Json
@@ -31,7 +32,7 @@ class MessageTest {
     rfq.sign(TestData.ALICE_DID)
     val order = TestData.getOrder()
     order.sign(TestData.ALICE_DID)
-    val messages = listOf(rfq.toString(), order.toString()).map { Message.parse(it) }
+    val messages = listOf(rfq.toString(), order.toString()).map { Parser.parseMessage(it) }
 
     assertIs<Rfq>(messages.first())
     assertIs<Order>(messages.last())
@@ -52,14 +53,14 @@ class MessageTest {
 
   @Test
   fun `parse throws error if json string is not valid`() {
-    val exception = assertThrows<IllegalArgumentException> { Message.parse(";;;;") }
+    val exception = assertThrows<IllegalArgumentException> { Parser.parseMessage(";;;;") }
     assertThat(exception.message!!).contains("unexpected character at offset")
   }
 
   @Test
   fun `parse throws error if message is unsigned`() {
     val exception = assertFailsWith<ValidatorException> {
-      Message.parse(Json.stringify(TestData.getQuote()))
+      Parser.parseMessage(Json.stringify(TestData.getQuote()))
     }
 
     assertContains(exception.errors, "$.signature: is missing but it is required")
@@ -68,7 +69,7 @@ class MessageTest {
   @Test
   fun `parse throws error if message did is invalid`() {
     val exception = assertFailsWith<ValidatorException> {
-      Message.parse(Json.stringify(TestData.getOrderStatusWithInvalidDid()))
+      Parser.parseMessage(Json.stringify(TestData.getOrderStatusWithInvalidDid()))
     }
 
     assertContains(exception.errors[0], "does not match the regex pattern ^did")
@@ -84,7 +85,7 @@ class MessageTest {
     order.sign(TestData.ALICE_DID)
 
     listOf(rfq, quote, order).map {
-      assertDoesNotThrow { Message.parse(Json.stringify(it)) }
+      assertDoesNotThrow { Parser.parseMessage(Json.stringify(it)) }
     }
   }
 
@@ -95,7 +96,7 @@ class MessageTest {
     rfqFromAlice.sign(TestData.PFI_DID)
 
     val exception = assertThrows<SignatureException> {
-      Message.parse(Json.stringify(rfqFromAlice))
+      Parser.parseMessage(Json.stringify(rfqFromAlice))
     }
     assertThat(exception.message!!).contains("Signature verification failed: Was not signed by the expected DID")
   }

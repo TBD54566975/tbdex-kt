@@ -6,6 +6,8 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.startsWith
 import de.fxlae.typeid.TypeId
 import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.serialization.Json
 import java.time.OffsetDateTime
@@ -38,10 +40,18 @@ class QuoteTest {
     val quote = TestData.getQuote()
     quote.sign(TestData.PFI_DID)
     val jsonMessage = quote.toString()
-    val parsedMessage = Message.parse(jsonMessage)
+    val parsedMessage = Quote.parse(jsonMessage)
 
     assertIs<Quote>(parsedMessage)
     assertThat(parsedMessage.toString()).isEqualTo(jsonMessage)
+  }
+
+  @Test
+  fun `parse() throws if json string is not a Quote`() {
+    val rfq = TestData.getRfq()
+    rfq.sign(TestData.ALICE_DID)
+    val jsonMessage = rfq.toString()
+    assertThrows<IllegalArgumentException> { Quote.parse(jsonMessage) }
   }
 
   @Test
@@ -49,7 +59,7 @@ class QuoteTest {
     val quote = TestData.getQuote()
     quote.sign(TestData.PFI_DID)
 
-    assertDoesNotThrow { Message.parse(Json.stringify(quote)) }
+    assertDoesNotThrow { Quote.parse(Json.stringify(quote)) }
   }
 }
 
