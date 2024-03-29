@@ -8,11 +8,30 @@ import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.Rfq
 
+/**
+ * Class that houses all callback types for the TBDex HTTP server.
+ *
+ * @property getOfferings
+ * @property getExchanges
+ * @property getExchange
+ * @property createExchange
+ * @property submitOrder
+ * @property submitClose
+ */
+class Callbacks(
+  var getOfferings: GetOfferingsCallback? = null,
+  var getExchanges: GetExchangesCallback? = null,
+  var getExchange: GetExchangeCallback? = null,
+  var createExchange: CreateExchangeCallback? = null,
+  var submitOrder: SubmitOrderCallback? = null,
+  var submitClose: SubmitCloseCallback? = null
+)
+
 typealias GetOfferingsCallback = suspend (ApplicationCall) -> Any
 typealias GetExchangesCallback = suspend (ApplicationCall, GetExchangesFilter?) -> Any
 typealias GetExchangeCallback = suspend (ApplicationCall) -> Any
 
-typealias CreateExchangeCallback = suspend (ApplicationCall, Rfq, Offering, String?) -> Unit
+typealias CreateExchangeCallback = suspend (ApplicationCall, Rfq, Offering?, String?) -> Unit
 typealias SubmitOrderCallback = suspend (ApplicationCall, Order) -> Unit
 typealias SubmitCloseCallback = suspend (ApplicationCall, Close) -> Unit
 
