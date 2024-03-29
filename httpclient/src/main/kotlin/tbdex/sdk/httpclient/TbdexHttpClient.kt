@@ -15,6 +15,7 @@ import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
 import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.Validator
+import tbdex.sdk.protocol.models.Balance
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
@@ -65,6 +66,42 @@ object TbdexHttpClient {
         return jsonNode.get("data").elements()
           .asSequence()
           .map { Offering.parse(it.toString()) }
+          .toList()
+      }
+
+      else -> throw buildResponseException(response)
+    }
+  }
+
+  /**
+   * Fetches balances from a PFI.
+   *
+   * @param pfiDid The decentralized identifier of the PFI.
+   * @param requesterDid The decentralized identifier of the entity requesting the balances.
+   * @return A list of [Balance] matching the request.
+   * @throws TbdexResponseException for request or response errors.
+   */
+  fun getBalances(pfiDid: String, requesterDid: BearerDid): List<Balance> {
+    val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
+    val baseUrl = "$pfiServiceEndpoint/balances/"
+    val requestToken = RequestToken.generate(requesterDid, pfiDid)
+
+    val request = Request.Builder()
+      .url(baseUrl)
+      .addHeader("Content-Type", JSON_HEADER)
+      .addHeader("Authorization", "Bearer $requestToken")
+      .get()
+      .build()
+
+    val response: Response = client.newCall(request).execute()
+    when {
+      response.isSuccessful -> {
+        val responseString = response.body?.string()
+        // response body is an object with a data field
+        val jsonNode = jsonMapper.readTree(responseString)
+        return jsonNode.get("data").elements()
+          .asSequence()
+          .map { Balance.parse(it.toString()) }
           .toList()
       }
 
