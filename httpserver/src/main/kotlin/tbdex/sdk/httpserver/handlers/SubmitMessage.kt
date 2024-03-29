@@ -7,7 +7,8 @@ import io.ktor.server.response.respond
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpserver.models.ErrorResponse
 import tbdex.sdk.httpserver.models.ExchangesApi
-import tbdex.sdk.httpserver.models.SubmitCallback
+import tbdex.sdk.httpserver.models.SubmitCloseCallback
+import tbdex.sdk.httpserver.models.SubmitOrderCallback
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
@@ -25,7 +26,7 @@ import tbdex.sdk.protocol.models.Order
 suspend fun submitMessage(
   call: ApplicationCall,
   exchangesApi: ExchangesApi,
-  callback: SubmitCallback?
+  callback: Any?
 ) {
   val message: Message
 
@@ -47,10 +48,10 @@ suspend fun submitMessage(
 
   when (message.metadata.kind) {
     MessageKind.close -> {
-      return submitClose(call, exchangesApi, callback, message as Close)
+      return submitClose(call, exchangesApi, callback as SubmitCloseCallback, message as Close)
     }
     MessageKind.order -> {
-      return submitOrder(call, exchangesApi, callback, message as Order)
+      return submitOrder(call, exchangesApi, callback as SubmitOrderCallback, message as Order)
     }
     else -> {
       val errorDetail = ErrorDetail(detail = "Message must be a valid Order or Close message")

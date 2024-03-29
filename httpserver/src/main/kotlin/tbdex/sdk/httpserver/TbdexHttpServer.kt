@@ -21,17 +21,16 @@ import tbdex.sdk.httpserver.handlers.createExchange
 import tbdex.sdk.httpserver.handlers.getExchange
 import tbdex.sdk.httpserver.handlers.getExchanges
 import tbdex.sdk.httpserver.handlers.getOfferings
-import tbdex.sdk.httpserver.handlers.submitClose
 import tbdex.sdk.httpserver.handlers.submitMessage
-import tbdex.sdk.httpserver.handlers.submitOrder
+import tbdex.sdk.httpserver.models.CreateExchangeCallback
 import tbdex.sdk.httpserver.models.ExchangesApi
 import tbdex.sdk.httpserver.models.FakeExchangesApi
 import tbdex.sdk.httpserver.models.FakeOfferingsApi
-import tbdex.sdk.httpserver.models.GetCallback
-import tbdex.sdk.httpserver.models.GetKind
+import tbdex.sdk.httpserver.models.GetExchangeCallback
+import tbdex.sdk.httpserver.models.GetExchangesCallback
+import tbdex.sdk.httpserver.models.GetOfferingsCallback
 import tbdex.sdk.httpserver.models.OfferingsApi
-import tbdex.sdk.httpserver.models.SubmitCallback
-import tbdex.sdk.httpserver.models.SubmitKind
+import tbdex.sdk.httpserver.models.SubmitOrderCallback
 import kotlin.collections.set
 
 /**
@@ -69,8 +68,8 @@ class TbdexHttpServerConfig(
  * @property config The configuration for the server, including port and optional APIs.
  */
 class TbdexHttpServer(val config: TbdexHttpServerConfig) {
-  val getCallbacks: MutableMap<String, GetCallback> = mutableMapOf()
-  val submitCallbacks: MutableMap<String, SubmitCallback> = mutableMapOf()
+  // todo i don't want to use Any :/
+  private val callbacks: MutableMap<String, Any> = mutableMapOf()
   private var embedded = embeddedServer(Netty, port = config.port) {
     configure(this)
   }
@@ -99,17 +98,18 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
         call.respond(
           HttpStatusCode.OK, "Please use the tbdex protocol " +
           "via a suitable library to communicate with this server: " +
-          "https://github.com/TBD54566975/tbdex-protocol"
+          "https://github.com/TBD54566975/tbdex"
         )
       }
 
+      // todo i don't want do unchecked cast here
       route("/exchanges") {
         post {
           createExchange(
             call = call,
             offeringsApi = offeringsApi,
             exchangesApi = exchangesApi,
-            callback = submitCallbacks.getOrDefault("rfq", null)
+            callback = callbacks.getOrDefault("rfq", null) as CreateExchangeCallback
           )
         }
 
@@ -117,7 +117,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
           submitMessage(
             call = call,
             exchangesApi = exchangesApi,
-            callback = submitCallbacks.getOrDefault("order", null)
+            callback = callbacks.getOrDefault("order", null) as SubmitOrderCallback
           )
         }
 
@@ -125,7 +125,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
           getExchanges(
             call,
             exchangesApi,
-            getCallbacks.getOrDefault("exchanges", null),
+            callbacks.getOrDefault("exchanges", null) as GetExchangesCallback,
             pfiDid
           )
         }
@@ -134,37 +134,46 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
           getExchange(
             call,
             exchangesApi,
-            getCallbacks.getOrDefault("exchange", null),
+            callbacks.getOrDefault("exchange", null) as GetExchangeCallback,
             pfiDid
           )
         }
       }
 
       get("/offerings") {
-        getOfferings(call, offeringsApi,  getCallbacks.getOrDefault("offerings", null))
+        getOfferings(
+          call,
+          offeringsApi,
+          callbacks.getOrDefault("offerings", null) as GetOfferingsCallback
+        )
       }
     }
   }
 
-  /**
-   * Adds a submit callback for a specific message kind (RFQ, order, close, etc.).
-   *
-   * @param messageKind The type of message for which the callback is registered.
-   * @param callback The callback to be invoked when a message of the specified kind is received.
-   */
-  fun <T : SubmitKind> submit(messageKind: T, callback: SubmitCallback) {
-    this.submitCallbacks[messageKind.toString()] = callback
+  fun getOfferings(callback: GetOfferingsCallback) {
+    this.callbacks["offerings"] = callback
   }
 
-  /**
-   * Adds a get callback for a specific resource kind (exchanges, offerings, etc.).
-   *
-   * @param resourceKind The type of resource for which the callback is registered.
-   * @param callback The callback to be invoked when a request for the specified resource is received.
-   */
-  fun <T : GetKind> get(resourceKind: T, callback: GetCallback) {
-    this.getCallbacks[resourceKind.toString()] = callback
+  fun getExchanges(callback: GetExchangesCallback) {
+    this.callbacks["exchanges"] = callback
   }
+
+  fun getExchange(callback: GetExchangeCallback) {
+    this.callbacks["exchange"] = callback
+  }
+
+  fun createExchange(callback: CreateExchangeCallback) {
+    this.callbacks["rfq"] = callback
+  }
+
+  fun submitOrder(callback: SubmitOrderCallback) {
+    this.callbacks["order"] = callback
+  }
+
+  fun submitClose(callback: SubmitOrderCallback) {
+    this.callbacks["close"] = callback
+  }
+
 
   /**
    * Starts the embedded Netty server.
