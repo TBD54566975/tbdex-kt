@@ -114,13 +114,19 @@ object TestData {
     QuoteData(
       expiresAt = OffsetDateTime.now().plusDays(1),
       payin = QuoteDetails(
-        "AUD", "10.00", "0.01", PaymentInstruction(
+        currencyCode = "AUD",
+        amount = "10.00",
+        fee = "0.01",
+        paymentInstruction =  PaymentInstruction(
         link = "https://block.xyz",
         instruction = "payin instruction"
       )
       ),
       payout = QuoteDetails(
-        "BTC", "0.12", "0.02", PaymentInstruction(
+        currencyCode = "BTC",
+        amount = "0.12",
+        fee = "0.02",
+        paymentInstruction = PaymentInstruction(
         link = "https://block.xyz",
         instruction = "payout instruction"
       )
