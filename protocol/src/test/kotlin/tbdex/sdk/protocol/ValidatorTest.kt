@@ -83,7 +83,7 @@ class ValidatorTest {
         },
         "data": {
           "offeringId": "abcd123",
-          "payinMethod": {
+          "payin": {
             "kind": "DEBIT_CARD",
             "paymentDetails": {
               "cardNumber": "1234567890123456",
@@ -92,7 +92,7 @@ class ValidatorTest {
               "cvv": "123"
             }
           },
-          "payoutMethod": {
+          "payout": {
             "kind": "BTC_ADDRESS",
             "paymentDetails": {
               "btcAddress": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
@@ -113,6 +113,6 @@ class ValidatorTest {
     }
 
     assertEquals(1, exception.errors.size)
-    assertThat(exception.errors).contains("$.payinAmount: is missing but it is required")
+    assertThat(exception.errors).contains("$.payin.amount: is missing but it is required")
   }
 }

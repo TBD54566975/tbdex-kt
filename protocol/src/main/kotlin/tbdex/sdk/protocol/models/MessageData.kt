@@ -39,7 +39,7 @@ sealed class SelectedPaymentMethod(
 /**
  * A data class representing the payin method selected.
  *
- * @property kind type of payment method
+ * @property kind type of payin method
  * @property paymentDetails An object containing the properties
  *                          defined in an Offering's requiredPaymentDetails json schema
  * @property amount Amount of currency Alice wants to pay in exchange for payout currency
@@ -54,7 +54,7 @@ class SelectedPayinMethod(
 /**
  * A data class representing the payout method selected.
  *
- * @property kind type of payment method
+ * @property kind type of payout method
  * @property paymentDetails An object containing the properties
  *                          defined in an Offering's requiredPaymentDetails json schema
  */
@@ -123,5 +123,7 @@ class OrderData : MessageData
 
 /**
  * A data class implementing [MessageData] that represents the contents of an [OrderStatus].
+ *
+ * @property orderStatus Current status of Order that's being executed
  */
 class OrderStatusData(val orderStatus: String) : MessageData
