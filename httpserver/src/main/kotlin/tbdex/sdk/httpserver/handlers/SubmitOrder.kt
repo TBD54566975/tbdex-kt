@@ -39,8 +39,9 @@ suspend fun submitOrder(
     return
   }
 
-  if(order.metadata.protocol != exchange.first().metadata.protocol) {
-    val errorDetail = ErrorDetail(detail = "Protocol mismatch: ${order.metadata.protocol} != ${exchange.first().metadata.protocol}")
+  if (order.metadata.protocol != exchange.first().metadata.protocol) {
+    val errorDetail =
+      ErrorDetail(detail = "Protocol mismatch: ${order.metadata.protocol} != ${exchange.first().metadata.protocol}")
     call.respond(HttpStatusCode.Conflict, ErrorResponse(listOf(errorDetail)))
     return
   }

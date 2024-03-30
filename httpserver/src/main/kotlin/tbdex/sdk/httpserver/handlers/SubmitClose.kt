@@ -32,7 +32,6 @@ suspend fun submitClose(
   val exchange: List<Message>
   try {
     exchange = exchangesApi.getExchange(exchangeId)
-
   } catch (e: NoSuchElementException) {
     val errorDetail = ErrorDetail(detail = "Could not find exchange: $exchangeId")
     call.respond(HttpStatusCode.NotFound, ErrorResponse(listOf(errorDetail)))
@@ -43,8 +42,9 @@ suspend fun submitClose(
     return
   }
 
-  if(close.metadata.protocol != exchange.first().metadata.protocol) {
-    val errorDetail = ErrorDetail(detail = "Protocol mismatch: ${close.metadata.protocol} != ${exchange.first().metadata.protocol}")
+  if (close.metadata.protocol != exchange.first().metadata.protocol) {
+    val errorDetail =
+      ErrorDetail(detail = "Protocol mismatch: ${close.metadata.protocol} != ${exchange.first().metadata.protocol}")
     call.respond(HttpStatusCode.Conflict, ErrorResponse(listOf(errorDetail)))
     return
   }
