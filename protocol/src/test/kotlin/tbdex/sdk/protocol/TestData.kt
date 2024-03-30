@@ -2,25 +2,27 @@ package tbdex.sdk.protocol
 
 import com.danubetech.verifiablecredentials.CredentialSubject
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.models.Balance
+import tbdex.sdk.protocol.models.BalanceData
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.CloseData
-import tbdex.sdk.protocol.models.CurrencyDetails
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.OfferingData
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.OrderStatusData
+import tbdex.sdk.protocol.models.PayinDetails
 import tbdex.sdk.protocol.models.PaymentInstruction
-import tbdex.sdk.protocol.models.PaymentMethod
+import tbdex.sdk.protocol.models.PayoutDetails
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.QuoteData
 import tbdex.sdk.protocol.models.QuoteDetails
 import tbdex.sdk.protocol.models.ResourceKind
 import tbdex.sdk.protocol.models.Rfq
 import tbdex.sdk.protocol.models.RfqData
-import tbdex.sdk.protocol.models.SelectedPaymentMethod
-import tbdex.sdk.protocol.serialization.Json
+import tbdex.sdk.protocol.models.SelectedPayinMethod
+import tbdex.sdk.protocol.models.SelectedPayoutMethod
 import web5.sdk.credentials.VcDataModel
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.credentials.model.ConstraintsV2
@@ -73,21 +75,18 @@ object TestData {
       OfferingData(
         description = "A sample offering",
         payoutUnitsPerPayinUnit = "1",
-        payinCurrency = CurrencyDetails("AUD", "0.01", "100.00"),
-        payoutCurrency = CurrencyDetails("USDC"),
-        payinMethods = listOf(
-          PaymentMethod(
-            kind = "BTC_ADDRESS",
-            requiredPaymentDetails = requiredPaymentDetailsSchema()
-          )
-        ),
-        payoutMethods = listOf(
-          PaymentMethod(
-            kind = "MOMO",
-            requiredPaymentDetails = requiredPaymentDetailsSchema()
-          )
-        ),
+        payin = PayinDetails("BTC", "0.00", "100.00", listOf()),
+        payout = PayoutDetails("USDC", "0.00", "100.00", listOf()),
         requiredClaims = requiredClaims
+      )
+    )
+
+  fun getBalance() =
+    Balance.create(
+      from = PFI_DID.uri,
+      data = BalanceData(
+        currencyCode = "BTC",
+        available = "0.001",
       )
     )
 
@@ -99,9 +98,8 @@ object TestData {
     from = ALICE_DID.uri,
     rfqData = RfqData(
       offeringId = offeringId,
-      payinAmount = "10.00",
-      payinMethod = SelectedPaymentMethod("BTC_ADDRESS", mapOf("address" to "123456")),
-      payoutMethod = SelectedPaymentMethod(
+      payin = SelectedPayinMethod("BTC_ADDRESS", mapOf("address" to "123456"), amount = "10.00"),
+      payout = SelectedPayoutMethod(
         "MOMO", mapOf(
         "phoneNumber" to "+254712345678",
         "accountHolderName" to "Alfred Holder"
@@ -115,14 +113,24 @@ object TestData {
     ALICE_DID.uri, PFI_DID.uri, TypeId.generate(MessageKind.rfq.name).toString(),
     QuoteData(
       expiresAt = OffsetDateTime.now().plusDays(1),
-      payin = QuoteDetails("AUD", "10.00", "0.01", PaymentInstruction(
+      payin = QuoteDetails(
+        currencyCode = "AUD",
+        amount = "10.00",
+        fee = "0.01",
+        paymentInstruction =  PaymentInstruction(
         link = "https://block.xyz",
         instruction = "payin instruction"
-      )),
-      payout = QuoteDetails("BTC", "0.12", "0.02", PaymentInstruction(
+      )
+      ),
+      payout = QuoteDetails(
+        currencyCode = "BTC",
+        amount = "0.12",
+        fee = "0.02",
+        paymentInstruction = PaymentInstruction(
         link = "https://block.xyz",
         instruction = "payout instruction"
-      )),
+      )
+      ),
     )
   )
 
@@ -184,35 +192,4 @@ object TestData {
       constraints = ConstraintsV2(fields = fields)
     )
   }
-
-  private fun requiredPaymentDetailsSchema() = Json.jsonMapper.readTree(
-    """
-    {
-      "${'$'}schema": "http://json-schema.org/draft-07/schema",
-      "additionalProperties": false,
-      "type": "object",
-      "properties": {
-        "phoneNumber": {
-          "minLength": 12,
-          "pattern": "^+2547[0-9]{8}${'$'}",
-          "description": "Mobile Money account number of the Recipient",
-          "type": "string",
-          "title": "Phone Number",
-          "maxLength": 12
-        },
-        "accountHolderName": {
-          "pattern": "^[A-Za-zs'-]+${'$'}",
-          "description": "Name of the account holder as it appears on the Mobile Money account",
-          "type": "string",
-          "title": "Account Holder Name",
-          "maxLength": 32
-        }
-      },
-      "required": [
-        "accountNumber",
-        "accountHolderName"
-      ]
-    }
-  """.trimIndent()
-  )
 }

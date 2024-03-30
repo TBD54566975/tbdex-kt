@@ -9,13 +9,19 @@ import java.time.OffsetDateTime
 
 /**
  * A class representing the Offering resource.
- * `Order` implements the [Resource] class and contains Offering specific data
+ * `Offering` implements the [Resource] class and contains Offering specific data
  * - Create resource ([create])
+ *
+ *  @property metadata An object containing fields about the resource
+ *  @property data The actual resource content. This will always be a JSON object.
+ *                 The Resource Kinds section specifies the content for each individual resource type
+ *  @property signature A message or resource signature is a detached compact JWS as defined in RFC-7515
  *
  * ### Example Usage:
  * ```kotlin
  * val offering = Offering.create(from, data)
  * ```
+ *
  */
 class Offering private constructor(
   override val metadata: ResourceMetadata,
@@ -30,7 +36,7 @@ class Offering private constructor(
      * @param payload The offering as a json string.
      * @return The json string parsed into a concrete Offering implementation.
      */
-    fun parse(toString: String) = Resource.parse(toString) as Offering
+    fun parse(payload: String) = Resource.parse(payload) as Offering
 
     /**
      * Creates a new `Offering` resource, autopopulating the id, creation/updated time, and resource kind.

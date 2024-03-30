@@ -15,7 +15,8 @@ object TestVectors {
       "parse-order.json",
       "parse-orderstatus.json",
       "parse-quote.json",
-      "parse-rfq.json"
+      "parse-rfq.json",
+      "parse-balance.json"
     )
     for (vectorFile in vectorFiles) {
       val vectorJson = loader.getResourceAsStream(vectorFile)?.bufferedReader()?.readText()!!

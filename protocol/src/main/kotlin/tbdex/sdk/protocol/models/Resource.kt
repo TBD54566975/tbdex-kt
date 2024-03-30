@@ -21,11 +21,22 @@ sealed interface Metadata
  * An enum representing all possible [Resource] kinds.
  */
 enum class ResourceKind {
-  offering
+  offering,
+  balance
 }
 
 /**
  * A data class representing the metadata present on every [Resource].
+ *
+ * @property kind the data property's type. e.g. offering
+ * @property from The author's DID
+ * @property id The resource's ID
+ * @property protocol Version of the protocol in use (x.x format).
+ *                    The protocol version must remain consistent across messages in a given exchange.
+ *                    Messages sharing the same exchangeId MUST also have the same protocol version.
+ *                    Protocol versions are tracked in https://github.com/TBD54566975/tbdex
+ * @property createdAt ISO 8601 timestamp
+ * @property updatedAt ISO 8601 timestamp
  */
 class ResourceMetadata(
   val kind: ResourceKind,
@@ -115,7 +126,7 @@ sealed class Resource {
 
       val resourceType = when (ResourceKind.valueOf(kind)) {
         ResourceKind.offering -> Offering::class.java
-        // ResourceKind.reputation -> TODO()
+        ResourceKind.balance -> Balance::class.java
       }
 
       val resource = jsonMapper.convertValue(jsonResource, resourceType)
