@@ -15,13 +15,17 @@ import java.time.OffsetDateTime
  * `Rfq` implements the [Message] class and contains close specific data
  * - Create message ([create])
  *
+ *  @property metadata An object containing fields about the message
+ *  @property data The actual message content. This will always be a JSON object.
+ *                 The Message Kinds section specifies the content for each individual message type
+ *  @property signature A message or resource signature is a detached compact JWS as defined in RFC-7515
+ *
  * ### Example Usage:
  * ```kotlin
- * val rfq = Rfq.create(metadata, data)
+ * val rfq = Rfq.create(to, from, data)
  * ```
  */
 @Suppress("TooGenericExceptionCaught", "SwallowedException")
-
 class Rfq private constructor(
   override val metadata: MessageMetadata,
   override val data: RfqData,
@@ -39,20 +43,20 @@ class Rfq private constructor(
   fun verifyOfferingRequirements(offering: Offering) {
     require(data.offeringId == offering.metadata.id)
 
-    if (offering.data.payinCurrency.minAmount != null)
-      check(offering.data.payinCurrency.minAmount <= this.data.payinAmount)
+    if (offering.data.payin.min != null)
+      check(offering.data.payin.min.toDouble() <= data.payin.amount.toDouble())
 
-    if (offering.data.payinCurrency.maxAmount != null)
-      check(this.data.payinAmount <= offering.data.payinCurrency.maxAmount)
+    if (offering.data.payin.max != null)
+      check(offering.data.payin.max.toDouble() >= data.payin.amount.toDouble())
 
-    validatePaymentMethod(data.payinMethod, offering.data.payinMethods)
-    validatePaymentMethod(data.payoutMethod, offering.data.payoutMethods)
+    validatePaymentMethod(data.payin, offering.data.payin.methods)
+    validatePaymentMethod(data.payout, offering.data.payout.methods)
 
-    offering.data.requiredClaims?.let { this.verifyClaims(it) }
+    offering.data.requiredClaims?.let { verifyClaims(it) }
   }
 
-  private fun validatePaymentMethod(selectedMethod: SelectedPaymentMethod, offeringMethods: List<PaymentMethod>) {
-    val matchedOfferingMethod = offeringMethods.first { it.kind == selectedMethod.kind }
+  private fun validatePaymentMethod(selectedMethod: SelectedPaymentMethod, offeredMethods: List<PaymentMethod>) {
+    val matchedOfferingMethod = offeredMethods.first { it.kind == selectedMethod.kind }
     matchedOfferingMethod.requiredPaymentDetails?.let {
       val schema = matchedOfferingMethod.getRequiredPaymentDetailsSchema()
       val jsonNodePaymentDetails = Json.jsonMapper.valueToTree<JsonNode>(selectedMethod.paymentDetails)
@@ -64,7 +68,7 @@ class Rfq private constructor(
     // TODO check that VCs satisfying PD are crypto verified
 
     try {
-      PresentationExchange.satisfiesPresentationDefinition(this.data.claims, requiredClaims)
+      PresentationExchange.satisfiesPresentationDefinition(data.claims, requiredClaims)
     } catch (e: Exception) {
       throw IllegalArgumentException("No matching claim for Offering requirements: ${requiredClaims.id}")
     }

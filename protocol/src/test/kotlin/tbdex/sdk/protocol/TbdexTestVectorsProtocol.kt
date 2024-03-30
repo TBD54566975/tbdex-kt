@@ -2,6 +2,7 @@ package tbdex.sdk.protocol
 
 import com.fasterxml.jackson.databind.JsonNode
 import org.junit.jupiter.api.Test
+import tbdex.sdk.protocol.models.Balance
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
@@ -23,21 +24,21 @@ class TbdexTestVectorsProtocol {
   fun parse_close() {
     val vector = TestVectors.getVector("parse-close.json")
     assertNotNull(vector)
-    testNonErrorMessageTestVector<Close>(vector)
+    testSuccessMessageTestVector<Close>(vector)
   }
 
   @Test
   fun parse_order() {
     val vector = TestVectors.getVector("parse-order.json")
     assertNotNull(vector)
-    testNonErrorMessageTestVector<Order>(vector)
+    testSuccessMessageTestVector<Order>(vector)
   }
 
   @Test
   fun parse_orderstatus() {
     val vector = TestVectors.getVector("parse-orderstatus.json")
     assertNotNull(vector)
-    testNonErrorMessageTestVector<OrderStatus>(vector)
+    testSuccessMessageTestVector<OrderStatus>(vector)
   }
 
 
@@ -45,14 +46,14 @@ class TbdexTestVectorsProtocol {
   fun parse_quote() {
     val vector = TestVectors.getVector("parse-quote.json")
     assertNotNull(vector)
-    testNonErrorMessageTestVector<Quote>(vector)
+    testSuccessMessageTestVector<Quote>(vector)
   }
 
   @Test
   fun parse_rfq() {
     val vector = TestVectors.getVector("parse-rfq.json")
     assertNotNull(vector)
-    testNonErrorMessageTestVector<Rfq>(vector)
+    testSuccessMessageTestVector<Rfq>(vector)
   }
 
   /**
@@ -62,10 +63,17 @@ class TbdexTestVectorsProtocol {
   fun parse_offering() {
     val vector = TestVectors.getVector("parse-offering.json")
     assertNotNull(vector)
-    testNonErrorResourceTestVector<Offering>(vector)
+    testSuccessResourceTestVector<Offering>(vector)
   }
 
-  private inline fun <reified T> testNonErrorMessageTestVector(vector: JsonNode) {
+  @Test
+  fun parse_balance() {
+    val vector = TestVectors.getVector("parse-balance.json")
+    assertNotNull(vector)
+    testSuccessResourceTestVector<Balance>(vector)
+  }
+
+  private inline fun <reified T> testSuccessMessageTestVector(vector: JsonNode) {
     val input = vector["input"].textValue()
     assertNotNull(input)
 
@@ -75,7 +83,7 @@ class TbdexTestVectorsProtocol {
     assertEquals(vector["output"], Json.jsonMapper.readTree(tbDEXMessage.toString()))
   }
 
-  private inline fun <reified T> testNonErrorResourceTestVector(vector: JsonNode) {
+  private inline fun <reified T> testSuccessResourceTestVector(vector: JsonNode) {
     val input = vector["input"].textValue()
     assertNotNull(input)
 

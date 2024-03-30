@@ -1,7 +1,6 @@
 package tbdex.sdk.protocol.models
 
 import de.fxlae.typeid.TypeId
-import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Order.Companion.create
 import tbdex.sdk.protocol.validateExchangeId
@@ -12,9 +11,14 @@ import java.time.OffsetDateTime
  * `Order` implements the [Message] class and contains close specific data
  * - Create message ([create])
  *
+ *  @property metadata An object containing fields about the message
+ *  @property data The actual message content. This will always be a JSON object.
+ *                 The Message Kinds section specifies the content for each individual message type
+ *  @property signature A message or resource signature is a detached compact JWS as defined in RFC-7515
+ *
  * ### Example Usage:
  * ```kotlin
- * val order = Order.create(metadata, data)
+ * val order = Order.create(to, from, exchangeId)
  * ```
  */
 class Order private constructor(
