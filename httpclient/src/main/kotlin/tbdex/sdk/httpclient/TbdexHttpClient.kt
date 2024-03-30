@@ -30,6 +30,8 @@ import web5.sdk.dids.did.BearerDid
  */
 object TbdexHttpClient {
   private val client = OkHttpClient()
+  private const val CONTENT_TYPE = "Content-Type"
+  private const val AUTHORIZATION = "Authorization"
   private val jsonMediaType = "application/json; charset=utf-8".toMediaType()
   private const val JSON_HEADER = "application/json"
 
@@ -88,8 +90,8 @@ object TbdexHttpClient {
 
     val request = Request.Builder()
       .url(baseUrl)
-      .addHeader("Content-Type", JSON_HEADER)
-      .addHeader("Authorization", "Bearer $requestToken")
+      .addHeader(CONTENT_TYPE, JSON_HEADER)
+      .addHeader(AUTHORIZATION, "Bearer $requestToken")
       .get()
       .build()
 
@@ -152,7 +154,7 @@ object TbdexHttpClient {
 
     val request = Request.Builder()
       .url(url)
-      .addHeader("Content-Type", JSON_HEADER)
+      .addHeader(CONTENT_TYPE, JSON_HEADER)
       .post(requestBody)
       .build()
 
@@ -207,7 +209,7 @@ object TbdexHttpClient {
 
     val request = Request.Builder()
       .url(url)
-      .addHeader("Content-Type", JSON_HEADER)
+      .addHeader(CONTENT_TYPE, JSON_HEADER)
       .put(requestBody)
       .build()
 
@@ -232,8 +234,8 @@ object TbdexHttpClient {
 
     val request = Request.Builder()
       .url(baseUrl)
-      .addHeader("Content-Type", JSON_HEADER)
-      .addHeader("Authorization", "Bearer $requestToken")
+      .addHeader(CONTENT_TYPE, JSON_HEADER)
+      .addHeader(AUTHORIZATION, "Bearer $requestToken")
       .get()
       .build()
 
@@ -274,8 +276,8 @@ object TbdexHttpClient {
 
     val request = Request.Builder()
       .url(httpUrlBuilder.build())
-      .addHeader("Content-Type", JSON_HEADER)
-      .addHeader("Authorization", "Bearer $requestToken")
+      .addHeader(CONTENT_TYPE, JSON_HEADER)
+      .addHeader(AUTHORIZATION, "Bearer $requestToken")
       .get()
       .build()
 

@@ -3,8 +3,17 @@ package tbdex.sdk.httpserver.models
 import tbdex.sdk.protocol.models.Balance
 import tbdex.sdk.protocol.models.BalanceData
 
+/**
+ * Fake balances api.
+ *
+ */
 class FakeBalancesApi : BalancesApi {
 
+  /**
+   * Get balances.
+   *
+   * @return List of balances.
+   */
   override fun getBalances(): List<Balance> {
 
     val usdBalance = Balance.create(
