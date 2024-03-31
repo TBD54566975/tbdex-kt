@@ -61,6 +61,7 @@ fun main() {
 class TbdexHttpServerConfig(
   val port: Int,
   val pfiDid: String? = null,
+  val balancesEnabled: Boolean? = false,
   val offeringsApi: OfferingsApi? = null,
   val exchangesApi: ExchangesApi? = null,
   val balancesApi: BalancesApi? = null
@@ -81,7 +82,7 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
   internal val pfiDid = config.pfiDid ?: "did:ex:pfi"
   internal val offeringsApi = config.offeringsApi ?: FakeOfferingsApi()
   internal val exchangesApi = config.exchangesApi ?: FakeExchangesApi()
-  internal val balancesApi = config.balancesApi
+  internal val balancesApi = config.balancesApi ?: FakeBalancesApi()
 
   /**
    * Configures the Ktor application with necessary settings, including content negotiation.
@@ -115,13 +116,18 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
         )
       }
 
-      get("/balances") {
-        getBalances(
-          call,
-          balancesApi,
-          callbacks.getBalances,
-          pfiDid
-        )
+      if (config.balancesEnabled == true) {
+        if (balancesApi is FakeBalancesApi) {
+          println("Warning: Balances API is enabled, with FakeBalancesApi test implementation.")
+        }
+        get("/balances") {
+          getBalances(
+            call,
+            balancesApi,
+            callbacks.getBalances,
+            pfiDid
+          )
+        }
       }
 
       route("/exchanges") {

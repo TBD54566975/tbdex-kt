@@ -26,7 +26,8 @@ open class ServerTest {
     application {
       val serverConfig = TbdexHttpServerConfig(
         port = 8080,
-        pfiDid = TestData.pfiDid.uri
+        pfiDid = TestData.pfiDid.uri,
+        balancesEnabled = true
       )
       val tbdexServer = TbdexHttpServer(serverConfig)
       tbdexServer.configure(this)
