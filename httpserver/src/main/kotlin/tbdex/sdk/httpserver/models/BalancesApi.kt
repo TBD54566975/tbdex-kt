@@ -10,8 +10,9 @@ interface BalancesApi {
   /**
    * Retrieves a list of balances based on the provided filter.
    *
+   * @param requesterDid The DID of the requester.
    * @return A list of [Balance] representing balances based on the filter.
    */
-  fun getBalances(): List<Balance>
+  fun getBalances(requesterDid: String): List<Balance>
 
 }

@@ -116,7 +116,12 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
       }
 
       get("/balances") {
-        getBalances(call, balancesApi, callbacks.getBalances)
+        getBalances(
+          call,
+          balancesApi,
+          callbacks.getBalances,
+          pfiDid
+        )
       }
 
       route("/exchanges") {

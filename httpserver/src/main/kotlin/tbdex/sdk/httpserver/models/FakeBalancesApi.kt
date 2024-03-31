@@ -14,7 +14,7 @@ class FakeBalancesApi : BalancesApi {
    *
    * @return List of balances.
    */
-  override fun getBalances(): List<Balance> {
+  override fun getBalances(requesterDid: String): List<Balance> {
 
     val usdBalance = Balance.create(
       from = "did:ex:pfi",
