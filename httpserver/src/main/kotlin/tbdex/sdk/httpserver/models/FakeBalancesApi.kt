@@ -18,6 +18,11 @@ class FakeBalancesApi : BalancesApi {
     return balances
   }
 
+  /**
+   * Adds a new balance.
+   *
+   * @param balance to be added to in memory list of balances
+   */
   fun addBalance(balance: Balance) {
     balances.add(balance)
   }
