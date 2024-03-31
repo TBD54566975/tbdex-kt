@@ -44,6 +44,7 @@ object TbdexHttpClient {
    * @return A list of [Offering] matching the request.
    * @throws TbdexResponseException for request or response errors.
    */
+  @Suppress("SwallowedException")
   fun getOfferings(pfiDid: String, filter: GetOfferingsFilter? = null): List<Offering> {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/offerings/"
@@ -67,7 +68,20 @@ object TbdexHttpClient {
         val jsonNode = jsonMapper.readTree(responseString)
         return jsonNode.get("data").elements()
           .asSequence()
-          .map { Offering.parse(it.toString()) }
+          .map {
+            try {
+              Offering.parse(it.toString())
+            } catch (e: Exception) {
+              throw TbdexResponseException(
+                "response status: ${response.code}",
+                errors = listOf(
+                  ErrorDetail(
+                    detail = "Failed to parse offering ${e.message}"
+                  )
+                )
+              )
+            }
+          }
           .toList()
       }
 
@@ -83,6 +97,7 @@ object TbdexHttpClient {
    * @return A list of [Balance] matching the request.
    * @throws TbdexResponseException for request or response errors.
    */
+  @Suppress("SwallowedException")
   fun getBalances(pfiDid: String, requesterDid: BearerDid): List<Balance> {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/balances/"
@@ -103,7 +118,20 @@ object TbdexHttpClient {
         val jsonNode = jsonMapper.readTree(responseString)
         return jsonNode.get("data").elements()
           .asSequence()
-          .map { Balance.parse(it.toString()) }
+          .map {
+            try {
+              Balance.parse(it.toString())
+            } catch (e: Exception) {
+              throw TbdexResponseException(
+                "response status: ${response.code}",
+                errors = listOf(
+                  ErrorDetail(
+                    detail = "Failed to parse balance ${e.message}"
+                  )
+                )
+              )
+            }
+          }
           .toList()
       }
 
