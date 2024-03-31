@@ -3,7 +3,7 @@ package tbdex.sdk.httpserver.models
 import tbdex.sdk.protocol.models.Balance
 
 /**
- * Interface representing an API for interacting with TBDex balances and related entities.
+ * Interface representing an API for interacting with TBDex balances.
  */
 interface BalancesApi {
 

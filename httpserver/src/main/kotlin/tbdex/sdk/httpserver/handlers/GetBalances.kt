@@ -15,7 +15,7 @@ import tbdex.sdk.protocol.models.Balance
 /**
  * Get balances response
  *
- * @property data list of Offerings
+ * @property data list of Balances
  */
 class GetBalancesResponse(
   val data: List<Balance>?
@@ -96,7 +96,7 @@ suspend fun getBalances(
     call.respond(e.statusCode, ErrorResponse(e.details))
     return
   } catch (e: Exception) {
-    val errorDetail = ErrorDetail(detail = e.message ?: "Unknown error while getting Offerings")
+    val errorDetail = ErrorDetail(detail = e.message ?: "Unknown error while getting Balances")
     call.respond(HttpStatusCode.InternalServerError, ErrorResponse(listOf(errorDetail)))
     return
   }
