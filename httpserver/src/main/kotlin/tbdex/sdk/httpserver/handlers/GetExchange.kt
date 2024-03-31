@@ -8,8 +8,7 @@ import tbdex.sdk.httpclient.RequestToken
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpserver.models.ErrorResponse
 import tbdex.sdk.httpserver.models.ExchangesApi
-import tbdex.sdk.httpserver.models.GetCallback
-import tbdex.sdk.httpserver.models.GetExchangesFilter
+import tbdex.sdk.httpserver.models.GetExchangeCallback
 import tbdex.sdk.protocol.models.Message
 
 /**
@@ -32,7 +31,7 @@ class GetExchangeResponse(
 suspend fun getExchange(
   call: ApplicationCall,
   exchangesApi: ExchangesApi,
-  callback: GetCallback?,
+  callback: GetExchangeCallback?,
   pfiDid: String
 ) {
   val authzHeader = call.request.headers[HttpHeaders.Authorization]
@@ -83,12 +82,12 @@ suspend fun getExchange(
     return
   }
 
-  val exchanges = exchangesApi.getExchange(call.parameters["exchangeId"]!!)
+  val exchanges = exchangesApi.getExchange(call.parameters["exchangeId"]!!, requesterDid)
 
   if (callback != null) {
     // TODO: figure out what to do with callback result. should we pass through the exchanges we've fetched
     //       and allow the callback to modify what's returned? (issue #10)
-    val result = callback.invoke(call, GetExchangesFilter())
+    val result = callback.invoke(call)
   }
 
   call.respond(HttpStatusCode.OK, GetExchangeResponse(data = exchanges))

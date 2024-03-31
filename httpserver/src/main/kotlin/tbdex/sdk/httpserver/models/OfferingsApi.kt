@@ -22,11 +22,10 @@ interface OfferingsApi {
   /**
    * Retrieves a list of offerings based on the provided filter.
    *
-   * @param filter The filter criteria for retrieving offerings. If null, returns all offerings.
    * @return A list of [Offering] objects matching the filter.
    *
    * @throws Exception if any of the offerings are not found.
    */
   @Throws(Exception::class)
-  fun getOfferings(filter: GetOfferingsFilter? = null): List<Offering>
+  fun getOfferings(): List<Offering>
 }

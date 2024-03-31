@@ -21,18 +21,18 @@ import tbdex.sdk.httpserver.handlers.createExchange
 import tbdex.sdk.httpserver.handlers.getExchange
 import tbdex.sdk.httpserver.handlers.getExchanges
 import tbdex.sdk.httpserver.handlers.getOfferings
-import tbdex.sdk.httpserver.handlers.submitClose
 import tbdex.sdk.httpserver.handlers.submitMessage
-import tbdex.sdk.httpserver.handlers.submitOrder
+import tbdex.sdk.httpserver.models.Callbacks
+import tbdex.sdk.httpserver.models.CreateExchangeCallback
 import tbdex.sdk.httpserver.models.ExchangesApi
 import tbdex.sdk.httpserver.models.FakeExchangesApi
 import tbdex.sdk.httpserver.models.FakeOfferingsApi
-import tbdex.sdk.httpserver.models.GetCallback
-import tbdex.sdk.httpserver.models.GetKind
+import tbdex.sdk.httpserver.models.GetExchangeCallback
+import tbdex.sdk.httpserver.models.GetExchangesCallback
+import tbdex.sdk.httpserver.models.GetOfferingsCallback
 import tbdex.sdk.httpserver.models.OfferingsApi
-import tbdex.sdk.httpserver.models.SubmitCallback
-import tbdex.sdk.httpserver.models.SubmitKind
-import kotlin.collections.set
+import tbdex.sdk.httpserver.models.SubmitCloseCallback
+import tbdex.sdk.httpserver.models.SubmitOrderCallback
 
 /**
  * Main function to start the TBDex HTTP server.
@@ -68,14 +68,13 @@ class TbdexHttpServerConfig(
  *
  * @property config The configuration for the server, including port and optional APIs.
  */
-class TbdexHttpServer(val config: TbdexHttpServerConfig) {
-  val getCallbacks: MutableMap<String, GetCallback> = mutableMapOf()
-  val submitCallbacks: MutableMap<String, SubmitCallback> = mutableMapOf()
+class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
+  private val callbacks = Callbacks()
   private var embedded = embeddedServer(Netty, port = config.port) {
     configure(this)
   }
 
-  private val pfiDid = config.pfiDid ?: "did:ex:pfi"
+  internal val pfiDid = config.pfiDid ?: "did:ex:pfi"
   internal val offeringsApi = config.offeringsApi ?: FakeOfferingsApi()
   internal val exchangesApi = config.exchangesApi ?: FakeExchangesApi()
 
@@ -99,7 +98,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
         call.respond(
           HttpStatusCode.OK, "Please use the tbdex protocol " +
           "via a suitable library to communicate with this server: " +
-          "https://github.com/TBD54566975/tbdex-protocol"
+          "https://github.com/TBD54566975/tbdex"
         )
       }
 
@@ -109,7 +108,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
             call = call,
             offeringsApi = offeringsApi,
             exchangesApi = exchangesApi,
-            callback = submitCallbacks.getOrDefault("rfq", null)
+            callback = callbacks.createExchange
           )
         }
 
@@ -117,7 +116,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
           submitMessage(
             call = call,
             exchangesApi = exchangesApi,
-            callback = submitCallbacks.getOrDefault("order", null)
+            callbacks = callbacks
           )
         }
 
@@ -125,7 +124,7 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
           getExchanges(
             call,
             exchangesApi,
-            getCallbacks.getOrDefault("exchanges", null),
+            callbacks.getExchanges,
             pfiDid
           )
         }
@@ -134,36 +133,74 @@ class TbdexHttpServer(val config: TbdexHttpServerConfig) {
           getExchange(
             call,
             exchangesApi,
-            getCallbacks.getOrDefault("exchange", null),
+            callbacks.getExchange,
             pfiDid
           )
         }
       }
 
       get("/offerings") {
-        getOfferings(call, offeringsApi,  getCallbacks.getOrDefault("offerings", null))
+        getOfferings(
+          call,
+          offeringsApi,
+          callbacks.getOfferings
+        )
       }
     }
   }
 
   /**
-   * Adds a submit callback for a specific message kind (RFQ, order, close, etc.).
+   * Adds a GetOfferingsCallback for handling requests for offerings.
    *
-   * @param messageKind The type of message for which the callback is registered.
-   * @param callback The callback to be invoked when a message of the specified kind is received.
+   * @param callback GetOfferingsCallback function to be registered
    */
-  fun <T : SubmitKind> submit(messageKind: T, callback: SubmitCallback) {
-    this.submitCallbacks[messageKind.toString()] = callback
+  fun onGetOfferings(callback: GetOfferingsCallback) {
+    callbacks.getOfferings = callback
   }
 
   /**
-   * Adds a get callback for a specific resource kind (exchanges, offerings, etc.).
+   * Adds a GetExchangesCallback for handling requests for exchanges.
    *
-   * @param resourceKind The type of resource for which the callback is registered.
-   * @param callback The callback to be invoked when a request for the specified resource is received.
+   * @param callback GetExchangesCallback function to be registered
    */
-  fun <T : GetKind> get(resourceKind: T, callback: GetCallback) {
-    this.getCallbacks[resourceKind.toString()] = callback
+  fun onGetExchanges(callback: GetExchangesCallback) {
+    callbacks.getExchanges = callback
+  }
+
+  /**
+   * Adds a GetExchangeCallback for handling requests for an exchange with a specific exchangeId.
+   *
+   * @param callback GetExchangeCallback function to be registered
+   */
+  fun onGetExchange(callback: GetExchangeCallback) {
+    callbacks.getExchange = callback
+  }
+
+  /**
+   * Adds a CreateExchangeCallback for handling requests to create an exchange.
+   *
+   * @param callback CreateExchangeCallback function to be registered
+   */
+  fun onCreateExchange(callback: CreateExchangeCallback) {
+    callbacks.createExchange = callback
+  }
+
+  /**
+   * Adds a SubmitOrderCallback for handling requests to submit an order.
+   *
+   * @param callback SubmitOrderCallback function to be registered
+   */
+  fun onSubmitOrder(callback: SubmitOrderCallback) {
+    callbacks.submitOrder = callback
+  }
+
+  /**
+   * Adds a SubmitOrderCallback for handling requests to submit an order.
+   *
+   * @param callback SubmitOrderCallback function to be registered
+   */
+  fun onSubmitClose(callback: SubmitCloseCallback) {
+    callbacks.submitClose = callback
   }
 
   /**

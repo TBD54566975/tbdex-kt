@@ -2,13 +2,12 @@ package tbdex.sdk.httpserver.handlers
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
-import io.ktor.server.request.receiveText
 import io.ktor.server.response.respond
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpserver.models.CallbackError
 import tbdex.sdk.httpserver.models.ErrorResponse
 import tbdex.sdk.httpserver.models.ExchangesApi
-import tbdex.sdk.httpserver.models.SubmitCallback
+import tbdex.sdk.httpserver.models.SubmitCloseCallback
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
@@ -25,15 +24,14 @@ import tbdex.sdk.protocol.models.MessageKind
 suspend fun submitClose(
   call: ApplicationCall,
   exchangesApi: ExchangesApi,
-  callback: SubmitCallback?,
-  message: Close,
+  callback: SubmitCloseCallback?,
+  close: Close,
 ) {
 
-  val exchangeId = message.metadata.exchangeId.toString()
+  val exchangeId = close.metadata.exchangeId
   val exchange: List<Message>
   try {
-    exchange = exchangesApi.getExchange(exchangeId)
-
+    exchange = exchangesApi.getExchange(exchangeId, close.metadata.from)
   } catch (e: NoSuchElementException) {
     val errorDetail = ErrorDetail(detail = "Could not find exchange: $exchangeId")
     call.respond(HttpStatusCode.NotFound, ErrorResponse(listOf(errorDetail)))
@@ -44,8 +42,9 @@ suspend fun submitClose(
     return
   }
 
-  if(message.metadata.protocol != exchange.first().metadata.protocol) {
-    val errorDetail = ErrorDetail(detail = "Protocol mismatch: ${message.metadata.protocol} != ${exchange.first().metadata.protocol}")
+  if (close.metadata.protocol != exchange.first().metadata.protocol) {
+    val errorDetail =
+      ErrorDetail(detail = "Protocol mismatch: ${close.metadata.protocol} != ${exchange.first().metadata.protocol}")
     call.respond(HttpStatusCode.Conflict, ErrorResponse(listOf(errorDetail)))
     return
   }
@@ -63,7 +62,7 @@ suspend fun submitClose(
   }
 
   try {
-    callback.invoke(call, message, null, null)
+    callback.invoke(call, close)
   } catch (e: CallbackError) {
     call.respond(e.statusCode, ErrorResponse(e.details))
     return
