@@ -23,11 +23,13 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import tbdex.sdk.httpclient.RequestToken
+import tbdex.sdk.httpserver.models.BalancesApi
+import tbdex.sdk.httpserver.models.CallbackError
 import tbdex.sdk.httpserver.models.ErrorResponse
-import tbdex.sdk.httpserver.models.ExchangesApi
-import tbdex.sdk.httpserver.models.GetExchangeCallback
-import tbdex.sdk.protocol.models.Message
-import tbdex.sdk.protocol.models.Rfq
+import tbdex.sdk.httpserver.models.GetBalancesCallback
+import tbdex.sdk.protocol.models.Balance
+import tbdex.sdk.protocol.models.BalanceData
+import tbdex.sdk.protocol.models.Resource
 import tbdex.sdk.protocol.serialization.Json
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.methods.dht.DidDht
@@ -35,10 +37,10 @@ import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
-class GetExchangeTest {
+class GetBalancesTest {
 
   @Nested
-  inner class GetExchangeServerTest : ServerTest() {
+  inner class GetBalancesServerTest : ServerTest() {
 
     @BeforeEach
     fun `setup client`() {
@@ -62,7 +64,7 @@ class GetExchangeTest {
     @Test
     fun `returns 401 if no Bearer token is present`() = runBlocking {
 
-      val response = client.get("/exchanges/123")
+      val response = client.get("/balances")
 
       assertEquals(HttpStatusCode.Unauthorized, response.status)
 
@@ -73,7 +75,7 @@ class GetExchangeTest {
     @Test
     fun `returns 401 if malformed Bearer token is present`() = runBlocking {
 
-      val response = client.get("/exchanges/123") {
+      val response = client.get("/balances") {
         bearerAuth("Bearer abc123")
       }
 
@@ -84,13 +86,17 @@ class GetExchangeTest {
     }
 
     @Test
-    fun `returns 200 if exchanges are found`() = runBlocking {
-      val rfq = TestData.createRfq()
-      rfq.sign(TestData.aliceDid)
-
-      exchangesApi.addMessage(rfq)
-
-      val response = client.get("/exchanges/${rfq.metadata.exchangeId}") {
+    fun `returns 200 if balances are found`() = runBlocking {
+      val balance = Balance.create(
+        from = TestData.pfiDid.uri,
+        data = BalanceData(
+          currencyCode = "USD",
+          available = "100.00"
+        )
+      )
+      balance.sign(TestData.pfiDid)
+      balancesApi.addBalance(balance)
+      val response = client.get("/balances") {
         bearerAuth(RequestToken.generate(TestData.aliceDid, TestData.pfiDid.uri))
       }
 
@@ -98,32 +104,33 @@ class GetExchangeTest {
 
       val responseString = response.bodyAsText()
       val jsonNode = Json.jsonMapper.readTree(responseString)
-      val exchange = jsonNode.get("data").elements().asSequence()
-        .map {
-          val string = it.toString()
-          Message.parse(string)
-        }.toList()
+      val balances = jsonNode.get("data").elements().asSequence()
+        .map { balance ->
+          Resource.parse(balance.toString())
+        }
+        .toList()
 
-      assertEquals((exchange[0] as Rfq).metadata.from, TestData.aliceDid.uri)
+      assertEquals(1, balances.size)
     }
+
   }
 
   @Nested
-  inner class GetExchangeMockkTest {
+  inner class GetBalancesMockkTest {
     private lateinit var applicationCall: ApplicationCall
-    private lateinit var exchangesApi: ExchangesApi
-    private val callback: GetExchangeCallback = mockk(relaxed = true)
+    private lateinit var balancesApi: BalancesApi
+    private val callback: GetBalancesCallback = mockk(relaxed = true)
     private val aliceDid = DidDht.create(InMemoryKeyManager())
 
     @BeforeEach
     fun setUp() {
       applicationCall = mockk(relaxed = true)
-      exchangesApi = mockk(relaxed = true)
+      balancesApi = mockk(relaxed = true)
     }
 
     @Test
-    fun `verify callback is invoked upon successful get exchange`() = runBlocking {
-      val messageList = listOf<Message>(mockk(relaxed = true))
+    fun `verify callback is invoked upon successful get balances`() = runBlocking {
+      val balances = listOf<Balance>(mockk(relaxed = true))
       coEvery { applicationCall.request.headers[HttpHeaders.Authorization] } returns
         "Bearer ${
           RequestToken.generate(
@@ -131,19 +138,18 @@ class GetExchangeTest {
             "did:ex:pfi"
           )
         }"
+      coEvery { balancesApi.getBalances(any<String>()) } returns balances
 
-      coEvery { exchangesApi.getExchange(any<String>(), any<String>()) } returns messageList
-
-      getExchange(applicationCall, exchangesApi, callback, "did:ex:pfi")
+      getBalances(applicationCall, balancesApi, callback, "did:ex:pfi")
 
       coVerify(exactly = 1) { callback.invoke(applicationCall) }
-      coVerify { applicationCall.respond(HttpStatusCode.OK, any<GetExchangeResponse>()) }
+      coVerify { applicationCall.respond(HttpStatusCode.OK, any<GetBalancesResponse>()) }
 
     }
 
     @Test
-    fun `verify http ok is returned if callback is null`() = runBlocking {
-      val messageList = listOf<Message>(mockk(relaxed = true))
+    fun `verify get balances returns http ok if callback is null`() = runBlocking {
+      val balances = listOf<Balance>(mockk(relaxed = true))
       coEvery { applicationCall.request.headers[HttpHeaders.Authorization] } returns
         "Bearer ${
           RequestToken.generate(
@@ -151,20 +157,20 @@ class GetExchangeTest {
             "did:ex:pfi"
           )
         }"
+      coEvery { balancesApi.getBalances(any<String>()) } returns balances
 
-      coEvery { exchangesApi.getExchange(any<String>(), any<String>()) } returns messageList
+      getBalances(applicationCall, balancesApi, null, "did:ex:pfi")
 
-      getExchange(applicationCall, exchangesApi, null, "did:ex:pfi")
-
-      coVerify { applicationCall.respond(HttpStatusCode.OK, any<GetExchangeResponse>()) }
+      coVerify { applicationCall.respond(HttpStatusCode.OK, any<GetBalancesResponse>()) }
 
     }
+
 
     @Test
     fun `verify callback fails if bearer token is absent`() = runBlocking {
       coEvery { applicationCall.request.headers[HttpHeaders.Authorization] } returns null
 
-      getExchange(applicationCall, exchangesApi, callback, "did:ex:pfi")
+      getBalances(applicationCall, balancesApi, null, "did:ex:pfi")
 
       coVerify(exactly = 0) { callback.invoke(applicationCall) }
       coVerify { applicationCall.respond(HttpStatusCode.Unauthorized, any<ErrorResponse>()) }
@@ -181,7 +187,7 @@ class GetExchangeTest {
           )
         }"
 
-      getExchange(applicationCall, exchangesApi, callback, "did:ex:pfi")
+      getBalances(applicationCall, balancesApi, null, "did:ex:pfi")
 
       coVerify(exactly = 0) { callback.invoke(applicationCall) }
       coVerify { applicationCall.respond(HttpStatusCode.Unauthorized, any<ErrorResponse>()) }
@@ -192,12 +198,55 @@ class GetExchangeTest {
     fun `verify callback fails if bearer token fails verification`() = runBlocking {
       coEvery { applicationCall.request.headers[HttpHeaders.Authorization] } returns "Bearer invalid_token"
 
-      getExchange(applicationCall, exchangesApi, callback, "did:ex:pfi")
+      getBalances(applicationCall, balancesApi, null, "did:ex:pfi")
 
       coVerify(exactly = 0) { callback.invoke(applicationCall) }
       coVerify { applicationCall.respond(HttpStatusCode.Unauthorized, any<ErrorResponse>()) }
 
     }
 
+    @Test
+    fun `verify 500 returned if callback throws exception`() = runBlocking {
+      val balances = listOf<Balance>(mockk(relaxed = true))
+      coEvery { applicationCall.request.headers[HttpHeaders.Authorization] } returns
+        "Bearer ${
+          RequestToken.generate(
+            aliceDid,
+            "did:ex:pfi"
+          )
+        }"
+      coEvery { callback.invoke(applicationCall) } throws Exception("error")
+
+      coEvery { balancesApi.getBalances(any<String>()) } returns balances
+
+      getBalances(applicationCall, balancesApi, callback, "did:ex:pfi")
+
+      coVerify(exactly = 1) { callback.invoke(applicationCall) }
+      coVerify { applicationCall.respond(HttpStatusCode.InternalServerError, any<ErrorResponse>()) }
+
+    }
+
+    @Test
+    fun `verify 4xx returned if callback throws exception`() = runBlocking {
+      val balances = listOf<Balance>(mockk(relaxed = true))
+      coEvery { applicationCall.request.headers[HttpHeaders.Authorization] } returns
+        "Bearer ${
+          RequestToken.generate(
+            aliceDid,
+            "did:ex:pfi"
+          )
+        }"
+      coEvery { callback.invoke(applicationCall) } throws CallbackError(HttpStatusCode.BadRequest, listOf())
+
+      coEvery { balancesApi.getBalances(any<String>()) } returns balances
+
+      getBalances(applicationCall, balancesApi, callback, "did:ex:pfi")
+
+      coVerify(exactly = 1) { callback.invoke(applicationCall) }
+      coVerify { applicationCall.respond(HttpStatusCode.BadRequest, any<ErrorResponse>()) }
+
+    }
   }
+
+
 }

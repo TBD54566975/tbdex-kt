@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
 import tbdex.sdk.httpserver.TbdexHttpServer
 import tbdex.sdk.httpserver.TbdexHttpServerConfig
+import tbdex.sdk.httpserver.models.FakeBalancesApi
 import tbdex.sdk.httpserver.models.FakeExchangesApi
 import tbdex.sdk.httpserver.models.FakeOfferingsApi
 
@@ -19,6 +20,7 @@ open class ServerTest {
   lateinit var client: HttpClient
   lateinit var exchangesApi: FakeExchangesApi
   lateinit var offeringsApi: FakeOfferingsApi
+  lateinit var balancesApi: FakeBalancesApi
 
   private val tbdexApplication = TestApplication {
     application {
@@ -30,6 +32,7 @@ open class ServerTest {
       tbdexServer.configure(this)
       this@ServerTest.exchangesApi = tbdexServer.exchangesApi as FakeExchangesApi
       this@ServerTest.offeringsApi = tbdexServer.offeringsApi as FakeOfferingsApi
+      this@ServerTest.balancesApi = tbdexServer.balancesApi as FakeBalancesApi
     }
   }
 
