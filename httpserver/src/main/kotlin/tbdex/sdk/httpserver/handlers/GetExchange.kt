@@ -82,7 +82,7 @@ suspend fun getExchange(
     return
   }
 
-  val exchanges = exchangesApi.getExchange(call.parameters["exchangeId"]!!)
+  val exchanges = exchangesApi.getExchange(call.parameters["exchangeId"]!!, requesterDid)
 
   if (callback != null) {
     // TODO: figure out what to do with callback result. should we pass through the exchanges we've fetched

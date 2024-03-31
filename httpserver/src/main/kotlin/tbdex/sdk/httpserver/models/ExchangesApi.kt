@@ -16,13 +16,14 @@ interface ExchangesApi {
    * Retrieves the exchange with the specified ID.
    *
    * @param id The ID of the exchange to retrieve.
+   * @param requesterDid The DID of the requester.
    * @return A list of [Message] representing the exchange with the specified ID.
    *
    * @throws NoSuchElementException if the exchange with the specified ID is not found.
    * @throws Exception for general exceptions.
    */
   @Throws(NoSuchElementException::class, Exception::class)
-  fun getExchange(id: String): List<Message>
+  fun getExchange(id: String, requesterDid: String): List<Message>
 
   /**
    * Retrieves a list of exchanges based on the provided filter.

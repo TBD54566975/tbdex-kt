@@ -32,7 +32,7 @@ suspend fun submitOrder(
 
   val exchange: List<Message>
   try {
-    exchange = exchangesApi.getExchange(exchangeId)
+    exchange = exchangesApi.getExchange(exchangeId, order.metadata.from)
   } catch (e: Exception) {
     val errorDetail = ErrorDetail(detail = "Could not find exchange: $exchangeId")
     call.respond(HttpStatusCode.NotFound, ErrorResponse(listOf(errorDetail)))

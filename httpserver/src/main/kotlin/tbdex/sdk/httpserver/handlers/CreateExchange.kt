@@ -61,7 +61,7 @@ suspend fun createExchange(
   }
 
   try {
-    exchangesApi.getExchange(rfq.metadata.exchangeId)
+    exchangesApi.getExchange(rfq.metadata.exchangeId, rfq.metadata.from)
     val errorDetail = ErrorDetail(detail = "RFQ already exists.")
     call.respond(HttpStatusCode.Conflict, ErrorResponse(listOf(errorDetail)))
     return

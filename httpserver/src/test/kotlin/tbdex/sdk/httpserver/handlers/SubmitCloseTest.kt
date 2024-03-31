@@ -171,7 +171,7 @@ class SubmitCloseTest : ServerTest() {
     @Test
     fun `verify callback is invoked upon successful close submission`() = runBlocking {
       val messageList = listOf<Message>(mockk(relaxed = true))
-      coEvery { exchangesApi.getExchange(exchangeId) } returns messageList
+      coEvery { exchangesApi.getExchange(exchangeId, any<String>()) } returns messageList
 
       coEvery { messageList.first().metadata.protocol } returns "1.0"
       coEvery { messageList.last().validNext } returns setOf(MessageKind.close)
@@ -186,7 +186,7 @@ class SubmitCloseTest : ServerTest() {
     @Test
     fun `verify http accepted is returned if callback is null`() = runBlocking {
       val messageList = listOf<Message>(mockk(relaxed = true))
-      coEvery { exchangesApi.getExchange(exchangeId) } returns messageList
+      coEvery { exchangesApi.getExchange(exchangeId, any<String>()) } returns messageList
 
       coEvery { messageList.first().metadata.protocol } returns "1.0"
       coEvery { messageList.last().validNext } returns setOf(MessageKind.close)
@@ -199,7 +199,7 @@ class SubmitCloseTest : ServerTest() {
 
     @Test
     fun `verify submitClose fails if getExchange throws NoSuchElementException `() = runBlocking {
-      coEvery { exchangesApi.getExchange(exchangeId) } throws NoSuchElementException("nope sorry")
+      coEvery { exchangesApi.getExchange(exchangeId, any<String>()) } throws NoSuchElementException("nope sorry")
 
       submitClose(applicationCall, exchangesApi, callback, close)
 
@@ -209,7 +209,7 @@ class SubmitCloseTest : ServerTest() {
 
     @Test
     fun `verify submitClose fails if getExchange throws Exception `() = runBlocking {
-      coEvery { exchangesApi.getExchange(exchangeId) } throws Exception("boo")
+      coEvery { exchangesApi.getExchange(exchangeId, any<String>()) } throws Exception("boo")
 
       submitClose(applicationCall, exchangesApi, callback, close)
 
@@ -220,7 +220,7 @@ class SubmitCloseTest : ServerTest() {
     @Test
     fun `verify submitClose fails if protocol value is inconsistent`() = runBlocking {
       val messageList = listOf<Message>(mockk(relaxed = true))
-      coEvery { exchangesApi.getExchange(exchangeId) } returns messageList
+      coEvery { exchangesApi.getExchange(exchangeId, any<String>()) } returns messageList
 
       coEvery { messageList.first().metadata.protocol } returns "not 1.0"
 
@@ -233,7 +233,7 @@ class SubmitCloseTest : ServerTest() {
     @Test
     fun `verify submitClose fails if next valid message is not Close`() = runBlocking {
       val messageList = listOf<Message>(mockk(relaxed = true))
-      coEvery { exchangesApi.getExchange(exchangeId) } returns messageList
+      coEvery { exchangesApi.getExchange(exchangeId, any<String>()) } returns messageList
 
       coEvery { messageList.first().metadata.protocol } returns "1.0"
       coEvery { messageList.last().validNext } returns setOf(MessageKind.rfq)

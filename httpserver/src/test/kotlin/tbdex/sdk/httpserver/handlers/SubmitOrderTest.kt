@@ -193,7 +193,7 @@ class SubmitOrderTest {
     @Test
     fun `verify callback is invoked upon successful order submission`() = runBlocking {
       val messageList = listOf<Message>(mockk(relaxed = true), quote)
-      coEvery { exchangesApi.getExchange(exchangeId) } returns messageList
+      coEvery { exchangesApi.getExchange(exchangeId, any<String>()) } returns messageList
 
       coEvery { messageList.first().metadata.protocol } returns "1.0"
 
@@ -207,7 +207,7 @@ class SubmitOrderTest {
     @Test
     fun `verify http accepted is returned when callback is null during order submission`() = runBlocking {
       val messageList = listOf<Message>(mockk(relaxed = true), quote)
-      coEvery { exchangesApi.getExchange(exchangeId) } returns messageList
+      coEvery { exchangesApi.getExchange(exchangeId, any<String>()) } returns messageList
 
       coEvery { messageList.first().metadata.protocol } returns "1.0"
 
@@ -219,7 +219,7 @@ class SubmitOrderTest {
 
     @Test
     fun `verify submitOrder fails callback is invoked upon successful order submission`() = runBlocking {
-      coEvery { exchangesApi.getExchange(exchangeId) } throws NoSuchElementException()
+      coEvery { exchangesApi.getExchange(exchangeId, any<String>()) } throws NoSuchElementException()
 
       submitOrder(applicationCall, exchangesApi, callback, order)
 
@@ -235,7 +235,7 @@ class SubmitOrderTest {
     @Test
     fun `verify submitOrder fails if protocol value is inconsistent`() = runBlocking {
       val messageList = listOf<Message>(mockk(relaxed = true))
-      coEvery { exchangesApi.getExchange(exchangeId) } returns messageList
+      coEvery { exchangesApi.getExchange(exchangeId, any<String>()) } returns messageList
 
       coEvery { messageList.first().metadata.protocol } returns "not 1.0"
 
@@ -253,7 +253,7 @@ class SubmitOrderTest {
     @Test
     fun `verify submitOrder fails if next valid message is not Order`() = runBlocking {
       val messageList = listOf<Message>(mockk(relaxed = true), order)
-      coEvery { exchangesApi.getExchange(exchangeId) } returns messageList
+      coEvery { exchangesApi.getExchange(exchangeId, any<String>()) } returns messageList
 
       coEvery { messageList.first().metadata.protocol } returns "1.0"
 
@@ -288,7 +288,7 @@ class SubmitOrderTest {
       )
 
       val messageList = listOf<Message>(mockk(relaxed = true), expiredQuote)
-      coEvery { exchangesApi.getExchange(exchangeId) } returns messageList
+      coEvery { exchangesApi.getExchange(exchangeId, any<String>()) } returns messageList
 
       coEvery { messageList.first().metadata.protocol } returns "1.0"
 
@@ -306,7 +306,7 @@ class SubmitOrderTest {
     @Test
     fun `verify submitOrder fails when callback invocation throws an exception`() = runBlocking {
       val messageList = listOf<Message>(mockk(relaxed = true), quote)
-      coEvery { exchangesApi.getExchange(exchangeId) } returns messageList
+      coEvery { exchangesApi.getExchange(exchangeId, any<String>()) } returns messageList
 
       coEvery { messageList.first().metadata.protocol } returns "1.0"
       coEvery { callback.invoke(applicationCall, order) } throws Exception("booo")

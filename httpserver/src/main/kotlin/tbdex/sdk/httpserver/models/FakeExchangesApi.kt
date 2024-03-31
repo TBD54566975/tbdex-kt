@@ -20,9 +20,10 @@ class FakeExchangesApi : ExchangesApi {
    * Returns a list of [Message] representing the exchange with the specified ID.
    *
    * @param id The exchange ID to retrieve. If null, returns null.
+   * @param requesterDid the DID of the requester.
    * @return A list of [Message] representing exchanges with the specified ID(s), or null if not found.
    */
-  override fun getExchange(id: String): List<Message> {
+  override fun getExchange(id: String, requesterDid: String): List<Message> {
     return exchanges[id] ?: throw NoSuchElementException()
   }
 

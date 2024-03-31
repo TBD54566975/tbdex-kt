@@ -31,7 +31,7 @@ suspend fun submitClose(
   val exchangeId = close.metadata.exchangeId
   val exchange: List<Message>
   try {
-    exchange = exchangesApi.getExchange(exchangeId)
+    exchange = exchangesApi.getExchange(exchangeId, close.metadata.from)
   } catch (e: NoSuchElementException) {
     val errorDetail = ErrorDetail(detail = "Could not find exchange: $exchangeId")
     call.respond(HttpStatusCode.NotFound, ErrorResponse(listOf(errorDetail)))
