@@ -3,54 +3,40 @@ package tbdex.sdk.httpserver.models
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import tbdex.sdk.httpclient.models.ErrorDetail
-import tbdex.sdk.protocol.models.Message
+import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Offering
+import tbdex.sdk.protocol.models.Order
+import tbdex.sdk.protocol.models.Rfq
 
 /**
- * Represents a callback function for handling GET requests with specified filters.
+ * Class that houses all callback types for the TBDex HTTP server.
  *
- * @param ApplicationCall The Ktor application call object representing the incoming HTTP request.
- * @param Filter The filter used in the GET request.
- * @return Any result returned from the callback.
+ * @property getOfferings
+ * @property getExchanges
+ * @property getExchange
+ * @property createExchange
+ * @property submitOrder
+ * @property submitClose
  */
-typealias GetCallback = suspend (ApplicationCall, Filter?) -> Any
+class Callbacks(
+  var getOfferings: GetOfferingsCallback? = null,
+  var getBalances: GetBalancesCallback? = null,
+  var getExchanges: GetExchangesCallback? = null,
+  var getExchange: GetExchangeCallback? = null,
+  var createExchange: CreateExchangeCallback? = null,
+  var submitOrder: SubmitOrderCallback? = null,
+  var submitClose: SubmitCloseCallback? = null
+)
 
-/**
- * Represents a callback function for handling submit requests with received message and associated offering.
- *
- * @param ApplicationCall The Ktor application call object representing the incoming HTTP request.
- * @param Message the message received in the request to be processed further by the callback function
- * @param Offering The offering associated with the submitted message.
- * @param ReplyTo The replyTo URL if provided in the CreateExchange request
- */
-typealias SubmitCallback = suspend (ApplicationCall, Message, Offering?, String?) -> Unit
+typealias GetOfferingsCallback = suspend (ApplicationCall) -> Any
+typealias GetBalancesCallback = suspend (ApplicationCall) -> Any
+typealias GetExchangesCallback = suspend (ApplicationCall, GetExchangesFilter?) -> Any
+typealias GetExchangeCallback = suspend (ApplicationCall) -> Any
 
-/**
- * Enum representing the kinds of messages that can be submitted.
- */
-enum class SubmitKind {
-  rfq, order, close
-}
+typealias CreateExchangeCallback = suspend (ApplicationCall, Rfq, Offering?, String?) -> Unit
+typealias SubmitOrderCallback = suspend (ApplicationCall, Order) -> Unit
+typealias SubmitCloseCallback = suspend (ApplicationCall, Close) -> Unit
 
-/**
- * Enum representing the kinds of resources that can be retrieved.
- */
-enum class GetKind {
-  exchanges, offerings
-}
-
-/**
- * Represents a filter for retrieving offerings based on specific criteria.
- *
- * @property payinCurrency The currency used for the pay-in.
- * @property payoutCurrency The currency used for the payout.
- * @property id The ID of the offering.
- */
-class GetOfferingsFilter(
-  val payinCurrency: String? = null,
-  val payoutCurrency: String? = null,
-  val id: String? = null
-) : Filter
 
 /**
  * Represents a filter for retrieving exchanges based on specific criteria.

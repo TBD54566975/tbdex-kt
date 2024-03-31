@@ -63,6 +63,9 @@ dependencies {
   testImplementation("com.willowtreeapps.assertk:assertk:0.27.0")
   testImplementation("io.ktor:ktor-server-test-host")
   testImplementation("io.ktor:ktor-client-content-negotiation")
+  testImplementation("io.mockk:mockk:1.11.0")
+  testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
+  testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
 tasks.test {

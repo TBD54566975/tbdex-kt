@@ -6,10 +6,10 @@ import io.ktor.server.request.receiveText
 import io.ktor.server.response.respond
 import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpserver.models.CallbackError
+import tbdex.sdk.httpserver.models.CreateExchangeCallback
 import tbdex.sdk.httpserver.models.ErrorResponse
 import tbdex.sdk.httpserver.models.ExchangesApi
 import tbdex.sdk.httpserver.models.OfferingsApi
-import tbdex.sdk.httpserver.models.SubmitCallback
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Rfq
@@ -32,9 +32,9 @@ suspend fun createExchange(
   call: ApplicationCall,
   offeringsApi: OfferingsApi,
   exchangesApi: ExchangesApi,
-  callback: SubmitCallback?
+  callback: CreateExchangeCallback?
 ) {
-  val message: Rfq?
+  val rfq: Rfq?
   var replyTo: String? = null
   try {
     val requestBody = call.receiveText()
@@ -42,7 +42,7 @@ suspend fun createExchange(
     val jsonNode = Json.jsonMapper.readTree(requestBody)
     val rfqJsonString = jsonNode["rfq"].toString()
 
-    message = Message.parse(rfqJsonString) as Rfq
+    rfq = Message.parse(rfqJsonString) as Rfq
     if (jsonNode["replyTo"] != null) {
       replyTo = jsonNode["replyTo"].asText()
     }
@@ -61,7 +61,7 @@ suspend fun createExchange(
   }
 
   try {
-    exchangesApi.getExchange(message.metadata.exchangeId.toString())
+    exchangesApi.getExchange(rfq.metadata.exchangeId, rfq.metadata.from)
     val errorDetail = ErrorDetail(detail = "RFQ already exists.")
     call.respond(HttpStatusCode.Conflict, ErrorResponse(listOf(errorDetail)))
     return
@@ -71,11 +71,11 @@ suspend fun createExchange(
 
   val offering: Offering
   try {
-    offering = offeringsApi.getOffering(message.data.offeringId)
+    offering = offeringsApi.getOffering(rfq.data.offeringId)
 
-    message.verifyOfferingRequirements(offering)
+    rfq.verifyOfferingRequirements(offering)
   } catch (e: NoSuchElementException) {
-    val errorDetail = ErrorDetail(detail = "Offering with id ${message.data.offeringId} does not exist.")
+    val errorDetail = ErrorDetail(detail = "Offering with id ${rfq.data.offeringId} does not exist.")
     call.respond(HttpStatusCode.BadRequest, ErrorResponse(listOf(errorDetail)))
     return
   } catch (e: Exception) {
@@ -90,7 +90,7 @@ suspend fun createExchange(
   }
 
   try {
-    callback.invoke(call, message, offering, replyTo)
+    callback.invoke(call, rfq, offering, replyTo)
   } catch (e: CallbackError) {
     call.respond(e.statusCode, ErrorResponse(e.details))
     return

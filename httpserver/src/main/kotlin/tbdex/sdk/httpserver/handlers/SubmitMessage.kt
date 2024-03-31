@@ -5,9 +5,9 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.receiveText
 import io.ktor.server.response.respond
 import tbdex.sdk.httpclient.models.ErrorDetail
+import tbdex.sdk.httpserver.models.Callbacks
 import tbdex.sdk.httpserver.models.ErrorResponse
 import tbdex.sdk.httpserver.models.ExchangesApi
-import tbdex.sdk.httpserver.models.SubmitCallback
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
@@ -19,13 +19,13 @@ import tbdex.sdk.protocol.models.Order
  *
  * @param call The [ApplicationCall] instance representing the HTTP call.
  * @param exchangesApi The [ExchangesApi] instance for interacting with TBDex exchanges.
- * @param callback The optional callback function to be executed after a successful close submission.
+ * @param callbacks The group of callback functions from which to select for submitting Order or Close.
  */
-@Suppress("TooGenericExceptionCaught", "MaxLineLength", "SwallowedException")
+@Suppress("TooGenericExceptionCaught", "SwallowedException")
 suspend fun submitMessage(
   call: ApplicationCall,
   exchangesApi: ExchangesApi,
-  callback: SubmitCallback?
+  callbacks: Callbacks
 ) {
   val message: Message
 
@@ -47,11 +47,13 @@ suspend fun submitMessage(
 
   when (message.metadata.kind) {
     MessageKind.close -> {
-      return submitClose(call, exchangesApi, callback, message as Close)
+      return submitClose(call, exchangesApi, callbacks.submitClose, message as Close)
     }
+
     MessageKind.order -> {
-      return submitOrder(call, exchangesApi, callback, message as Order)
+      return submitOrder(call, exchangesApi, callbacks.submitOrder, message as Order)
     }
+
     else -> {
       val errorDetail = ErrorDetail(detail = "Message must be a valid Order or Close message")
       call.respond(HttpStatusCode.BadRequest, ErrorResponse(listOf(errorDetail)))
