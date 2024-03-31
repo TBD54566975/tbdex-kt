@@ -81,7 +81,7 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
   internal val pfiDid = config.pfiDid ?: "did:ex:pfi"
   internal val offeringsApi = config.offeringsApi ?: FakeOfferingsApi()
   internal val exchangesApi = config.exchangesApi ?: FakeExchangesApi()
-  internal val balancesApi = config.balancesApi ?: FakeBalancesApi()
+  internal val balancesApi = config.balancesApi
 
   /**
    * Configures the Ktor application with necessary settings, including content negotiation.
