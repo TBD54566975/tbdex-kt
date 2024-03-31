@@ -34,9 +34,9 @@ import tbdex.sdk.protocol.models.PayinMethod
 import tbdex.sdk.protocol.models.PayoutDetails
 import tbdex.sdk.protocol.models.PayoutMethod
 import tbdex.sdk.protocol.models.Rfq
-import tbdex.sdk.protocol.models.RfqData
-import tbdex.sdk.protocol.models.SelectedPayinMethod
-import tbdex.sdk.protocol.models.SelectedPayoutMethod
+import tbdex.sdk.protocol.models.UnhashedRfqData
+import tbdex.sdk.protocol.models.UnhashedSelectedPayinMethod
+import tbdex.sdk.protocol.models.UnhashedSelectedPayoutMethod
 import tbdex.sdk.protocol.serialization.Json
 import kotlin.test.Ignore
 import kotlin.test.assertContains
@@ -132,14 +132,14 @@ class CreateExchangeTest {
     private val rfq: Rfq = Rfq.create(
       to = "did:ex:pfi",
       from = "did:ex:alice",
-      rfqData = RfqData(
+      unhashedRfqData = UnhashedRfqData(
         offeringId = offeringId,
-        payin = SelectedPayinMethod(
+        payin = UnhashedSelectedPayinMethod(
           kind = "BTC_ADDRESS",
           paymentDetails = mapOf(),
           amount = "0.001"
         ),
-        payout = SelectedPayoutMethod(
+        payout = UnhashedSelectedPayoutMethod(
           kind = "ETH_ADDRESS",
           paymentDetails = mapOf()
         ),
