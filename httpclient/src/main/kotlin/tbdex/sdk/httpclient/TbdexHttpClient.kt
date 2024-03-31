@@ -15,6 +15,7 @@ import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
 import tbdex.sdk.httpclient.models.TbdexResponseException
 import tbdex.sdk.protocol.Validator
+import tbdex.sdk.protocol.models.Balance
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
@@ -29,6 +30,8 @@ import web5.sdk.dids.did.BearerDid
  */
 object TbdexHttpClient {
   private val client = OkHttpClient()
+  private const val CONTENT_TYPE = "Content-Type"
+  private const val AUTHORIZATION = "Authorization"
   private val jsonMediaType = "application/json; charset=utf-8".toMediaType()
   private const val JSON_HEADER = "application/json"
 
@@ -41,6 +44,7 @@ object TbdexHttpClient {
    * @return A list of [Offering] matching the request.
    * @throws TbdexResponseException for request or response errors.
    */
+  @Suppress("SwallowedException")
   fun getOfferings(pfiDid: String, filter: GetOfferingsFilter? = null): List<Offering> {
     val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
     val baseUrl = "$pfiServiceEndpoint/offerings/"
@@ -64,7 +68,70 @@ object TbdexHttpClient {
         val jsonNode = jsonMapper.readTree(responseString)
         return jsonNode.get("data").elements()
           .asSequence()
-          .map { Offering.parse(it.toString()) }
+          .map {
+            try {
+              Offering.parse(it.toString())
+            } catch (e: Exception) {
+              throw TbdexResponseException(
+                "response status: ${response.code}",
+                errors = listOf(
+                  ErrorDetail(
+                    detail = "Failed to parse offering ${e.message}"
+                  )
+                )
+              )
+            }
+          }
+          .toList()
+      }
+
+      else -> throw buildResponseException(response)
+    }
+  }
+
+  /**
+   * Fetches balances from a PFI.
+   *
+   * @param pfiDid The decentralized identifier of the PFI.
+   * @param requesterDid The decentralized identifier of the entity requesting the balances.
+   * @return A list of [Balance] matching the request.
+   * @throws TbdexResponseException for request or response errors.
+   */
+  @Suppress("SwallowedException")
+  fun getBalances(pfiDid: String, requesterDid: BearerDid): List<Balance> {
+    val pfiServiceEndpoint = getPfiServiceEndpoint(pfiDid)
+    val baseUrl = "$pfiServiceEndpoint/balances/"
+    val requestToken = RequestToken.generate(requesterDid, pfiDid)
+
+    val request = Request.Builder()
+      .url(baseUrl)
+      .addHeader(CONTENT_TYPE, JSON_HEADER)
+      .addHeader(AUTHORIZATION, "Bearer $requestToken")
+      .get()
+      .build()
+
+    val response: Response = client.newCall(request).execute()
+    when {
+      response.isSuccessful -> {
+        val responseString = response.body?.string()
+        // response body is an object with a data field
+        val jsonNode = jsonMapper.readTree(responseString)
+        return jsonNode.get("data").elements()
+          .asSequence()
+          .map {
+            try {
+              Balance.parse(it.toString())
+            } catch (e: Exception) {
+              throw TbdexResponseException(
+                "response status: ${response.code}",
+                errors = listOf(
+                  ErrorDetail(
+                    detail = "Failed to parse balance ${e.message}"
+                  )
+                )
+              )
+            }
+          }
           .toList()
       }
 
@@ -115,7 +182,7 @@ object TbdexHttpClient {
 
     val request = Request.Builder()
       .url(url)
-      .addHeader("Content-Type", JSON_HEADER)
+      .addHeader(CONTENT_TYPE, JSON_HEADER)
       .post(requestBody)
       .build()
 
@@ -170,7 +237,7 @@ object TbdexHttpClient {
 
     val request = Request.Builder()
       .url(url)
-      .addHeader("Content-Type", JSON_HEADER)
+      .addHeader(CONTENT_TYPE, JSON_HEADER)
       .put(requestBody)
       .build()
 
@@ -195,8 +262,8 @@ object TbdexHttpClient {
 
     val request = Request.Builder()
       .url(baseUrl)
-      .addHeader("Content-Type", JSON_HEADER)
-      .addHeader("Authorization", "Bearer $requestToken")
+      .addHeader(CONTENT_TYPE, JSON_HEADER)
+      .addHeader(AUTHORIZATION, "Bearer $requestToken")
       .get()
       .build()
 
@@ -237,8 +304,8 @@ object TbdexHttpClient {
 
     val request = Request.Builder()
       .url(httpUrlBuilder.build())
-      .addHeader("Content-Type", JSON_HEADER)
-      .addHeader("Authorization", "Bearer $requestToken")
+      .addHeader(CONTENT_TYPE, JSON_HEADER)
+      .addHeader(AUTHORIZATION, "Bearer $requestToken")
       .get()
       .build()
 

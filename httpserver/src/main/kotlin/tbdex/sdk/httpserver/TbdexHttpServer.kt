@@ -18,13 +18,16 @@ import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import tbdex.sdk.httpserver.handlers.createExchange
+import tbdex.sdk.httpserver.handlers.getBalances
 import tbdex.sdk.httpserver.handlers.getExchange
 import tbdex.sdk.httpserver.handlers.getExchanges
 import tbdex.sdk.httpserver.handlers.getOfferings
 import tbdex.sdk.httpserver.handlers.submitMessage
+import tbdex.sdk.httpserver.models.BalancesApi
 import tbdex.sdk.httpserver.models.Callbacks
 import tbdex.sdk.httpserver.models.CreateExchangeCallback
 import tbdex.sdk.httpserver.models.ExchangesApi
+import tbdex.sdk.httpserver.models.FakeBalancesApi
 import tbdex.sdk.httpserver.models.FakeExchangesApi
 import tbdex.sdk.httpserver.models.FakeOfferingsApi
 import tbdex.sdk.httpserver.models.GetExchangeCallback
@@ -35,31 +38,20 @@ import tbdex.sdk.httpserver.models.SubmitCloseCallback
 import tbdex.sdk.httpserver.models.SubmitOrderCallback
 
 /**
- * Main function to start the TBDex HTTP server.
- */
-fun main() {
-
-  embeddedServer(Netty, port = 8080) {
-    val serverConfig = TbdexHttpServerConfig(
-      port = 8080,
-    )
-    val tbdexServer = TbdexHttpServer(serverConfig)
-    tbdexServer.configure(this)
-  }.start(wait = true)
-}
-
-/**
  * Configuration data for TBDex HTTP server.
  *
  * @property port The port on which the server will listen.
- * @property offeringsApi An optional [OfferingsApi] implementation to use.
- * @property exchangesApi An optional [ExchangesApi] implementation to use.
+ * @property offeringsApi A [OfferingsApi] implementation to use. If not provided, a [FakeOfferingsApi] will be used.
+ * @property exchangesApi A [ExchangesApi] implementation to use. If not provided, a [FakeExchangesApi] will be used.
+ * @property balancesApi A [BalancesApi] implementation to use. If not provided, Balances API will be disabled.
+ *           For testing, consumers must explicitly pass in [FakeBalancesApi].
  */
 class TbdexHttpServerConfig(
   val port: Int,
   val pfiDid: String? = null,
   val offeringsApi: OfferingsApi? = null,
-  val exchangesApi: ExchangesApi? = null
+  val exchangesApi: ExchangesApi? = null,
+  val balancesApi: BalancesApi? = null
 )
 
 
@@ -77,6 +69,7 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
   internal val pfiDid = config.pfiDid ?: "did:ex:pfi"
   internal val offeringsApi = config.offeringsApi ?: FakeOfferingsApi()
   internal val exchangesApi = config.exchangesApi ?: FakeExchangesApi()
+  internal val balancesApi = config.balancesApi
 
   /**
    * Configures the Ktor application with necessary settings, including content negotiation.
@@ -100,6 +93,28 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
           "via a suitable library to communicate with this server: " +
           "https://github.com/TBD54566975/tbdex"
         )
+      }
+
+      get("/offerings") {
+        getOfferings(
+          call,
+          offeringsApi,
+          callbacks.getOfferings
+        )
+      }
+
+      if (config.balancesApi != null) {
+        if (balancesApi is FakeBalancesApi) {
+          println("Warning: Balances API is enabled, with FakeBalancesApi test implementation.")
+        }
+        get("/balances") {
+          getBalances(
+            call,
+            balancesApi!!,
+            callbacks.getBalances,
+            pfiDid
+          )
+        }
       }
 
       route("/exchanges") {
@@ -139,13 +154,6 @@ class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
         }
       }
 
-      get("/offerings") {
-        getOfferings(
-          call,
-          offeringsApi,
-          callbacks.getOfferings
-        )
-      }
     }
   }
 

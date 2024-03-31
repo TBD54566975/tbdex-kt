@@ -20,6 +20,7 @@ import tbdex.sdk.protocol.models.Rfq
  */
 class Callbacks(
   var getOfferings: GetOfferingsCallback? = null,
+  var getBalances: GetBalancesCallback? = null,
   var getExchanges: GetExchangesCallback? = null,
   var getExchange: GetExchangeCallback? = null,
   var createExchange: CreateExchangeCallback? = null,
@@ -28,6 +29,7 @@ class Callbacks(
 )
 
 typealias GetOfferingsCallback = suspend (ApplicationCall) -> Any
+typealias GetBalancesCallback = suspend (ApplicationCall) -> Any
 typealias GetExchangesCallback = suspend (ApplicationCall, GetExchangesFilter?) -> Any
 typealias GetExchangeCallback = suspend (ApplicationCall) -> Any
 

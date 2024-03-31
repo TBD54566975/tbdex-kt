@@ -23,7 +23,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import tbdex.sdk.httpclient.RequestToken
-import tbdex.sdk.httpclient.models.ErrorResponse
+import tbdex.sdk.httpserver.models.ErrorResponse
 import tbdex.sdk.httpserver.models.ExchangesApi
 import tbdex.sdk.httpserver.models.GetExchangesCallback
 import tbdex.sdk.httpserver.models.GetExchangesFilter
@@ -110,11 +110,11 @@ class GetExchangesTest {
         }
         .toList()
 
-      assertEquals(exchanges.size, 2)
-      assertEquals(exchanges[0].size, 1)
+      assertEquals(2, exchanges.size)
+      assertEquals(1, exchanges[0].size)
 
-      assertEquals(exchanges[0][0].metadata.id, rfq.metadata.id)
-      assertEquals(exchanges[1][0].metadata.id, quote.metadata.id)
+      assertEquals(rfq.metadata.id, exchanges[0][0].metadata.id)
+      assertEquals(quote.metadata.id, exchanges[1][0].metadata.id)
     }
   }
 
@@ -123,6 +123,7 @@ class GetExchangesTest {
     private lateinit var applicationCall: ApplicationCall
     private lateinit var exchangesApi: ExchangesApi
     private val callback: GetExchangesCallback = mockk(relaxed = true)
+    private val aliceDid = DidDht.create(InMemoryKeyManager())
 
     @BeforeEach
     fun setUp() {
@@ -133,7 +134,6 @@ class GetExchangesTest {
     @Test
     fun `verify callback is invoked upon successful get exchange`() = runBlocking {
       val messageList = listOf<Message>(mockk(relaxed = true))
-      val aliceDid = DidDht.create(InMemoryKeyManager())
       coEvery { applicationCall.request.headers[HttpHeaders.Authorization] } returns
         "Bearer ${
           RequestToken.generate(
@@ -154,7 +154,6 @@ class GetExchangesTest {
     @Test
     fun `verify http ok is returned if callback is null`() = runBlocking {
       val messageList = listOf<Message>(mockk(relaxed = true))
-      val aliceDid = DidDht.create(InMemoryKeyManager())
       coEvery { applicationCall.request.headers[HttpHeaders.Authorization] } returns
         "Bearer ${
           RequestToken.generate(

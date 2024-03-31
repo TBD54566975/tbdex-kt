@@ -44,7 +44,6 @@ object RequestToken {
         .didDocument?.findAssertionMethodById(assertionMethodId)
         ?: throw RequestTokenCreateException("Assertion method not found")
 
-    // TODO: ensure that publicKeyJwk is not null
     val publicKeyJwk = assertionMethod.publicKeyJwk
     check(publicKeyJwk != null) { "publicKeyJwk is null" }
     val keyAlias = did.keyManager.getDeterministicAlias(publicKeyJwk)
