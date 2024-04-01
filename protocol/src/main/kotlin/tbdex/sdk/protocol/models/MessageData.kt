@@ -11,10 +11,11 @@ sealed interface MessageData : Data
 
 /**
  * A data class implementing [MessageData] that represents the contents of an [Rfq].
+ * This includes salted hashes of fields in RfqPrivateData.
  *
  * @property offeringId Offering which Alice would like to get a quote for
- * @property payin selected payin amount, method, and details
- * @property payout selected payout method, and details
+ * @property payin selected payin amount, method, and hashed details
+ * @property payout selected payout method, and hashed details
  * @property claimsHash hash of claims that fulfill the requirements declared in the referenced Offering
  */
 class RfqData(
