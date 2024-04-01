@@ -134,17 +134,17 @@ class Rfq private constructor(
    */
   fun verifyPresentPrivateData() {
     // Verify payin details
-    if (data.payin.paymentDetailsHash != null && privateData.payin?.paymentDetails != null) {
+    if (data.payin.paymentDetailsHash != null && privateData?.payin?.paymentDetails != null) {
       verifyPayinDetailsHash()
     }
 
     // Verify payout details
-    if (data.payout.paymentDetailsHash != null && privateData.payout?.paymentDetails != null) {
+    if (data.payout.paymentDetailsHash != null && privateData?.payout?.paymentDetails != null) {
       verifyPayoutDetailsHash()
     }
 
     // Verify claims
-    if (!data.claimsHash.isNullOrEmpty() && !privateData.claims.isNullOrEmpty()) {
+    if (!data.claimsHash.isNullOrEmpty() && !privateData?.claims.isNullOrEmpty()) {
       verifyClaimsHash()
     }
   }
