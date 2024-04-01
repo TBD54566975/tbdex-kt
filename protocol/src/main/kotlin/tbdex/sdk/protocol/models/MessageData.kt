@@ -61,6 +61,8 @@ class UnhashedRfqData(
  *
  * @property paymentDetails An object containing the properties defined in the
  *                          respective Offering's requiredPaymentDetails json schema.
+ *                          When creating an Rfq, this value is taken from
+ *                          UnhashedSelectedPaymentMethod.paymentDetails.
  */
 class PrivatePaymentDetails(
   val paymentDetails: Map<String, Any>? = null
