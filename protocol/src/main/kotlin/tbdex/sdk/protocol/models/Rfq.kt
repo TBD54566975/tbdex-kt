@@ -190,7 +190,7 @@ class Rfq private constructor(
      *
      * @param to DID that the message is being sent to.
      * @param from DID of the sender.
-     * @param unhashedRfqData Specific parameters relevant to a Rfq.
+     * @param rfqData Specific parameters relevant to a Rfq.
      * @param protocol version of the tbdex protocol.
      * @param externalId external reference for the Rfq. Optional.
      * @return Rfq instance.
@@ -198,7 +198,7 @@ class Rfq private constructor(
     fun create(
       to: String,
       from: String,
-      unhashedRfqData: UnhashedRfqData,
+      rfqData: CreateRfqData,
       protocol: String = "1.0",
       externalId: String? = null,
     ): Rfq {
@@ -214,7 +214,7 @@ class Rfq private constructor(
         externalId = externalId
       )
 
-      val (data, privateData) = hashPrivateData(unhashedRfqData)
+      val (data, privateData) = hashPrivateData(rfqData)
 
       Validator.validateData(data, "rfq")
 
@@ -257,26 +257,26 @@ class Rfq private constructor(
       return rfq
     }
 
-    private fun hashPrivateData(unhashedRfqData: UnhashedRfqData): Pair<RfqData, RfqPrivateData> {
+    private fun hashPrivateData(createRfqData: CreateRfqData): Pair<RfqData, RfqPrivateData> {
       val salt = generateRandomSalt()
 
-      val payinPaymentDetailsHash = unhashedRfqData.payin.paymentDetails?.let { digestPrivateData(salt, it) }
-      val payoutPaymentDetailsHash = unhashedRfqData.payout.paymentDetails?.let { digestPrivateData(salt, it) }
-      val claimsHash = if (unhashedRfqData.claims.isEmpty()) {
+      val payinPaymentDetailsHash = createRfqData.payin.paymentDetails?.let { digestPrivateData(salt, it) }
+      val payoutPaymentDetailsHash = createRfqData.payout.paymentDetails?.let { digestPrivateData(salt, it) }
+      val claimsHash = if (createRfqData.claims.isEmpty()) {
         null
       } else {
-        digestPrivateData(salt, unhashedRfqData.claims)
+        digestPrivateData(salt, createRfqData.claims)
       }
 
       val hashedRfqData = RfqData(
-        offeringId = unhashedRfqData.offeringId,
+        offeringId = createRfqData.offeringId,
         payin = SelectedPayinMethod(
-          kind = unhashedRfqData.payin.kind,
+          kind = createRfqData.payin.kind,
           paymentDetailsHash = payinPaymentDetailsHash,
-          amount = unhashedRfqData.payin.amount
+          amount = createRfqData.payin.amount
         ),
         payout = SelectedPayoutMethod(
-          kind = unhashedRfqData.payout.kind,
+          kind = createRfqData.payout.kind,
           paymentDetailsHash = payoutPaymentDetailsHash
         ),
         claimsHash = claimsHash
@@ -284,9 +284,9 @@ class Rfq private constructor(
 
       val privateRfqData = RfqPrivateData(
         salt = salt,
-        payin = PrivatePaymentDetails(unhashedRfqData.payin.paymentDetails),
-        payout = PrivatePaymentDetails(unhashedRfqData.payout.paymentDetails),
-        claims = unhashedRfqData.claims
+        payin = PrivatePaymentDetails(createRfqData.payin.paymentDetails),
+        payout = PrivatePaymentDetails(createRfqData.payout.paymentDetails),
+        claims = createRfqData.claims
       )
 
       return Pair(hashedRfqData, privateRfqData)

@@ -20,12 +20,9 @@ import tbdex.sdk.protocol.models.QuoteData
 import tbdex.sdk.protocol.models.QuoteDetails
 import tbdex.sdk.protocol.models.ResourceKind
 import tbdex.sdk.protocol.models.Rfq
-import tbdex.sdk.protocol.models.RfqData
-import tbdex.sdk.protocol.models.SelectedPayinMethod
-import tbdex.sdk.protocol.models.SelectedPayoutMethod
-import tbdex.sdk.protocol.models.UnhashedRfqData
-import tbdex.sdk.protocol.models.UnhashedSelectedPayinMethod
-import tbdex.sdk.protocol.models.UnhashedSelectedPayoutMethod
+import tbdex.sdk.protocol.models.CreateRfqData
+import tbdex.sdk.protocol.models.CreateSelectedPayinMethod
+import tbdex.sdk.protocol.models.CreateSelectedPayoutMethod
 import web5.sdk.credentials.VcDataModel
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.credentials.model.ConstraintsV2
@@ -99,10 +96,10 @@ object TestData {
   ) = Rfq.create(
     to = PFI_DID.uri,
     from = ALICE_DID.uri,
-    unhashedRfqData = UnhashedRfqData(
+    rfqData = CreateRfqData(
       offeringId = offeringId,
-      payin = UnhashedSelectedPayinMethod("BTC_ADDRESS", mapOf("address" to "123456"), amount = "10.00"),
-      payout = UnhashedSelectedPayoutMethod(
+      payin = CreateSelectedPayinMethod("BTC_ADDRESS", mapOf("address" to "123456"), amount = "10.00"),
+      payout = CreateSelectedPayoutMethod(
         "MOMO", mapOf(
         "phoneNumber" to "+254712345678",
         "accountHolderName" to "Alfred Holder"

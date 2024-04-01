@@ -10,12 +10,9 @@ import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.QuoteData
 import tbdex.sdk.protocol.models.QuoteDetails
 import tbdex.sdk.protocol.models.Rfq
-import tbdex.sdk.protocol.models.RfqData
-import tbdex.sdk.protocol.models.SelectedPayinMethod
-import tbdex.sdk.protocol.models.SelectedPayoutMethod
-import tbdex.sdk.protocol.models.UnhashedRfqData
-import tbdex.sdk.protocol.models.UnhashedSelectedPayinMethod
-import tbdex.sdk.protocol.models.UnhashedSelectedPayoutMethod
+import tbdex.sdk.protocol.models.CreateRfqData
+import tbdex.sdk.protocol.models.CreateSelectedPayinMethod
+import tbdex.sdk.protocol.models.CreateSelectedPayoutMethod
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.methods.dht.DidDht
 import java.time.OffsetDateTime
@@ -29,14 +26,14 @@ object TestData {
     return Rfq.create(
       to = pfiDid.uri,
       from = aliceDid.uri,
-      unhashedRfqData = UnhashedRfqData(
+      rfqData = CreateRfqData(
         offeringId = offering?.metadata?.id ?: TypeId.generate("offering").toString(),
-        payin = UnhashedSelectedPayinMethod(
+        payin = CreateSelectedPayinMethod(
           kind = offering?.data?.payin?.methods?.first()?.kind ?: "DEBIT_CARD",
           paymentDetails = mapOf("foo" to "bar"),
           amount = "1.00"
         ),
-        payout = UnhashedSelectedPayoutMethod(
+        payout = CreateSelectedPayoutMethod(
           kind = offering?.data?.payout?.methods?.first()?.kind ?: "BTC_ADDRESS",
           paymentDetails = mapOf("foo" to "bar")
         ),

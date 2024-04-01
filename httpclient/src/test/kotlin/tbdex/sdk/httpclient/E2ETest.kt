@@ -9,12 +9,9 @@ import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.Rfq
-import tbdex.sdk.protocol.models.RfqData
-import tbdex.sdk.protocol.models.SelectedPayinMethod
-import tbdex.sdk.protocol.models.SelectedPayoutMethod
-import tbdex.sdk.protocol.models.UnhashedRfqData
-import tbdex.sdk.protocol.models.UnhashedSelectedPayinMethod
-import tbdex.sdk.protocol.models.UnhashedSelectedPayoutMethod
+import tbdex.sdk.protocol.models.CreateRfqData
+import tbdex.sdk.protocol.models.CreateSelectedPayinMethod
+import tbdex.sdk.protocol.models.CreateSelectedPayoutMethod
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.crypto.JwaCurve
@@ -257,14 +254,14 @@ class E2ETest {
   private fun buildRfqData(
     firstOfferingId: String,
     vcJwt: String
-  ) = UnhashedRfqData(
+  ) = CreateRfqData(
     offeringId = firstOfferingId,
-    payin = UnhashedSelectedPayinMethod(
+    payin = CreateSelectedPayinMethod(
       kind = "NGN_ADDRESS",
       paymentDetails = mapOf("walletAddress" to "ngn-wallet-address"),
       amount = "1.00"
     ),
-    payout = UnhashedSelectedPayoutMethod(
+    payout = CreateSelectedPayoutMethod(
       kind = "BANK_Access Bank",
       paymentDetails = mapOf(
         "accountNumber" to "1234567890",

@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import tbdex.sdk.protocol.TestData
-import tbdex.sdk.protocol.ValidatorException
 import tbdex.sdk.protocol.serialization.Json
 import kotlin.test.Test
 import kotlin.test.assertIs
@@ -24,10 +23,10 @@ class RfqTest {
     val rfq = Rfq.create(
       to = TestData.PFI,
       from = TestData.ALICE,
-      unhashedRfqData = UnhashedRfqData(
+      rfqData = CreateRfqData(
         offeringId = TypeId.generate(ResourceKind.offering.name).toString(),
-        payin = UnhashedSelectedPayinMethod("BTC_ADDRESS", mapOf("address" to 123456), amount = "10.00"),
-        payout = UnhashedSelectedPayoutMethod("MOMO", mapOf("phone_number" to 123456)),
+        payin = CreateSelectedPayinMethod("BTC_ADDRESS", mapOf("address" to 123456), amount = "10.00"),
+        payout = CreateSelectedPayoutMethod("MOMO", mapOf("phone_number" to 123456)),
         claims = emptyList()
       ),
       externalId = "P_12345"
