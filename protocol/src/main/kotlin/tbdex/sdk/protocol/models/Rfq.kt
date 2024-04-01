@@ -222,7 +222,7 @@ class Rfq private constructor(
     }
 
     /**
-     * Takes an existing Message in the form of a json string and parses it into a Message object.
+     * Takes an existing Rfq in the form of a json string and parses it into a Rfq object.
      * Validates object structure and performs an integrity check using the message signature.
      *
      * @param payload The message as a json string.
