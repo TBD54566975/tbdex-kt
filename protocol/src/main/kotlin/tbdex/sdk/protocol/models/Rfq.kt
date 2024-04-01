@@ -133,8 +133,6 @@ class Rfq private constructor(
    *                   hashed property in Rfq.data
    */
   fun verifyPresentPrivateData() {
-    privateData ?: throw Error("privateData property is missing")
-
     // Verify payin details
     if (data.payin.paymentDetailsHash != null && privateData.payin?.paymentDetails != null) {
       verifyPayinDetailsHash()
@@ -152,38 +150,35 @@ class Rfq private constructor(
   }
 
   private fun verifyPayinDetailsHash() {
-    privateData ?: throw IllegalArgumentException("privateData property is missing")
+    require(privateData != null) { "privateData property is missing" }
     val digest = privateData.payin?.paymentDetails?.let { digestPrivateData(privateData.salt, it) }
 
-    if (digest != data.payin.paymentDetailsHash) {
-      throw IllegalArgumentException(
-        "Private data integrity check failed: " +
-          "data.payin.paymentDetailsHash does not match digest of privateData.payin.paymentDetails"
-      )
+    require(digest == data.payin.paymentDetailsHash) {
+      "Private data integrity check failed: " +
+        "data.payin.paymentDetailsHash does not match digest of privateData.payin.paymentDetails"
     }
   }
 
   private fun verifyPayoutDetailsHash() {
-    privateData ?: throw IllegalArgumentException("privateData property is missing")
+    require(privateData != null) { "privateData property is missing" }
     val digest = privateData.payout?.paymentDetails?.let { digestPrivateData(privateData.salt, it) }
 
-    if (digest != data.payout.paymentDetailsHash) {
-      throw IllegalArgumentException(
-        "Private data integrity check failed: " +
-          "data.payout.paymentDetailsHash does not match digest of privateData.payout.paymentDetails"
-      )
+    require( digest == data.payout.paymentDetailsHash) {
+      "Private data integrity check failed: " +
+        "data.payout.paymentDetailsHash does not match digest of privateData.payout.paymentDetails"
     }
   }
 
   private fun verifyClaimsHash() {
-    privateData ?: throw IllegalArgumentException("privateData property is missing")
+    require(privateData != null) { "privateData property is missing" }
+    require(privateData.claims != null) { "privateData.claims is missing" }
 
     val digest = digestPrivateData(
       privateData.salt,
-      privateData.claims ?: throw IllegalArgumentException("privateData.claims is missing")
+      privateData.claims
     )
-    if (digest != data.claimsHash) {
-      throw IllegalArgumentException(
+    require(digest == data.claimsHash) {
+      IllegalArgumentException(
         "Private data integrity check failed: " +
           "data.claimsHash does not match digest of privateData.claims"
       )
