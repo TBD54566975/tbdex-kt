@@ -3,6 +3,7 @@ package tbdex.sdk.protocol.models
 import com.fasterxml.jackson.databind.JsonNode
 import de.fxlae.typeid.TypeId
 import org.erdtman.jcs.JsonCanonicalizer
+import tbdex.sdk.protocol.SignatureVerifier
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Rfq.Companion.create
@@ -292,10 +293,8 @@ class Rfq private constructor(
 
     private fun digestPrivateData(salt: String, value: Any): String {
       val payload = arrayOf(salt, value)
-      val canonicalJsonSerializedPayload = JsonCanonicalizer(Json.stringify(payload))
-      val sha256 = MessageDigest.getInstance("SHA-256")
-      val hash = sha256.digest(canonicalJsonSerializedPayload.encodedUTF8)
-      return Convert(hash).toBase64Url(padding = false)
+      val digest = SignatureVerifier.digestOf(payload)
+      return Convert(digest).toBase64Url()
     }
 
     /**
