@@ -50,7 +50,6 @@ buildscript {
     resolutionStrategy {
       // Address https://github.com/TBD54566975/tbdex-kt/issues/167
       force("com.fasterxml.woodstox:woodstox-core:6.4.0")
-      force("io.netty:netty-codec-http:4.1.108Final")
     }
   }
 }
@@ -90,6 +89,8 @@ allprojects {
       force("com.google.protobuf:protobuf-javalite:3.19.6")
       // Addresses https://github.com/TBD54566975/tbdex-kt/issues/170
       force("com.squareup.okio:okio:3.6.0")
+      // Addresses CVE-2024-29025
+      force("io.netty:netty-codec-http:4.1.108.Final")
     }
   }
 }
