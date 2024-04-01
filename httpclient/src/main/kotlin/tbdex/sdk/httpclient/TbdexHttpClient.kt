@@ -14,6 +14,7 @@ import tbdex.sdk.httpclient.models.Exchange
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
 import tbdex.sdk.httpclient.models.TbdexResponseException
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Balance
 import tbdex.sdk.protocol.models.Close
@@ -275,7 +276,7 @@ object TbdexHttpClient {
         val responseString = response.body?.string()
         val jsonNode = jsonMapper.readTree(responseString)
         return jsonNode.get("data").elements().asSequence()
-          .map { Message.parse(it.toString()) }
+          .map { Parser.parseMessage(it.toString()) }
           .toList()
       }
 
@@ -319,7 +320,7 @@ object TbdexHttpClient {
 
         jsonNode.get("data").elements().forEach { jsonExchange ->
           val exchange = jsonExchange.elements().asSequence()
-            .map { Message.parse(it.toString()) }
+            .map { Parser.parseMessage(it.toString()) }
             .toList()
           exchanges.add(exchange)
         }

@@ -2,6 +2,7 @@ package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.databind.JsonNode
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Rfq.Companion.create
@@ -111,6 +112,31 @@ class Rfq private constructor(
       // TODO: hash `data.payoutMethod.paymentDetails` and set `private`
 
       return Rfq(metadata, rfqData, private)
+    }
+
+    /**
+     * Takes an existing Rfq in the form of a json string and parses it into a Rfq object.
+     * Validates object structure and performs an integrity check using the message signature.
+     *
+     * @param payload The Rfq as a json string.
+     * @return The json string parsed into a Rfq
+     * @throws IllegalArgumentException if the payload is not valid json.
+     * @throws IllegalArgumentException if the payload does not conform to the expected json schema.
+     * @throws IllegalArgumentException if the payload signature verification fails.
+     * @throws IllegalArgumentException if the payload is not an RFQ
+     */
+    fun parse(payload: String): Rfq {
+      val jsonMessage = Parser.parseMessageToJsonNode(payload)
+
+      val kind = jsonMessage.get("metadata").get("kind").asText()
+      if (kind != "rfq") {
+        throw IllegalArgumentException("Message must be an RFQ but message kind was $kind")
+      }
+
+      val message = Json.jsonMapper.convertValue(jsonMessage, Rfq::class.java)
+      message.verify()
+
+      return message
     }
   }
 }

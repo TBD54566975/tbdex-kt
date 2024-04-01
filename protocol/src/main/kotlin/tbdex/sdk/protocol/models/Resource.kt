@@ -94,45 +94,4 @@ sealed class Resource {
   override fun toString(): String {
     return Json.stringify(this)
   }
-
-  companion object {
-    /**
-     * Takes an existing Resource in the form of a json string and parses it into a Resource object.
-     * Validates object structure and performs an integrity check using the resource signature.
-     *
-     * @param payload The resource as a json string.
-     * @return The json string parsed into a concrete Resource implementation.
-     * @throws IllegalArgumentException if the payload is not valid json.
-     * @throws IllegalArgumentException if the payload does not conform to the expected json schema.
-     * @throws IllegalArgumentException if the payload signature verification fails.
-     */
-    fun parse(payload: String): Resource {
-      val jsonResource: JsonNode = try {
-        jsonMapper.readTree(payload)
-      } catch (e: JsonParseException) {
-        throw IllegalArgumentException("unexpected character at offset ${e.location.charOffset}")
-      }
-
-      require(jsonResource.isObject) { "expected payload to be a json object" }
-
-      // validate message structure
-      Validator.validate(jsonResource, "resource")
-
-      val dataJson = jsonResource.get("data")
-      val kind = jsonResource.get("metadata").get("kind").asText()
-
-      // validate specific resource data
-      Validator.validate(dataJson, kind)
-
-      val resourceType = when (ResourceKind.valueOf(kind)) {
-        ResourceKind.offering -> Offering::class.java
-        ResourceKind.balance -> Balance::class.java
-      }
-
-      val resource = jsonMapper.convertValue(jsonResource, resourceType)
-      resource.verify()
-
-      return resource
-    }
-  }
 }
