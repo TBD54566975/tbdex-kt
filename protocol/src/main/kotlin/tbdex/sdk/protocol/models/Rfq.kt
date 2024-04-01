@@ -300,7 +300,7 @@ class Rfq private constructor(
       val secureRandom = SecureRandom()
       val byteArray = ByteArray(byteArraySize)
       secureRandom.nextBytes(byteArray)
-      return Convert(byteArray).toString()
+      return Convert(byteArray).toBase64Url()
     }
   }
 }
