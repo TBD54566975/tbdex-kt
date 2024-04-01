@@ -25,6 +25,9 @@ import tbdex.sdk.httpclient.models.ErrorResponse
 import tbdex.sdk.httpserver.models.CreateExchangeCallback
 import tbdex.sdk.httpserver.models.ExchangesApi
 import tbdex.sdk.httpserver.models.OfferingsApi
+import tbdex.sdk.protocol.models.CreateRfqData
+import tbdex.sdk.protocol.models.CreateSelectedPayinMethod
+import tbdex.sdk.protocol.models.CreateSelectedPayoutMethod
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
@@ -34,9 +37,6 @@ import tbdex.sdk.protocol.models.PayinMethod
 import tbdex.sdk.protocol.models.PayoutDetails
 import tbdex.sdk.protocol.models.PayoutMethod
 import tbdex.sdk.protocol.models.Rfq
-import tbdex.sdk.protocol.models.CreateRfqData
-import tbdex.sdk.protocol.models.CreateSelectedPayinMethod
-import tbdex.sdk.protocol.models.CreateSelectedPayoutMethod
 import tbdex.sdk.protocol.serialization.Json
 import kotlin.test.Ignore
 import kotlin.test.assertContains

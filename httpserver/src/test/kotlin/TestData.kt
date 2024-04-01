@@ -2,6 +2,9 @@
 import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.CloseData
+import tbdex.sdk.protocol.models.CreateRfqData
+import tbdex.sdk.protocol.models.CreateSelectedPayinMethod
+import tbdex.sdk.protocol.models.CreateSelectedPayoutMethod
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Order
@@ -10,9 +13,6 @@ import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.QuoteData
 import tbdex.sdk.protocol.models.QuoteDetails
 import tbdex.sdk.protocol.models.Rfq
-import tbdex.sdk.protocol.models.CreateRfqData
-import tbdex.sdk.protocol.models.CreateSelectedPayinMethod
-import tbdex.sdk.protocol.models.CreateSelectedPayoutMethod
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.dids.methods.dht.DidDht
 import java.time.OffsetDateTime

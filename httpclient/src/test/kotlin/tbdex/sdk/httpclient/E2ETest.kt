@@ -4,14 +4,14 @@ import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
 import tbdex.sdk.httpclient.models.TbdexResponseException
+import tbdex.sdk.protocol.models.CreateRfqData
+import tbdex.sdk.protocol.models.CreateSelectedPayinMethod
+import tbdex.sdk.protocol.models.CreateSelectedPayoutMethod
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.Rfq
-import tbdex.sdk.protocol.models.CreateRfqData
-import tbdex.sdk.protocol.models.CreateSelectedPayinMethod
-import tbdex.sdk.protocol.models.CreateSelectedPayoutMethod
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.crypto.JwaCurve

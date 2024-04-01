@@ -4,6 +4,9 @@ import com.danubetech.verifiablecredentials.CredentialSubject
 import de.fxlae.typeid.TypeId
 import tbdex.sdk.protocol.models.Balance
 import tbdex.sdk.protocol.models.BalanceData
+import tbdex.sdk.protocol.models.CreateRfqData
+import tbdex.sdk.protocol.models.CreateSelectedPayinMethod
+import tbdex.sdk.protocol.models.CreateSelectedPayoutMethod
 import tbdex.sdk.protocol.models.MessageKind
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.OfferingData
@@ -14,9 +17,6 @@ import tbdex.sdk.protocol.models.QuoteData
 import tbdex.sdk.protocol.models.QuoteDetails
 import tbdex.sdk.protocol.models.ResourceKind
 import tbdex.sdk.protocol.models.Rfq
-import tbdex.sdk.protocol.models.CreateRfqData
-import tbdex.sdk.protocol.models.CreateSelectedPayinMethod
-import tbdex.sdk.protocol.models.CreateSelectedPayoutMethod
 import web5.sdk.credentials.VcDataModel
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.credentials.model.ConstraintsV2
