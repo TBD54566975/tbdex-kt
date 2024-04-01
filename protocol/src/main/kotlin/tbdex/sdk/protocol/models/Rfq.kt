@@ -235,7 +235,7 @@ class Rfq private constructor(
      * @throws IllegalArgumentException if the payload is not valid json.
      * @throws IllegalArgumentException if the payload does not conform to the expected json schema.
      * @throws IllegalArgumentException if the payload signature verification fails.
-     * @throws IllegalArgumentException if Rfq.privateData does not match Rfq.data
+     * @throws IllegalArgumentException if hashed values in Rfq.privateData does not match values in Rfq.data
      */
     fun parse(payload: String, requireAllPrivateData: Boolean = false): Rfq {
       val jsonMessage = Parser.parseMessageToJsonNode(payload)
