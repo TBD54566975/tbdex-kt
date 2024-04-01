@@ -19,6 +19,15 @@ object SignatureVerifier {
    */
   fun digestOf(metadata: Metadata, data: Data): ByteArray {
     val payload = mapOf("metadata" to metadata, "data" to data)
+    return digestOf(payload)
+  }
+
+  /**
+   * Generates a canonicalized digest of any payload.
+   *
+   * @return The digest as a byte array.
+   */
+  fun digestOf(payload: Any): ByteArray {
     val canonicalJsonSerializedPayload = JsonCanonicalizer(Json.stringify(payload))
 
     val sha256 = MessageDigest.getInstance("SHA-256")

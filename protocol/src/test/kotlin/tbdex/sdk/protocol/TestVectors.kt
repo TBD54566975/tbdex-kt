@@ -16,6 +16,7 @@ object TestVectors {
       "parse-orderstatus.json",
       "parse-quote.json",
       "parse-rfq.json",
+      "parse-rfq-omit-private-data.json",
       "parse-balance.json"
     )
     for (vectorFile in vectorFiles) {

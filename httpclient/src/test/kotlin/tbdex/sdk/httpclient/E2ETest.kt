@@ -4,14 +4,14 @@ import org.junit.jupiter.api.Disabled
 import tbdex.sdk.httpclient.models.GetExchangesFilter
 import tbdex.sdk.httpclient.models.GetOfferingsFilter
 import tbdex.sdk.httpclient.models.TbdexResponseException
+import tbdex.sdk.protocol.models.CreateRfqData
+import tbdex.sdk.protocol.models.CreateSelectedPayinMethod
+import tbdex.sdk.protocol.models.CreateSelectedPayoutMethod
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Order
 import tbdex.sdk.protocol.models.OrderStatus
 import tbdex.sdk.protocol.models.Quote
 import tbdex.sdk.protocol.models.Rfq
-import tbdex.sdk.protocol.models.RfqData
-import tbdex.sdk.protocol.models.SelectedPayinMethod
-import tbdex.sdk.protocol.models.SelectedPayoutMethod
 import web5.sdk.credentials.VerifiableCredential
 import web5.sdk.crypto.InMemoryKeyManager
 import web5.sdk.crypto.JwaCurve
@@ -254,14 +254,14 @@ class E2ETest {
   private fun buildRfqData(
     firstOfferingId: String,
     vcJwt: String
-  ) = RfqData(
+  ) = CreateRfqData(
     offeringId = firstOfferingId,
-    payin = SelectedPayinMethod(
+    payin = CreateSelectedPayinMethod(
       kind = "NGN_ADDRESS",
       paymentDetails = mapOf("walletAddress" to "ngn-wallet-address"),
       amount = "1.00"
     ),
-    payout = SelectedPayoutMethod(
+    payout = CreateSelectedPayoutMethod(
       kind = "BANK_Access Bank",
       paymentDetails = mapOf(
         "accountNumber" to "1234567890",
