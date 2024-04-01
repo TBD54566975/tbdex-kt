@@ -48,8 +48,9 @@ dependencies {
 buildscript {
   configurations.all {
     resolutionStrategy {
-      // Addresss https://github.com/TBD54566975/tbdex-kt/issues/167
+      // Address https://github.com/TBD54566975/tbdex-kt/issues/167
       force("com.fasterxml.woodstox:woodstox-core:6.4.0")
+      force("io.netty:netty-codec-http:4.1.108Final")
     }
   }
 }
