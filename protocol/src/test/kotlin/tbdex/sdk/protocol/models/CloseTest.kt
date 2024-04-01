@@ -8,6 +8,7 @@ import assertk.assertions.startsWith
 import com.nimbusds.jose.JWSObject
 import de.fxlae.typeid.TypeId
 import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.serialization.Json
 import kotlin.test.Test
@@ -45,10 +46,18 @@ class CloseTest {
     val close = TestData.getClose()
     close.sign(TestData.PFI_DID)
     val jsonMessage = close.toString()
-    val parsedMessage = Message.parse(jsonMessage)
+    val parsedMessage = Close.parse(jsonMessage)
 
     assertIs<Close>(parsedMessage)
     assertThat(parsedMessage.toString()).isEqualTo(jsonMessage)
+  }
+
+  @Test
+  fun `parse() throws if json string is not a Close`() {
+    val quote = TestData.getQuote()
+    quote.sign(TestData.ALICE_DID)
+    val jsonMessage = quote.toString()
+    assertThrows<IllegalArgumentException> { Close.parse(jsonMessage) }
   }
 
   @Test
@@ -56,6 +65,6 @@ class CloseTest {
     val close = TestData.getClose()
     close.sign(TestData.PFI_DID)
 
-    assertDoesNotThrow { Message.parse(Json.stringify(close)) }
+    assertDoesNotThrow { Close.parse(Json.stringify(close)) }
   }
 }

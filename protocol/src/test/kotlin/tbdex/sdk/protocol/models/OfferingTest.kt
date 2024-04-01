@@ -5,6 +5,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.startsWith
 import org.junit.jupiter.api.assertDoesNotThrow
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.serialization.Json
 import kotlin.test.Test
@@ -36,7 +37,7 @@ class OfferingTest {
     val offering = TestData.getOffering()
     offering.sign(TestData.PFI_DID)
     val jsonResource = offering.toString()
-    val parsed = Resource.parse(jsonResource)
+    val parsed = Parser.parseResource(jsonResource)
 
     assertIs<Offering>(parsed)
     assertThat(parsed.toString()).isEqualTo(jsonResource)
@@ -47,7 +48,7 @@ class OfferingTest {
     val offering = TestData.getOffering()
     offering.sign(TestData.PFI_DID)
 
-    val parsedOffering = assertDoesNotThrow { Resource.parse(Json.stringify(offering)) }
+    val parsedOffering = assertDoesNotThrow { Parser.parseResource(Json.stringify(offering)) }
     assertIs<Offering>(parsedOffering)
   }
 

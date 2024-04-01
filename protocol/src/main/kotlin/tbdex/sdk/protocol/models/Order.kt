@@ -1,8 +1,10 @@
 package tbdex.sdk.protocol.models
 
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.models.Close.Companion.create
 import tbdex.sdk.protocol.models.Order.Companion.create
+import tbdex.sdk.protocol.serialization.Json
 import tbdex.sdk.protocol.validateExchangeId
 import java.time.OffsetDateTime
 
@@ -59,6 +61,30 @@ class Order private constructor(
         externalId = externalId
       )
       return Order(metadata, OrderData())
+    }
+
+    /**
+     * Takes an existing Order in the form of a json string and parses it into an Order object.
+     * Validates object structure and performs an integrity check using the message signature.
+     *
+     * @param payload The Order as a json string.
+     * @return The json string parsed into an Order
+     * @throws IllegalArgumentException if the payload is not valid json.
+     * @throws IllegalArgumentException if the payload does not conform to the expected json schema.
+     * @throws IllegalArgumentException if the payload signature verification fails.
+     * @throws IllegalArgumentException if the payload is not an Order
+     */
+    fun parse(payload: String): Order {
+      val jsonMessage = Parser.parseMessageToJsonNode(payload)
+      val kind = jsonMessage.get("metadata").get("kind").asText()
+      if (kind != "order") {
+        throw IllegalArgumentException("Message must be an Order but message kind was $kind")
+      }
+
+      val message = Json.jsonMapper.convertValue(jsonMessage, Order::class.java)
+      message.verify()
+
+      return message
     }
   }
 }

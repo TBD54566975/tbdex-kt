@@ -97,52 +97,6 @@ sealed class Message {
   override fun toString(): String {
     return Json.stringify(this)
   }
-
-  companion object {
-    /**
-     * Takes an existing Message in the form of a json string and parses it into a Message object.
-     * Validates object structure and performs an integrity check using the message signature.
-     *
-     * @param payload The message as a json string.
-     * @return The json string parsed into a concrete Message implementation.
-     * @throws IllegalArgumentException if the payload is not valid json.
-     * @throws IllegalArgumentException if the payload does not conform to the expected json schema.
-     * @throws IllegalArgumentException if the payload signature verification fails.
-     */
-    fun parse(payload: String): Message {
-      val jsonMessage: JsonNode
-
-      try {
-        jsonMessage = jsonMapper.readTree(payload)
-      } catch (e: JsonParseException) {
-        throw IllegalArgumentException("unexpected character at offset ${e.location.charOffset}")
-      }
-
-      require(jsonMessage.isObject) { "expected payload to be a json object" }
-
-      // validate message structure
-      Validator.validate(jsonMessage, "message")
-
-      val jsonMessageData = jsonMessage.get("data")
-      val kind = jsonMessage.get("metadata").get("kind").asText()
-
-      // validate specific message data (Rfq, Quote, etc)
-      Validator.validate(jsonMessageData, kind)
-
-      val messageType = when (MessageKind.valueOf(kind)) {
-        MessageKind.rfq -> Rfq::class.java
-        MessageKind.order -> Order::class.java
-        MessageKind.orderstatus -> OrderStatus::class.java
-        MessageKind.quote -> Quote::class.java
-        MessageKind.close -> Close::class.java
-      }
-
-      val message = jsonMapper.convertValue(jsonMessage, messageType)
-      message.verify()
-
-      return message
-    }
-  }
 }
 
 

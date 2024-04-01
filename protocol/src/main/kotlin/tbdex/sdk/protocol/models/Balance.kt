@@ -1,7 +1,9 @@
 package tbdex.sdk.protocol.models
 
 import de.fxlae.typeid.TypeId
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.Validator
+import tbdex.sdk.protocol.serialization.Json
 import java.time.OffsetDateTime
 
 /**
@@ -32,7 +34,19 @@ class Balance(
      * @param payload The Balance as a json string.
      * @return The json string parsed into a concrete Balance implementation.
      */
-    fun parse(payload: String) = Resource.parse(payload) as Balance
+    fun parse(payload: String): Balance {
+      val jsonResource = Parser.parseResourceToJsonNode(payload)
+
+      val kind = jsonResource.get("metadata").get("kind").asText()
+      if (kind != "balance") {
+        throw IllegalArgumentException("Message must be an Balance but resource kind was $kind")
+      }
+
+      val resource = Json.jsonMapper.convertValue(jsonResource, Balance::class.java)
+      resource.verify()
+
+      return resource
+    }
 
     /**
      * Creates a new `Balance` resource, autopopulating the id, creation/updated time, and resource kind.

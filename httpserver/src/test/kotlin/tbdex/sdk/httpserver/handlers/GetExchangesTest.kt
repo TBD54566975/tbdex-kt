@@ -27,6 +27,7 @@ import tbdex.sdk.httpserver.models.ErrorResponse
 import tbdex.sdk.httpserver.models.ExchangesApi
 import tbdex.sdk.httpserver.models.GetExchangesCallback
 import tbdex.sdk.httpserver.models.GetExchangesFilter
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.serialization.Json
 import web5.sdk.crypto.InMemoryKeyManager
@@ -105,7 +106,7 @@ class GetExchangesTest {
         .map { exchange ->
           exchange.elements().asSequence().map {
             val string = it.toString()
-            Message.parse(string)
+            Parser.parseMessage(string)
           }.toList()
         }
         .toList()

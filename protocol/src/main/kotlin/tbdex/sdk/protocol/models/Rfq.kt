@@ -2,7 +2,7 @@ package tbdex.sdk.protocol.models
 
 import com.fasterxml.jackson.databind.JsonNode
 import de.fxlae.typeid.TypeId
-import org.erdtman.jcs.JsonCanonicalizer
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.SignatureVerifier
 import tbdex.sdk.protocol.Validator
 import tbdex.sdk.protocol.models.Close.Companion.create
@@ -11,7 +11,6 @@ import tbdex.sdk.protocol.serialization.Json
 import web5.sdk.common.Convert
 import web5.sdk.credentials.PresentationExchange
 import web5.sdk.credentials.model.PresentationDefinitionV2
-import java.security.MessageDigest
 import java.security.SecureRandom
 import java.time.OffsetDateTime
 
@@ -239,8 +238,15 @@ class Rfq private constructor(
      * @throws IllegalArgumentException if Rfq.privateData does not match Rfq.data
      */
     fun parse(payload: String, requireAllPrivateData: Boolean = false): Rfq {
-      // TODO: Ensure that Message.parse() also validates private data
-      val rfq = Message.parse(payload) as Rfq
+      val jsonMessage = Parser.parseMessageToJsonNode(payload)
+
+      val kind = jsonMessage.get("metadata").get("kind").asText()
+      if (kind != "rfq") {
+        throw IllegalArgumentException("Message must be an RFQ but message kind was $kind")
+      }
+
+      val rfq = Json.jsonMapper.convertValue(jsonMessage, Rfq::class.java)
+      rfq.verify()
 
       if (requireAllPrivateData) {
         rfq.verifyAllPrivateData()

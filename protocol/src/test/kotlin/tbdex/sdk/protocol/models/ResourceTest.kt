@@ -7,6 +7,7 @@ import assertk.assertions.isNotNull
 import com.nimbusds.jose.JWSObject
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.ValidatorException
 import tbdex.sdk.protocol.serialization.Json
@@ -43,7 +44,7 @@ class ResourceTest {
 
   @Test
   fun `parse throws error if json string is not valid`() {
-    assertThrows<IllegalArgumentException> { Resource.parse(";;;;") }
+    assertThrows<IllegalArgumentException> { Parser.parseResource(";;;;") }
   }
 
   @Test
@@ -52,7 +53,7 @@ class ResourceTest {
     // do not sign it
 
     val exception = assertThrows<ValidatorException> {
-      Resource.parse(Json.stringify(offeringFromPfi))
+      Offering.parse(Json.stringify(offeringFromPfi))
     }
     assertThat(exception.message!!).contains(
       "invalid payload."
@@ -65,7 +66,7 @@ class ResourceTest {
     // do not sign it
 
     val exception = assertThrows<ValidatorException> {
-      Resource.parse(Json.stringify(balanceFromPfi))
+      Offering.parse(Json.stringify(balanceFromPfi))
     }
     assertThat(exception.message!!).contains(
       "invalid payload."
@@ -79,7 +80,7 @@ class ResourceTest {
     offeringFromPfi.sign(TestData.ALICE_DID)
 
     val exception = assertThrows<SignatureException> {
-      Resource.parse(Json.stringify(offeringFromPfi))
+      Parser.parseResource(Json.stringify(offeringFromPfi))
     }
     assertThat(exception.message!!).contains(
       "Signature verification failed: Was not signed by the expected DID"
@@ -93,7 +94,7 @@ class ResourceTest {
     balanceFromPfi.sign(TestData.ALICE_DID)
 
     val exception = assertThrows<SignatureException> {
-      Resource.parse(Json.stringify(balanceFromPfi))
+      Balance.parse(Json.stringify(balanceFromPfi))
     }
     assertThat(exception.message!!).contains("Signature verification failed: Was not signed by the expected DID")
   }

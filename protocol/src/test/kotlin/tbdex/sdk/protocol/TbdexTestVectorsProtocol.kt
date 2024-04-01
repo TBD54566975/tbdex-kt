@@ -84,7 +84,7 @@ class TbdexTestVectorsProtocol {
     val input = vector["input"].textValue()
     assertNotNull(input)
 
-    val tbDEXMessage = Message.parse(input)
+    val tbDEXMessage = Parser.parseMessage(input)
     assertIs<T>(tbDEXMessage)
 
     assertEquals(vector["output"], Json.jsonMapper.readTree(tbDEXMessage.toString()))
@@ -94,7 +94,7 @@ class TbdexTestVectorsProtocol {
     val input = vector["input"].textValue()
     assertNotNull(input)
 
-    val tbDEXMessage = Resource.parse(input)
+    val tbDEXMessage = Parser.parseResource(input)
     assertIs<T>(tbDEXMessage)
 
     assertEquals(vector["output"], Json.jsonMapper.readTree(tbDEXMessage.toString()))
@@ -104,6 +104,6 @@ class TbdexTestVectorsProtocol {
   // private fun testErrorTestVector(vector: JsonNode) {
   //   val input = vector["input"].textValue()
   //   assertNotNull(input)
-  //   assertThrows(Message.parse(vector["input"])
+  //   assertThrows(Parser.parseMessage(vector["input"])
   // }
 }

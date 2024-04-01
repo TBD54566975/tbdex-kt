@@ -10,6 +10,7 @@ import tbdex.sdk.httpserver.models.CreateExchangeCallback
 import tbdex.sdk.httpserver.models.ErrorResponse
 import tbdex.sdk.httpserver.models.ExchangesApi
 import tbdex.sdk.httpserver.models.OfferingsApi
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.Offering
 import tbdex.sdk.protocol.models.Rfq
@@ -42,7 +43,7 @@ suspend fun createExchange(
     val jsonNode = Json.jsonMapper.readTree(requestBody)
     val rfqJsonString = jsonNode["rfq"].toString()
 
-    rfq = Message.parse(rfqJsonString) as Rfq
+    rfq = Rfq.parse(rfqJsonString)
     if (jsonNode["replyTo"] != null) {
       replyTo = jsonNode["replyTo"].asText()
     }

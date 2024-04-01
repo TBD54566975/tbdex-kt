@@ -7,6 +7,8 @@ import assertk.assertions.startsWith
 import de.fxlae.typeid.TypeId
 import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.assertThrows
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.TestData
 import tbdex.sdk.protocol.serialization.Json
 import kotlin.test.Test
@@ -32,10 +34,18 @@ class OrderTest {
     val order = TestData.getOrder()
     order.sign(TestData.ALICE_DID)
     val jsonMessage = order.toString()
-    val parsedMessage = Message.parse(jsonMessage)
+    val parsedMessage = Order.parse(jsonMessage)
 
     assertIs<Order>(parsedMessage)
     assertThat(parsedMessage.toString()).isEqualTo(jsonMessage)
+  }
+
+  @Test
+  fun `parse() throws if json string is not an Order`() {
+    val quote = TestData.getQuote()
+    quote.sign(TestData.ALICE_DID)
+    val jsonMessage = quote.toString()
+    assertThrows<IllegalArgumentException> { Order.parse(jsonMessage) }
   }
 
   @Test
@@ -43,6 +53,6 @@ class OrderTest {
     val order = TestData.getOrder()
     order.sign(TestData.ALICE_DID)
 
-    assertDoesNotThrow { Message.parse(Json.stringify(order)) }
+    assertDoesNotThrow { Order.parse(Json.stringify(order)) }
   }
 }

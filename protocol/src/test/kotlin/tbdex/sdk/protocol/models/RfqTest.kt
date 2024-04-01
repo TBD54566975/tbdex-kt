@@ -46,10 +46,18 @@ class RfqTest {
     val rfq = TestData.getRfq()
     rfq.sign(TestData.ALICE_DID)
     val jsonMessage = rfq.toString()
-    val parsedMessage = Message.parse(jsonMessage)
+    val parsedMessage = Rfq.parse(jsonMessage)
 
     assertIs<Rfq>(parsedMessage)
     assertThat(parsedMessage.toString()).isEqualTo(jsonMessage)
+  }
+
+  @Test
+  fun `parse() throws if json string is not an Rfq`() {
+    val quote = TestData.getQuote()
+    quote.sign(TestData.ALICE_DID)
+    val jsonMessage = quote.toString()
+    assertThrows<IllegalArgumentException> { Rfq.parse(jsonMessage) }
   }
 
   @Test
@@ -57,7 +65,7 @@ class RfqTest {
     val rfq = TestData.getRfq()
     rfq.sign(TestData.ALICE_DID)
 
-    assertDoesNotThrow { Message.parse(Json.stringify(rfq)) }
+    assertDoesNotThrow { Rfq.parse(Json.stringify(rfq)) }
   }
 
   @Test

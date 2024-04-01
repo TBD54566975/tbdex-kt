@@ -8,6 +8,7 @@ import tbdex.sdk.httpclient.models.ErrorDetail
 import tbdex.sdk.httpserver.models.Callbacks
 import tbdex.sdk.httpserver.models.ErrorResponse
 import tbdex.sdk.httpserver.models.ExchangesApi
+import tbdex.sdk.protocol.Parser
 import tbdex.sdk.protocol.models.Close
 import tbdex.sdk.protocol.models.Message
 import tbdex.sdk.protocol.models.MessageKind
@@ -30,7 +31,7 @@ suspend fun submitMessage(
   val message: Message
 
   try {
-    message = Message.parse(call.receiveText())
+    message = Parser.parseMessage(call.receiveText())
   } catch (e: Exception) {
     val errorDetail = ErrorDetail(detail = "Parsing of TBDex message failed: ${e.message}")
     val errorResponse = ErrorResponse(listOf(errorDetail))
