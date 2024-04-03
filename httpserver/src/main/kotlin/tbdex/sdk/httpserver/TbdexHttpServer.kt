@@ -61,7 +61,7 @@ class TbdexHttpServerConfig(
  * @property config The configuration for the server, including port and optional APIs.
  */
 class TbdexHttpServer(private val config: TbdexHttpServerConfig) {
-  internal val callbacks = Callbacks()
+  val callbacks = Callbacks()
   private var embedded = embeddedServer(Netty, port = config.port) {
     configure(this)
   }
