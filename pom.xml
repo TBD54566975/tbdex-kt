@@ -27,10 +27,10 @@
 
   <!-- SCM -->
   <scm>
-    <connection>scm:git:git://github.com/ALRubinger/tbdex-kt.git</connection>
+    <connection>scm:git:git://github.com/TBD54566975/tbdex-kt.git</connection>
     <!-- This has to be HTTPS, not git://, for maven-release-plugin to do AUTH correctly -->
-    <developerConnection>scm:git:https://github.com/ALRubinger/tbdex-kt.git</developerConnection>
-    <url>https://github.com/ALRubinger/tbdex-kt</url>
+    <developerConnection>scm:git:https://github.com/TBD54566975/tbdex-kt.git</developerConnection>
+    <url>https://github.com/TBD54566975/tbdex-kt</url>
     <tag>HEAD</tag>
   </scm>
 
