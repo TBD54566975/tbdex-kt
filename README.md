@@ -269,7 +269,7 @@ export ARTIFACTORY_PASSWORD=yourPassword
 ```shell
 mvn deploy --settings .maven_settings.xml
 ```
-## Working with the `web5-spec` submodule
+## Working with the `tbdex` submodule
 
 ### Pulling
 
@@ -279,16 +279,21 @@ You may need to update the `tbdex` submodule after pulling.
 git pull
 git submodule update
 ```
-
 ### Pushing
 
 If you have made changes to the `tbdex` submodule, you should push your changes to the `tbdex` remote as well as
-pushing changes to `tbdex`.
+pushing changes to `tbdex-kt`.
 
 ```sh
 cd tbdex
+git checkout main
+git checkout -b my-branch
+git add .
+git commit -m "your commit message"
 git push
 cd ..
+git add .
+git commit -m "updating tbdex submodule"
 git push
 ```
 
