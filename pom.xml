@@ -18,7 +18,7 @@
     the version "version.xyz.block.web5" set this web5-parent. When updating Web5, update both
     this version *and* the <version.xyz.block.web5> below in the <properties> section.
     -->
-    <version>1.0.0-maven-rc-2</version>
+    <version>commit-89fc453-SNAPSHOT</version>
   </parent>
   <name>tbDEX SDK for the JVM Build Parent</name>
   <url>https://developer.tbd.website</url>
@@ -103,7 +103,7 @@
     this version to refer to the web5-parent at the top of this file. When updating
     Web5, update both here and in the <parent> declaration above.
     -->
-    <version.xyz.block.web5>1.0.0-maven-rc-2</version.xyz.block.web5>
+    <version.xyz.block.web5>commit-89fc453-SNAPSHOT</version.xyz.block.web5>
 
     <!-- Versioning for Dependencies -->
     <version.de.fxlae>0.2.0</version.de.fxlae>
