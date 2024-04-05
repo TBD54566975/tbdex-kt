@@ -151,15 +151,6 @@ jobs:
           private-key: ${{ secrets.CICD_ROBOT_GITHUB_APP_PRIVATE_KEY }}
           owner: TBD54566975
           repositories: sdk-report-runner
-      - name: Generate an access token to trigger downstream repo
-        uses: actions/create-github-app-token@2986852ad836768dfea7781f31828eb3e17990fa # v1.6.2
-        id: generate_token
-        if: github.ref == 'refs/heads/main'
-        with:
-          app-id: ${{ secrets.CICD_ROBOT_GITHUB_APP_ID }}
-          private-key: ${{ secrets.CICD_ROBOT_GITHUB_APP_PRIVATE_KEY }}
-          owner: TBD54566975
-          repositories: sdk-report-runner
 
       - name: Trigger sdk-report-runner report build
         if: github.ref == 'refs/heads/main'
