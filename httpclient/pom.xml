@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <!-- Parent -->
+  <parent>
+    <groupId>xyz.block</groupId>
+    <artifactId>tbdex-parent</artifactId>
+    <version>0.0.0-main-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <!-- Model Version -->
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- Artifact Configuration -->
+  <artifactId>tbdex-httpclient</artifactId>
+  <name>tbDEX HTTP Client</name>
+  <description>HTTP Client for tbDEX</description>
+
+
+  <!-- Properties -->
+  <properties>
+
+    <!-- Versioning -->
+
+  </properties>
+
+  <!-- Dependencies -->
+  <dependencies>
+
+    <!-- tbDEX -->
+    <dependency>
+      <groupId>xyz.block</groupId>
+      <artifactId>tbdex-protocol</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- Direct Dependencies -->
+
+    <!-- Test Dependencies -->
+    <dependency>
+      <groupId>io.mockk</groupId>
+      <artifactId>mockk-jvm</artifactId>
+      <version>1.13.9</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.squareup.okhttp3</groupId>
+      <artifactId>mockwebserver</artifactId>
+      <version>4.12.0</version>
+      <scope>test</scope>
+    </dependency>
+
+
+  </dependencies>
+
+  <!-- Build Configuration -->
+  <build>
+
+  </build>
+</project>

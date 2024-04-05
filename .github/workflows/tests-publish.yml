@@ -2,7 +2,7 @@ name: Publish Tests Report
 
 on:
   workflow_run:
-    workflows: ["tbdex SDK Kotlin CI"]
+    workflows: ["SDK Kotlin CI"]
     types:
       - completed
 
@@ -19,16 +19,16 @@ jobs:
           name: tests-report-junit
           path: ./
 
-      - name: Publish Tests Report
+      - name: Publish Tests Results
         env:
           BUILDKITE_ANALYTICS_TOKEN: ${{ secrets.BUILDKITE_ANALYTICS_TOKEN }}
           WORKFLOW_RUN_ID: ${{ github.event.workflow_run.id }}
         run: |
-          declare -a projects=("protocol" "httpclient")
+          declare -a projects=("httpclient" "httpserver" "protocol")
 
           for project in "${projects[@]}"; do
             # Find Tests Reports in each project and store them in an array
-            files=($(find "${project}/build/test-results/test" -name '*.xml'))
+            files=($(find "${project}/target/surefire-reports" -name '*.xml'))
 
             # Check if files array is empty
             if [ ${#files[@]} -eq 0 ]; then

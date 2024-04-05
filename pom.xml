@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <!-- Model Information -->
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- Artifact Information  -->
+  <groupId>xyz.block</groupId>
+  <artifactId>tbdex-parent</artifactId>
+  <version>0.0.0-main-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <parent>
+    <groupId>xyz.block</groupId>
+    <artifactId>web5-parent</artifactId>
+    <!--
+    NOTE: Because Maven properties resolve after the parent POM, we cannot use
+    the version "version.xyz.block.web5" set this web5-parent. When updating Web5, update both
+    this version *and* the <version.xyz.block.web5> below in the <properties> section.
+    -->
+    <version>commit-89fc453-SNAPSHOT</version>
+  </parent>
+  <name>tbDEX SDK for the JVM Build Parent</name>
+  <url>https://developer.tbd.website</url>
+  <description>Build Aggregator and Parent for tbDEX SDK for the JVM</description>
+  <inceptionYear>2024</inceptionYear>
+
+  <!-- SCM -->
+  <scm>
+    <connection>scm:git:git://github.com/TBD54566975/tbdex-kt.git</connection>
+    <!-- This has to be HTTPS, not git://, for maven-release-plugin to do AUTH correctly -->
+    <developerConnection>scm:git:https://github.com/TBD54566975/tbdex-kt.git</developerConnection>
+    <url>https://github.com/TBD54566975/tbdex-kt</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <!-- Developers -->
+  <developers>
+    <developer>
+      <id>TBD54566975</id>
+      <name>Block, Inc.</name>
+      <email>releases@tbd.email</email>
+    </developer>
+  </developers>
+
+  <!-- Issues -->
+  <issueManagement>
+    <system>github</system>
+    <url>https://github.com/TBD54566975/tbdex-kt/issues</url>
+  </issueManagement>
+
+  <!-- Licenses -->
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <!-- Aggregate Modules -->
+  <modules>
+    <module>distribution</module>
+    <module>httpclient</module>
+    <module>httpserver</module>
+    <module>protocol</module>
+  </modules>
+
+  <!-- Properties -->
+  <properties>
+    <!-- Project properties -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <kotlin.jvm.target>11</kotlin.jvm.target>
+    <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+    <!-- Defines the server config in .maven_settings.xml to use in maven-release-plugin -->
+    <project.scm.id>github</project.scm.id>
+
+    <!--
+    This section is where we declare the versioning and scope for dependencies of
+    the Web5 platform and projects building atop the Web5 platform.
+
+    Submodules of Web5 should not define their own dependency versions
+    because these must all co-exist in the same ClassLoading environment, and
+    therefore have to be aligned across submodules. Thus we declare the versioning
+    requirements here at the platform level.
+
+    The <dependencyManagement> section of this POM enforces the versions declared
+    here as properties. Because this POM is a BOM POM, these versions may be imported
+    by projects building atop the Web5 Platform (ie. tbDEX, consumers, etc).
+
+    If a submodule needs to introduce a new dependency or upgrade, define that
+    dependency and version here such that other submodules in the build may pick
+    up the same version. This will guarantee that submodule test suites are running
+    in the correct ClassLoading environment aligned with the Web5 platform.
+
+    More on BOM POMs:
+    https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#bill-of-materials-bom-poms
+    -->
+
+    <!-- Versioning for Platform -->
+    <!--
+    NOTE: Because Maven properties resolve after the parent POM, we cannot use
+    this version to refer to the web5-parent at the top of this file. When updating
+    Web5, update both here and in the <parent> declaration above.
+    -->
+    <version.xyz.block.web5>commit-89fc453-SNAPSHOT</version.xyz.block.web5>
+
+    <!-- Versioning for Dependencies -->
+    <version.de.fxlae>0.2.0</version.de.fxlae>
+
+    <!-- Versioning for Test Dependencies -->
+    <version.com.willowtreeapps.assertk>0.27.0</version.com.willowtreeapps.assertk>
+    <version.io.mockk>1.11.0</version.io.mockk>
+
+    <!--
+    Versioning for transitive Dependencies
+    These are overrides for deps brought in transitively; reasoning
+    and approach is documented below in <dependencyManagement> section
+
+    Before adding here, consult that the version property for your desired dependency
+    is not already defined by web5-parent. Versions must be aligned
+    between the two projects, so if it exists in web5-kt, it should be
+    defined (or adjusted) there.
+
+    If we are doing this correctly, nothing should be required after this comment.
+    We may need to temporarily put entries in here to fix things for tbdex-kt
+    while we port them into web5-kt and upgrade to a new release which includes
+    that upleveling. Or we may need temporary transitive management to address
+    CVEs, security vulnerabilities, or license issues in deps.
+    -->
+    <version.io.netty>4.1.108.Final</version.io.netty>
+
+  </properties>
+
+  <!-- Dependency Management -->
+  <dependencyManagement>
+
+    <dependencies>
+
+      <!-- Import Dependencies -->
+      <!-- Web5 BOM; sets appropriate deps for the platform-->
+      <dependency>
+        <groupId>xyz.block</groupId>
+        <artifactId>web5-parent</artifactId>
+        <version>${version.xyz.block.web5}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!--
+        Direct Dependencies (not declared in the web5-parent BOM)
+      -->
+      <dependency>
+        <groupId>de.fxlae</groupId>
+        <artifactId>typeid-java-jdk8</artifactId>
+        <version>${version.de.fxlae}</version>
+      </dependency>
+      <!-- Web5 Platform; everything in Web5 is brought in transitively through this -->
+      <dependency>
+        <groupId>xyz.block</groupId>
+        <artifactId>web5</artifactId>
+        <version>${version.xyz.block.web5}</version>
+        <type>pom</type>
+      </dependency>
+
+      <!--
+        Test Dependencies
+       -->
+      <dependency>
+        <groupId>com.willowtreeapps.assertk</groupId>
+        <artifactId>assertk-jvm</artifactId>
+        <version>${version.com.willowtreeapps.assertk}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.mockk</groupId>
+        <artifactId>mockk</artifactId>
+        <version>${version.io.mockk}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <!--
+      Transitive Dependency Management
+
+      In this section we address build issues including security vulnerabilities
+      in transitive dependencies we don't explicitly declare above or in the submodules
+      Versioning and scope declared here will override anything inherited through
+      transitivity, so use with care. Also note: these are in place for a
+      point in time. As we maintain this software, the manual forced resolution we do
+      here may:
+
+      1) No longer be necessary (if we have removed a dependency path leading to dep)
+      2) Break an upgrade (if we upgrade a dependency and this forces a lower version
+         of a transitive dependency it brings in)
+
+      So we need to exercise care here, and, when upgrading our deps, check to see if
+      these overrides of transitive dependency versions and scope aren't breaking things.
+
+      When adding an entry here, please reference the issue which explains why we
+      needed to do this; it will help future maintainers understand if the force
+      is still valid, should be removed, or handled in another way.
+
+      When in doubt, ask! :)
+      -->
+
+      <!-- Addresses CVE-2024-29025 -->
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-http</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+
+      <!--
+
+      FasterXML Jackson -
+
+      Needed for libraries to play nicely together and avoid NoClassDefFoundError
+      -->
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+        <!-- Version property for fasterxml is defined by web5-parent -->
+        <version>${version.com.fasterxml.jackson}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.ktor</groupId>
+        <artifactId>ktor-client-auth-jvm</artifactId>
+        <!-- Version property for io.ktor is defined by web5-parent -->
+        <version>${version.io.ktor}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.ktor</groupId>
+        <artifactId>ktor-client-content-negotiation-jvm</artifactId>
+        <!-- Version property for io.ktor is defined by web5-parent -->
+        <version>${version.io.ktor}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.ktor</groupId>
+        <artifactId>ktor-server-content-negotiation-jvm</artifactId>
+        <!-- Version property for io.ktor is defined by web5-parent -->
+        <version>${version.io.ktor}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.ktor</groupId>
+        <artifactId>ktor-server-netty-jvm</artifactId>
+        <!-- Version property for io.ktor is defined by web5-parent -->
+        <version>${version.io.ktor}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.ktor</groupId>
+        <artifactId>ktor-server-test-host-jvm</artifactId>
+        <!-- Version property for io.ktor is defined by web5-parent -->
+        <version>${version.io.ktor}</version>
+      </dependency>
+
+      <!--
+        Transitive dependencies we must align with Web5 by upleveling
+        into web5-kt so that:
+
+        1) The Web5 test suite runs in the correct runtime environment that will be
+           used by consumers
+        2) We can inherit these directly from Web5 without having to mangle any
+           dependency magic for things to work
+
+         If we are doing this correctly, nothing should be required after this comment.
+         We may need to temporarily put entries in here to fix things for tbdex-kt
+         while we port them into web5-kt and upgrade to a new release which includes
+         that upleveling.
+      -->
+
+    </dependencies>
+
+
+  </dependencyManagement>
+
+  <dependencies>
+
+    <!-- Direct dependencies -->
+    <dependency>
+      <groupId>com.willowtreeapps.assertk</groupId>
+      <artifactId>assertk-jvm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-test</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-test-junit5</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+    </dependency>
+
+    </dependencies>
+
+  <build>
+
+    <plugins>
+      <!-- Needed for Maven Release Plugin to work with git submodules -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <inherited>false</inherited> <!-- only execute these in the parent -->
+        <executions>
+          <execution>
+            <id>git submodule update</id>
+            <phase>initialize</phase>
+            <configuration>
+              <executable>git</executable>
+              <arguments>
+                <argument>submodule</argument>
+                <argument>update</argument>
+                <argument>--init</argument>
+                <argument>--recursive</argument>
+              </arguments>
+            </configuration>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+  </build>
+
+  <profiles>
+    <!-- Inherited from web5-parent -->
+  </profiles>
+
+  <distributionManagement>
+    <!-- Inherited from web5-parent -->
+  </distributionManagement>
+
+  <repositories>
+    <!--
+    Cannot be inherited because the parent POM is in here, so we
+    need to be able to get the parent before we inherit configs from it
+    -->
+    <repository>
+      <id>tbd-oss-snapshots</id>
+      <name>tbd-oss-snapshots</name>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <url>https://blockxyz.jfrog.io/artifactory/tbd-oss-snapshots-maven2/</url>
+    </repository>
+    <repository>
+      <id>tbd-oss-releases</id>
+      <name>tbd-oss-releases</name>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <url>https://blockxyz.jfrog.io/artifactory/tbd-oss-releases-maven2/</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <!-- Inherited from web5-parent -->
+  </pluginRepositories>
+
+</project>
