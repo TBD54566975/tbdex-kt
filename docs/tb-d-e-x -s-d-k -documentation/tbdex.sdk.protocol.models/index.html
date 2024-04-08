@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>tbdex.sdk.protocol.models</title>
+    <link href="../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../index.html">
+                            tbDEX SDK Documentation
+                    </a>
+            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter="tbdex/main">JVM</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="package" id="content" pageIds="tbDEX SDK Documentation::tbdex.sdk.protocol.models////PointingToDeclaration//-579682865">
+  <div class="breadcrumbs"><a href="../../index.html">tbDEX SDK Documentation</a><span class="delimiter">/</span><span class="current">tbdex.sdk.protocol.models</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-883996227%2FClasslikes%2F-579682865" anchor-label="Balance" id="-883996227%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-balance/index.html"><span><span>Balance</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-883996227%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-balance/index.html">Balance</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>metadata<span class="token operator">: </span><a href="-resource-metadata/index.html">ResourceMetadata</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>data<span class="token operator">: </span><a href="-balance-data/index.html">BalanceData</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>signature<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="-resource/index.html">Resource</a></div><div class="brief "><p class="paragraph">Balance is a protected resource used to communicate the available amount of each currency held by the PFI on behalf of its customer.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-976013517%2FClasslikes%2F-579682865" anchor-label="BalanceData" id="-976013517%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-balance-data/index.html"><span>Balance</span><wbr></wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-976013517%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-balance-data/index.html">BalanceData</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>currencyCode<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>available<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-resource-data/index.html">ResourceData</a></div><div class="brief "><p class="paragraph">A data class implementing <a href="-resource-data/index.html">ResourceData</a>, which represents the contents of a <a href="-balance/index.html">Balance</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2015456289%2FClasslikes%2F-579682865" anchor-label="Close" id="2015456289%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-close/index.html"><span><span>Close</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2015456289%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-close/index.html">Close</a> : <a href="-message/index.html">Message</a></div><div class="brief "><p class="paragraph">A class representing the Close message. <code class="lang-kotlin">Close</code> implements the <a href="-message/index.html">Message</a> class and contains close specific data</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1639610473%2FClasslikes%2F-579682865" anchor-label="CloseData" id="-1639610473%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-close-data/index.html"><span>Close</span><wbr></wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1639610473%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-close-data/index.html">CloseData</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>reason<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>success<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="-message-data/index.html">MessageData</a></div><div class="brief "><p class="paragraph">A data class implementing <a href="-message-data/index.html">MessageData</a> that represents the contents of a <a href="-close/index.html">Close</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-24903666%2FClasslikes%2F-579682865" anchor-label="CreateRfqData" id="-24903666%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-create-rfq-data/index.html"><span>Create</span><wbr></wbr><span>Rfq</span><wbr></wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-24903666%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-create-rfq-data/index.html">CreateRfqData</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>offeringId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>payin<span class="token operator">: </span><a href="-create-selected-payin-method/index.html">CreateSelectedPayinMethod</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>payout<span class="token operator">: </span><a href="-create-selected-payout-method/index.html">CreateSelectedPayoutMethod</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>claims<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Data contained in a RFQ message, including data which will be placed in Rfq.privateDAta. Used for creating an RFQ.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="37832738%2FClasslikes%2F-579682865" anchor-label="CreateSelectedPayinMethod" id="37832738%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-create-selected-payin-method/index.html"><span>Create</span><wbr></wbr><span>Selected</span><wbr></wbr><span>Payin</span><wbr></wbr><span><span>Method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="37832738%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-create-selected-payin-method/index.html">CreateSelectedPayinMethod</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>kind<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>paymentDetails<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>amount<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-create-selected-payment-method/index.html">CreateSelectedPaymentMethod</a></div><div class="brief "><p class="paragraph">A data class representing the payin method selected, including the cleartext payin details.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-459903223%2FClasslikes%2F-579682865" anchor-label="CreateSelectedPaymentMethod" id="-459903223%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-create-selected-payment-method/index.html"><span>Create</span><wbr></wbr><span>Selected</span><wbr></wbr><span>Payment</span><wbr></wbr><span><span>Method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-459903223%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-create-selected-payment-method/index.html">CreateSelectedPaymentMethod</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>kind<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>paymentDetails<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A data class representing the payment method selected, including the cleartext payment details. Used for creating an RFQ.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1796802421%2FClasslikes%2F-579682865" anchor-label="CreateSelectedPayoutMethod" id="-1796802421%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-create-selected-payout-method/index.html"><span>Create</span><wbr></wbr><span>Selected</span><wbr></wbr><span>Payout</span><wbr></wbr><span><span>Method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1796802421%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-create-selected-payout-method/index.html">CreateSelectedPayoutMethod</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>kind<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>paymentDetails<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="-create-selected-payment-method/index.html">CreateSelectedPaymentMethod</a></div><div class="brief "><p class="paragraph">A data class representing the payin method selected, including the cleartext payout details.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="622096351%2FClasslikes%2F-579682865" anchor-label="Data" id="622096351%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-data/index.html"><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="622096351%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">interface </span><a href="-data/index.html">Data</a></div><div class="brief "><p class="paragraph">An interface that represents the data content of any tbDEX object.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1878864142%2FClasslikes%2F-579682865" anchor-label="Message" id="-1878864142%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-message/index.html"><span><span>Message</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1878864142%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-message/index.html">Message</a></div><div class="brief "><p class="paragraph">An abstract class representing the structure and common functionality available on all Messages.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1311185384%2FClasslikes%2F-579682865" anchor-label="MessageData" id="1311185384%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-message-data/index.html"><span>Message</span><wbr></wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1311185384%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">interface </span><a href="-message-data/index.html">MessageData</a> : <a href="-data/index.html">Data</a></div><div class="brief "><p class="paragraph">An interface that represents the contents of a <a href="-message/index.html">Message</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1551619778%2FClasslikes%2F-579682865" anchor-label="MessageKind" id="-1551619778%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-message-kind/index.html"><span>Message</span><wbr></wbr><span><span>Kind</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1551619778%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-message-kind/index.html">MessageKind</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><a href="-message-kind/index.html">MessageKind</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">An enum representing all possible <a href="-message/index.html">Message</a> kinds.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="838083971%2FClasslikes%2F-579682865" anchor-label="MessageMetadata" id="838083971%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-message-metadata/index.html"><span>Message</span><wbr></wbr><span><span>Metadata</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="838083971%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-message-metadata/index.html">MessageMetadata</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>from<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>to<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>kind<span class="token operator">: </span><a href="-message-kind/index.html">MessageKind</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>id<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>exchangeId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>externalId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>createdAt<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/OffsetDateTime.html">OffsetDateTime</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>protocol<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-metadata/index.html">Metadata</a></div><div class="brief "><p class="paragraph">A data class representing the metadata present on every <a href="-message/index.html">Message</a></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2050512902%2FClasslikes%2F-579682865" anchor-label="Metadata" id="-2050512902%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-metadata/index.html"><span><span>Metadata</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2050512902%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">interface </span><a href="-metadata/index.html">Metadata</a></div><div class="brief "><p class="paragraph">An interface that represents the metadata of a tbDEX object.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1672962819%2FClasslikes%2F-579682865" anchor-label="Offering" id="1672962819%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-offering/index.html"><span><span>Offering</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1672962819%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-offering/index.html">Offering</a> : <a href="-resource/index.html">Resource</a></div><div class="brief "><p class="paragraph">A class representing the Offering resource. <code class="lang-kotlin">Offering</code> implements the <a href="-resource/index.html">Resource</a> class and contains Offering specific data</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1314995577%2FClasslikes%2F-579682865" anchor-label="OfferingData" id="1314995577%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-offering-data/index.html"><span>Offering</span><wbr></wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1314995577%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-offering-data/index.html">OfferingData</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>description<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>payoutUnitsPerPayinUnit<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>payin<span class="token operator">: </span><a href="-payin-details/index.html">PayinDetails</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>payout<span class="token operator">: </span><a href="-payout-details/index.html">PayoutDetails</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredClaims<span class="token operator">: </span><span data-unresolved-link="/&amp;lt;Error class: unknown class&amp;gt;///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="-resource-data/index.html">ResourceData</a></div><div class="brief "><p class="paragraph">A data class implementing <a href="-resource-data/index.html">ResourceData</a>, which represents the contents of an <a href="-offering/index.html">Offering</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="347590539%2FClasslikes%2F-579682865" anchor-label="Order" id="347590539%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-order/index.html"><span><span>Order</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="347590539%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-order/index.html">Order</a> : <a href="-message/index.html">Message</a></div><div class="brief "><p class="paragraph">A class representing the Order message. <code class="lang-kotlin">Order</code> implements the <a href="-message/index.html">Message</a> class and contains close specific data</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2026382849%2FClasslikes%2F-579682865" anchor-label="OrderData" id="2026382849%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-order-data/index.html"><span>Order</span><wbr></wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2026382849%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-order-data/index.html">OrderData</a> : <a href="-message-data/index.html">MessageData</a></div><div class="brief "><p class="paragraph">A data class implementing <a href="-message-data/index.html">MessageData</a> that represents the contents of an <a href="-order/index.html">Order</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1414168633%2FClasslikes%2F-579682865" anchor-label="OrderStatus" id="1414168633%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-order-status/index.html"><span>Order</span><wbr></wbr><span><span>Status</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1414168633%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-order-status/index.html">OrderStatus</a> : <a href="-message/index.html">Message</a></div><div class="brief "><p class="paragraph">A class representing the OrderStatus message. <code class="lang-kotlin">OrderStatus</code> implements the <a href="-message/index.html">Message</a> class and contains close specific data</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1494667183%2FClasslikes%2F-579682865" anchor-label="OrderStatusData" id="1494667183%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-order-status-data/index.html"><span>Order</span><wbr></wbr><span>Status</span><wbr></wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1494667183%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-order-status-data/index.html">OrderStatusData</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>orderStatus<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-message-data/index.html">MessageData</a></div><div class="brief "><p class="paragraph">A data class implementing <a href="-message-data/index.html">MessageData</a> that represents the contents of an <a href="-order-status/index.html">OrderStatus</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-453757900%2FClasslikes%2F-579682865" anchor-label="PayinDetails" id="-453757900%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-payin-details/index.html"><span>Payin</span><wbr></wbr><span><span>Details</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-453757900%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-payin-details/index.html">PayinDetails</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>currencyCode<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>min<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>max<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>methods<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-payin-method/index.html">PayinMethod</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="-payment-details/index.html">PaymentDetails</a></div><div class="brief "><p class="paragraph">A data class containing information pertaining to payin.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1706385973%2FClasslikes%2F-579682865" anchor-label="PayinMethod" id="-1706385973%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-payin-method/index.html"><span>Payin</span><wbr></wbr><span><span>Method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1706385973%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-payin-method/index.html">PayinMethod</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>kind<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>description<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>group<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredPaymentDetails<span class="token operator">: </span><span data-unresolved-link="/&amp;lt;Error class: unknown class&amp;gt;///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>fee<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>min<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>max<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="-payment-method/index.html">PaymentMethod</a></div><div class="brief "><p class="paragraph">A data class containing information pertaining to payin method.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1972770707%2FClasslikes%2F-579682865" anchor-label="PaymentDetails" id="-1972770707%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-payment-details/index.html"><span>Payment</span><wbr></wbr><span><span>Details</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1972770707%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-payment-details/index.html">PaymentDetails</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>currencyCode<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>min<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>max<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>methods<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-payment-method/index.html">PaymentMethod</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A data class representing the structure and common functionality available on PayinDetails and PayoutDetails.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-622162783%2FClasslikes%2F-579682865" anchor-label="PaymentInstruction" id="-622162783%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-payment-instruction/index.html"><span>Payment</span><wbr></wbr><span><span>Instruction</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-622162783%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-payment-instruction/index.html">PaymentInstruction</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>link<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>instruction<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Payment instruction</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1616839054%2FClasslikes%2F-579682865" anchor-label="PaymentMethod" id="-1616839054%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-payment-method/index.html"><span>Payment</span><wbr></wbr><span><span>Method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1616839054%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-payment-method/index.html">PaymentMethod</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>kind<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>description<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>group<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredPaymentDetails<span class="token operator">: </span><span data-unresolved-link="/&amp;lt;Error class: unknown class&amp;gt;///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>fee<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>min<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>max<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">An abstract class representing the structure and common functionality available on all PaymentMethods.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-118636323%2FClasslikes%2F-579682865" anchor-label="PayoutDetails" id="-118636323%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-payout-details/index.html"><span>Payout</span><wbr></wbr><span><span>Details</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-118636323%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-payout-details/index.html">PayoutDetails</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>currencyCode<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>min<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>max<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>methods<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="-payout-method/index.html">PayoutMethod</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span> : <a href="-payment-details/index.html">PaymentDetails</a></div><div class="brief "><p class="paragraph">A data class containing information pertaining to payout.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-33007614%2FClasslikes%2F-579682865" anchor-label="PayoutMethod" id="-33007614%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-payout-method/index.html"><span>Payout</span><wbr></wbr><span><span>Method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-33007614%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-payout-method/index.html">PayoutMethod</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>kind<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>name<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>description<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>group<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>requiredPaymentDetails<span class="token operator">: </span><span data-unresolved-link="/&amp;lt;Error class: unknown class&amp;gt;///PointingToDeclaration/">&lt;Error class: unknown class&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>fee<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>min<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>max<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>estimatedSettlementTime<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span> : <a href="-payment-method/index.html">PaymentMethod</a></div><div class="brief "><p class="paragraph">A data class containing information pertaining to payout method.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1559577146%2FClasslikes%2F-579682865" anchor-label="PrivatePaymentDetails" id="1559577146%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-private-payment-details/index.html"><span>Private</span><wbr></wbr><span>Payment</span><wbr></wbr><span><span>Details</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1559577146%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-private-payment-details/index.html">PrivatePaymentDetails</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>paymentDetails<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A container for the cleartext <code class="lang-kotlin">paymentDetails</code></p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="783476765%2FClasslikes%2F-579682865" anchor-label="Quote" id="783476765%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-quote/index.html"><span><span>Quote</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="783476765%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-quote/index.html">Quote</a> : <a href="-message/index.html">Message</a></div><div class="brief "><p class="paragraph">A class representing the Quote message. <code class="lang-kotlin">Quote</code> implements the <a href="-message/index.html">Message</a> class and contains close specific data</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2004919699%2FClasslikes%2F-579682865" anchor-label="QuoteData" id="2004919699%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-quote-data/index.html"><span>Quote</span><wbr></wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2004919699%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-quote-data/index.html">QuoteData</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>expiresAt<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/OffsetDateTime.html">OffsetDateTime</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>payin<span class="token operator">: </span><a href="-quote-details/index.html">QuoteDetails</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>payout<span class="token operator">: </span><a href="-quote-details/index.html">QuoteDetails</a></span></span><span class="token punctuation">)</span> : <a href="-message-data/index.html">MessageData</a></div><div class="brief "><p class="paragraph">A data class implementing <a href="-message-data/index.html">MessageData</a> that represents the contents of a <a href="-quote/index.html">Quote</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1021100771%2FClasslikes%2F-579682865" anchor-label="QuoteDetails" id="1021100771%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-quote-details/index.html"><span>Quote</span><wbr></wbr><span><span>Details</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1021100771%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-quote-details/index.html">QuoteDetails</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>currencyCode<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>amount<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>fee<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>paymentInstruction<span class="token operator">: </span><a href="-payment-instruction/index.html">PaymentInstruction</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">A data class representing details for payin and payout amounts.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-457586693%2FClasslikes%2F-579682865" anchor-label="Resource" id="-457586693%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-resource/index.html"><span><span>Resource</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-457586693%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-resource/index.html">Resource</a></div><div class="brief "><p class="paragraph">An abstract class representing the structure and common functionality available on all Resources.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="221800049%2FClasslikes%2F-579682865" anchor-label="ResourceData" id="221800049%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-resource-data/index.html"><span>Resource</span><wbr></wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="221800049%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">interface </span><a href="-resource-data/index.html">ResourceData</a> : <a href="-data/index.html">Data</a></div><div class="brief "><p class="paragraph">An interface that represents the contents of a <a href="-resource/index.html">Resource</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1653962183%2FClasslikes%2F-579682865" anchor-label="ResourceKind" id="1653962183%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-resource-kind/index.html"><span>Resource</span><wbr></wbr><span><span>Kind</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1653962183%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-resource-kind/index.html">ResourceKind</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-enum/index.html">Enum</a><span class="token operator">&lt;</span><a href="-resource-kind/index.html">ResourceKind</a><span class="token operator">&gt; </span></div><div class="brief "><p class="paragraph">An enum representing all possible <a href="-resource/index.html">Resource</a> kinds.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="923403660%2FClasslikes%2F-579682865" anchor-label="ResourceMetadata" id="923403660%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-resource-metadata/index.html"><span>Resource</span><wbr></wbr><span><span>Metadata</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="923403660%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-resource-metadata/index.html">ResourceMetadata</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>kind<span class="token operator">: </span><a href="-resource-kind/index.html">ResourceKind</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>from<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>id<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>protocol<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>createdAt<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/OffsetDateTime.html">OffsetDateTime</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>updatedAt<span class="token operator">: </span><a href="https://docs.oracle.com/javase/8/docs/api/java/time/OffsetDateTime.html">OffsetDateTime</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="-metadata/index.html">Metadata</a></div><div class="brief "><p class="paragraph">A data class representing the metadata present on every <a href="-resource/index.html">Resource</a>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-611720452%2FClasslikes%2F-579682865" anchor-label="Rfq" id="-611720452%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-rfq/index.html"><span><span>Rfq</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-611720452%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-rfq/index.html">Rfq</a> : <a href="-message/index.html">Message</a></div><div class="brief "><p class="paragraph">A class representing the Rfq message. <code class="lang-kotlin">Rfq</code> implements the <a href="-message/index.html">Message</a> class and contains close specific data</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1735321358%2FClasslikes%2F-579682865" anchor-label="RfqData" id="-1735321358%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-rfq-data/index.html"><span>Rfq</span><wbr></wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1735321358%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-rfq-data/index.html">RfqData</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>offeringId<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>payin<span class="token operator">: </span><a href="-selected-payin-method/index.html">SelectedPayinMethod</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>payout<span class="token operator">: </span><a href="-selected-payout-method/index.html">SelectedPayoutMethod</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>claimsHash<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="-message-data/index.html">MessageData</a></div><div class="brief "><p class="paragraph">A data class implementing <a href="-message-data/index.html">MessageData</a> that represents the contents of an <a href="-rfq/index.html">Rfq</a>. This includes salted hashes of fields in RfqPrivateData.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1331413369%2FClasslikes%2F-579682865" anchor-label="RfqPrivateData" id="1331413369%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-rfq-private-data/index.html"><span>Rfq</span><wbr></wbr><span>Private</span><wbr></wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1331413369%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-rfq-private-data/index.html">RfqPrivateData</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>salt<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>payin<span class="token operator">: </span><a href="-private-payment-details/index.html">PrivatePaymentDetails</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>payout<span class="token operator">: </span><a href="-private-payment-details/index.html">PrivatePaymentDetails</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>claims<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span></div><div class="brief "><p class="paragraph">Private data contained in a RFQ message, including data which will be placed in {@link RfqPrivateData}</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1508103418%2FClasslikes%2F-579682865" anchor-label="SelectedPayinMethod" id="-1508103418%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-selected-payin-method/index.html"><span>Selected</span><wbr></wbr><span>Payin</span><wbr></wbr><span><span>Method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1508103418%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-selected-payin-method/index.html">SelectedPayinMethod</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>kind<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>paymentDetailsHash<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">val </span>amount<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span> : <a href="-selected-payment-method/index.html">SelectedPaymentMethod</a></div><div class="brief "><p class="paragraph">A data class representing the payin method selected.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-45864723%2FClasslikes%2F-579682865" anchor-label="SelectedPaymentMethod" id="-45864723%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-selected-payment-method/index.html"><span>Selected</span><wbr></wbr><span>Payment</span><wbr></wbr><span><span>Method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-45864723%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-selected-payment-method/index.html">SelectedPaymentMethod</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>kind<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>paymentDetailsHash<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="-message-data/index.html">MessageData</a></div><div class="brief "><p class="paragraph">A data class representing the payment method selected.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1818784295%2FClasslikes%2F-579682865" anchor-label="SelectedPayoutMethod" id="1818784295%2FClasslikes%2F-579682865" data-filterable-set="tbdex/main"></a>
+          <div class="table-row" data-filterable-current="tbdex/main" data-filterable-set="tbdex/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-selected-payout-method/index.html"><span>Selected</span><wbr></wbr><span>Payout</span><wbr></wbr><span><span>Method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1818784295%2FClasslikes%2F-579682865"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable="tbdex/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-selected-payout-method/index.html">SelectedPayoutMethod</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>kind<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>paymentDetailsHash<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="-selected-payment-method/index.html">SelectedPaymentMethod</a></div><div class="brief "><p class="paragraph">A data class representing the payout method selected.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
