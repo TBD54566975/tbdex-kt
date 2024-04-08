@@ -49,13 +49,8 @@ jobs:
 
       - name: Build, Test, and Verify
         run: |
-          # Maven "verify" lifecycle will build, test, and verify
-          mvn verify \
-              --batch-mode \
-              -P sign-artifacts
-        env:
-          SIGN_KEY_PASS: ${{ secrets.GPG_SECRET_PASSPHRASE }}
-          SIGN_KEY: ${{ secrets.GPG_SECRET_KEY }}
+          # Maven "test" lifecycle will build and test only on MacOS
+          mvn test
 
   # On Ubuntu we build, test, verify, and deploy: Code Coverage, Test Vectors, and SNAPSHOT artifacts to TBD Artifactory
   build-test-deploy-snapshot-ubuntu:
@@ -141,7 +136,6 @@ jobs:
           path: |
             **/target/surefire-reports/*.xml
 
-      # Uncomment these before merging upstream again; this Action is custom to TBD and can't be verified in ALRubinger fork
       - name: Generate an access token to trigger downstream repo
         uses: actions/create-github-app-token@2986852ad836768dfea7781f31828eb3e17990fa # v1.6.2
         id: generate_token

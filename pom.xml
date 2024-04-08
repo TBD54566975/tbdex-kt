@@ -362,17 +362,6 @@
       </snapshots>
       <url>https://blockxyz.jfrog.io/artifactory/tbd-oss-snapshots-maven2/</url>
     </repository>
-    <repository>
-      <id>tbd-oss-releases</id>
-      <name>tbd-oss-releases</name>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <url>https://blockxyz.jfrog.io/artifactory/tbd-oss-releases-maven2/</url>
-    </repository>
   </repositories>
 
   <pluginRepositories>
