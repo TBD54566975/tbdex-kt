@@ -17,7 +17,7 @@
     the version "version.xyz.block.web5" set this web5-parent. When updating Web5, update both
     this version *and* the <version.xyz.block.web5> below in the <properties> section.
     -->
-    <version>1.1.0</version>
+    <version>1.1.2</version>
   </parent>
   <name>tbDEX SDK for the JVM Build Parent</name>
   <url>https://developer.tbd.website</url>
