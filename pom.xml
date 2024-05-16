@@ -102,7 +102,7 @@
     this version to refer to the web5-parent at the top of this file. When updating
     Web5, update both here and in the <parent> declaration above.
     -->
-    <version.xyz.block.web5>1.1.0</version.xyz.block.web5>
+    <version.xyz.block.web5>1.1.2</version.xyz.block.web5>
 
     <!-- Versioning for Dependencies -->
     <version.de.fxlae>0.2.0</version.de.fxlae>
