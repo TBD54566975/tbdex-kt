@@ -80,6 +80,13 @@ class TbdexTestVectorsProtocol {
     testSuccessResourceTestVector<Balance>(vector)
   }
 
+  @Test
+  fun parse_cancel() {
+    val vector = TestVectors.getVector("parse-cancel.json")
+    assertNotNull(vector)
+    testSuccessResourceTestVector<Balance>(vector)
+  }
+
   private inline fun <reified T> testSuccessMessageTestVector(vector: JsonNode) {
     val input = vector["input"].textValue()
     assertNotNull(input)
