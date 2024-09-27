@@ -1,4 +1,11 @@
-# tbdex-kt
+# ⚠️ Deprecated Repository ⚠️
+This repository is deprecated.
+
+The last version of tbdex-kt that used this repository is 3.0.1.
+
+Starting from version 4.0.0, the project has transitioned to using the tbdex-rs kotlin bindings repository found here: https://github.com/TBD54566975/tbdex-rs/tree/main/bound/kt.
+
+## tbdex-sdk
 
 [![License](https://img.shields.io/github/license/TBD54566975/tbdex-kt)](https://github.com/TBD54566975/tbdex-kt/blob/main/LICENSE) [![SDK Kotlin CI](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yml/badge.svg)](https://github.com/TBD54566975/tbdex-kt/actions/workflows/ci.yml) [![Coverage](https://img.shields.io/codecov/c/gh/tbd54566975/tbdex-kt/main?logo=codecov&logoColor=FFFFFF&style=flat-square&token=YI87CKF1LI)](https://codecov.io/github/TBD54566975/tbdex-kt) [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/TBD54566975/tbdex-kt/badge)](https://securityscorecards.dev/viewer/?uri=github.com/TBD54566975/tbdex-kt)
 
